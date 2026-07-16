@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "About Us — SpeedRead";
+const pageDescription = "Learn about SpeedRead, our mission to build a free local-first speed reader, and our technology stack.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="about-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <h1>ℹ️ About SpeedRead</h1>
+        
+        <div class="content mt-6">
+          <p class="intro">
+            SpeedRead was born out of frustration with modern reading tools. While researching reading tools, we discovered that most speed readers, audio narration tools (like Speechify), and bionic visual customizers require heavy monthly subscriptions (ranging from $10 to $30/month) or lock basic upload features behind paywalls.
+          </p>
+          
+          <p>
+            We set out to build a platform that is **entirely free to use**, fast, distraction-free, and respects your privacy.
+          </p>
+
+          <h2>Our Core Philosophy</h2>
+          
+          <h3>1. Local-First & Private</h3>
+          <p>
+            Your books and articles are personal. We believe you should not have to upload your files to remote servers just to read them. That is why **100% of SpeedRead's parsing, Text-to-Speech syncing, and OCR engines execute directly in your browser**. We pay $0 for servers, and you keep 100% of your document privacy.
+          </p>
+
+          <h3>2. Dual-Channel Cognitive Reading</h3>
+          <p>
+            Speed reading is not just about flashing words; it is about cognitive absorption. By combining RSVP (Rapid Serial Visual Presentation) flashing with synchronized Text-to-Speech audio, we create a dual-channel learning engine. This technique locks your attention and eliminates sub-vocalization (the voice inside your head that reads words slow), helping you process text at WPM speeds you did not know you were capable of.
+          </p>
+
+          <h3>3. Disruptive Pricing</h3>
+          <p>
+            Our core product is supported by non-intrusive display ads. However, if you want an ad-free workspace and custom configurations, we offer a simple **$9 Lifetime License**. No recurring fees, no subscription traps.
+          </p>
+
+          <h2>Our Stack</h2>
+          <p>
+            SpeedRead is built using a modern static framework called **Astro JS**. Because Astro compiles down to zero client-side JavaScript by default, it is highly optimized for SEO and loads instantly. We integrate lightweight, client-side libraries:
+          </p>
+          <ul>
+            <li>**Web Speech API** for synced local voice synthesis.</li>
+            <li>**pdfjs-dist** for dynamic client-side PDF parsing.</li>
+            <li>**JSZip** for client-side EPUB file decompression.</li>
+            <li>**Tesseract.js** via WebAssembly for on-device OCR.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .intro {
+    font-size: 1.15rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+  }
+  .content h2 {
+    font-size: 1.4rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .content h3 {
+    font-size: 1.1rem;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+  }
+  .content p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+  .content ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+</style>

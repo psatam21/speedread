@@ -1,0 +1,91 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Terms of Service — SpeedRead";
+const pageDescription = "Terms of Service and usage guidelines for SpeedRead web speed reading tools and lifetime subscriptions.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="terms-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <h1>⚖️ Terms of Service</h1>
+        <p class="muted">Last Updated: July 17, 2026</p>
+
+        <div class="content mt-6">
+          <p>
+            Welcome to SpeedRead! By accessing our website at speedread-web.com, you agree to comply with and be bound by the following terms and conditions of use.
+          </p>
+
+          <h2>1. Use License & Intellectual Property</h2>
+          <p>
+            SpeedRead provides a web-based client-side reader tool. Permission is granted to temporarily load the web app for personal, non-commercial transitory reading.
+          </p>
+          <p>
+            You may not:
+          </p>
+          <ul>
+            <li>Attempt to decompile, reverse-engineer, or maliciously extract code from the speed-reading engine.</li>
+            <li>Use the bookmarklet or URL extraction tools to scrap copyrighted web assets in automated bulk.</li>
+            <li>Resell or redistribute premium features under a different brand name.</li>
+          </ul>
+
+          <h2>2. Disclaimer of Warranty</h2>
+          <p>
+            SpeedRead is provided on an "as is" and "as available" basis. We make no warranties, expressed or implied, and hereby disclaim and negate all other warranties including, without limitation, implied warranties of merchantability, fitness for a particular purpose, or non-infringement of intellectual property.
+          </p>
+          <p>
+            Because all document parsing, image OCR, and speech narration occur client-side, SpeedRead does not guarantee that file parsing will be error-free or compatible with every corrupt EPUB or scanned PDF structure.
+          </p>
+
+          <h2>3. Lifetime Premium Membership</h2>
+          <p>
+            If you upgrade to the Pro lifetime membership:
+          </p>
+          <ul>
+            <li>You receive a permanent, non-expiring license key to remove ads, unlock unlimited OCR parsing, and customize theme options.</li>
+            <li>Membership unlocks are linked locally via key activation or stored in `localStorage`. If you clear your browser cookies/storage, you can re-activate your key via the receipt link.</li>
+            <li>All lifetime upgrades come with a 14-day refund window. Contact billing support to initiate a refund.</li>
+          </ul>
+
+          <h2>4. Limitations of Liability</h2>
+          <p>
+            In no event shall SpeedRead or its developers be liable for any damages (including, without limitation, damages for loss of data or profit, or business interruption) arising out of the use or inability to use the speed-reading tools, even if we have been notified of the possibility of such damage.
+          </p>
+
+          <h2>5. Contact Information</h2>
+          <p>
+            If you have questions regarding these Terms, please reach out to us at: **support@speedread-web.com**.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .content h2 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .content p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+  .content ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+</style>

@@ -1,0 +1,86 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Privacy Policy — SpeedRead";
+const pageDescription = "Privacy Policy for SpeedRead. Learn about how we process text entirely on your device with zero server-side storage, cookie usage, and analytics.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="privacy-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <h1>🔒 Privacy Policy</h1>
+        <p class="muted">Last Updated: July 17, 2026</p>
+
+        <div class="content mt-6">
+          <p>
+            At SpeedRead, accessible from speedread-web.com, the privacy of our visitors is one of our primary priorities. This Privacy Policy document outlines the types of information we collect and record, and how we use it.
+          </p>
+
+          <h2>1. Client-Side Processing Assurance</h2>
+          <p>
+            **Unlike traditional reading tools, SpeedRead does not upload your documents, books, or pasted texts to any external server.** All visual presentation computations (RSVP), Bionic Reading formatting, Text-to-Speech audio generation, PDF/EPUB extraction, and image OCR processing occur entirely locally inside your browser sandbox on your device. Your data never leaves your computer or phone.
+          </p>
+
+          <h2>2. Information We Collect</h2>
+          <p>
+            If you contact us directly or purchase a Pro lifetime membership, we may collect minimal metadata:
+          </p>
+          <ul>
+            <li>**Contact Information:** Name, email address, and the contents of any message you send us.</li>
+            <li>**Transaction Information:** Payment metadata when activating a Pro account (handled securely through our payment processors; we do not store credit card numbers).</li>
+          </ul>
+
+          <h2>3. Cookies and Web Beacons</h2>
+          <p>
+            SpeedRead uses standard cookies to optimize your user experience, including retaining your preferred reading theme, font family, font size, and WPM speeds. 
+          </p>
+          <p>
+            We also integrate third-party services which utilize cookies:
+          </p>
+          <ul>
+            <li>**Google Analytics:** We use Google Analytics to collect aggregated, anonymous site traffic and engagement metrics to improve user design.</li>
+            <li>**Google AdSense:** Google, as a third-party vendor, uses cookies to serve personalized advertisements to visitors based upon their visits to our site and other pages on the internet. You can manage or disable ad personalization by visiting Google's Ads Settings.</li>
+          </ul>
+
+          <h2>4. Log Files</h2>
+          <p>
+            SpeedRead follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date/time stamp, referring/exit pages, and number of clicks. This data is not linked to any personally identifiable information and is used solely for analyzing administration trends.
+          </p>
+
+          <h2>5. Contact Us</h2>
+          <p>
+            If you have additional questions or require more information about our Privacy Policy, do not hesitate to contact us at: **privacy@speedread-web.com**.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .content h2 {
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .content p {
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+  .content ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--color-text-muted);
+  }
+</style>

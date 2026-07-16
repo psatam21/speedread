@@ -1,17 +1,2126 @@
 ---
+import Layout from '../layouts/Layout.astro';
 
+const pageTitle = "SpeedRead — Free Online Speed Reader & Bionic Reader";
+const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload PDFs, EPUBs, or paste text to speed-read with RSVP (Rapid Serial Visual Presentation), Bionic Reading, and synchronized Text-to-Speech.";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title={pageTitle} description={pageDescription}>
+  <!-- Top App Section: Interactive Reader Workspace -->
+  <section class="app-section">
+    <div class="container app-workspace">
+      
+      <!-- ---------------- READER SCREEN ---------------- -->
+      <div id="reader-screen" class="glass app-card hidden mb-6">
+        <div class="reader-header">
+          <h3>📖 SpeedRead Engine</h3>
+          <button class="btn btn-secondary btn-sm" id="btn-close-reader">✕ Close</button>
+        </div>
+
+        <!-- Reading Mode Switcher -->
+        <div class="mode-switcher mt-4">
+          <button class="mode-btn active" data-mode="rsvp">⚡ RSVP Mode (Flashing)</button>
+          <button class="mode-btn" data-mode="bionic">👁️ Bionic Mode</button>
+          <button class="mode-btn" data-mode="standard">📖 Standard Mode</button>
+        </div>
+
+        <!-- Interactive Workspace -->
+        <div class="reader-display-container">
+          
+          <!-- RSVP (Visual Flash) Pane -->
+          <div id="rsvp-pane" class="reader-pane active">
+            <div class="rsvp-word-container">
+              <div class="rsvp-focus-line"></div>
+              <div class="rsvp-horizontal-ticks">
+                <div class="rsvp-tick"></div>
+                <div class="rsvp-tick"></div>
+              </div>
+              <div class="word-wrapper">
+                <span class="word-left" id="word-left">Ready</span>
+                <span class="word-orp" id="word-orp">.</span>
+                <span class="word-right" id="word-right"></span>
+              </div>
+            </div>
+            <div class="rsvp-progress-bar-container">
+              <div class="rsvp-progress-bar" id="rsvp-progress"></div>
+            </div>
+          </div>
+
+          <!-- Bionic Reader Pane -->
+          <div id="bionic-pane" class="reader-pane hidden">
+            <div class="standard-reader-view" id="bionic-text-view">
+              <!-- Highlighted bionic text gets loaded here -->
+            </div>
+          </div>
+
+          <!-- Standard Mode Pane -->
+          <div id="standard-pane" class="reader-pane hidden">
+            <div class="standard-reader-view" id="standard-text-view">
+              <!-- Sentences loaded here with click-to-jump -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Controls HUD -->
+        <div class="controls-hud mt-4">
+          
+          <!-- Playback controls -->
+          <div class="playback-controls">
+            <button class="control-btn" id="btn-rsvp-prev" title="Previous word (ArrowLeft)">⏮</button>
+            <button class="control-btn play-btn" id="btn-rsvp-play" title="Play/Pause (Space)">▶ Play</button>
+            <button class="control-btn" id="btn-rsvp-next" title="Next word (ArrowRight)">⏭</button>
+            <button class="control-btn" id="btn-rsvp-tts" title="Toggle Text-to-Speech Audio">🔊 Audio Sync: Off</button>
+            <button class="control-btn" id="btn-fullscreen" title="Toggle distraction-free fullscreen">⛶ Fullscreen</button>
+          </div>
+
+          <!-- Setting Tuners -->
+          <div class="tuner-grid">
+            <div class="tuner-card">
+              <label for="slider-wpm">Reading Speed: <span id="wpm-display">300</span> WPM</label>
+              <input type="range" id="slider-wpm" min="100" max="1000" step="25" value="300" />
+            </div>
+            
+            <div class="tuner-card">
+              <label>Theme Preset</label>
+              <div class="theme-picker">
+                <button class="theme-badge light" data-theme="light" title="Light theme">A</button>
+                <button class="theme-badge sepia" data-theme="sepia" title="Sepia eye-comfort">A</button>
+                <button class="theme-badge dark" data-theme="dark" title="Dark theme">A</button>
+                <button class="theme-badge amoled" data-theme="amoled" title="AMOLED Black">A</button>
+              </div>
+            </div>
+
+            <div class="tuner-card">
+              <label for="select-font">Font Family</label>
+              <select id="select-font">
+                <option value="sans">Sans-Serif (Inter)</option>
+                <option value="serif">Serif (Merriweather)</option>
+                <option value="dyslexic">Dyslexic Aid (OpenDyslexic)</option>
+              </select>
+            </div>
+
+            <div class="tuner-card">
+              <label for="slider-font-size">Font Size: <span id="font-size-display">24</span>px</label>
+              <input type="range" id="slider-font-size" min="16" max="48" step="2" value="24" />
+            </div>
+
+            <div class="tuner-card">
+              <label for="select-voice">Audio Sync Voice</label>
+              <select id="select-voice">
+                <option value="">Default System Voice</option>
+              </select>
+              <span class="tuner-hint">Use Chrome/Edge for Natural Neural voices</span>
+            </div>
+
+            <div class="tuner-card">
+              <label for="slider-pitch">Voice Pitch: <span id="pitch-display">1.0</span></label>
+              <input type="range" id="slider-pitch" min="0.5" max="2.0" step="0.1" value="1.0" />
+            </div>
+          </div>
+
+          <!-- Position/Timeline slider -->
+          <div class="timeline-row">
+            <input type="range" id="slider-progress" min="0" max="100" value="0" />
+            <div class="timeline-labels">
+              <span id="reading-time-left">0 min remaining</span>
+              <span id="reading-percentage">Word 0 / 0 (0%)</span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ---------------- IMPORTER CARD ---------------- -->
+      <div class="glass app-card" id="importer-card">
+        
+        <!-- Tab Selectors for Import -->
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="paste">📄 Paste Text</button>
+          <button class="tab-btn" data-tab="upload">📁 Upload Files</button>
+          <button class="tab-btn" data-tab="ocr">📷 Image OCR</button>
+          <button class="tab-btn" data-tab="url">🔗 Extract URL</button>
+          <button class="tab-btn" data-tab="ai">🤖 AI Chat & Summary</button>
+        </div>
+
+        <!-- Import Panels -->
+        <div class="tab-contents">
+          
+          <!-- Paste Panel -->
+          <div class="tab-content active" id="tab-paste">
+            <textarea id="text-input" placeholder="Paste your article, book chapter, or text here to start speed reading..."></textarea>
+            
+            <!-- Find & Replace Accordion -->
+            <details class="text-clean-details mt-2">
+              <summary>🛠️ Text Cleaning Tools (Find & Replace)</summary>
+              <div class="find-replace-grid mt-2">
+                <input type="text" id="input-find" placeholder="Find text..." />
+                <input type="text" id="input-replace" placeholder="Replace with..." />
+                <button class="btn btn-secondary btn-sm" id="btn-run-replace">Replace All</button>
+              </div>
+            </details>
+
+            <div class="input-actions mt-4">
+              <button class="btn btn-primary" id="btn-load-paste">Start Reading ⚡</button>
+              <button class="btn btn-secondary" id="btn-demo">Try Demo Text</button>
+            </div>
+          </div>
+
+          <!-- Upload Panel -->
+          <div class="tab-content" id="tab-upload">
+            <div class="dropzone" id="file-dropzone">
+              <span class="dropzone-icon">📥</span>
+              <p>Drag and drop a file here, or <span class="browse-link">browse files</span></p>
+              <span class="dropzone-formats">Supports PDF, EPUB, TXT</span>
+              <input type="file" id="file-input" accept=".pdf,.epub,.txt" class="hidden" />
+            </div>
+            <div id="file-progress" class="hidden">
+              <div class="progress-bar-container"><div class="progress-bar" id="upload-progress-bar"></div></div>
+              <p id="file-status">Parsing file...</p>
+            </div>
+          </div>
+
+          <!-- OCR Panel -->
+          <div class="tab-content" id="tab-ocr">
+            <div class="dropzone" id="ocr-dropzone">
+              <span class="dropzone-icon">📷</span>
+              <p>Drag and drop an image / screenshot of text, or <span class="browse-link">browse files</span></p>
+              <span class="dropzone-formats">Extracts text client-side using On-Device OCR</span>
+              <input type="file" id="ocr-input" accept="image/*" class="hidden" />
+            </div>
+            <div id="ocr-progress" class="hidden">
+              <div class="progress-bar-container"><div class="progress-bar" id="ocr-progress-bar"></div></div>
+              <p id="ocr-status">Initializing Tesseract OCR...</p>
+            </div>
+          </div>
+
+          <!-- URL Panel -->
+          <div class="tab-content" id="tab-url">
+            <div class="url-input-container">
+              <input type="url" id="url-input" placeholder="Enter article or webpage URL (e.g., https://example.com/article)" />
+              <button class="btn btn-primary" id="btn-load-url">Extract Text</button>
+            </div>
+            <p class="input-hint">Extracts core article text from public web pages client-side using a clean readability parser.</p>
+          </div>
+
+          <!-- AI Chat & Summary Panel -->
+          <div class="tab-content" id="tab-ai">
+            <div class="ai-config">
+              <label for="ai-key">Gemini API Key (stored locally):</label>
+              <div class="key-input-row">
+                <input type="password" id="ai-key" placeholder="Enter your Gemini API Key..." />
+                <button class="btn btn-secondary" id="btn-save-key">Save Key</button>
+                <a href="https://aistudio.google.com/" target="_blank" class="api-link">Get Free Key ↗</a>
+              </div>
+            </div>
+            <div class="ai-actions mt-4">
+              <button class="btn btn-primary" id="btn-ai-summary">✨ Generate Summary</button>
+              <button class="btn btn-secondary" id="btn-ai-chat">💬 Chat with Document</button>
+            </div>
+            
+            <div id="ai-response-box" class="hidden glass mt-4">
+              <div class="ai-box-header">
+                <h4 id="ai-response-title">AI Summary</h4>
+                <button class="btn btn-secondary btn-sm" id="btn-close-ai-box">✕ Close</button>
+              </div>
+              <div id="ai-summary-view">
+                <p id="ai-response-text" class="summary-text"></p>
+              </div>
+              <div id="ai-chat-view" class="hidden">
+                <div class="chat-history" id="chat-history"></div>
+                <div class="chat-input-row">
+                  <input type="text" id="chat-user-input" placeholder="Ask a question about your document..." />
+                  <button class="btn btn-primary" id="btn-send-chat">Send</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Google AdSense Placeholder Slot (Horizontal Top) -->
+  <section class="ads-section">
+    <div class="container">
+      <div class="ad-placeholder glass">
+        <span>Google AdSense Slot (Auto-Ads / Display Ads)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Monetization & Analytics Section -->
+  <section class="pricing-analytics-section mt-8">
+    <div class="container pricing-analytics-grid">
+      
+      <!-- Analytics Stored locally -->
+      <div class="glass dashboard-card">
+        <h3>📊 Your Reading Dashboard</h3>
+        <p class="muted">Your statistics are stored entirely in your local browser.</p>
+        <div class="stats-grid mt-4">
+          <div class="stat-box">
+            <span class="stat-value" id="stats-words">0</span>
+            <span class="stat-label">Words Speed-Read</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="stats-time">0m</span>
+            <span class="stat-label">Time Spent Reading</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="stats-saved">0m</span>
+            <span class="stat-label">Estimated Time Saved</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-value" id="stats-streak">0</span>
+            <span class="stat-label">Day Streak 🔥</span>
+          </div>
+        </div>
+        <div class="actions mt-6">
+          <button class="btn btn-secondary" id="btn-share-stats">Share Achievement ⚡</button>
+        </div>
+      </div>
+
+      <!-- Lifetime Premium Block -->
+      <div class="glass pricing-card premium-badge">
+        <div class="pricing-tag">disruptive pricing</div>
+        <h3>⭐ Go Premium Lifetime</h3>
+        <div class="price-row mt-2">
+          <span class="price-strike">$29.99</span>
+          <span class="price-value">$9.00</span>
+          <span class="price-term">one-time / forever</span>
+        </div>
+        <ul class="pricing-features mt-4">
+          <li>✨ 100% Ad-Free Reading Environment</li>
+          <li>📂 Unlimited PDF, EPUB, TXT File Uploads</li>
+          <li>📷 Advanced On-Device OCR (Image-to-text)</li>
+          <li>💾 Save last read position & bookmark files</li>
+          <li>🗣️ Enable Premium Neural TTS voices</li>
+        </ul>
+        <div class="pricing-actions mt-6">
+          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro Access</button>
+          <p class="muted text-center mt-2">Pay what you want starting at $2. Support active development!</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ---------------- SEO CONTENT LAYER ---------------- -->
+  <section class="seo-content-section mt-12">
+    <div class="container">
+      <div class="seo-layout">
+        
+        <div class="seo-text">
+          <h1>Online Speed Reader — Flash RSVP & Bionic Reading Web App</h1>
+          <p>
+            SpeedRead is a web-based, state-of-the-art speed reading reader designed to help you consume eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Inspired by the popular Quickify mobile application, SpeedRead combines multiple scientific visual presentation methods to reduce eye fatigue, eliminate sub-vocalization, and double your comprehension speed.
+          </p>
+          
+          <h2>Rapid Serial Visual Presentation (RSVP)</h2>
+          <p>
+            Traditional reading forces your eyes to move horizontally across a line of text, causing physical fatigue and mental pauses (known as saccades). The **RSVP (Rapid Serial Visual Presentation)** mode eliminates this horizontal movement by flashing single words at a fixed focal point on the screen. SpeedRead dynamically calculates the **Optimal Recognition Point (ORP)** of each word—aligning the focal letter (highlighted in red) to a central grid so your brain processes the language directly without scrolling or moving your eyes.
+          </p>
+          
+          <h2>Bionic Reading Mode</h2>
+          <p>
+            For longer reading sessions where you prefer a page view, **Bionic Reading** bolds the initial parts of words (the fixations) while letting your brain naturally complete the rest (the saccades). This helps your eyes glide smoothly across paragraphs, facilitating rapid scanning while preserving context and reducing mental cognitive load.
+          </p>
+          
+          <h2>Dual-Channel Audio Narration</h2>
+          <p>
+            Layering Text-to-Speech (TTS) audio narration on top of rapid visual word flashes creates a **dual-channel learning engine**. The auditory feedback anchors your focus, preventing your mind from wandering or losing track of the text at high reading speeds.
+          </p>
+        </div>
+
+        <!-- FAQs Section for Structured Schema -->
+        <div class="faq-container mt-12">
+          <h2>Frequently Asked Questions</h2>
+          
+          <details class="faq-item" open>
+            <summary>What is RSVP Speed Reading?</summary>
+            <div class="faq-answer">
+              <p>RSVP stands for Rapid Serial Visual Presentation. It is a visual reading technology that flashes single words sequentially on a static point on the screen. This allows you to read without moving your eyes horizontally, eliminating eye muscle fatigue and significantly increasing reading speeds.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How does Bionic Reading work?</summary>
+            <div class="faq-answer">
+              <p>Bionic Reading highlights the first few characters of each word in bold, creating an anchor point for your eyes. Your brain instantly identifies the word based on these letters and automatically completes the rest, speeding up sentence transition and scanning speeds.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Are my PDF and EPUB files kept private?</summary>
+            <div class="faq-answer">
+              <p>Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How do I install the Web-to-Reader Bookmarklet?</summary>
+            <div class="faq-answer">
+              <p>Go to the <a href="/bookmarklet">Bookmarklet page</a>, and drag the "⚡ SpeedRead" link directly into your browser's bookmarks bar. Whenever you are reading an article on any news website, simply click that bookmark, and it will instantly load the page's text into our reader workspace.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is there an API key required for AI features?</summary>
+            <div class="faq-answer">
+              <p>Yes, to run AI summarization and chat with documents at zero cost, we support bringing your own free Gemini API key. Your key is stored securely inside your browser's local storage and is sent directly to Google's API, keeping our hosting free and your data safe.</p>
+            </div>
+          </details>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Modal for Share Canvas Card -->
+  <div id="share-modal" class="modal hidden">
+    <div class="modal-content glass">
+      <h3>🎉 Achievement Card Generated!</h3>
+      <p class="muted">Right-click the image below to copy or save it to share on LinkedIn, Twitter, or with friends.</p>
+      <div class="canvas-preview mt-4">
+        <img id="share-card-img" alt="SpeedRead Stats Achievement Card" />
+      </div>
+      <div class="modal-actions mt-4">
+        <button class="btn btn-secondary" id="btn-close-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JSON-LD FAQ Schema in Head is handled dynamically, let's inject it via Layout or standard schema tags -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is RSVP Speed Reading?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "RSVP stands for Rapid Serial Visual Presentation. It is a visual reading technology that flashes single words sequentially on a static point on the screen. This allows you to read without moving your eyes horizontally, eliminating eye muscle fatigue and significantly increasing reading speeds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does Bionic Reading work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Bionic Reading highlights the first few characters of each word in bold, creating an anchor point for your eyes. Your brain instantly identifies the word based on these letters and automatically completes the rest, speeding up sentence transition and scanning speeds."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are my PDF and EPUB files kept private?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server."
+          }
+        }
+      ]
+    }
+  </script>
+
+  <!-- Core JavaScript Script Loader & App Logic -->
+  <script is:inline>
+    // State management
+    const state = {
+      text: "",
+      words: [],
+      wordObjects: [],
+      currentIndex: 0,
+      wpm: 300,
+      isPlaying: false,
+      mode: 'rsvp', // rsvp, bionic, standard
+      theme: 'light',
+      font: 'sans',
+      fontSize: 24,
+      ttsActive: false,
+      timer: null,
+      ttsUtterance: null,
+      isPremium: false,
+      stats: {
+        wordsRead: 0,
+        timeSpent: 0,
+        streak: 0,
+        lastReadDate: ""
+      }
+    };
+
+    const applyPremiumUI = () => {
+      if (state.isPremium) {
+        // Hide all Google AdSense slots completely
+        document.querySelectorAll('.ads-section').forEach(el => el.classList.add('hidden'));
+        
+        // Disable purchase controls
+        const buyBtn = document.getElementById('btn-buy-premium');
+        if (buyBtn) {
+          buyBtn.textContent = "⭐⭐ Premium Unlocked ⭐⭐";
+          buyBtn.disabled = true;
+          buyBtn.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+        }
+        
+        const pricingCard = document.querySelector('.pricing-card');
+        if (pricingCard) {
+          const tag = pricingCard.querySelector('.pricing-tag');
+          if (tag) {
+            tag.textContent = "Active Member";
+            tag.style.backgroundColor = "#10b981";
+          }
+        }
+      }
+    };
+
+    // Load initial states from localStorage
+    const loadState = () => {
+      state.wpm = parseInt(localStorage.getItem('wpm') || '300');
+      state.theme = localStorage.getItem('theme') || 'light';
+      state.font = localStorage.getItem('font') || 'sans';
+      state.fontSize = parseInt(localStorage.getItem('fontSize') || '24');
+      state.isPremium = localStorage.getItem('is_premium') === 'true';
+      
+      const statsJson = localStorage.getItem('stats');
+      if (statsJson) {
+        state.stats = JSON.parse(statsJson);
+      } else {
+        state.stats = { wordsRead: 0, timeSpent: 0, streak: 0, lastReadDate: "" };
+      }
+      
+      // Update UI components
+      document.getElementById('slider-wpm').value = state.wpm;
+      document.getElementById('wpm-display').textContent = state.wpm;
+      
+      document.getElementById('slider-font-size').value = state.fontSize;
+      document.getElementById('font-size-display').textContent = state.fontSize;
+      
+      document.getElementById('select-font').value = state.font;
+      
+      updateStatsUI();
+      applyPremiumUI();
+    };
+
+    const updateStatsUI = () => {
+      document.getElementById('stats-words').textContent = state.stats.wordsRead.toLocaleString();
+      document.getElementById('stats-time').textContent = Math.round(state.stats.timeSpent) + 'm';
+      
+      // Traditional reading speed is 200 WPM
+      // SpeedRead saves time = (Words Read / 200) - (Words Read / RSVP WPM)
+      const traditionalTime = state.stats.wordsRead / 200;
+      const speedreadTime = state.stats.timeSpent; // actual reading time
+      const timeSaved = Math.max(0, traditionalTime - speedreadTime);
+      document.getElementById('stats-saved').textContent = Math.round(timeSaved) + 'm';
+      
+      // Validate streak
+      const today = new Date().toDateString();
+      if (state.stats.lastReadDate === today) {
+        // Already read today, streak is valid
+      } else {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        if (state.stats.lastReadDate === yesterday.toDateString()) {
+          // Read yesterday, streak is valid
+        } else if (state.stats.lastReadDate !== "") {
+          // Broke streak
+          state.stats.streak = 0;
+        }
+      }
+      document.getElementById('stats-streak').textContent = state.stats.streak;
+    };
+
+    const saveStats = () => {
+      localStorage.setItem('stats', JSON.stringify(state.stats));
+      updateStatsUI();
+    };
+
+    // Calculate ORP character index
+    const getOrpIndex = (word) => {
+      const len = word.length;
+      if (len <= 1) return 0;
+      if (len <= 5) return 1;
+      if (len <= 9) return 2;
+      if (len <= 13) return 3;
+      return 4;
+    };
+
+    // Parse text to word mappings with coordinate tracking
+    const parseText = (textVal) => {
+      state.text = textVal;
+      state.words = textVal.trim().split(/\s+/).filter(w => w.length > 0);
+      
+      state.wordObjects = [];
+      const wordRegex = /\S+/g;
+      let match;
+      while ((match = wordRegex.exec(textVal)) !== null) {
+        state.wordObjects.push({
+          word: match[0],
+          startIndex: match.index,
+          endIndex: match.index + match[0].length
+        });
+      }
+      state.currentIndex = 0;
+    };
+
+    // Display current RSVP word
+    const renderRSVPWord = () => {
+      if (state.currentIndex >= state.words.length) {
+        pauseReader();
+        state.currentIndex = state.words.length - 1;
+        return;
+      }
+      const word = state.words[state.currentIndex];
+      if (!word) return;
+
+      const orpIdx = getOrpIndex(word);
+      const left = word.substring(0, orpIdx);
+      const orp = word.charAt(orpIdx);
+      const right = word.substring(orpIdx + 1);
+
+      // Render segments
+      document.getElementById('word-left').textContent = left;
+      document.getElementById('word-orp').textContent = orp;
+      document.getElementById('word-right').textContent = right;
+
+      // Update progress sliders
+      const percentage = Math.round((state.currentIndex / Math.max(1, state.words.length - 1)) * 100);
+      document.getElementById('rsvp-progress').style.width = percentage + '%';
+      document.getElementById('slider-progress').value = percentage;
+      document.getElementById('reading-percentage').textContent = `Word ${state.currentIndex + 1} / ${state.words.length} (${percentage}%)`;
+      
+      // Est. remaining time
+      const wordsLeft = state.words.length - state.currentIndex;
+      const minLeft = Math.ceil(wordsLeft / state.wpm);
+      document.getElementById('reading-time-left').textContent = `${minLeft} min remaining`;
+    };
+
+    let rsvpExpectedTime = null;
+
+    // Main RSVP playback loop
+    const playRSVP = () => {
+      if (state.currentIndex >= state.words.length) {
+        state.currentIndex = 0;
+      }
+      state.isPlaying = true;
+      document.getElementById('btn-rsvp-play').textContent = "⏸ Pause";
+      rsvpExpectedTime = null;
+
+      if (state.ttsActive) {
+        speakWithTTS();
+      } else {
+        runRSVPTimer();
+      }
+
+      // Record streak activity
+      const today = new Date().toDateString();
+      if (state.stats.lastReadDate !== today) {
+        if (state.stats.lastReadDate === new Date(Date.now() - 86400000).toDateString()) {
+          state.stats.streak += 1;
+        } else if (state.stats.streak === 0) {
+          state.stats.streak = 1;
+        }
+        state.stats.lastReadDate = today;
+        saveStats();
+      }
+    };
+
+    const runRSVPTimer = () => {
+      if (!state.isPlaying) return;
+
+      if (state.currentIndex >= state.words.length) {
+        pauseReader();
+        state.currentIndex = state.words.length - 1;
+        saveStats();
+        return;
+      }
+
+      const word = state.words[state.currentIndex];
+      const baseDelay = (60 / state.wpm) * 1000;
+      
+      // Intelligent pause delay mapping for punctuation
+      let delay = baseDelay;
+      if (word) {
+        if (/[.!?]$/.test(word)) delay = baseDelay * 1.8;
+        else if (/[,;:]$/.test(word)) delay = baseDelay * 1.3;
+      }
+
+      // Record reading stats in memory
+      state.stats.wordsRead += 1;
+      state.stats.timeSpent += (delay / 60000); // convert delay to fractional minutes
+      
+      // Save stats to disk only every 50 words to prevent I/O blocking
+      if (state.stats.wordsRead % 50 === 0) {
+        saveStats();
+      }
+
+      renderRSVPWord();
+      state.currentIndex++;
+
+      // Apply drift correction to maintain precise frame schedules at 1000 WPM
+      if (rsvpExpectedTime === null) {
+        rsvpExpectedTime = Date.now();
+      }
+      rsvpExpectedTime += delay;
+      const drift = Date.now() - rsvpExpectedTime;
+      const nextDelay = Math.max(0, delay - drift);
+
+      state.timer = setTimeout(runRSVPTimer, nextDelay);
+    };
+
+    const pauseReader = () => {
+      state.isPlaying = false;
+      document.getElementById('btn-rsvp-play').textContent = "▶ Play";
+      clearTimeout(state.timer);
+      rsvpExpectedTime = null;
+      if (window.speechSynthesis) {
+        window.speechSynthesis.cancel();
+      }
+      // Save stats immediately on pause
+      saveStats();
+    };
+
+    // Text-to-Speech Synchronization using Web Speech API
+    const speakWithTTS = () => {
+      if (!window.speechSynthesis) {
+        alert("Text to speech is not supported in this browser.");
+        return;
+      }
+      window.speechSynthesis.cancel();
+
+      const startIndexOffset = state.wordObjects[state.currentIndex]?.startIndex || 0;
+      // CRITICAL: Slice directly from original text to keep word character offsets perfectly aligned
+      const remainingText = state.text.slice(startIndexOffset);
+
+      state.ttsUtterance = new SpeechSynthesisUtterance(remainingText);
+      state.ttsUtterance.rate = Math.min(3.0, Math.max(0.5, state.wpm / 150)); // Map WPM to speech rate (standard is ~150 WPM)
+      state.ttsUtterance.pitch = parseFloat(document.getElementById('slider-pitch').value || '1.0');
+
+      // Set chosen voice from selection dropdown
+      const selectedVoiceName = document.getElementById('select-voice').value;
+      const voices = window.speechSynthesis.getVoices();
+      if (selectedVoiceName && voices.length > 0) {
+        state.ttsUtterance.voice = voices.find(v => v.name === selectedVoiceName);
+      } else if (voices.length > 0) {
+        // Prioritize English neural/natural/online voices for a realistic human feel
+        const neuralVoice = voices.find(v => v.lang.startsWith('en') && 
+          (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Online') || v.localService === false)
+        );
+        state.ttsUtterance.voice = neuralVoice || voices.find(v => v.lang.startsWith('en')) || voices[0];
+      }
+
+      state.ttsUtterance.onboundary = (event) => {
+        if (event.name === 'word' && state.isPlaying) {
+          const charIndex = event.charIndex + startIndexOffset;
+          
+          // Find matching word based on character coordinates
+          let matchedIdx = -1;
+          for (let i = 0; i < state.wordObjects.length; i++) {
+            const w = state.wordObjects[i];
+            if (charIndex >= w.startIndex && charIndex < w.endIndex) {
+              matchedIdx = i;
+              break;
+            }
+          }
+          
+          // Fallback: if charIndex falls on space/punctuation, align to the word immediately preceding it
+          if (matchedIdx === -1) {
+            matchedIdx = state.wordObjects.findIndex(w => w.startIndex > charIndex) - 1;
+          }
+
+          if (matchedIdx !== -1 && matchedIdx !== state.currentIndex) {
+            state.currentIndex = matchedIdx;
+            
+            // Record reading stats (in-memory)
+            state.stats.wordsRead += 1;
+            state.stats.timeSpent += (60 / state.wpm) / 60;
+            
+            if (state.stats.wordsRead % 50 === 0) {
+              saveStats();
+            }
+            
+            renderRSVPWord();
+          }
+        }
+      };
+
+      state.ttsUtterance.onend = () => {
+        pauseReader();
+        state.currentIndex = state.words.length;
+        saveStats();
+      };
+
+      state.ttsUtterance.onerror = (e) => {
+        console.error("TTS speech error", e);
+        pauseReader();
+      };
+
+      window.speechSynthesis.speak(state.ttsUtterance);
+    };
+
+    // Render Bionic Reading format
+    const renderBionicText = () => {
+      const formatted = state.words.map(word => {
+        if (word.length <= 1) return word;
+        let fixLen = Math.ceil(word.length * 0.4);
+        if (word.length === 3) fixLen = 2;
+        const fixPart = word.slice(0, fixLen);
+        const sacPart = word.slice(fixLen);
+        return `<strong class="bionic-fixation">${fixPart}</strong><span class="bionic-saccade">${sacPart}</span>`;
+      }).join(' ');
+      
+      document.getElementById('bionic-text-view').innerHTML = formatted;
+    };
+
+    // Render Standard Reader highlighted sentences
+    const renderStandardText = () => {
+      // Split text by sentences
+      const sentences = state.text.match(/[^.!?]+[.!?]+(\s|$)/g) || [state.text];
+      const html = sentences.map((sentence, idx) => {
+        return `<span class="reader-sentence" data-sentence-index="${idx}">${sentence}</span>`;
+      }).join('');
+      
+      const view = document.getElementById('standard-text-view');
+      view.innerHTML = html;
+
+      // Click to jump logic
+      view.querySelectorAll('.reader-sentence').forEach(el => {
+        el.addEventListener('click', (e) => {
+          view.querySelectorAll('.reader-sentence').forEach(s => s.classList.remove('active'));
+          el.classList.add('active');
+          
+          // Map sentence jump back to RSVP word index
+          const sText = el.textContent.trim().split(/\s+/)[0];
+          const matchedWordIdx = state.words.findIndex(w => w.startsWith(sText));
+          if (matchedWordIdx !== -1) {
+            state.currentIndex = matchedWordIdx;
+            renderRSVPWord();
+          }
+        });
+      });
+    };
+
+    // Setup active mode panes
+    const setMode = (modeName) => {
+      state.mode = modeName;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === modeName);
+      });
+
+      document.getElementById('rsvp-pane').classList.toggle('hidden', modeName !== 'rsvp');
+      document.getElementById('bionic-pane').classList.toggle('hidden', modeName !== 'bionic');
+      document.getElementById('standard-pane').classList.toggle('hidden', modeName !== 'standard');
+
+      if (modeName === 'bionic') {
+        renderBionicText();
+      } else if (modeName === 'standard') {
+        renderStandardText();
+      }
+    };
+
+    // Lazy load libraries client-side on demand
+    const loadScript = (url) => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = url;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+    };
+
+    let isJSZipLoaded = false;
+    let isPDFJSLoaded = false;
+    let isTesseractLoaded = false;
+
+    // Load PDF parser
+    const handlePDFUpload = async (file) => {
+      if (!isPDFJSLoaded) {
+        document.getElementById('file-status').textContent = "Downloading PDF parser...";
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        isPDFJSLoaded = true;
+      }
+
+      document.getElementById('file-status').textContent = "Parsing PDF text content...";
+      try {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          const typedarray = new Uint8Array(e.target.result);
+          const pdf = await pdfjsLib.getDocument(typedarray).promise;
+          let fullText = '';
+          const maxPages = Math.min(200, pdf.numPages); // Soft-cap page lengths to prevent RAM crash
+          
+          for (let i = 1; i <= maxPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + '\n\n';
+            
+            // Progress tracker
+            const percent = Math.round((i / maxPages) * 100);
+            document.getElementById('upload-progress-bar').style.width = percent + '%';
+          }
+          
+          initReaderSession(fullText);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (err) {
+        alert("Failed to parse PDF document.");
+        console.error(err);
+      }
+    };
+
+    // Load EPUB parser
+    const handleEPUBUpload = async (file) => {
+      if (!isJSZipLoaded) {
+        document.getElementById('file-status').textContent = "Downloading EPUB decompression parser...";
+        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js');
+        isJSZipLoaded = true;
+      }
+
+      document.getElementById('file-status').textContent = "Extracting book pages...";
+      try {
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          const zip = await JSZip.loadAsync(e.target.result);
+          let htmlFiles = [];
+          zip.forEach((path, zFile) => {
+            if (path.endsWith('.html') || path.endsWith('.xhtml')) {
+              htmlFiles.push(zFile);
+            }
+          });
+
+          // Order logically
+          htmlFiles.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true}));
+
+          let fullText = '';
+          for (let i = 0; i < htmlFiles.length; i++) {
+            const content = await htmlFiles[i].async('text');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(content, 'text/html');
+            doc.querySelectorAll('script, style').forEach(el => el.remove());
+            fullText += doc.body.innerText + '\n\n';
+            
+            const percent = Math.round((i / htmlFiles.length) * 100);
+            document.getElementById('upload-progress-bar').style.width = percent + '%';
+          }
+
+          initReaderSession(fullText);
+        };
+        reader.readAsArrayBuffer(file);
+      } catch (err) {
+        alert("Failed to decompress and parse EPUB book.");
+        console.error(err);
+      }
+    };
+
+    // OCR engine handler
+    const handleOCRUpload = async (file) => {
+      document.getElementById('ocr-progress').classList.remove('hidden');
+      document.getElementById('ocr-progress-bar').style.width = '10%';
+
+      if (!isTesseractLoaded) {
+        document.getElementById('ocr-status').textContent = "Downloading Tesseract OCR Engine...";
+        await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js');
+        isTesseractLoaded = true;
+      }
+
+      document.getElementById('ocr-status').textContent = "Extracting text from image locally...";
+      document.getElementById('ocr-progress-bar').style.width = '30%';
+
+      try {
+        const worker = await Tesseract.createWorker('eng');
+        document.getElementById('ocr-progress-bar').style.width = '50%';
+        const ret = await worker.recognize(file);
+        document.getElementById('ocr-progress-bar').style.width = '90%';
+        
+        const extractedText = ret.data.text;
+        await worker.terminate();
+
+        document.getElementById('ocr-progress-bar').style.width = '100%';
+        if (extractedText.trim().length === 0) {
+          alert("Could not identify any text in this image.");
+          document.getElementById('ocr-progress').classList.add('hidden');
+          return;
+        }
+
+        initReaderSession(extractedText);
+      } catch (err) {
+        alert("OCR parsing failed.");
+        console.error(err);
+        document.getElementById('ocr-progress').classList.add('hidden');
+      }
+    };
+
+    // Load parsed text into reader session
+    const initReaderSession = (text) => {
+      if (!text || text.trim().length === 0) {
+        alert("No valid text extracted.");
+        return;
+      }
+      
+      // Enforce free tier limits: 3000 words limit on uploads
+      const tempWords = text.trim().split(/\s+/);
+      if (tempWords.length > 3000 && !state.isPremium) {
+        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Premium Lifetime ($9.00 one-time) to read unlimited length books and unlock a completely ad-free workspace!`);
+        if (upgrade) {
+          setTimeout(() => {
+            const pricing = document.querySelector('.pricing-card');
+            if (pricing) {
+              pricing.scrollIntoView({ behavior: 'smooth' });
+              pricing.style.outline = "3px solid var(--color-primary)";
+              pricing.style.outlineOffset = "4px";
+              setTimeout(() => {
+                pricing.style.outline = "none";
+              }, 4000);
+            }
+          }, 200);
+        }
+        return;
+      }
+      
+      parseText(text);
+      
+      // Reset reader panels
+      const readerScreen = document.getElementById('reader-screen');
+      readerScreen.classList.remove('hidden');
+      setMode('rsvp');
+      renderRSVPWord();
+
+      // Scroll smoothly to the reading card
+      readerScreen.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    // Clean reader closure
+    const closeReaderSession = () => {
+      pauseReader();
+      document.getElementById('reader-screen').classList.add('hidden');
+    };
+
+    const populateVoices = () => {
+      if (!window.speechSynthesis) return;
+      
+      const voiceSelect = document.getElementById('select-voice');
+      if (!voiceSelect) return;
+      
+      // Clear existing options
+      voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
+      
+      const voices = window.speechSynthesis.getVoices();
+      voices.forEach(voice => {
+        const option = document.createElement('option');
+        option.value = voice.name;
+        option.textContent = `${voice.name} (${voice.lang})`;
+        voiceSelect.appendChild(option);
+      });
+    };
+
+    if (window.speechSynthesis) {
+      window.speechSynthesis.onvoiceschanged = populateVoices;
+    }
+
+    // ---------------- EVENT LIFECYCLES ----------------
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      populateVoices();
+
+      // Navigation tabs trigger
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+          
+          btn.classList.add('active');
+          document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
+        });
+      });
+
+      // Demo button loader
+      document.getElementById('btn-demo').addEventListener('click', () => {
+        const demo = "Rapid Serial Visual Presentation (RSVP) is a reading technique that flashes words in a single location on the screen. By removing horizontal eye movements, readers can quickly scan literature and dramatically decrease strain. Bionic Reading bold highlights the prefix structure of letters, guiding your focus down lines seamlessly. Synced Audio combines with RSVP to form a multi-channel learning experience, ensuring high focus at faster speeds.";
+        document.getElementById('text-input').value = demo;
+      });
+
+      // Load pasted text
+      document.getElementById('btn-load-paste').addEventListener('click', () => {
+        const pasteVal = document.getElementById('text-input').value;
+        if (!pasteVal.trim()) {
+          alert("Please paste some text to begin.");
+          return;
+        }
+        initReaderSession(pasteVal);
+      });
+
+      // Close button
+      document.getElementById('btn-close-reader').addEventListener('click', closeReaderSession);
+
+      // Mode switch
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          setMode(btn.dataset.mode);
+        });
+      });
+
+      // Playback buttons
+      const playBtn = document.getElementById('btn-rsvp-play');
+      playBtn.addEventListener('click', () => {
+        if (state.isPlaying) {
+          pauseReader();
+        } else {
+          playRSVP();
+        }
+      });
+
+      document.getElementById('btn-rsvp-prev').addEventListener('click', () => {
+        pauseReader();
+        state.currentIndex = Math.max(0, state.currentIndex - 2);
+        renderRSVPWord();
+      });
+
+      document.getElementById('btn-rsvp-next').addEventListener('click', () => {
+        pauseReader();
+        renderRSVPWord();
+        state.currentIndex++;
+      });
+
+      // TTS audio toggler
+      const ttsBtn = document.getElementById('btn-rsvp-tts');
+      ttsBtn.addEventListener('click', () => {
+        state.ttsActive = !state.ttsActive;
+        ttsBtn.textContent = state.ttsActive ? "🔊 Audio Sync: On" : "🔊 Audio Sync: Off";
+        ttsBtn.classList.toggle('active', state.ttsActive);
+        if (state.isPlaying) {
+          pauseReader();
+          playRSVP();
+        }
+      });
+
+      // Fullscreen mode toggler
+      const fsBtn = document.getElementById('btn-fullscreen');
+      fsBtn.addEventListener('click', () => {
+        const container = document.querySelector('.rsvp-word-container');
+        if (!document.fullscreenElement) {
+          container.requestFullscreen().catch(err => {
+            alert(`Error transitioning to fullscreen: ${err.message}`);
+          });
+        } else {
+          document.exitFullscreen();
+        }
+      });
+
+      // WPM Slider handler
+      const wpmSlider = document.getElementById('slider-wpm');
+      wpmSlider.addEventListener('input', (e) => {
+        state.wpm = parseInt(e.target.value);
+        document.getElementById('wpm-display').textContent = state.wpm;
+        localStorage.setItem('wpm', state.wpm.toString());
+        if (state.isPlaying && state.ttsActive) {
+          // Restart speech to adjust pitch/rate changes
+          pauseReader();
+          playRSVP();
+        }
+      });
+
+      // Voice Selector handler
+      document.getElementById('select-voice').addEventListener('change', () => {
+        if (state.isPlaying && state.ttsActive) {
+          pauseReader();
+          playRSVP();
+        }
+      });
+
+      // Pitch Slider handler
+      const pitchSlider = document.getElementById('slider-pitch');
+      pitchSlider.addEventListener('input', (e) => {
+        const pitch = parseFloat(e.target.value);
+        document.getElementById('pitch-display').textContent = pitch.toFixed(1);
+        if (state.isPlaying && state.ttsActive) {
+          pauseReader();
+          playRSVP();
+        }
+      });
+
+      // Find and Replace Action
+      document.getElementById('btn-run-replace').addEventListener('click', () => {
+        const findVal = document.getElementById('input-find').value.trim();
+        const replaceVal = document.getElementById('input-replace').value;
+        if (!findVal) return alert("Please enter text to find.");
+        
+        const textarea = document.getElementById('text-input');
+        const originalText = textarea.value;
+        // Escape regex special characters for safety literal replacement
+        const escapedFind = findVal.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+        const regex = new RegExp(escapedFind, 'g');
+        const cleanText = originalText.replace(regex, replaceVal);
+        
+        textarea.value = cleanText;
+        alert(`Replaced all occurrences of "${findVal}" with "${replaceVal}"!`);
+      });
+
+      // Font slider handler
+      const sizeSlider = document.getElementById('slider-font-size');
+      sizeSlider.addEventListener('input', (e) => {
+        state.fontSize = parseInt(e.target.value);
+        document.getElementById('font-size-display').textContent = state.fontSize;
+        document.querySelector('.rsvp-word-container').style.fontSize = state.fontSize / 6 + 'rem';
+        localStorage.setItem('fontSize', state.fontSize.toString());
+      });
+
+      // Font Family Selector
+      const fontSelect = document.getElementById('select-font');
+      fontSelect.addEventListener('change', (e) => {
+        state.font = e.target.value;
+        document.documentElement.setAttribute('data-font', state.font);
+        localStorage.setItem('font', state.font);
+      });
+
+      // Theme badge selectors
+      document.querySelectorAll('.theme-badge').forEach(badge => {
+        badge.addEventListener('click', () => {
+          state.theme = badge.dataset.theme;
+          document.documentElement.setAttribute('data-theme', state.theme);
+          localStorage.setItem('theme', state.theme);
+        });
+      });
+
+      // Reading Position slider
+      const progressSlider = document.getElementById('slider-progress');
+      progressSlider.addEventListener('input', (e) => {
+        pauseReader();
+        const percent = parseInt(e.target.value);
+        state.currentIndex = Math.round((percent / 100) * (state.words.length - 1));
+        renderRSVPWord();
+      });
+
+      // File drag-and-drop detection
+      const dropzone = document.getElementById('file-dropzone');
+      dropzone.addEventListener('click', () => document.getElementById('file-input').click());
+      
+      const fileInput = document.getElementById('file-input');
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          document.getElementById('file-progress').classList.remove('hidden');
+          if (file.name.endsWith('.pdf')) {
+            handlePDFUpload(file);
+          } else if (file.name.endsWith('.epub')) {
+            handleEPUBUpload(file);
+          } else {
+            // Text file
+            const reader = new FileReader();
+            reader.onload = (event) => initReaderSession(event.target.result);
+            reader.readAsText(file);
+          }
+        }
+      });
+
+      // Image OCR Drag and drop
+      const ocrZone = document.getElementById('ocr-dropzone');
+      ocrZone.addEventListener('click', () => document.getElementById('ocr-input').click());
+      
+      const ocrInput = document.getElementById('ocr-input');
+      ocrInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) handleOCRUpload(file);
+      });
+
+      // URL parser text loader
+      document.getElementById('btn-load-url').addEventListener('click', async () => {
+        const url = document.getElementById('url-input').value;
+        if (!url) return alert("Please enter a valid URL.");
+        
+        document.getElementById('btn-load-url').textContent = "Extracting...";
+        try {
+          // Uses standard public cors proxy or reader API fallback
+          const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
+          if (!response.ok) throw new Error("CORS retrieval failed.");
+          const json = await response.json();
+          
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(json.contents, 'text/html');
+          
+          // Remove noise script markup
+          doc.querySelectorAll('script, style, nav, footer, header, form').forEach(el => el.remove());
+          
+          const title = doc.querySelector('h1')?.innerText || "Web Article";
+          const paragraphs = Array.from(doc.querySelectorAll('p, h2, h3'))
+            .map(p => p.innerText.trim())
+            .filter(t => t.length > 30) // Filter layout words
+            .join('\n\n');
+
+          document.getElementById('btn-load-url').textContent = "Extract Text";
+          if (paragraphs.length < 100) {
+            alert("Could not extract clean body content. Copy pasting is recommended.");
+            return;
+          }
+          initReaderSession(`${title}\n\n${paragraphs}`);
+        } catch (err) {
+          alert("Failed to load webpage content client-side.");
+          document.getElementById('btn-load-url').textContent = "Extract Text";
+          console.error(err);
+        }
+      });
+
+      // Gemini AI Client-Side Integrations
+      document.getElementById('btn-save-key').addEventListener('click', () => {
+        const key = document.getElementById('ai-key').value;
+        if (key) {
+          localStorage.setItem('gemini_key', key);
+          alert("Gemini key saved locally!");
+        }
+      });
+      
+      const getGeminiKey = () => localStorage.getItem('gemini_key') || "";
+      document.getElementById('ai-key').value = getGeminiKey();
+
+      // Helper to ensure text is loaded before running AI operations
+      const ensureTextLoaded = () => {
+        if (!state.text || state.text.trim() === '') {
+          const pasteVal = document.getElementById('text-input').value;
+          if (pasteVal.trim()) {
+            parseText(pasteVal);
+            return true;
+          }
+          alert("Please paste text or upload a file first!");
+          return false;
+        }
+        return true;
+      };
+
+      document.getElementById('btn-ai-summary').addEventListener('click', async () => {
+        if (!ensureTextLoaded()) return;
+        const key = getGeminiKey();
+        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        
+        const summaryBtn = document.getElementById('btn-ai-summary');
+        summaryBtn.textContent = "Summarizing...";
+        
+        try {
+          // Slice top content to stay within standard limits
+          const textChunk = state.text.slice(0, 8000); 
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ text: `Generate a concise speed-reading summary with bullet points for this text:\n\n${textChunk}` }]
+              }]
+            })
+          });
+          
+          const data = await response.json();
+          const summaryText = data.candidates[0].content.parts[0].text;
+          
+          document.getElementById('ai-response-box').classList.remove('hidden');
+          document.getElementById('ai-response-title').textContent = "⚡ AI Summary";
+          document.getElementById('ai-summary-view').classList.remove('hidden');
+          document.getElementById('ai-chat-view').classList.add('hidden');
+          document.getElementById('ai-response-text').innerText = summaryText;
+          summaryBtn.textContent = "✨ Generate Summary";
+        } catch (err) {
+          alert("AI Summarization failed. Verify API key.");
+          summaryBtn.textContent = "✨ Generate Summary";
+          console.error(err);
+        }
+      });
+
+      // Gemini Document Chat integration
+      document.getElementById('btn-ai-chat').addEventListener('click', () => {
+        if (!ensureTextLoaded()) return;
+        const key = getGeminiKey();
+        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        
+        document.getElementById('ai-response-box').classList.remove('hidden');
+        document.getElementById('ai-response-title').textContent = "💬 Chat with Document";
+        document.getElementById('ai-summary-view').classList.add('hidden');
+        document.getElementById('ai-chat-view').classList.remove('hidden');
+        
+        // Greeting
+        const chatHistory = document.getElementById('chat-history');
+        chatHistory.innerHTML = `<div class="chat-message assistant">I've parsed your document (${state.words.length} words). Ask me any questions, and I will extract the answers for you!</div>`;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+      });
+
+      document.getElementById('btn-send-chat').addEventListener('click', async () => {
+        const key = getGeminiKey();
+        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        
+        const inputEl = document.getElementById('chat-user-input');
+        const query = inputEl.value.trim();
+        if (!query) return;
+        
+        inputEl.value = '';
+        
+        const chatHistory = document.getElementById('chat-history');
+        // Escape HTML to prevent basic XSS
+        const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        
+        chatHistory.innerHTML += `<div class="chat-message user">${escapeHtml(query)}</div>`;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        const loadingId = 'chat-loading-' + Date.now();
+        chatHistory.innerHTML += `<div class="chat-message assistant" id="${loadingId}">Typing...</div>`;
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        try {
+          const docTextSlice = state.text.slice(0, 15000); 
+          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{ 
+                  text: `You are an AI speed reading assistant. The user has loaded this document in their reader:\n\n---\n${docTextSlice}\n---\n\nAnswer the user's question accurately based on the document text. Keep your answer clear and concise (under 3-4 sentences).\n\nUser Question: ${query}`
+                }]
+              }]
+            })
+          });
+          
+          const data = await response.json();
+          const reply = data.candidates[0].content.parts[0].text;
+          
+          const loadingEl = document.getElementById(loadingId);
+          if (loadingEl) loadingEl.remove();
+          
+          chatHistory.innerHTML += `<div class="chat-message assistant">${escapeHtml(reply)}</div>`;
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+        } catch (err) {
+          const loadingEl = document.getElementById(loadingId);
+          if (loadingEl) loadingEl.remove();
+          
+          chatHistory.innerHTML += `<div class="chat-message assistant error">Failed to get response from Gemini. Check your API key.</div>`;
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+          console.error(err);
+        }
+      });
+
+      document.getElementById('chat-user-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          document.getElementById('btn-send-chat').click();
+        }
+      });
+
+      document.getElementById('btn-close-ai-box').addEventListener('click', () => {
+        document.getElementById('ai-response-box').classList.add('hidden');
+      });
+
+      // Keyboard navigation rules
+      document.addEventListener('keydown', (e) => {
+        // Skip shortcuts if writing in text inputs
+        if (document.activeElement.tagName === 'TEXTAREA' || document.activeElement.tagName === 'INPUT') {
+          return;
+        }
+
+        // Spacebar play-pause toggle
+        if (e.code === 'Space') {
+          e.preventDefault();
+          if (state.isPlaying) pauseReader();
+          else playRSVP();
+        }
+        
+        // Escape Close Reader
+        if (e.code === 'Escape' && !document.getElementById('reader-screen').classList.contains('hidden')) {
+          closeReaderSession();
+        }
+
+        // Speeds Adjusters (ArrowUp/Down)
+        if (e.code === 'ArrowUp') {
+          e.preventDefault();
+          state.wpm = Math.min(1000, state.wpm + 50);
+          document.getElementById('slider-wpm').value = state.wpm;
+          document.getElementById('wpm-display').textContent = state.wpm;
+          localStorage.setItem('wpm', state.wpm.toString());
+        }
+        if (e.code === 'ArrowDown') {
+          e.preventDefault();
+          state.wpm = Math.max(100, state.wpm - 50);
+          document.getElementById('slider-wpm').value = state.wpm;
+          document.getElementById('wpm-display').textContent = state.wpm;
+          localStorage.setItem('wpm', state.wpm.toString());
+        }
+
+        // Timeline jumps (ArrowLeft/Right)
+        if (e.code === 'ArrowLeft') {
+          pauseReader();
+          state.currentIndex = Math.max(0, state.currentIndex - 5);
+          renderRSVPWord();
+        }
+        if (e.code === 'ArrowRight') {
+          pauseReader();
+          renderRSVPWord();
+          state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 5);
+        }
+
+        // Theme shortcuts cycle: D key
+        if (e.key.toLowerCase() === 'd') {
+          const themes = ['light', 'sepia', 'dark', 'amoled'];
+          let currentIdx = themes.indexOf(state.theme);
+          let nextIdx = (currentIdx + 1) % themes.length;
+          state.theme = themes[nextIdx];
+          document.documentElement.setAttribute('data-theme', state.theme);
+          localStorage.setItem('theme', state.theme);
+        }
+      });
+
+      // Canvas share card generation
+      document.getElementById('btn-share-stats').addEventListener('click', () => {
+        const stats = {
+          wordsRead: state.stats.wordsRead,
+          speed: state.wpm,
+          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 200) - state.stats.timeSpent))
+        };
+        
+        const canvas = document.createElement('canvas');
+        canvas.width = 800;
+        canvas.height = 400;
+        const ctx = canvas.getContext('2d');
+
+        // Dark gradient background matching AMOLED Black
+        const grad = ctx.createLinearGradient(0, 0, 800, 400);
+        grad.addColorStop(0, '#000000');
+        grad.addColorStop(0.5, '#0f172a');
+        grad.addColorStop(1, '#1e293b');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, 800, 400);
+
+        // Grid accents
+        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        ctx.lineWidth = 2;
+        for (let i = 0; i < 800; i += 40) {
+          ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 400); ctx.stroke();
+        }
+        for (let j = 0; j < 400; j += 40) {
+          ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(800, j); ctx.stroke();
+        }
+
+        // Accent glowing border lines
+        ctx.strokeStyle = '#2563eb';
+        ctx.lineWidth = 6;
+        ctx.strokeRect(0, 0, 800, 400);
+
+        // Header Title
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '800 40px system-ui, -apple-system, sans-serif';
+        ctx.fillText('⚡ SpeedRead Milestone', 60, 90);
+
+        // Dividers
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(60, 115, 200, 5);
+
+        // Main Stat content
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '600 24px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`Total Words Speed-Read:`, 60, 180);
+        
+        ctx.fillStyle = '#3b82f6';
+        ctx.font = '800 44px system-ui, sans-serif';
+        ctx.fillText(`${stats.wordsRead.toLocaleString()}`, 60, 230);
+
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '600 24px system-ui, sans-serif';
+        ctx.fillText(`Current Speed: ${stats.speed} WPM`, 450, 180);
+        ctx.fillText(`Est. Reading Time Saved: ${stats.timeSaved} mins`, 450, 230);
+
+        // Sub Brand slogan
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 18px system-ui, sans-serif';
+        ctx.fillText('Double your reading speed, eliminate sub-vocalization. speedread-web.com', 60, 340);
+
+        // Output canvas image into preview image element
+        document.getElementById('share-card-img').src = canvas.toDataURL('image/png');
+        document.getElementById('share-modal').classList.remove('hidden');
+      });
+
+      document.getElementById('btn-close-modal').addEventListener('click', () => {
+        document.getElementById('share-modal').classList.add('hidden');
+      });
+      
+      // Pro activation placeholder billing redirect
+      document.getElementById('btn-buy-premium').addEventListener('click', () => {
+        const confirmPay = confirm("Payment Sandbox:\n\nDo you want to simulate a successful one-time Stripe checkout of $9.00 to activate Lifetime Premium?");
+        if (confirmPay) {
+          localStorage.setItem('is_premium', 'true');
+          alert("Payment Successful!\n\nGoogle Ads have been disabled. Word count limits have been lifted. Enjoy your clean, distraction-free speed reading workspace!");
+          window.location.reload();
+        }
+      });
+    });
+  </script>
+
+  <style>
+    /* Styling elements specific to workspace and layout */
+    .app-section {
+      padding-top: 2.5rem;
+    }
+    
+    textarea {
+      width: 100%;
+      height: 250px;
+      padding: 1.25rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      font-family: inherit;
+      font-size: 1rem;
+      resize: vertical;
+      outline: none;
+      transition: all 150ms ease;
+    }
+    textarea:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    }
+    
+    .input-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    
+    .dropzone {
+      border: 2px dashed var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 3rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      background-color: var(--color-bg-subtle);
+      transition: all 150ms ease;
+    }
+    .dropzone:hover {
+      border-color: var(--color-primary);
+      background-color: var(--color-bg-card);
+    }
+    .dropzone-icon {
+      font-size: 3rem;
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .browse-link {
+      color: var(--color-primary);
+      font-weight: 600;
+    }
+    .dropzone-formats {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--color-text-subtle);
+      margin-top: 0.5rem;
+    }
+    
+    .url-input-container {
+      display: flex;
+      gap: 0.75rem;
+    }
+    .url-input-container input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      outline: none;
+      font-size: 0.95rem;
+      transition: all 150ms ease;
+    }
+    .url-input-container input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    }
+    .input-hint {
+      font-size: 0.85rem;
+      color: var(--color-text-subtle);
+      margin-top: 0.5rem;
+    }
+    
+    .ai-config {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .key-input-row {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .key-input-row input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      outline: none;
+      font-size: 0.95rem;
+      transition: all 150ms ease;
+    }
+    .key-input-row input:focus {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px var(--color-primary-shadow);
+    }
+    .api-link {
+      font-size: 0.9rem;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    
+    /* Reader Layouts */
+    .reader-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .mode-switcher {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .mode-btn {
+      flex: 1;
+      background: none;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-subtle);
+      padding: 0.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-radius: var(--radius-md);
+      transition: all 150ms ease;
+    }
+    .mode-btn.active, .mode-btn:hover {
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-color: var(--color-primary);
+    }
+    
+    .rsvp-progress-bar-container {
+      width: 100%;
+      height: 4px;
+      background-color: var(--color-border);
+      border-radius: var(--radius-xs);
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+    .rsvp-progress-bar {
+      height: 100%;
+      background-color: var(--color-primary);
+      width: 0%;
+      transition: width 100ms linear;
+    }
+    
+    .controls-hud {
+      border-top: 1px solid var(--color-border);
+      padding-top: 1.25rem;
+    }
+    .playback-controls {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      align-items: center;
+    }
+    .control-btn {
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      padding: 0.5rem 1rem;
+      border-radius: var(--radius-md);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 150ms ease;
+    }
+    .control-btn:hover {
+      background-color: var(--color-border);
+    }
+    .control-btn.play-btn {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      color: #ffffff;
+      border-color: transparent;
+      padding: 0.75rem 2.25rem;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px var(--color-primary-shadow);
+    }
+    .control-btn.play-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px var(--color-primary-shadow);
+    }
+    .control-btn.active {
+      background-color: var(--color-accent);
+      color: #ffffff;
+      border-color: var(--color-accent);
+    }
+    
+    .tuner-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    @media (min-width: 768px) {
+      .tuner-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .tuner-card {
+      background-color: var(--color-bg-subtle);
+      padding: 0.75rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .tuner-card label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--color-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .tuner-card select {
+      padding: 0.4rem;
+      background-color: var(--color-bg-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    .tuner-hint {
+      font-size: 0.7rem;
+      color: var(--color-text-subtle);
+      margin-top: 0.15rem;
+      line-height: 1.2;
+    }
+    .theme-picker {
+      display: flex;
+      gap: 0.35rem;
+    }
+    .theme-badge {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border);
+      cursor: pointer;
+      font-size: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .theme-badge.light { background-color: #ffffff; color: #000; }
+    .theme-badge.sepia { background-color: #f4ecd8; color: #433422; border-color: #d9cbaf; }
+    .theme-badge.dark { background-color: #0f172a; color: #fff; border-color: #334155; }
+    .theme-badge.amoled { background-color: #000000; color: #fff; border-color: #262626; }
+    
+    .timeline-row {
+      margin-top: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+    .timeline-row input[type="range"] {
+      width: 100%;
+    }
+    .timeline-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--color-text-subtle);
+    }
+    
+    /* Ads styling styling */
+    .ads-section {
+      margin-top: 2.5rem;
+    }
+    .ad-placeholder {
+      padding: 2rem;
+      text-align: center;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text-subtle);
+      border-style: dashed;
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg-subtle);
+    }
+    
+    /* Pricing & Analytics layout */
+    .pricing-analytics-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 768px) {
+      .pricing-analytics-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .dashboard-card, .pricing-card {
+      padding: 2.25rem;
+      border-radius: var(--radius-lg);
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    .stat-box {
+      background-color: var(--color-bg-subtle);
+      padding: 1.25rem 1rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      text-align: center;
+    }
+    .stat-value {
+      display: block;
+      font-size: 2rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: var(--color-primary);
+      margin-bottom: 0.25rem;
+    }
+    .stat-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .pricing-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .premium-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+    }
+    .pricing-tag {
+      position: absolute;
+      top: 1.5rem;
+      right: 1.5rem;
+      background-color: var(--color-accent);
+      color: #ffffff;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius-xs);
+      text-transform: uppercase;
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .price-strike {
+      text-decoration: line-through;
+      color: var(--color-text-subtle);
+      font-size: 1.25rem;
+    }
+    .price-value {
+      font-size: 3rem;
+      font-family: var(--font-display);
+      font-weight: 800;
+      color: var(--color-text);
+      line-height: 1;
+    }
+    .price-term {
+      color: var(--color-text-subtle);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .pricing-features {
+      list-style-type: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+    .pricing-features li::before {
+      content: '✓ ';
+      color: var(--color-primary);
+      font-weight: bold;
+    }
+    
+    /* SEO Content Layout */
+    .seo-layout {
+      max-width: 800px;
+      margin: 0 auto;
+      border-top: 1px solid var(--color-border);
+      padding-top: 3.5rem;
+    }
+    .seo-text h2, .faq-container h2 {
+      margin-top: 2rem;
+      font-size: 1.5rem;
+    }
+    .seo-text p {
+      margin-bottom: 1.25rem;
+      color: var(--color-text-muted);
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--color-border);
+      padding: 1.25rem 0;
+    }
+    .faq-item summary {
+      font-family: var(--font-display);
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      font-size: 1.1rem;
+    }
+    .faq-answer {
+      padding-top: 0.75rem;
+      color: var(--color-text-muted);
+      line-height: 1.7;
+    }
+    
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.6);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      padding: 1rem;
+    }
+    .modal-content {
+      background-color: var(--color-bg-card);
+      border: 1px solid var(--color-border);
+      padding: 2.5rem;
+      border-radius: var(--radius-lg);
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+    }
+    .canvas-preview img {
+      max-width: 100%;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+    
+    .hidden {
+      display: none !important;
+    }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-4 { margin-top: 1rem; }
+    .mt-6 { margin-top: 1.5rem; }
+    .mt-8 { margin-top: 2rem; }
+    .mt-12 { margin-top: 3rem; }
+    .mb-6 { margin-bottom: 1.5rem; }
+    .w-full { width: 100%; }
+    .text-center { text-align: center; }
+    
+    /* Chat & UI Adjustments */
+    .ai-box-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border);
+      padding-bottom: 0.5rem;
+    }
+    .chat-history {
+      max-height: 300px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg-subtle);
+    }
+    .chat-message {
+      padding: 0.6rem 0.9rem;
+      border-radius: var(--radius-md);
+      max-width: 80%;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+    .chat-message.user {
+      align-self: flex-end;
+      background-color: var(--color-primary);
+      color: #ffffff;
+      border-bottom-right-radius: 0.25rem;
+    }
+    .chat-message.assistant {
+      align-self: flex-start;
+      background-color: var(--color-bg-card);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-bottom-left-radius: 0.25rem;
+    }
+    .chat-message.assistant.error {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+    .chat-input-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-input-row input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      outline: none;
+      font-size: 0.9rem;
+      transition: border-color 150ms ease;
+    }
+    .chat-input-row input:focus {
+      border-color: var(--color-primary);
+    }
+    .app-workspace {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Text Cleaning & Find-Replace Tuners */
+    .text-clean-details summary {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      padding: 0.25rem 0;
+      outline: none;
+    }
+    .find-replace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr auto;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .find-replace-grid input {
+      padding: 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-xs);
+      background-color: var(--color-bg-subtle);
+      color: var(--color-text);
+      outline: none;
+      font-size: 0.85rem;
+    }
+  </style>
+</Layout>

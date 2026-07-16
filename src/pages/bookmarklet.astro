@@ -1,0 +1,129 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Web-to-Reader Bookmarklet — SpeedRead";
+const pageDescription = "Install the SpeedRead bookmarklet to instantly import and speed read any web article or news page with a single click from your bookmarks bar.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="bookmarklet-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <h1>⚡ Web-to-Reader Bookmarklet</h1>
+        <p class="intro">
+          SpeedRead includes a browser shortcut called a bookmarklet. It sits in your browser's bookmarks bar, letting you send any webpage's text content directly into our speed-reading engine with a single click.
+        </p>
+
+        <div class="drag-box mt-6">
+          <p class="muted">Drag the button below directly into your bookmarks bar:</p>
+          
+          <a href="javascript:(function(){const%20url=window.location.href;window.open('https://speedread-web.com/?url='+encodeURIComponent(url),'_blank');})();" class="bookmarklet-btn" id="bookmarklet-link">
+            ⚡ SpeedRead
+          </a>
+          
+          <p class="hint mt-4">
+            If your bookmarks bar is hidden, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> (Windows) or <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> (Mac) to show it.
+          </p>
+        </div>
+
+        <div class="instructions mt-8">
+          <h2>How to Use It</h2>
+          <ol>
+            <li>Navigate to any long-form article, news page, or blog post (e.g., Wikipedia, Medium, NYT).</li>
+            <li>Click the **⚡ SpeedRead** bookmark in your bookmarks bar.</li>
+            <li>A new tab will automatically launch with the core text of that article loaded into the speed reader.</li>
+          </ol>
+        </div>
+
+        <div class="faq mt-8">
+          <h2>Frequently Asked Questions</h2>
+          
+          <div class="faq-item">
+            <h3>Does it save or track what I read?</h3>
+            <p class="muted">No. The bookmarklet simply captures the URL of the page you are viewing and opens SpeedRead. All text extraction and reading happen locally inside your browser tab.</p>
+          </div>
+          
+          <div class="faq-item mt-4">
+            <h3>Will it work on paywalled or login pages?</h3>
+            <p class="muted">It uses a client-side CORS extraction mechanism. On sites requiring log-ins or active paywalls, content might be protected. In those scenarios, copy-pasting the text manually into the home page is recommended.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .intro {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+  }
+  .drag-box {
+    background-color: var(--color-bg-subtle);
+    border: 2px dashed var(--color-border);
+    padding: 2rem;
+    border-radius: 0.75rem;
+    text-align: center;
+  }
+  .bookmarklet-btn {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #ffffff;
+    font-weight: 700;
+    border-radius: 0.5rem;
+    cursor: grab;
+    text-decoration: none;
+    box-shadow: var(--shadow-md);
+    transition: transform 150ms ease;
+  }
+  .bookmarklet-btn:hover {
+    transform: scale(1.02);
+    text-decoration: none;
+  }
+  .hint {
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+  }
+  kbd {
+    background-color: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    font-size: 0.8rem;
+    padding: 0.1rem 0.4rem;
+  }
+  .instructions {
+    border-top: 1px solid var(--color-border);
+    padding-top: 2rem;
+  }
+  .instructions h2, .faq h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .instructions ol {
+    padding-left: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--color-text-muted);
+  }
+  .faq {
+    border-top: 1px solid var(--color-border);
+    padding-top: 2rem;
+  }
+  .faq-item h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem;
+  }
+</style>

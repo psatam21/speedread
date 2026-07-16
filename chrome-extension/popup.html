@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        width: 260px;
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 18px;
+        background-color: #0f172a;
+        color: #f8fafc;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+      .icon-glow {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
+        margin-bottom: 12px;
+      }
+      h3 {
+        margin: 0 0 8px 0;
+        font-size: 1.25rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #3b82f6, #f87171);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      p {
+        margin: 0 0 16px 0;
+        font-size: 0.85rem;
+        color: #94a3b8;
+        line-height: 1.4;
+      }
+      .btn {
+        width: 100%;
+        padding: 10px 14px;
+        background-color: #2563eb;
+        color: #ffffff;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 0.9rem;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+        transition: all 150ms ease;
+      }
+      .btn:hover {
+        background-color: #1d4ed8;
+        transform: translateY(-1px);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .footer {
+        margin-top: 14px;
+        font-size: 0.75rem;
+        text-align: center;
+        border-top: 1px solid #1e293b;
+        padding-top: 10px;
+        width: 100%;
+        color: #64748b;
+      }
+      .footer a {
+        color: #3b82f6;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img src="icon.png" class="icon-glow" alt="SpeedRead Logo" />
+      <h3>SpeedRead Sync</h3>
+      <p>Send this page's text directly to your speed reader workspace.</p>
+      <button class="btn" id="btn-read">Speed Read Active Tab 🚀</button>
+      <div class="footer">
+        Powered by <a href="https://speedread-web.com" target="_blank">speedread-web.com</a>
+      </div>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,158 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Contact & Support — SpeedRead";
+const pageDescription = "Get in touch with the SpeedRead team for feedback, billing queries, and bug reports, or support our development with a donation.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="contact-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <h1>✉️ Contact & Support</h1>
+        <p class="intro">
+          We want to make SpeedRead the best reading app on the web. If you have feature requests, found a bug, or have questions about a lifetime premium membership, we are here to help.
+        </p>
+
+        <div class="contact-grid mt-8">
+          
+          <!-- Contact Form Block -->
+          <div class="form-container">
+            <h2>Send a Message</h2>
+            <form action="mailto:support@speedread-web.com" method="GET" class="contact-form">
+              <input type="hidden" name="subject" value="SpeedRead Web App Feedback" />
+              
+              <div class="form-group">
+                <label for="contact-name">Your Name</label>
+                <input type="text" id="contact-name" name="body_name" placeholder="John Doe" required />
+              </div>
+              
+              <div class="form-group mt-4">
+                <label for="contact-msg">Message</label>
+                <textarea id="contact-msg" name="body" placeholder="Describe your request or feedback in detail..." required></textarea>
+              </div>
+              
+              <button type="submit" class="btn btn-primary mt-4 w-full">Send Message (via Email) ✉️</button>
+            </form>
+          </div>
+
+          <!-- Donation/Support Block -->
+          <div class="support-card glass">
+            <h2>☕ Support Our Project</h2>
+            <p class="muted">
+              SpeedRead runs on exactly $0/month server costs, but developing and maintaining these client-side parsers takes significant time. If this tool has saved you time, consider buying us a coffee!
+            </p>
+            <div class="donation-options mt-6">
+              <a href="https://www.buymeacoffee.com/" target="_blank" class="btn btn-secondary w-full donation-btn">
+                ☕ Buy Me a Coffee ($3)
+              </a>
+              <a href="https://paypal.me/" target="_blank" class="btn btn-secondary w-full donation-btn mt-2">
+                💳 Donate via PayPal
+              </a>
+            </div>
+            <div class="contact-details mt-6 pt-6">
+              <h3>General Support</h3>
+              <p class="muted">**support@speedread-web.com**</p>
+              
+              <h3 class="mt-4">Privacy & Data Inquiry</h3>
+              <p class="muted">**privacy@speedread-web.com**</p>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .intro {
+    font-size: 1.1rem;
+    color: var(--color-text-muted);
+  }
+  
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  @media (min-width: 768px) {
+    .contact-grid {
+      grid-template-columns: 1.2fr 1fr;
+    }
+  }
+  
+  .form-container h2, .support-card h2 {
+    font-size: 1.35rem;
+    margin-bottom: 1rem;
+  }
+  
+  .contact-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .contact-form label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+  .contact-form input {
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text);
+    outline: none;
+  }
+  .contact-form textarea {
+    height: 120px;
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-subtle);
+    color: var(--color-text);
+    font-family: inherit;
+    resize: none;
+    outline: none;
+  }
+  .contact-form input:focus, .contact-form textarea:focus {
+    border-color: var(--color-primary);
+  }
+  
+  .support-card {
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    background-color: var(--color-bg-subtle);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+  }
+  .donation-btn {
+    text-decoration: none;
+  }
+  .donation-btn:hover {
+    text-decoration: none;
+  }
+  .contact-details {
+    border-top: 1px solid var(--color-border);
+  }
+  .contact-details h3 {
+    font-size: 0.95rem;
+  }
+  .contact-details p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+  }
+</style>
