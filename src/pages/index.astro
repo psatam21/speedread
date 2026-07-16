@@ -1009,11 +1009,22 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       // Clear existing options
       voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
       
-      const voices = window.speechSynthesis.getVoices();
+      let voices = window.speechSynthesis.getVoices();
+      
+      // Sort voices so neural/natural/online voices come first
+      voices.sort((a, b) => {
+        const isNeuralA = a.name.includes('Natural') || a.name.includes('Neural') || a.name.includes('Google') || a.name.includes('Online') || a.localService === false;
+        const isNeuralB = b.name.includes('Natural') || b.name.includes('Neural') || b.name.includes('Google') || b.name.includes('Online') || b.localService === false;
+        if (isNeuralA && !isNeuralB) return -1;
+        if (!isNeuralA && isNeuralB) return 1;
+        return a.name.localeCompare(b.name);
+      });
+      
       voices.forEach(voice => {
+        const isNeural = voice.name.includes('Natural') || voice.name.includes('Neural') || voice.name.includes('Google') || voice.name.includes('Online') || voice.localService === false;
         const option = document.createElement('option');
         option.value = voice.name;
-        option.textContent = `${voice.name} (${voice.lang})`;
+        option.textContent = isNeural ? `✨ [Neural] ${voice.name} (${voice.lang})` : `${voice.name} (${voice.lang})`;
         voiceSelect.appendChild(option);
       });
     };
