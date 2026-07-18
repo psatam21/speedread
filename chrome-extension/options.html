@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpeedRead Options</title>
+    <link rel="stylesheet" href="popup.css" />
+    <style>
+      body {
+        width: auto;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 24px 16px;
+      }
+      .shell {
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="header">
+        <img src="icons/icon48.png" class="logo" alt="" width="36" height="36" />
+        <div class="header-text">
+          <h1>SpeedRead Options</h1>
+          <p>Advanced · most users leave defaults</p>
+        </div>
+      </header>
+
+      <section class="panel">
+        <h2>Endpoints</h2>
+        <p class="hint">
+          Production defaults point at speedread-web.com. Change only for local development.
+        </p>
+        <label for="api-base">API base (license activate)</label>
+        <input type="url" id="api-base" placeholder="https://speedread-web.com" spellcheck="false" />
+        <label for="app-origin" style="margin-top: 10px">App origin (reader UI)</label>
+        <input type="url" id="app-origin" placeholder="https://speedread-web.com" spellcheck="false" />
+        <div class="row" style="margin-top: 12px">
+          <button type="button" class="btn btn-primary" id="btn-save">Save</button>
+          <button type="button" class="btn btn-secondary" id="btn-reset">Reset defaults</button>
+        </div>
+        <p class="status" id="opt-status" role="status"></p>
+      </section>
+
+      <section class="panel">
+        <h2>Privacy</h2>
+        <p class="hint">
+          Article text is extracted in your browser and opened on the SpeedRead site. License keys stay in
+          extension storage. See
+          <a href="https://speedread-web.com/privacy" target="_blank" rel="noopener">privacy policy</a>.
+        </p>
+      </section>
+    </div>
+    <script src="config.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>

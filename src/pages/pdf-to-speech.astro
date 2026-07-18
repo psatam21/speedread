@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "PDF to Speech Online — Free PDF Reader & TTS | SpeedRead";
+const pageDescription = "Convert PDF text to speech free in your browser. Upload PDF or EPUB, speed-read with RSVP, and narrate with neural TTS. No upload to our servers — client-side parsing.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>PDF to Speech Online — Free PDF Reader &amp; TTS</h1>
+        <p class="lede">
+          Upload a PDF or EPUB, extract text in your browser, then listen with the Web Speech API while words flash in RSVP or display in bionic mode. SpeedRead does not store your files on our servers — parsing runs on-device.
+        </p>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Upload PDF to Read ⚡</a>
+
+        <h2 class="mt-8">How to turn a PDF into speech</h2>
+        <ol class="steps">
+          <li>Open SpeedRead → <strong>Upload Files</strong> → choose a PDF, EPUB, or TXT.</li>
+          <li>Wait for client-side text extraction (pdf.js / JSZip load on demand).</li>
+          <li>Press Play, then enable <strong>Audio Sync</strong> and pick a neural voice in Chrome/Edge.</li>
+          <li>Adjust pitch and WPM; narration rate scales with your reading speed.</li>
+        </ol>
+
+        <h2 class="mt-8">Privacy note</h2>
+        <p>
+          File bytes stay in your browser for PDF/EPUB/OCR. Optional features that leave the device: URL article extraction (server fetch of public pages) and Gemini AI summary/chat (your key or Premium proxy). See the <a href="/privacy">Privacy Policy</a>.
+        </p>
+
+        <h2 class="mt-8">Limits</h2>
+        <ul>
+          <li>Free tier: documents up to 3,000 words in the reader session.</li>
+          <li>Scanned image-only PDFs: use Image OCR on page screenshots.</li>
+          <li>DRM-locked or image-heavy PDFs may extract incomplete text.</li>
+        </ul>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/about">About SpeedRead</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 800px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); }
+  h1 { font-size: 1.85rem; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .btn { text-decoration: none; }
+</style>

@@ -1,0 +1,13 @@
+# Cloudflare Pages project config (deploy: npm run deploy)
+# Bind KV in Dashboard → Workers & Pages → your project → Settings → Functions → KV
+# Or create: npx wrangler kv namespace create LICENSES
+# Then set id below and re-deploy.
+
+name = "speedread"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "dist"
+
+# Uncomment after creating the namespace and paste the id:
+# [[kv_namespaces]]
+# binding = "LICENSES"
+# id = "your-kv-namespace-id"

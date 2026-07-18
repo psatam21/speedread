@@ -9,11 +9,19 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "deploy": "astro build && wrangler pages deploy dist",
+    "ext:icons": "node scripts/generate-extension-icons.mjs",
+    "ext:pack": "node scripts/package-extension.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "@fontsource/inter": "^5.2.8",
     "astro": "^7.1.0"
+  },
+  "devDependencies": {
+    "archiver": "^5.3.2",
+    "sharp": "^0.35.3",
+    "wrangler": "^4.0.0"
   }
 }

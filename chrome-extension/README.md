@@ -1,39 +1,59 @@
-# SpeedRead Sync — Chrome Extension
+# SpeedRead Chrome Extension (production)
 
-A V3-compliant Google Chrome extension that allows you to instantly import the active tab's article text directly into your SpeedRead web workspace with a single click.
+**Version:** see `manifest.json`  
+**Store-ready package:** `npm run ext:pack` → `release/speedread-extension-v*.zip`
 
----
+## Features
 
-## 🛠️ How to Install in Developer Mode
+- Premium license sign-in (same `/api/activate-license` + 5 device slots)
+- Speed-read active tab (heuristic article extract)
+- Context menu: **Speed read this page**
+- Keyboard: **Alt+Shift+S**
+- Session handoff into https://speedread-web.com (Premium + article)
+- Options page (API/app origin for local dev only)
+- Sign out unbinds this extension device
 
-Follow these simple steps to install the extension in your local Chrome browser:
+## Install (developer / sideload)
 
-1. Open **Google Chrome**.
-2. In the URL bar, type: `chrome://extensions/` and press **Enter**.
-3. In the top-right corner of the Extensions dashboard, toggle **Developer mode** to **ON**.
-4. In the top-left corner, click **Load unpacked**.
-5. Browse and select the **`chrome-extension`** directory located inside this project workspace folder.
-6. The **SpeedRead Sync** extension will now appear in your list!
+1. `npm run ext:icons` (once)
+2. Chrome → `chrome://extensions` → Developer mode → **Load unpacked**
+3. Select this `chrome-extension/` folder
 
----
+## Package for Chrome Web Store
 
-## 🚀 How to Use It
-
-1. Click the puzzle icon in the top-right corner of your browser and click the pin icon next to **SpeedRead Sync** to pin it to your extensions bar.
-2. Navigate to any long-form reading material (e.g., Wikipedia, Medium, news pages).
-3. Click the extension icon and select **Speed Read Active Tab 🚀**.
-4. A new tab will launch, loading the parsed article text into your SpeedRead workspace.
-
----
-
-## ⚙️ Configuration (Developer Local Testing)
-By default, the extension points to the production site `https://speedread-web.com`.
-If you are developing locally on `http://localhost:4321`, open [`popup.js`](file:///c:/Users/satam/OneDrive%20-%20BITSoM/Side%20projects/Speedread/chrome-extension/popup.js) and change:
-```javascript
-const targetDomain = "https://speedread-web.com";
+```bash
+npm run ext:pack
 ```
-to:
-```javascript
-const targetDomain = "http://localhost:4321";
-```
-Then reload the extension on `chrome://extensions/` by clicking the circular reload arrow on the card.
+
+Upload `release/speedread-extension-vX.Y.Z.zip` in the [Developer Dashboard](https://chrome.google.com/webstore/devconsole).
+
+### Store listing checklist
+
+| Field | Value |
+|--------|--------|
+| Name | SpeedRead — Speed Reader for Chrome |
+| Summary | Speed-read any webpage; optional Lifetime Premium login |
+| Category | Productivity |
+| Language | English |
+| Homepage | https://speedread-web.com/extension |
+| Privacy policy | https://speedread-web.com/privacy |
+| Single purpose | Speed-read web pages with optional paid license |
+| Permissions justification | activeTab/scripting: extract on user action; storage: license; contextMenus: shortcut; host speedread-web.com: activate + open reader |
+
+Screenshots: capture popup (signed out / Premium) + reader handoff.
+
+## Production requirements
+
+1. Site deployed at `https://speedread-web.com` with Pages Functions
+2. KV binding `LICENSES` + `JWT_SECRET` + Dodo env for purchases
+3. Content script matches only production origin (see `manifest.json`)
+
+## Local API testing
+
+Options → set API base / app origin to localhost. You may need **optional host permissions** granted and a temporary content_scripts match for localhost (dev fork of manifest).
+
+## Privacy
+
+- No continuous browsing capture
+- Extract only on explicit user action
+- License keys stored in `chrome.storage.local` on device

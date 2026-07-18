@@ -1,0 +1,77 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "Bionic Reading Online — Free Bionic Text Converter | SpeedRead";
+const pageDescription = "Free online bionic reading tool. Bold word prefixes for faster scanning, less fatigue. Paste text, open PDFs, or extract articles — no install, no signup.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Bionic Reading Online — Free Bionic Text Converter</h1>
+        <p class="lede">
+          Bionic reading highlights the first part of each word so your eyes lock fixation points faster and your brain fills in the rest. Use it free in SpeedRead — paste text, upload a file, or pull any public URL.
+        </p>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Open Bionic Mode ⚡</a>
+
+        <h2 class="mt-8">How to use bionic reading on SpeedRead</h2>
+        <ol class="steps">
+          <li>Open the <a href="/">SpeedRead home tool</a> and paste text, upload PDF/EPUB/TXT, or extract a URL.</li>
+          <li>Start reading, then switch to <strong>Bionic Mode</strong> in the reader toolbar.</li>
+          <li>Optional: turn on Audio Sync for dual-channel focus, or use RSVP mode for single-word flashing.</li>
+          <li>Adjust theme (light, sepia, dark, AMOLED) and font size for long sessions.</li>
+        </ol>
+
+        <h2 class="mt-8">When bionic reading helps</h2>
+        <ul>
+          <li><strong>Long articles</strong> — scan research blogs and news without losing the thread.</li>
+          <li><strong>Study notes</strong> — review dense paragraphs with lower cognitive load.</li>
+          <li><strong>Accessibility preference</strong> — some readers prefer bold fixations over pure RSVP flashes.</li>
+          <li><strong>Mixed sessions</strong> — switch between bionic page view and RSVP without re-uploading.</li>
+        </ul>
+
+        <h2 class="mt-8">Bionic reading vs RSVP</h2>
+        <p>
+          <strong>Bionic reading</strong> keeps a full paragraph layout and boldens word prefixes. <strong>RSVP</strong> flashes one word at a fixed point with an Optimal Recognition Point (ORP) highlight. SpeedRead includes both plus standard sentence mode and Web Speech TTS — all processed in your browser for PDF, EPUB, and paste workflows.
+        </p>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/bookmarklet">Web-to-reader bookmarklet</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 800px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; }
+  h1 { font-size: 1.85rem; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .btn { text-decoration: none; }
+</style>

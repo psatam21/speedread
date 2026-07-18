@@ -1,15 +1,58 @@
 {
   "manifest_version": 3,
-  "name": "SpeedRead Sync",
-  "version": "1.0",
-  "description": "Send any webpage article text directly to SpeedRead with a single click.",
-  "permissions": ["activeTab", "scripting"],
+  "name": "SpeedRead — Speed Reader for Chrome",
+  "short_name": "SpeedRead",
+  "version": "1.2.0",
+  "description": "Speed-read any webpage with RSVP. Optional Lifetime Premium license sign-in (up to 5 devices).",
+  "homepage_url": "https://speedread-web.com/extension",
+  "minimum_chrome_version": "116",
+  "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
+  "host_permissions": ["https://speedread-web.com/*"],
+  "optional_host_permissions": [
+    "http://localhost:4321/*",
+    "http://127.0.0.1:4321/*",
+    "http://localhost:8788/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://speedread-web.com/*"],
+      "js": ["content-handoff.js"],
+      "run_at": "document_start"
+    }
+  ],
   "action": {
+    "default_title": "SpeedRead",
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "commands": {
+    "speed-read-tab": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "Alt+Shift+S"
+      },
+      "description": "Speed read the current tab"
+    }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }

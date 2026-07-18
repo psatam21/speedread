@@ -1,43 +1,51 @@
-# Astro Starter Kit: Minimal
+# SpeedRead
 
-```sh
-npm create astro@latest -- --template minimal
+Free online **speed reader** — RSVP flash reading, bionic text, PDF/EPUB upload, image OCR, synced TTS, and optional Gemini AI. Built as an Astro micro-tool for Cloudflare Pages + AdSense.
+
+**Live target:** [https://speedread-web.com](https://speedread-web.com)
+
+## Stack
+
+- Astro 7 (static MPA) + Cloudflare Pages Functions
+- Client-side: pdf.js, JSZip, Tesseract (CDN, on demand)
+- Payments: Dodo Payments → multi-device **license key**
+- Ads: Google AdSense (Auto Ads + optional units)
+
+## Develop
+
+```bash
+npm install
+npm run dev
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm run build
+npm run deploy   # wrangler pages deploy dist
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+Copy `.env.example` for public vars. Set Cloudflare secrets for Dodo / JWT / Gemini. Full go-live steps: **[LAUNCH.md](./LAUNCH.md)**.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Premium (multi-device, anti-share)
 
-Any static assets, like images, can be placed in the `public/` directory.
+1. Buy Lifetime Pro ($9) → signed **license key** + Cloudflare **KV** device roster.
+2. Each browser gets a **device session** (max **5** devices). APIs require the session, not the raw key.
+3. At limit: revoke a device from the Premium panel, then activate again.
+4. Bind KV `LICENSES` on Cloudflare Pages (required). See `LAUNCH.md`.
 
-## 🧞 Commands
+## Chrome extension
 
-All commands are run from the root of the project, from a terminal:
+Load `chrome-extension/` unpacked (see `chrome-extension/README.md`).
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+- **Premium sign-in** with the same lifetime license key (1 of 5 device slots)
+- **Speed read this page** extracts article text and opens the web app with session handoff
+- Sign out revokes the extension device slot
 
-## 👀 Want to learn more?
+## Project map
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Path | Role |
+|------|------|
+| `src/pages/index.astro` | Main tool |
+| `src/pages/rsvp-reader.astro` etc. | SEO satellite pages |
+| `src/components/AdSlot.astro` | AdSense units |
+| `functions/api/*` | extract, checkout, license, gemini |
+| `chrome-extension/` | SpeedRead Sync |

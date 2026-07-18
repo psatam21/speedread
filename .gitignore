@@ -23,3 +23,12 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 design-templates/
+
+.vercel
+
+# extension packaging
+release/
+
+# agent tooling config (not app code)
+.agents/
+.claude/

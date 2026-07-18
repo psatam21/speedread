@@ -1,0 +1,60 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Page Not Found — SpeedRead";
+const pageDescription = "The page you requested does not exist. Return to SpeedRead free online speed reader.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="error-section mt-8">
+    <div class="container max-w-xl">
+      <div class="glass content-card">
+        <p class="code">404</p>
+        <h1>Page not found</h1>
+        <p class="muted">
+          That URL does not match any SpeedRead tool page. Head back to the reader and load text, a PDF, or a web article.
+        </p>
+        <div class="actions mt-6">
+          <a href="/" class="btn btn-primary">Open Speed Reader ⚡</a>
+          <a href="/bookmarklet" class="btn btn-secondary">Install Bookmarklet</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-xl {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    text-align: center;
+  }
+  .code {
+    font-size: 3.5rem;
+    font-weight: 800;
+    font-family: var(--font-display);
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.25rem;
+  }
+  .muted {
+    color: var(--color-text-muted);
+    margin-top: 0.75rem;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+  }
+  .actions a {
+    text-decoration: none;
+  }
+</style>

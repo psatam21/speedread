@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "SpeedRead — Free Online Speed Reader & Bionic Reader";
-const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload PDFs, EPUBs, or paste text to speed-read with RSVP (Rapid Serial Visual Presentation), Bionic Reading, and synchronized Text-to-Speech.";
+const pageTitle = "Free Online Speed Reader — RSVP, Bionic Reading & TTS | SpeedRead";
+const pageDescription = "Free online speed reader. Flash RSVP reading, bionic text, PDF/EPUB upload, image OCR, and synced text-to-speech. No install. Read faster with WPM control up to 1000+.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -242,12 +243,10 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
     </div>
   </section>
 
-  <!-- Google AdSense Placeholder Slot (Horizontal Top) -->
-  <section class="ads-section">
+  <!-- Google AdSense — hidden when Premium active -->
+  <section class="ads-section ads-section-top">
     <div class="container">
-      <div class="ad-placeholder glass">
-        <span>Google AdSense Slot (Auto-Ads / Display Ads)</span>
-      </div>
+      <AdSlot placement="TOP" format="horizontal" />
     </div>
   </section>
 
@@ -284,8 +283,8 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
 
       <!-- Lifetime Premium Block -->
       <div class="glass pricing-card premium-badge">
-        <div class="pricing-tag">disruptive pricing</div>
-        <h3>⭐ Go Premium Lifetime</h3>
+        <div class="pricing-tag">Lifetime</div>
+        <h3>Lifetime Lifetime</h3>
         <div class="price-row mt-2">
           <span class="price-strike">$29.99</span>
           <span class="price-value">$9.00</span>
@@ -293,14 +292,40 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         </div>
         <ul class="pricing-features mt-4">
           <li>✨ 100% Ad-Free Reading Environment</li>
-          <li>📂 Unlimited PDF, EPUB, TXT File Uploads</li>
-          <li>📷 Advanced On-Device OCR (Image-to-text)</li>
-          <li>💾 Save last read position & bookmark files</li>
-          <li>🗣️ Enable Premium Neural TTS voices</li>
+          <li>📂 Unlimited document length (no 3,000-word cap)</li>
+          <li>🤖 Gemini AI summary & chat (no BYOK required)</li>
+          <li>🔑 Multi-device license (up to 5 devices, revocable)</li>
+          <li>🗣️ Neural TTS voices (Chrome/Edge system voices)</li>
         </ul>
         <div class="pricing-actions mt-6">
-          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro Access</button>
-          <p class="muted text-center mt-2">Pay what you want starting at $2. Support active development!</p>
+          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $9</button>
+          <p class="muted text-center mt-2">One-time payment. Works on unlimited personal devices.</p>
+        </div>
+
+        <!-- Multi-device license: activate key + device slots (max 5) -->
+        <div class="license-panel mt-6" id="license-panel">
+          <h4 class="license-heading">Already purchased?</h4>
+          <p class="muted license-hint">Paste your lifetime license key. Premium binds to this device (max 5 devices). Sharing past the limit is blocked.</p>
+          <div class="license-row">
+            <input type="text" id="license-key-input" placeholder="Paste license key…" autocomplete="off" spellcheck="false" aria-label="License key" />
+            <button class="btn btn-secondary" id="btn-activate-license" type="button">Activate device</button>
+          </div>
+          <p id="license-status" class="license-status muted" role="status" aria-live="polite"></p>
+          <div id="license-display" class="license-display hidden">
+            <label for="license-key-display">License key (keep private — save offline)</label>
+            <div class="license-row">
+              <input type="text" id="license-key-display" readonly aria-label="Saved license key" />
+              <button class="btn btn-secondary btn-sm" id="btn-copy-license" type="button">Copy</button>
+            </div>
+          </div>
+          <div id="device-list-wrap" class="device-list-wrap hidden">
+            <div class="device-list-header">
+              <span>Activated devices</span>
+              <span id="device-count" class="device-count"></span>
+            </div>
+            <ul id="device-list" class="device-list"></ul>
+            <p class="muted device-help">Revoke a device you no longer use to free a slot. Max 5 personal devices.</p>
+          </div>
         </div>
       </div>
 
@@ -313,25 +338,43 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       <div class="seo-layout">
         
         <div class="seo-text">
-          <h1>Online Speed Reader — Flash RSVP & Bionic Reading Web App</h1>
+          <h1>Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h1>
           <p>
-            SpeedRead is a web-based, state-of-the-art speed reading reader designed to help you consume eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Inspired by the popular Quickify mobile application, SpeedRead combines multiple scientific visual presentation methods to reduce eye fatigue, eliminate sub-vocalization, and double your comprehension speed.
+            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). It combines RSVP (Rapid Serial Visual Presentation), bionic reading, and synchronized text-to-speech so you can reduce eye fatigue, cut sub-vocalization, and finish long material faster — without installing an app or creating an account.
           </p>
+
+          <h2>How to use this online speed reader</h2>
+          <ol class="seo-steps">
+            <li><strong>Load text</strong> — paste an article, upload PDF/EPUB/TXT, run image OCR, or extract a public URL (or use the bookmarklet / Chrome extension).</li>
+            <li><strong>Start reading</strong> — RSVP mode flashes one word at a time with Optimal Recognition Point (ORP) alignment.</li>
+            <li><strong>Tune speed</strong> — set WPM from 100–1000, press Space to play/pause, and use arrow keys to jump.</li>
+            <li><strong>Optional audio</strong> — enable Audio Sync for dual-channel TTS, or switch to Bionic / Standard page view.</li>
+            <li><strong>Themes</strong> — light, sepia, dark, or AMOLED; press <kbd>D</kbd> to cycle.</li>
+          </ol>
           
           <h2>Rapid Serial Visual Presentation (RSVP)</h2>
           <p>
-            Traditional reading forces your eyes to move horizontally across a line of text, causing physical fatigue and mental pauses (known as saccades). The **RSVP (Rapid Serial Visual Presentation)** mode eliminates this horizontal movement by flashing single words at a fixed focal point on the screen. SpeedRead dynamically calculates the **Optimal Recognition Point (ORP)** of each word—aligning the focal letter (highlighted in red) to a central grid so your brain processes the language directly without scrolling or moving your eyes.
+            Traditional reading forces horizontal eye movement and micro-pauses (saccades). RSVP mode flashes single words at a fixed focal point. SpeedRead calculates the Optimal Recognition Point of each word — the focal letter is highlighted — so your brain processes language without hunting along a line. Punctuation gets slightly longer delays so comprehension stays intact at high WPM.
           </p>
           
           <h2>Bionic Reading Mode</h2>
           <p>
-            For longer reading sessions where you prefer a page view, **Bionic Reading** bolds the initial parts of words (the fixations) while letting your brain naturally complete the rest (the saccades). This helps your eyes glide smoothly across paragraphs, facilitating rapid scanning while preserving context and reducing mental cognitive load.
+            For longer sessions where you want a full page, bionic reading bolds the initial part of each word (fixations) while the rest stays lighter (saccades). Your eyes glide through paragraphs with lower load. Switch anytime between <a href="/bionic-reading">bionic reading</a>, <a href="/rsvp-reader">RSVP</a>, and standard sentence mode without reloading the document.
           </p>
           
-          <h2>Dual-Channel Audio Narration</h2>
+          <h2>Dual-Channel Audio Narration &amp; PDF to speech</h2>
           <p>
-            Layering Text-to-Speech (TTS) audio narration on top of rapid visual word flashes creates a **dual-channel learning engine**. The auditory feedback anchors your focus, preventing your mind from wandering or losing track of the text at high reading speeds.
+            Layering TTS on visual flashes creates dual-channel focus: ears and eyes stay on the same stream. Use Chrome or Edge for neural/natural voices. Upload a PDF or EPUB and narrate client-side — see also our <a href="/pdf-to-speech">PDF to speech</a> guide. Files are parsed in the browser; optional URL extraction and AI features call first-party or Google APIs as described in the privacy policy.
           </p>
+
+          <h2>Common use cases</h2>
+          <ul class="seo-usecases">
+            <li><strong>Students</strong> — revise chapters and papers faster before exams or case comps.</li>
+            <li><strong>Professionals</strong> — clear newsletters, research PDFs, and long emails under time pressure.</li>
+            <li><strong>Language practice</strong> — pair visual RSVP with audio to reinforce pacing.</li>
+            <li><strong>Accessibility preference</strong> — choose bionic bolding, dyslexia-friendly font option, or high-contrast AMOLED.</li>
+            <li><strong>Web clipping</strong> — send any public article into the reader with one bookmarklet click.</li>
+          </ul>
         </div>
 
         <!-- FAQs Section for Structured Schema -->
@@ -369,12 +412,32 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
           <details class="faq-item">
             <summary>Is there an API key required for AI features?</summary>
             <div class="faq-answer">
-              <p>Yes, to run AI summarization and chat with documents at zero cost, we support bringing your own free Gemini API key. Your key is stored securely inside your browser's local storage and is sent directly to Google's API, keeping our hosting free and your data safe.</p>
+              <p>Free users can bring a free Gemini API key (stored only in your browser). Lifetime Premium includes AI summary and document chat via our secure server proxy — no personal Gemini key required.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>How does multi-device Premium work?</summary>
+            <div class="faq-answer">
+              <p>After a successful one-time payment you receive a lifetime license key. Paste that key on any browser or device using Activate under the Premium card. Ads stay off and the word limit is removed on each activated device. Keep a copy of the key somewhere safe.</p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary>Is SpeedRead really free?</summary>
+            <div class="faq-answer">
+              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9) removes ads, lifts the 3,000-word cap, and includes multi-device license + Gemini proxy.</p>
             </div>
           </details>
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <section class="ads-section ads-section-mid mt-8">
+    <div class="container">
+      <AdSlot placement="MID" format="auto" />
     </div>
   </section>
 
@@ -392,7 +455,25 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
     </div>
   </div>
 
-  <!-- JSON-LD FAQ Schema in Head is handled dynamically, let's inject it via Layout or standard schema tags -->
+  <script type="application/ld+json" is:inline>
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "SpeedRead",
+      "url": "https://speedread-web.com/",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "Requires JavaScript",
+      "offers": {
+        "@type": "AggregateOffer",
+        "lowPrice": "0",
+        "highPrice": "9.00",
+        "priceCurrency": "USD",
+        "offerCount": "2"
+      },
+      "description": "Free online speed reader with RSVP, bionic reading, PDF/EPUB upload, and text-to-speech."
+    }
+  </script>
   <script type="application/ld+json" is:inline>
     {
       "@context": "https://schema.org",
@@ -419,7 +500,31 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
           "name": "Are my PDF and EPUB files kept private?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server."
+            "text": "Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server for storage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there an API key required for AI features?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Free users can bring a free Gemini API key stored in the browser. Lifetime Premium includes AI summary and document chat via a secure server proxy without a personal Gemini key."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "How does multi-device Premium work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "After payment you receive a lifetime license key. Paste that key on any browser or device to unlock Premium. Keep a backup of the key."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is SpeedRead really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and multi-device license."
           }
         }
       ]
@@ -452,37 +557,191 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       }
     };
 
+    // ── Device-bound premium ──────────────────────────────────────────
+    const getDeviceId = () => {
+      let id = localStorage.getItem('device_id');
+      if (!id) {
+        id = (typeof crypto !== 'undefined' && crypto.randomUUID)
+          ? crypto.randomUUID()
+          : `d-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+        localStorage.setItem('device_id', id);
+      }
+      return id;
+    };
+
+    const getDeviceLabel = () => {
+      const ua = navigator.userAgent || '';
+      let browser = 'Browser';
+      if (/Edg\//.test(ua)) browser = 'Edge';
+      else if (/Chrome\//.test(ua)) browser = 'Chrome';
+      else if (/Firefox\//.test(ua)) browser = 'Firefox';
+      else if (/Safari\//.test(ua)) browser = 'Safari';
+      let os = 'Device';
+      if (/Windows/.test(ua)) os = 'Windows';
+      else if (/Mac OS|Macintosh/.test(ua)) os = 'Mac';
+      else if (/Android/.test(ua)) os = 'Android';
+      else if (/iPhone|iPad/.test(ua)) os = 'iOS';
+      return `${browser} on ${os}`;
+    };
+
+    const getStoredLicenseKey = () => localStorage.getItem('license_key') || '';
+    /** Device session only — never fall back to raw license key for APIs */
+    const getDeviceSession = () => localStorage.getItem('premium_token') || '';
+
+    const clearPremiumLocal = () => {
+      localStorage.removeItem('is_premium');
+      localStorage.removeItem('premium_token');
+      state.isPremium = false;
+    };
+
+    const renderDeviceList = (devices = [], maxDevices = 5) => {
+      const wrap = document.getElementById('device-list-wrap');
+      const list = document.getElementById('device-list');
+      const count = document.getElementById('device-count');
+      if (!wrap || !list) return;
+      if (!devices.length) {
+        wrap.classList.add('hidden');
+        return;
+      }
+      wrap.classList.remove('hidden');
+      if (count) count.textContent = `${devices.length} / ${maxDevices}`;
+      const currentId = getDeviceId();
+      list.innerHTML = devices.map((d) => {
+        const label = (d.label || 'Device').replace(/</g, '&lt;');
+        const current = d.id === currentId || d.is_current;
+        const idAttr = String(d.id).replace(/"/g, '');
+        return `<li class="device-item${current ? ' is-current' : ''}">
+          <span class="device-item-label">${label}${current ? ' <em>(this device)</em>' : ''}</span>
+          ${current ? '' : `<button type="button" class="btn btn-secondary btn-sm btn-revoke-device" data-device-id="${idAttr}">Revoke</button>`}
+        </li>`;
+      }).join('');
+    };
+
+    const unlockPremium = ({ licenseKey, sessionToken, devices, maxDevices }) => {
+      if (licenseKey) localStorage.setItem('license_key', licenseKey);
+      if (sessionToken) {
+        localStorage.setItem('premium_token', sessionToken);
+        localStorage.setItem('is_premium', 'true');
+        state.isPremium = true;
+      }
+      if (devices) {
+        try { localStorage.setItem('premium_devices', JSON.stringify({ devices, maxDevices: maxDevices || 5 })); } catch (_) {}
+        renderDeviceList(devices, maxDevices || 5);
+      }
+      applyPremiumUI();
+    };
+
     const applyPremiumUI = () => {
-      if (state.isPremium) {
-        // Hide all Google AdSense slots completely
+      const licenseDisplay = document.getElementById('license-display');
+      const licenseKeyDisplay = document.getElementById('license-key-display');
+      const storedKey = getStoredLicenseKey();
+
+      if (storedKey && licenseKeyDisplay) {
+        licenseKeyDisplay.value = storedKey;
+        if (licenseDisplay) licenseDisplay.classList.remove('hidden');
+      }
+
+      try {
+        const cached = JSON.parse(localStorage.getItem('premium_devices') || 'null');
+        if (cached?.devices) renderDeviceList(cached.devices, cached.maxDevices || 5);
+      } catch (_) {}
+
+      if (state.isPremium && getDeviceSession()) {
         document.querySelectorAll('.ads-section').forEach(el => el.classList.add('hidden'));
         
-        // Disable purchase controls
         const buyBtn = document.getElementById('btn-buy-premium');
         if (buyBtn) {
-          buyBtn.textContent = "⭐⭐ Premium Unlocked ⭐⭐";
+          buyBtn.textContent = "Premium active on this device";
           buyBtn.disabled = true;
-          buyBtn.style.background = "linear-gradient(135deg, #10b981 0%, #059669 100%)";
+          buyBtn.classList.add('btn-premium-active');
         }
         
         const pricingCard = document.querySelector('.pricing-card');
         if (pricingCard) {
           const tag = pricingCard.querySelector('.pricing-tag');
           if (tag) {
-            tag.textContent = "Active Member";
-            tag.style.backgroundColor = "#10b981";
+            tag.textContent = "Active on this device";
+            tag.classList.add('tag-success');
           }
         }
+
+        const heading = document.querySelector('.license-heading');
+        if (heading) heading.textContent = "Your license & devices";
+        const hint = document.querySelector('.license-hint');
+        if (hint) hint.textContent = "Keep the key private. Activate on up to 5 devices. Revoke unused devices to free slots.";
       }
     };
 
-    // Load initial states from localStorage
+    /**
+     * Validate premium without burning an extra device slot.
+     * - Extension handoff already provides a device session → trust it (no re-bind).
+     * - Web-native session present → keep offline-capable; re-bind only if missing session.
+     * - Forged is_premium without license → strip.
+     */
+    const revalidatePremium = async () => {
+      const license = getStoredLicenseKey();
+      const session = getDeviceSession();
+      const forgedFlag = localStorage.getItem('is_premium') === 'true' && !license && !session;
+      if (forgedFlag) {
+        clearPremiumLocal();
+        applyPremiumUI();
+        return;
+      }
+
+      // Session from extension or prior activate: do not re-POST activate (would double-bind)
+      if (session) {
+        state.isPremium = true;
+        localStorage.setItem('is_premium', 'true');
+        applyPremiumUI();
+        return;
+      }
+
+      if (!license) return;
+
+      try {
+        const res = await fetch('/api/activate-license', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            license_key: license,
+            device_id: getDeviceId(),
+            device_label: getDeviceLabel(),
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && data.ok && data.token) {
+          unlockPremium({
+            licenseKey: data.license_key || license,
+            sessionToken: data.token,
+            devices: data.devices,
+            maxDevices: data.max_devices,
+          });
+        } else if (data.code === 'DEVICE_LIMIT') {
+          localStorage.removeItem('premium_token');
+          localStorage.setItem('is_premium', 'false');
+          state.isPremium = false;
+          if (data.devices) renderDeviceList(data.devices, data.max_devices || 5);
+          applyPremiumUI();
+          const status = document.getElementById('license-status');
+          if (status) status.textContent = data.error || 'Device limit reached. Revoke another device.';
+        } else if (data.code === 'INVALID_KEY' || res.status === 401) {
+          localStorage.removeItem('license_key');
+          clearPremiumLocal();
+          applyPremiumUI();
+        }
+      } catch (_) {
+        state.isPremium = localStorage.getItem('is_premium') === 'true' && !!getDeviceSession();
+        applyPremiumUI();
+      }
+    };
+
     const loadState = () => {
       state.wpm = parseInt(localStorage.getItem('wpm') || '300');
       state.theme = localStorage.getItem('theme') || 'light';
       state.font = localStorage.getItem('font') || 'sans';
       state.fontSize = parseInt(localStorage.getItem('fontSize') || '24');
-      state.isPremium = localStorage.getItem('is_premium') === 'true';
+      // Require device session — bare license key or forged flag is not enough
+      state.isPremium = localStorage.getItem('is_premium') === 'true' && !!getDeviceSession();
       
       const statsJson = localStorage.getItem('stats');
       if (statsJson) {
@@ -491,7 +750,6 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         state.stats = { wordsRead: 0, timeSpent: 0, streak: 0, lastReadDate: "" };
       }
       
-      // Update UI components
       document.getElementById('slider-wpm').value = state.wpm;
       document.getElementById('wpm-display').textContent = state.wpm;
       
@@ -502,6 +760,7 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       
       updateStatsUI();
       applyPremiumUI();
+      revalidatePremium();
     };
 
     const updateStatsUI = () => {
@@ -760,17 +1019,20 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       window.speechSynthesis.speak(state.ttsUtterance);
     };
 
+    // Escape HTML special chars so pasted/extracted text can't be rendered as markup
+    const escapeHtml = (str) => str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
     // Render Bionic Reading format
     const renderBionicText = () => {
       const formatted = state.words.map(word => {
-        if (word.length <= 1) return word;
+        if (word.length <= 1) return escapeHtml(word);
         let fixLen = Math.ceil(word.length * 0.4);
         if (word.length === 3) fixLen = 2;
-        const fixPart = word.slice(0, fixLen);
-        const sacPart = word.slice(fixLen);
+        const fixPart = escapeHtml(word.slice(0, fixLen));
+        const sacPart = escapeHtml(word.slice(fixLen));
         return `<strong class="bionic-fixation">${fixPart}</strong><span class="bionic-saccade">${sacPart}</span>`;
       }).join(' ');
-      
+
       document.getElementById('bionic-text-view').innerHTML = formatted;
     };
 
@@ -779,7 +1041,7 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       // Split text by sentences
       const sentences = state.text.match(/[^.!?]+[.!?]+(\s|$)/g) || [state.text];
       const html = sentences.map((sentence, idx) => {
-        return `<span class="reader-sentence" data-sentence-index="${idx}">${sentence}</span>`;
+        return `<span class="reader-sentence" data-sentence-index="${idx}">${escapeHtml(sentence)}</span>`;
       }).join('');
       
       const view = document.getElementById('standard-text-view');
@@ -1093,8 +1355,8 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
 
       document.getElementById('btn-rsvp-next').addEventListener('click', () => {
         pauseReader();
+        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 2);
         renderRSVPWord();
-        state.currentIndex++;
       });
 
       // TTS audio toggler
@@ -1245,9 +1507,9 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         
         document.getElementById('btn-load-url').textContent = "Extracting...";
         try {
-          // Uses standard public cors proxy or reader API fallback
-          const response = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(url)}`);
-          if (!response.ok) throw new Error("CORS retrieval failed.");
+          // First-party server-side fetch — no third-party CORS proxy dependency
+          const response = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
+          if (!response.ok) throw new Error("Server-side extraction failed.");
           const json = await response.json();
           
           const parser = new DOMParser();
@@ -1269,13 +1531,16 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
           }
           initReaderSession(`${title}\n\n${paragraphs}`);
         } catch (err) {
-          alert("Failed to load webpage content client-side.");
+          alert("Failed to load webpage content.");
           document.getElementById('btn-load-url').textContent = "Extract Text";
           console.error(err);
         }
       });
 
-      // Gemini AI Client-Side Integrations
+      // Gemini: device session only (not raw license key)
+      const getPremiumToken = () => getDeviceSession();
+      const isPremium = () => state.isPremium && !!getDeviceSession();
+
       document.getElementById('btn-save-key').addEventListener('click', () => {
         const key = document.getElementById('ai-key').value;
         if (key) {
@@ -1286,6 +1551,32 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       
       const getGeminiKey = () => localStorage.getItem('gemini_key') || "";
       document.getElementById('ai-key').value = getGeminiKey();
+
+      async function callGemini(bodyPayload) {
+        if (isPremium() && getPremiumToken()) {
+          const res = await fetch('/api/gemini', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${getPremiumToken()}`,
+            },
+            body: JSON.stringify(bodyPayload),
+          });
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || 'Premium AI proxy failed');
+          }
+          return res.json();
+        }
+        const key = getGeminiKey();
+        if (!key) throw new Error('NO_KEY');
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(bodyPayload),
+        });
+        return res.json();
+      }
 
       // Helper to ensure text is loaded before running AI operations
       const ensureTextLoaded = () => {
@@ -1303,26 +1594,20 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
 
       document.getElementById('btn-ai-summary').addEventListener('click', async () => {
         if (!ensureTextLoaded()) return;
-        const key = getGeminiKey();
-        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        if (!isPremium() && !getGeminiKey()) return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
         
         const summaryBtn = document.getElementById('btn-ai-summary');
         summaryBtn.textContent = "Summarizing...";
         
         try {
           // Slice top content to stay within standard limits
-          const textChunk = state.text.slice(0, 8000); 
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{ text: `Generate a concise speed-reading summary with bullet points for this text:\n\n${textChunk}` }]
-              }]
-            })
+          const textChunk = state.text.slice(0, 8000);
+          const data = await callGemini({
+            contents: [{
+              parts: [{ text: `Generate a concise speed-reading summary with bullet points for this text:\n\n${textChunk}` }]
+            }]
           });
           
-          const data = await response.json();
           const summaryText = data.candidates[0].content.parts[0].text;
           
           document.getElementById('ai-response-box').classList.remove('hidden');
@@ -1332,32 +1617,31 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
           document.getElementById('ai-response-text').innerText = summaryText;
           summaryBtn.textContent = "✨ Generate Summary";
         } catch (err) {
+          if (err.message === 'NO_KEY') return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
           alert("AI Summarization failed. Verify API key.");
           summaryBtn.textContent = "✨ Generate Summary";
           console.error(err);
         }
       });
 
-      // Gemini Document Chat integration
       document.getElementById('btn-ai-chat').addEventListener('click', () => {
         if (!ensureTextLoaded()) return;
-        const key = getGeminiKey();
-        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        if (!isPremium() && !getGeminiKey()) {
+          return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
+        }
         
         document.getElementById('ai-response-box').classList.remove('hidden');
         document.getElementById('ai-response-title').textContent = "💬 Chat with Document";
         document.getElementById('ai-summary-view').classList.add('hidden');
         document.getElementById('ai-chat-view').classList.remove('hidden');
         
-        // Greeting
         const chatHistory = document.getElementById('chat-history');
         chatHistory.innerHTML = `<div class="chat-message assistant">I've parsed your document (${state.words.length} words). Ask me any questions, and I will extract the answers for you!</div>`;
         chatHistory.scrollTop = chatHistory.scrollHeight;
       });
 
       document.getElementById('btn-send-chat').addEventListener('click', async () => {
-        const key = getGeminiKey();
-        if (!key) return alert("Please enter and save your Gemini API Key first.");
+        if (!isPremium() && !getGeminiKey()) return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
         
         const inputEl = document.getElementById('chat-user-input');
         const query = inputEl.value.trim();
@@ -1377,20 +1661,15 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         chatHistory.scrollTop = chatHistory.scrollHeight;
         
         try {
-          const docTextSlice = state.text.slice(0, 15000); 
-          const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${key}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [{
-                parts: [{ 
-                  text: `You are an AI speed reading assistant. The user has loaded this document in their reader:\n\n---\n${docTextSlice}\n---\n\nAnswer the user's question accurately based on the document text. Keep your answer clear and concise (under 3-4 sentences).\n\nUser Question: ${query}`
-                }]
+          const docTextSlice = state.text.slice(0, 15000);
+          const data = await callGemini({
+            contents: [{
+              parts: [{ 
+                text: `You are an AI speed reading assistant. The user has loaded this document in their reader:\n\n---\n${docTextSlice}\n---\n\nAnswer the user's question accurately based on the document text. Keep your answer clear and concise (under 3-4 sentences).\n\nUser Question: ${query}`
               }]
-            })
+            }]
           });
           
-          const data = await response.json();
           const reply = data.candidates[0].content.parts[0].text;
           
           const loadingEl = document.getElementById(loadingId);
@@ -1461,8 +1740,8 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         }
         if (e.code === 'ArrowRight') {
           pauseReader();
-          renderRSVPWord();
           state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 5);
+          renderRSVPWord();
         }
 
         // Theme shortcuts cycle: D key
@@ -1549,15 +1828,222 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
         document.getElementById('share-modal').classList.add('hidden');
       });
       
-      // Pro activation placeholder billing redirect
-      document.getElementById('btn-buy-premium').addEventListener('click', () => {
-        const confirmPay = confirm("Payment Sandbox:\n\nDo you want to simulate a successful one-time Stripe checkout of $9.00 to activate Lifetime Premium?");
-        if (confirmPay) {
-          localStorage.setItem('is_premium', 'true');
-          alert("Payment Successful!\n\nGoogle Ads have been disabled. Word count limits have been lifted. Enjoy your clean, distraction-free speed reading workspace!");
-          window.location.reload();
+      // Dodo Payments checkout
+      document.getElementById('btn-buy-premium').addEventListener('click', async (e) => {
+        const btn = e.currentTarget;
+        btn.disabled = true;
+        btn.textContent = 'Redirecting to checkout...';
+        try {
+          const res = await fetch('/api/create-checkout', { method: 'POST' });
+          const data = await res.json();
+          if (!data.checkout_url) throw new Error(data.error || 'No checkout URL returned');
+          window.location.href = data.checkout_url;
+        } catch (err) {
+          alert('Could not start checkout. Please try again shortly.');
+          console.error(err);
+          btn.disabled = false;
+          btn.textContent = 'Get Lifetime Pro — $9';
         }
       });
+
+      const activateOnThisDevice = async (licenseKey, revokeDeviceId) => {
+        const status = document.getElementById('license-status');
+        const body = {
+          license_key: licenseKey,
+          device_id: getDeviceId(),
+          device_label: getDeviceLabel(),
+        };
+        if (revokeDeviceId) body.revoke_device_id = revokeDeviceId;
+
+        const res = await fetch('/api/activate-license', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
+        });
+        const data = await res.json();
+
+        if (data.code === 'DEVICE_LIMIT' && data.devices) {
+          renderDeviceList(data.devices, data.max_devices || 5);
+          status.textContent = data.error + ' Click Revoke on a device below, then Activate again.';
+          localStorage.setItem('license_key', licenseKey);
+          if (document.getElementById('license-key-display')) {
+            document.getElementById('license-key-display').value = licenseKey;
+            document.getElementById('license-display').classList.remove('hidden');
+          }
+          return data;
+        }
+
+        if (!res.ok || !data.ok) {
+          status.textContent = data.error || 'Invalid license key.';
+          return data;
+        }
+
+        unlockPremium({
+          licenseKey: data.license_key || licenseKey,
+          sessionToken: data.token,
+          devices: data.devices,
+          maxDevices: data.max_devices,
+        });
+        status.textContent = 'Premium unlocked on this device (slot secured).';
+        return data;
+      };
+
+      document.getElementById('btn-activate-license').addEventListener('click', async () => {
+        const input = document.getElementById('license-key-input');
+        const status = document.getElementById('license-status');
+        const licenseKey = (input.value || getStoredLicenseKey() || '').trim();
+        if (!licenseKey) {
+          status.textContent = 'Paste your license key first.';
+          return;
+        }
+        status.textContent = 'Binding this device…';
+        try {
+          await activateOnThisDevice(licenseKey);
+          input.value = '';
+        } catch (err) {
+          console.error(err);
+          status.textContent = 'Activation failed. Check your connection and try again.';
+        }
+      });
+
+      document.getElementById('device-list').addEventListener('click', async (e) => {
+        const btn = e.target.closest('.btn-revoke-device');
+        if (!btn) return;
+        const revokeId = btn.getAttribute('data-device-id');
+        const license = getStoredLicenseKey() || document.getElementById('license-key-input').value.trim();
+        if (!license || !revokeId) return;
+        const status = document.getElementById('license-status');
+        status.textContent = 'Revoking device…';
+        try {
+          await activateOnThisDevice(license, revokeId);
+          status.textContent = 'Device revoked. This device is now activated.';
+        } catch (err) {
+          console.error(err);
+          status.textContent = 'Could not revoke device.';
+        }
+      });
+
+      document.getElementById('btn-copy-license').addEventListener('click', async () => {
+        const val = document.getElementById('license-key-display').value;
+        if (!val) return;
+        try {
+          await navigator.clipboard.writeText(val);
+          document.getElementById('license-status').textContent = 'License key copied — store it offline, do not share publicly.';
+        } catch {
+          document.getElementById('license-key-display').select();
+          document.execCommand('copy');
+          document.getElementById('license-status').textContent = 'License key selected — copy manually if needed.';
+        }
+      });
+
+      // Return from Dodo checkout → license + bind this device
+      const returnParams = new URLSearchParams(window.location.search);
+      if (returnParams.get('checkout') === 'return' && returnParams.get('payment_id')) {
+        const paymentId = returnParams.get('payment_id');
+        const qs = new URLSearchParams({
+          payment_id: paymentId,
+          device_id: getDeviceId(),
+          device_label: getDeviceLabel(),
+        });
+        fetch(`/api/verify-payment?${qs}`)
+          .then(r => r.json())
+          .then((data) => {
+            history.replaceState(null, '', window.location.pathname);
+            if (data.ok) {
+              unlockPremium({
+                licenseKey: data.license_key,
+                sessionToken: data.token,
+                devices: data.devices,
+                maxDevices: data.max_devices,
+              });
+              if (!data.token) {
+                alert(data.warning || 'Payment confirmed. Save your license key, then click Activate device if Premium is not active yet.');
+              } else {
+                alert('Payment confirmed! Premium is active on this device. Save your license key offline for other devices (max 5).');
+              }
+              const panel = document.getElementById('license-panel');
+              if (panel) panel.scrollIntoView({ behavior: 'smooth' });
+            } else {
+              alert('We could not confirm this payment. If you were charged, contact support with your receipt.');
+            }
+          })
+          .catch(() => history.replaceState(null, '', window.location.pathname));
+      }
+
+      // Chrome extension handoff (content-handoff.js + retries / custom event)
+      const applyExtensionPremium = () => {
+        if (localStorage.getItem('premium_token')) {
+          localStorage.setItem('is_premium', 'true');
+          state.isPremium = true;
+          applyPremiumUI();
+          return true;
+        }
+        return false;
+      };
+
+      const loadExtensionHandoff = () => {
+        try {
+          const raw = sessionStorage.getItem('sr_extension_article');
+          if (!raw) return false;
+          sessionStorage.removeItem('sr_extension_article');
+          const data = JSON.parse(raw);
+          const title = (data.title || '').trim();
+          const text = (data.text || '').trim();
+          applyExtensionPremium();
+          if (!text || text.length < 40) {
+            // URL-only handoff: fall through to ?url=
+            if (data.url) {
+              const urlInput = document.getElementById('url-input');
+              if (urlInput) {
+                urlInput.value = data.url;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.querySelector('.tab-btn[data-tab="url"]')?.classList.add('active');
+                document.getElementById('tab-url')?.classList.add('active');
+                document.getElementById('btn-load-url')?.click();
+                return true;
+              }
+            }
+            return false;
+          }
+          const combined = title ? `${title}\n\n${text}` : text;
+          history.replaceState(null, '', window.location.pathname);
+          initReaderSession(combined);
+          return true;
+        } catch (e) {
+          console.warn('Extension handoff failed', e);
+          return false;
+        }
+      };
+
+      const runExtensionBoot = () => {
+        if (loadExtensionHandoff()) return;
+        const autoUrl = returnParams.get('url');
+        if (autoUrl) {
+          const urlInput = document.getElementById('url-input');
+          if (urlInput) {
+            urlInput.value = autoUrl;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector('.tab-btn[data-tab="url"]')?.classList.add('active');
+            document.getElementById('tab-url')?.classList.add('active');
+            history.replaceState(null, '', window.location.pathname + window.location.hash);
+            document.getElementById('btn-load-url')?.click();
+          }
+        }
+        if (returnParams.get('source') === 'extension' || sessionStorage.getItem('sr_from_extension')) {
+          sessionStorage.removeItem('sr_from_extension');
+          applyExtensionPremium();
+        }
+      };
+
+      runExtensionBoot();
+      // Late handoff if content script wins the race after DOMContentLoaded
+      window.addEventListener('sr-extension-handoff', () => {
+        applyExtensionPremium();
+        loadExtensionHandoff();
+      });
+      setTimeout(runExtensionBoot, 250);
     });
   </script>
 
@@ -1687,24 +2173,32 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
     }
     .mode-switcher {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.2rem;
+      padding: 0.25rem;
+      background: var(--color-bg-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
     }
     .mode-btn {
       flex: 1;
-      background: none;
-      border: 1px solid var(--color-border);
+      background: transparent;
+      border: 1px solid transparent;
       color: var(--color-text-subtle);
-      padding: 0.5rem;
-      font-size: 0.85rem;
+      padding: 0.5rem 0.4rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
-      border-radius: var(--radius-md);
-      transition: all 150ms ease;
+      border-radius: var(--radius-sm);
+      transition: background-color 120ms ease, color 120ms ease;
+      font-family: var(--font-sans);
     }
-    .mode-btn.active, .mode-btn:hover {
-      background-color: var(--color-primary);
-      color: #ffffff;
-      border-color: var(--color-primary);
+    .mode-btn:hover {
+      color: var(--color-text);
+    }
+    .mode-btn.active {
+      background-color: var(--color-bg-card);
+      color: var(--color-text);
+      border-color: var(--color-border);
     }
     
     .rsvp-progress-bar-container {
@@ -1746,16 +2240,15 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       background-color: var(--color-border);
     }
     .control-btn.play-btn {
-      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-hover) 100%);
+      background: var(--color-primary);
       color: #ffffff;
-      border-color: transparent;
-      padding: 0.75rem 2.25rem;
-      font-size: 1.1rem;
-      box-shadow: 0 4px 12px var(--color-primary-shadow);
+      border-color: var(--color-primary);
+      padding: 0.65rem 1.75rem;
+      font-size: 1rem;
     }
     .control-btn.play-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px var(--color-primary-shadow);
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
     }
     .control-btn.active {
       background-color: var(--color-accent);
@@ -1843,19 +2336,127 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       color: var(--color-text-subtle);
     }
     
-    /* Ads styling styling */
     .ads-section {
       margin-top: 2.5rem;
     }
-    .ad-placeholder {
-      padding: 2rem;
-      text-align: center;
+    .ads-section.hidden {
+      display: none !important;
+    }
+
+    .license-panel {
+      border-top: 1px solid var(--color-border);
+      padding-top: 1.25rem;
+    }
+    .license-heading {
+      font-size: 0.95rem;
+      margin-bottom: 0.35rem;
+    }
+    .license-hint {
       font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--color-text-subtle);
-      border-style: dashed;
+      margin-bottom: 0.75rem;
+    }
+    .license-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .license-row input {
+      flex: 1;
+      min-width: 160px;
+      padding: 0.65rem 0.85rem;
       border-radius: var(--radius-md);
-      background-color: var(--color-bg-subtle);
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-subtle);
+      color: var(--color-text);
+      font-family: ui-monospace, monospace;
+      font-size: 0.8rem;
+    }
+    .license-status {
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      min-height: 1.2em;
+    }
+    .license-display {
+      margin-top: 1rem;
+    }
+    .license-display label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 0.35rem;
+    }
+    .device-list-wrap {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--color-border);
+    }
+    .device-list-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: 0.5rem;
+    }
+    .device-count {
+      font-variant-numeric: tabular-nums;
+      color: var(--color-primary);
+    }
+    .device-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin: 0;
+      padding: 0;
+    }
+    .device-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.55rem 0.75rem;
+      background: var(--color-bg-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+    }
+    .device-item.is-current {
+      border-color: var(--color-success);
+      background: var(--color-success-muted);
+    }
+    .device-item-label em {
+      font-style: normal;
+      color: var(--color-success);
+      font-weight: 600;
+      font-size: 0.75rem;
+    }
+    .device-help {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    .btn-premium-active {
+      background: var(--color-success) !important;
+      box-shadow: none !important;
+    }
+    .pricing-tag.tag-success {
+      background-color: var(--color-success) !important;
+    }
+    .seo-steps, .seo-usecases {
+      margin: 0.75rem 0 1.25rem 1.25rem;
+      color: var(--color-text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      line-height: 1.65;
+    }
+    .seo-text kbd {
+      background: var(--color-bg-subtle);
+      border: 1px solid var(--color-border);
+      border-radius: 0.25rem;
+      padding: 0.05rem 0.35rem;
+      font-size: 0.85em;
     }
     
     /* Pricing & Analytics layout */
@@ -1870,11 +2471,10 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       }
     }
     .dashboard-card, .pricing-card {
-      padding: 2.25rem;
+      padding: 1.75rem;
       border-radius: var(--radius-lg);
       background-color: var(--color-bg-card);
       border: 1px solid var(--color-border);
-      box-shadow: var(--shadow-sm);
     }
     .stats-grid {
       display: grid;
@@ -1908,26 +2508,21 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       position: relative;
       overflow: hidden;
     }
-    .premium-badge::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(to right, var(--color-primary), var(--color-accent));
+    .premium-badge {
+      border-color: var(--color-primary);
     }
     .pricing-tag {
       position: absolute;
-      top: 1.5rem;
-      right: 1.5rem;
-      background-color: var(--color-accent);
-      color: #ffffff;
-      font-size: 0.75rem;
-      font-weight: 800;
-      padding: 0.25rem 0.5rem;
-      border-radius: var(--radius-xs);
+      top: 1.25rem;
+      right: 1.25rem;
+      background-color: var(--color-primary-muted);
+      color: var(--color-primary);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
       text-transform: uppercase;
+      letter-spacing: 0.04em;
     }
     .price-row {
       display: flex;
@@ -1941,11 +2536,12 @@ const pageDescription = "SpeedRead is a web-based Quickify alternative. Upload P
       font-size: 1.25rem;
     }
     .price-value {
-      font-size: 3rem;
-      font-family: var(--font-display);
-      font-weight: 800;
+      font-size: 2.25rem;
+      font-family: var(--font-sans);
+      font-weight: 700;
       color: var(--color-text);
       line-height: 1;
+      letter-spacing: -0.02em;
     }
     .price-term {
       color: var(--color-text-subtle);

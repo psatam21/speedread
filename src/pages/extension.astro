@@ -1,0 +1,95 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const pageTitle = "Chrome Extension — SpeedRead Premium Login & Speed Reader";
+const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any tab with RSVP and sign in with your Lifetime Premium license (up to 5 devices).";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="ext-page mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <p class="kicker">Browser extension</p>
+        <h1>SpeedRead for Chrome</h1>
+        <p class="lede">
+          Extract any article into the SpeedRead workspace in one click. Sign in with your Lifetime Premium license — same multi-device subscription as the website (max 5 devices).
+        </p>
+
+        <div class="actions">
+          <a class="btn btn-primary" href="#install">Install (developer mode)</a>
+          <a class="btn btn-secondary" href="/">Open web app</a>
+        </div>
+
+        <h2 id="install">Install from source (production build)</h2>
+        <ol class="steps">
+          <li>Download the release zip from the project release folder, or clone the repo and open <code>chrome-extension/</code>.</li>
+          <li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li>
+          <li>Click <strong>Load unpacked</strong> and select the <code>chrome-extension</code> directory (unzipped, with <code>manifest.json</code> at the root).</li>
+          <li>Pin SpeedRead. Optional: right-click a page → <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
+        </ol>
+
+        <h2>Premium sign-in</h2>
+        <ol class="steps">
+          <li>Purchase Lifetime Premium on the <a href="/">homepage</a> and copy your license key.</li>
+          <li>Open the extension popup → paste the key → <strong>Sign in</strong>.</li>
+          <li>The extension uses one of your five device slots (shown as “Chrome Extension”).</li>
+          <li><strong>Sign out</strong> releases that slot when you are online.</li>
+        </ol>
+
+        <h2>What we access</h2>
+        <ul>
+          <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
+          <li><strong>speedread-web.com</strong> — license activation API and opening the reader with your session.</li>
+          <li><strong>Storage</strong> — license key and device session stay on your machine in extension storage.</li>
+        </ul>
+        <p class="muted">
+          Full policy: <a href="/privacy">Privacy Policy</a>. We do not sell browsing history.
+        </p>
+
+        <h2>Chrome Web Store</h2>
+        <p class="muted">
+          Public store listing may follow after domain + payment go live. Until then, load the unpacked production build as above.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 720px; margin: 0 auto; }
+  .content-card {
+    padding: 2.25rem;
+    border-radius: 12px;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.5rem;
+  }
+  h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+  .lede { color: var(--color-text-muted); font-size: 1.05rem; margin: 0.75rem 0 1.25rem; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+  .actions a { text-decoration: none; }
+  h2 { font-size: 1.15rem; margin-top: 1.75rem; margin-bottom: 0.5rem; }
+  .steps, ul {
+    margin: 0.5rem 0 0 1.2rem;
+    color: var(--color-text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    line-height: 1.55;
+  }
+  code, kbd {
+    font-size: 0.85em;
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.05rem 0.35rem;
+  }
+  .muted { color: var(--color-text-muted); margin-top: 0.75rem; font-size: 0.95rem; }
+</style>

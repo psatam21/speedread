@@ -1,0 +1,92 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "RSVP Reader Online — Free Rapid Serial Visual Presentation | SpeedRead";
+const pageDescription = "Free online RSVP speed reader. Flash words at a fixed focus point with ORP alignment. Paste text, PDFs, EPUBs, or web articles. Adjust WPM up to 1000+.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>RSVP Reader Online — Free Rapid Serial Visual Presentation</h1>
+        <p class="lede">
+          RSVP (Rapid Serial Visual Presentation) flashes one word at a time on a fixed point so you stop horizontal eye scanning. SpeedRead adds Optimal Recognition Point (ORP) alignment, punctuation-aware pacing, and optional synced TTS.
+        </p>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Start RSVP Reading ⚡</a>
+
+        <h2 class="mt-8">How RSVP speed reading works</h2>
+        <p>
+          Traditional reading forces saccades across each line. RSVP removes that motion: words appear in the same place, timed by your WPM setting. SpeedRead highlights the ORP letter (usually near the start of the word) so recognition happens without hunting for the word center.
+        </p>
+
+        <h2 class="mt-8">How to use this RSVP reader</h2>
+        <ol class="steps">
+          <li>Paste text, upload PDF/EPUB/TXT, run image OCR, or extract a public URL.</li>
+          <li>Click <strong>Start Reading</strong> — RSVP Mode is the default.</li>
+          <li>Set WPM (100–1000), press <kbd>Space</kbd> to play/pause, arrows to jump.</li>
+          <li>Enable <strong>Audio Sync</strong> for dual-channel narration via your browser’s Web Speech API.</li>
+        </ol>
+
+        <h2 class="mt-8">Best use cases</h2>
+        <ul>
+          <li>Skimming long blog posts and news before a meeting</li>
+          <li>Revising textbook chapters with TTS reinforcement</li>
+          <li>Training higher WPM with demo text, then real documents</li>
+          <li>Mobile reading with AMOLED theme and fullscreen focus</li>
+        </ul>
+
+        <h2 class="mt-8">Keyboard shortcuts</h2>
+        <ul>
+          <li><kbd>Space</kbd> — Play / Pause</li>
+          <li><kbd>↑</kbd> / <kbd>↓</kbd> — Adjust WPM</li>
+          <li><kbd>←</kbd> / <kbd>→</kbd> — Skip words</li>
+          <li><kbd>D</kbd> — Cycle themes · <kbd>Esc</kbd> — Close reader</li>
+        </ul>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/bookmarklet">Bookmarklet</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 800px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: 1rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); }
+  h1 { font-size: 1.85rem; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  kbd {
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.85rem;
+  }
+  .mt-4 { margin-top: 1rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .btn { text-decoration: none; }
+</style>
