@@ -276,8 +276,18 @@ const webAppSchema = {
               <div class="key-input-row">
                 <input type="password" id="ai-key" placeholder="Enter your Gemini API Key..." />
                 <button class="btn btn-secondary" id="btn-save-key">Save Key</button>
-                <a href="https://aistudio.google.com/" target="_blank" class="api-link">Get Free Key ↗</a>
+                <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="api-link">Get a Gemini key ↗</a>
               </div>
+              <details class="gemini-guide">
+                <summary>How to get a Gemini API key</summary>
+                <ol>
+                  <li>Open Google AI Studio and sign in.</li>
+                  <li>Select <strong>Create API key</strong> and choose or create a Google Cloud project.</li>
+                  <li>Copy the key, paste it above, and select <strong>Save Key</strong>.</li>
+                  <li>Keep it private. SpeedRead stores it only in this browser.</li>
+                </ol>
+                <p>Google offers a free Gemini API tier with usage limits. Some models, regions and higher-volume use may require billing.</p>
+              </details>
             </div>
             <div class="ai-actions">
               <button class="btn btn-primary" id="btn-ai-summary" disabled>Generate summary</button>
@@ -2582,6 +2592,10 @@ const webAppSchema = {
     }
     .ai-workspace-copy h3 { font-size: 1rem; margin-bottom: 0.25rem; }
     .ai-workspace-copy p { color: var(--color-text-muted); font-size: 0.9rem; }
+    .gemini-guide { margin-top: 0.7rem; color: var(--color-text-muted); font-size: 0.85rem; }
+    .gemini-guide summary { color: var(--color-primary); cursor: pointer; font-weight: 700; }
+    .gemini-guide ol { margin: 0.65rem 0 0.4rem 1.2rem; line-height: 1.55; }
+    .gemini-guide p { margin: 0; }
     .ai-workspace .ai-config, .ai-workspace #ai-response-box { grid-column: 1 / -1; }
     .ai-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; }
     .ai-actions .btn:disabled { cursor: not-allowed; }

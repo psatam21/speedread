@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SpeedRead Reader</title>
+    <link rel="stylesheet" href="reader.css" />
+  </head>
+  <body>
+    <header>
+      <div><strong>SpeedRead</strong><span id="document-title">Reader</span></div>
+      <button id="close" type="button" aria-label="Close reader">Close</button>
+    </header>
+
+    <main>
+      <p id="empty" class="empty" hidden>No readable text was found. Select text on the page and try again.</p>
+      <section id="reader" aria-label="RSVP reader">
+        <div class="focus" aria-live="off">
+          <span id="left"></span><mark id="anchor"></mark><span id="right"></span>
+        </div>
+
+        <input id="progress" type="range" min="0" max="0" value="0" aria-label="Reading progress" />
+        <div class="meta"><span id="position">0 / 0</span><span id="remaining">0 min left</span></div>
+
+        <div class="controls">
+          <button id="back" type="button" aria-label="Go back ten words">−10</button>
+          <button id="play" type="button">Pause</button>
+          <button id="forward" type="button" aria-label="Go forward ten words">+10</button>
+          <label for="wpm">WPM <output id="wpm-value">350</output></label>
+          <input id="wpm" type="range" min="100" max="1000" step="25" value="350" />
+        </div>
+        <p class="keys">Space pauses · ←/→ skips · ↑/↓ changes speed · Esc closes</p>
+      </section>
+    </main>
+    <script src="reader.js"></script>
+  </body>
+</html>

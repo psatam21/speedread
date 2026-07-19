@@ -1,4 +1,4 @@
-/* global importScripts, srGetAuth, srGetHandoff, srClearHandoff, srSetHandoff, srGetOrigins, extractArticleInPage */
+/* global importScripts, srGetAuth, srGetHandoff, srClearHandoff, extractArticleInPage */
 importScripts('config.js', 'lib/storage.js', 'lib/extract.js');
 
 const MENU_ID = 'speedread-page';
@@ -30,20 +30,15 @@ async function extractFromTab(tabId) {
   return results?.[0]?.result || null;
 }
 
-async function openSpeedRead(tab, { preferSelection = false } = {}) {
-  const origins = await srGetOrigins();
+async function openSpeedRead(tab, { selectionText = '' } = {}) {
   let article = null;
 
   try {
     if (tab?.id && tab.url && !/^(chrome|chrome-extension|edge|about|devtools|chrome-search):/i.test(tab.url)) {
       article = await extractFromTab(tab.id);
-      if (preferSelection) {
-        const sel = await chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          func: () => window.getSelection()?.toString()?.trim() || '',
-        });
-        const selected = sel?.[0]?.result;
-        if (selected && selected.length > 40) {
+      if (selectionText) {
+        const selected = selectionText.trim();
+        if (selected) {
           article = {
             title: tab.title || article?.title || '',
             text: selected,
@@ -57,7 +52,7 @@ async function openSpeedRead(tab, { preferSelection = false } = {}) {
     console.warn('[SpeedRead] extract failed', err);
   }
 
-  if (!article?.text || article.text.trim().length < 40) {
+  if (!article?.text?.trim()) {
     article = {
       title: tab?.title || '',
       text: '',
@@ -66,21 +61,18 @@ async function openSpeedRead(tab, { preferSelection = false } = {}) {
     };
   }
 
-  await srSetHandoff({ article });
-
-  let url = `${origins.APP_ORIGIN}/?source=extension&v=1`;
-  if (!article.text || article.text.length < 40) {
-    if (article.url) {
-      url = `${origins.APP_ORIGIN}/?url=${encodeURIComponent(article.url)}&source=extension&v=1`;
-    }
-  }
-
-  await chrome.tabs.create({ url });
+  await chrome.storage.local.set({ sr_reader_article: article });
+  await chrome.windows.create({
+    url: chrome.runtime.getURL('reader.html'),
+    type: 'popup',
+    width: 760,
+    height: 620,
+  });
 }
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== MENU_ID) return;
-  await openSpeedRead(tab, { preferSelection: Boolean(info.selectionText) });
+  await openSpeedRead(tab, { selectionText: info.selectionText || '' });
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
@@ -124,7 +116,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     (async () => {
       try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        await openSpeedRead(tab || null, { preferSelection: !!message.preferSelection });
+        await openSpeedRead(tab || null);
         sendResponse({ ok: true });
       } catch (e) {
         sendResponse({ ok: false, error: e.message });

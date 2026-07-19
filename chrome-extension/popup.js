@@ -178,11 +178,11 @@ async function refreshUI() {
   if (els.linkBuy) els.linkBuy.href = `${APP_ORIGIN}/#importer-card`;
 
   if (!premiumAvailable) {
-    els.tabHint.textContent = 'Speed-read the active page for free. Premium sign-in returns when the license service is live.';
+    els.tabHint.textContent = 'Read the active page in a private popup. It works offline and does not redirect.';
   } else if (premium) {
     const max = auth.devices?.maxDevices || 5;
     renderDevices(auth.devices?.devices || [], max, auth.device_id);
-    els.tabHint.textContent = 'Premium active. Article opens with your session (ad-free).';
+    els.tabHint.textContent = 'Premium active. Read locally, or open the full web workspace.';
   } else {
     els.tabHint.textContent =
       'Works free. Sign in with your lifetime license for Premium (1 of 5 device slots).';
@@ -345,12 +345,6 @@ async function openSpeedRead(withArticle) {
   setStatus(els.actionStatus, withArticle ? 'Opening reader…' : 'Opening app…');
   els.btnRead.disabled = true;
   try {
-    const response = await chrome.runtime.sendMessage({
-      type: 'SR_OPEN_SPEEDREAD',
-      preferSelection: false,
-      skipExtract: !withArticle,
-    });
-    // background always extracts for speed-read; for open-app only open without extract
     if (!withArticle) {
       const { APP_ORIGIN } = await getOrigins();
       const auth = await getAuth();
@@ -379,6 +373,7 @@ async function openSpeedRead(withArticle) {
       return;
     }
 
+    const response = await chrome.runtime.sendMessage({ type: 'SR_OPEN_SPEEDREAD' });
     if (response && response.ok === false) {
       setStatus(els.actionStatus, response.error || 'Failed to open.', 'error');
       return;

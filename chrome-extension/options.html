@@ -23,12 +23,20 @@
         <img src="icons/icon48.png" class="logo" alt="" width="36" height="36" />
         <div class="header-text">
           <h1>SpeedRead Options</h1>
-          <p>Advanced · most users leave defaults</p>
+          <p>Reader and developer preferences</p>
         </div>
       </header>
 
       <section class="panel">
-        <h2>Endpoints</h2>
+        <h2>What is this page?</h2>
+        <p class="hint">
+          The extension's Options page stores advanced connection settings. You do not need to change them to read.
+          Right-click selected text or a page and choose <strong>Speed read this page</strong> to open the local reader.
+        </p>
+      </section>
+
+      <details class="panel">
+        <summary><strong>Developer endpoints</strong></summary>
         <p class="hint">
           Production defaults point at the live SpeedRead app. Change only for local development.
         </p>
@@ -41,13 +49,13 @@
           <button type="button" class="btn btn-secondary" id="btn-reset">Reset defaults</button>
         </div>
         <p class="status" id="opt-status" role="status"></p>
-      </section>
+      </details>
 
       <section class="panel">
         <h2>Privacy</h2>
         <p class="hint">
-          Article text is extracted in your browser and opened on the SpeedRead site. License keys stay in
-          extension storage. See
+          Article text is extracted and read locally in the extension. The website opens only when you explicitly
+          choose <strong>Open SpeedRead app</strong>. License keys stay in extension storage. See
           <a href="https://speedread-orcin.vercel.app/privacy" target="_blank" rel="noopener">privacy policy</a>.
         </p>
       </section>

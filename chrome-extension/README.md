@@ -6,10 +6,10 @@
 ## Features
 
 - Premium license sign-in (same `/api/activate-license` + 5 device slots)
-- Speed-read active tab (heuristic article extract)
+- Local RSVP popup for selected text or the active page
 - Context menu: **Speed read this page**
 - Keyboard: **Alt+Shift+S**
-- Session handoff into https://speedread-web.com (Premium + article)
+- Explicit web-app button for the full workspace
 - Options page (API/app origin for local dev only)
 - Sign out unbinds this extension device
 
@@ -40,7 +40,7 @@ Upload `release/speedread-extension-vX.Y.Z.zip` in the [Developer Dashboard](htt
 | Single purpose | Speed-read web pages with optional paid license |
 | Permissions justification | activeTab/scripting: extract on user action; storage: license; contextMenus: shortcut; host speedread-web.com: activate + open reader |
 
-Screenshots: capture popup (signed out / Premium) + reader handoff.
+Screenshots: capture extension popup, local RSVP reader and Options explanation.
 
 ## Production requirements
 
