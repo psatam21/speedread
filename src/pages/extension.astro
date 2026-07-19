@@ -9,7 +9,6 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
   <section class="ext-page mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
-        <p class="kicker">Browser extension</p>
         <h1>SpeedRead for Chrome</h1>
         <p class="lede">
           Extract any article into the SpeedRead workspace in one click. Sign in with your Lifetime Premium license — same multi-device subscription as the website (max 5 devices).
@@ -20,7 +19,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
           <a class="btn btn-secondary" href="/">Open web app</a>
         </div>
 
-        <h2 id="install">Install from source (production build)</h2>
+        <h2 id="install">Install in Developer mode</h2>
         <ol class="steps">
           <li>Download the release zip from the project release folder, or clone the repo and open <code>chrome-extension/</code>.</li>
           <li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li>
@@ -28,7 +27,14 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
           <li>Pin SpeedRead. Optional: right-click a page → <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
         </ol>
 
-        <h2>Premium sign-in</h2>
+        <h2>Install from the Chrome Web Store</h2>
+        <ol class="steps">
+          <li>Open this page and choose <strong>Install from Chrome Web Store</strong> once the public listing is live.</li>
+          <li>Chrome handles installation and future updates automatically.</li>
+        </ol>
+        <p class="muted">The Store button will appear here after Chrome approves the listing. Until then, use Developer mode above.</p>
+
+        <h2>Premium sign-in (coming soon)</h2>
         <ol class="steps">
           <li>Purchase Lifetime Premium on the <a href="/">homepage</a> and copy your license key.</li>
           <li>Open the extension popup → paste the key → <strong>Sign in</strong>.</li>
@@ -39,7 +45,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
         <h2>What we access</h2>
         <ul>
           <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
-          <li><strong>speedread-web.com</strong> — license activation API and opening the reader with your session.</li>
+          <li><strong>SpeedRead</strong> — license activation API and opening the reader with your session.</li>
           <li><strong>Storage</strong> — license key and device session stay on your machine in extension storage.</li>
         </ul>
         <p class="muted">
@@ -63,15 +69,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
   }
-  .kicker {
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--color-primary);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    margin-bottom: 0.5rem;
-  }
-  h1 { font-size: 1.75rem; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   .lede { color: var(--color-text-muted); font-size: 1.05rem; margin: 0.75rem 0 1.25rem; }
   .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
   .actions a { text-decoration: none; }

@@ -1,8 +1,8 @@
 /* global SR_DEFAULTS */
 
 const defaults = globalThis.SR_DEFAULTS || {
-  API_BASE: 'https://speedread-web.com',
-  APP_ORIGIN: 'https://speedread-web.com',
+  API_BASE: '',
+  APP_ORIGIN: 'https://speedread-orcin.vercel.app',
 };
 
 const apiEl = document.getElementById('api-base');

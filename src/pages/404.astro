@@ -5,7 +5,7 @@ const pageTitle = "Page Not Found — SpeedRead";
 const pageDescription = "The page you requested does not exist. Return to SpeedRead free online speed reader.";
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} noindex>
   <section class="error-section mt-8">
     <div class="container max-w-xl">
       <div class="glass content-card">
@@ -15,8 +15,8 @@ const pageDescription = "The page you requested does not exist. Return to SpeedR
           That URL does not match any SpeedRead tool page. Head back to the reader and load text, a PDF, or a web article.
         </p>
         <div class="actions mt-6">
-          <a href="/" class="btn btn-primary">Open Speed Reader ⚡</a>
-          <a href="/bookmarklet" class="btn btn-secondary">Install Bookmarklet</a>
+          <a href="/" class="btn btn-primary">Open speed reader</a>
+          <a href="/bookmarklet" class="btn btn-secondary">Install bookmarklet</a>
         </div>
       </div>
     </div>
@@ -30,7 +30,7 @@ const pageDescription = "The page you requested does not exist. Return to SpeedR
   }
   .content-card {
     padding: 2.5rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
     text-align: center;
@@ -39,9 +39,8 @@ const pageDescription = "The page you requested does not exist. Return to SpeedR
     font-size: 3.5rem;
     font-weight: 800;
     font-family: var(--font-display);
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: var(--color-primary);
+    letter-spacing: -0.03em;
     margin-bottom: 0.25rem;
   }
   .muted {

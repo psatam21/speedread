@@ -27,8 +27,9 @@ const els = {
 
 async function getOrigins() {
   const defaults = globalThis.SR_DEFAULTS || {
-    API_BASE: 'https://speedread-web.com',
-    APP_ORIGIN: 'https://speedread-web.com',
+    API_BASE: '',
+    APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+    PREMIUM_AVAILABLE: false,
   };
   const sync = await chrome.storage.sync.get(['api_base', 'app_origin']);
   return {
@@ -164,18 +165,21 @@ function renderDevices(devices, maxDevices, currentId) {
 async function refreshUI() {
   const auth = await getAuth();
   const premium = auth.is_premium && !!auth.premium_token;
+  const premiumAvailable = Boolean(globalThis.SR_DEFAULTS?.PREMIUM_AVAILABLE);
   const { APP_ORIGIN } = await getOrigins();
 
-  els.badge.textContent = premium ? 'Premium' : 'Free';
+  els.badge.textContent = premiumAvailable && premium ? 'Premium' : 'Free';
   els.badge.classList.toggle('premium', premium);
-  els.badge.classList.toggle('free', !premium);
+  els.badge.classList.toggle('free', !premiumAvailable || !premium);
 
-  els.panelLogin.classList.toggle('hidden', premium);
-  els.panelAccount.classList.toggle('hidden', !premium);
+  els.panelLogin.classList.toggle('hidden', premium || !premiumAvailable);
+  els.panelAccount.classList.toggle('hidden', !premium || !premiumAvailable);
 
   if (els.linkBuy) els.linkBuy.href = `${APP_ORIGIN}/#importer-card`;
 
-  if (premium) {
+  if (!premiumAvailable) {
+    els.tabHint.textContent = 'Speed-read the active page for free. Premium sign-in returns when the license service is live.';
+  } else if (premium) {
     const max = auth.devices?.maxDevices || 5;
     renderDevices(auth.devices?.devices || [], max, auth.device_id);
     els.tabHint.textContent = 'Premium active. Article opens with your session (ad-free).';
@@ -398,7 +402,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Silent re-bind only for this extension device (keeps session fresh)
   const auth = await getAuth();
-  if (auth.license_key && navigator.onLine) {
+  if (globalThis.SR_DEFAULTS?.PREMIUM_AVAILABLE && auth.license_key && navigator.onLine) {
     try {
       const { res, data } = await activateLicense(auth.license_key);
       if (res.ok && data.ok && data.token) {

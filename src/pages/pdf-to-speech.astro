@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const pageTitle = "PDF to Speech Online — Free PDF Reader & TTS | SpeedRead";
-const pageDescription = "Convert PDF text to speech free in your browser. Upload PDF or EPUB, speed-read with RSVP, and narrate with neural TTS. No upload to our servers — client-side parsing.";
+const pageDescription = "Convert PDF text to speech free in your browser. Upload PDF or EPUB, read with RSVP, and use natural system voices. Files are parsed on your device.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -14,7 +14,7 @@ const pageDescription = "Convert PDF text to speech free in your browser. Upload
         <p class="lede">
           Upload a PDF or EPUB, extract text in your browser, then listen with the Web Speech API while words flash in RSVP or display in bionic mode. SpeedRead does not store your files on our servers — parsing runs on-device.
         </p>
-        <a href="/#importer-card" class="btn btn-primary mt-4">Upload PDF to Read ⚡</a>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Upload a PDF to read</a>
 
         <h2 class="mt-8">How to turn a PDF into speech</h2>
         <ol class="steps">
@@ -60,12 +60,12 @@ const pageDescription = "Convert PDF text to speech free in your browser. Upload
   .max-w-3xl { max-width: 800px; margin: 0 auto; }
   .content-card {
     padding: 2.5rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
   }
   .lede { font-size: 1.1rem; color: var(--color-text-muted); }
-  h1 { font-size: 1.85rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }

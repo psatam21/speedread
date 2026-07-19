@@ -9,19 +9,23 @@ interface Props {
   description: string;
   canonicalUrl?: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
 const { 
   title, 
   description, 
   canonicalUrl = Astro.url.href, 
-  ogImage = '/images/og-default.svg' 
+  ogImage = '/images/og-default.svg',
+  noindex = false,
 } = Astro.props;
 
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID as string | undefined;
 const adsenseAutoAds = import.meta.env.PUBLIC_ADSENSE_AUTO_ADS !== 'false';
 const adsenseVerification = import.meta.env.PUBLIC_ADSENSE_VERIFICATION as string | undefined;
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
+const pathname = Astro.url.pathname;
+const isHome = pathname === '/';
 ---
 
 <!doctype html>
@@ -33,7 +37,10 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
     <!-- Merriweather only when serif theme selected later; Inter is self-hosted -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+    </noscript>
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -42,8 +49,8 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
-    <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#5e6ad2" />
+    <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
+    <meta name="theme-color" content="#5b3ee4" />
     
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -73,9 +80,6 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
       const getStoredTheme = () => {
         if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) {
           return localStorage.getItem('theme');
-        }
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-          return 'dark';
         }
         return 'light';
       };
@@ -117,54 +121,84 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
     )}
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <div class="launch-strip">
+      <div class="container launch-strip-inner">
+        <span>Free reader. No account. Your files stay on your device.</span>
+        <a href="/#importer-card">Start reading <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
     <header class="site-header">
       <div class="container header-container">
-        <a href="/" class="logo-link">
+        <a href="/" class="logo-link" aria-label="SpeedRead home">
           <div class="logo-container">
-            <span class="logo-icon">⚡</span>
+            <svg class="logo-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" />
+            </svg>
             <span class="logo-text">SpeedRead</span>
           </div>
         </a>
         
         <nav class="nav-links" aria-label="Primary">
-          <a href="/rsvp-reader" class="nav-link">RSVP</a>
-          <a href="/bionic-reading" class="nav-link">Bionic</a>
-          <a href="/extension" class="nav-link">Extension</a>
-          <a href="/bookmarklet" class="nav-link">Bookmarklet</a>
-          <a href="/about" class="nav-link">About</a>
-          <a href="/contact" class="nav-link">Contact</a>
+          <a href="/" class:list={["nav-link", { active: isHome }]}>Reader</a>
+          <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
+          <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
+          <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
+          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">◐</button>
+          <a href="/#pricing" class="nav-cta">Lifetime · $9</a>
         </nav>
       </div>
     </header>
 
-    <main>
+    <main id="main-content">
       <slot />
     </main>
 
     <footer class="site-footer">
       <div class="container footer-container">
         <div class="footer-brand">
-          <p>© {new Date().getFullYear()} SpeedRead. Free online speed reader — RSVP, bionic reading, PDF to speech.</p>
-          <p class="footer-tools">
-            Tools:
-            <a href="/">Speed reader</a> ·
-            <a href="/extension">Chrome extension</a> ·
-            <a href="/rsvp-reader">RSVP</a> ·
-            <a href="/bionic-reading">Bionic</a> ·
-            <a href="/pdf-to-speech">PDF to speech</a>
-          </p>
+          <a href="/" class="footer-logo">SpeedRead<span>.</span></a>
+          <p>Read the backlog, not the interface. RSVP, bionic reading, OCR and synced speech in one private browser tool.</p>
+          <p class="footer-note">© {new Date().getFullYear()} SpeedRead</p>
         </div>
-        <div class="footer-links">
-          <a href="/privacy">Privacy Policy</a>
-          <span>•</span>
-          <a href="/terms">Terms of Service</a>
-          <span>•</span>
-          <a href="/about">About Us</a>
-          <span>•</span>
+        <div class="footer-group">
+          <p>Read</p>
+          <a href="/">Speed reader</a>
+          <a href="/rsvp-reader">RSVP reader</a>
+          <a href="/bionic-reading">Bionic reading</a>
+          <a href="/pdf-to-speech">PDF to speech</a>
+        </div>
+        <div class="footer-group">
+          <p>Capture</p>
+          <a href="/extension">Chrome extension</a>
+          <a href="/bookmarklet">Bookmarklet</a>
+          <a href="/#pricing">Lifetime Premium</a>
+        </div>
+        <div class="footer-group">
+          <p>Company</p>
+          <a href="/about">About</a>
           <a href="/contact">Contact</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
         </div>
       </div>
     </footer>
+
+    <script is:inline>
+      const themeToggle = document.getElementById('theme-toggle');
+      const syncThemeToggle = () => {
+        const isDark = document.documentElement.dataset.theme === 'dark' || document.documentElement.dataset.theme === 'amoled';
+        themeToggle?.setAttribute('aria-pressed', String(isDark));
+        themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+      };
+      themeToggle?.addEventListener('click', () => {
+        const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('theme', nextTheme);
+        syncThemeToggle();
+      });
+      syncThemeToggle();
+    </script>
 
     <style>
       .site-header {
@@ -180,8 +214,34 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        height: 3.75rem;
+        min-height: 4.25rem;
       }
+      .launch-strip {
+        background: var(--color-ink);
+        color: var(--color-ink-on);
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .launch-strip-inner {
+        min-height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        text-align: center;
+      }
+      .launch-strip a { color: var(--color-ink-on); text-decoration: underline; text-underline-offset: 3px; }
+      .skip-link {
+        position: fixed;
+        left: 1rem;
+        top: 0.5rem;
+        z-index: var(--z-toast);
+        padding: 0.5rem 0.75rem;
+        background: var(--color-bg-card);
+        color: var(--color-text);
+        transform: translateY(-150%);
+      }
+      .skip-link:focus { transform: translateY(0); }
       .logo-link {
         text-decoration: none;
         color: var(--color-text);
@@ -200,8 +260,8 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
         letter-spacing: -0.02em;
       }
       .logo-icon {
-        font-size: 1.2rem;
         color: var(--color-primary);
+        flex-shrink: 0;
       }
       .logo-text {
         color: var(--color-text);
@@ -227,41 +287,55 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
         background-color: var(--color-bg-subtle);
         text-decoration: none;
       }
+      .nav-link.active { color: var(--color-text); background: var(--color-primary-muted); }
+      .theme-toggle {
+        width: 2rem;
+        height: 2rem;
+        border: 1px solid var(--color-border);
+        border-radius: 6px;
+        background: var(--color-bg-card);
+        color: var(--color-text);
+        cursor: pointer;
+        font-size: 1rem;
+      }
+      .nav-cta {
+        padding: 0.48rem 0.8rem;
+        border-radius: var(--radius-md);
+        background: var(--color-primary);
+        color: white;
+        font-size: 0.8125rem;
+        font-weight: 700;
+      }
+      .nav-cta:hover { background: var(--color-primary-hover); color: white; }
       
       .site-footer {
         border-top: 1px solid var(--color-border);
-        padding: 2rem 0;
+        padding: clamp(3rem, 8vw, 5rem) 0;
         margin-top: 4rem;
         font-size: 0.8125rem;
         color: var(--color-text-muted);
         background-color: var(--color-bg-footer);
       }
       .footer-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1.25rem;
-        text-align: center;
+        display: grid;
+        grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(110px, 1fr));
+        align-items: start;
+        gap: clamp(2rem, 5vw, 4rem);
+        text-align: left;
       }
-      .footer-tools {
-        margin-top: 0.5rem;
-        font-size: 0.8rem;
-      }
-      .footer-tools a {
-        color: var(--color-text-muted);
-      }
-      @media (min-width: 768px) {
-        .footer-container {
-          flex-direction: row;
-          justify-content: space-between;
-          text-align: left;
-        }
-      }
+      .footer-logo { color: var(--color-text); font-size: 1.25rem; font-weight: 800; }
+      .footer-logo span { color: var(--color-accent); }
+      .footer-brand > p { max-width: 40ch; margin-top: 0.75rem; }
+      .footer-note { font-size: 0.75rem; }
+      .footer-group { display: flex; flex-direction: column; gap: 0.55rem; }
+      .footer-group p { color: var(--color-text); font-weight: 700; margin-bottom: 0.2rem; }
+      .footer-group a { color: var(--color-text-muted); }
+      .footer-group a:hover { color: var(--color-primary); }
       @media (max-width: 480px) {
         .header-container {
           flex-direction: column;
           height: auto;
-          padding: 1.25rem 1rem;
+          padding: 0.75rem 1rem;
           gap: 0.75rem;
         }
         .nav-links {
@@ -273,21 +347,13 @@ const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
           font-size: 0.75rem;
           padding: 0.35rem 0.45rem;
         }
+        .nav-link:nth-child(2), .nav-link:nth-child(3) { display: none; }
+        .launch-strip-inner { justify-content: space-between; }
+        .launch-strip-inner > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
       }
-      .footer-links {
-        display: flex;
-        gap: 0.75rem;
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .footer-links a {
-        color: var(--color-text-muted);
-        text-decoration: none;
-        transition: color 150ms ease;
-      }
-      .footer-links a:hover {
-        color: var(--color-primary);
-        text-decoration: none;
+      @media (max-width: 760px) {
+        .footer-container { grid-template-columns: 1fr 1fr; }
+        .footer-brand { grid-column: 1 / -1; }
       }
     </style>
   </body>

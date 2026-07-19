@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "RSVP Reader Online — Free Rapid Serial Visual Presentation | SpeedRead";
+const pageTitle = "RSVP Reader Online — Free Speed Reading Tool | SpeedRead";
 const pageDescription = "Free online RSVP speed reader. Flash words at a fixed focus point with ORP alignment. Paste text, PDFs, EPUBs, or web articles. Adjust WPM up to 1000+.";
 ---
 
@@ -14,7 +14,7 @@ const pageDescription = "Free online RSVP speed reader. Flash words at a fixed f
         <p class="lede">
           RSVP (Rapid Serial Visual Presentation) flashes one word at a time on a fixed point so you stop horizontal eye scanning. SpeedRead adds Optimal Recognition Point (ORP) alignment, punctuation-aware pacing, and optional synced TTS.
         </p>
-        <a href="/#importer-card" class="btn btn-primary mt-4">Start RSVP Reading ⚡</a>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Start RSVP reading</a>
 
         <h2 class="mt-8">How RSVP speed reading works</h2>
         <p>
@@ -69,12 +69,12 @@ const pageDescription = "Free online RSVP speed reader. Flash words at a fixed f
   .max-w-3xl { max-width: 800px; margin: 0 auto; }
   .content-card {
     padding: 2.5rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
   }
   .lede { font-size: 1.1rem; color: var(--color-text-muted); }
-  h1 { font-size: 1.85rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }

@@ -3,13 +3,15 @@ import Layout from '../layouts/Layout.astro';
 
 const pageTitle = "Web-to-Reader Bookmarklet — SpeedRead";
 const pageDescription = "Install the SpeedRead bookmarklet to instantly import and speed read any web article or news page with a single click from your bookmarks bar.";
+const readerUrl = new URL('/', Astro.site || Astro.url).href;
+const bookmarkletHref = `javascript:(function(){const url=window.location.href;window.open('${readerUrl}?url='+encodeURIComponent(url),'_blank');})();`;
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="bookmarklet-section mt-8">
     <div class="container max-w-xl">
       <div class="glass content-card">
-        <h1>⚡ Web-to-Reader Bookmarklet</h1>
+        <h1>Send any article to SpeedRead</h1>
         <p class="intro">
           SpeedRead includes a browser shortcut called a bookmarklet. It sits in your browser's bookmarks bar, letting you send any webpage's text content directly into our speed-reading engine with a single click.
         </p>
@@ -17,8 +19,8 @@ const pageDescription = "Install the SpeedRead bookmarklet to instantly import a
         <div class="drag-box mt-6">
           <p class="muted">Drag the button below directly into your bookmarks bar:</p>
           
-          <a href="javascript:(function(){const%20url=window.location.href;window.open('https://speedread-web.com/?url='+encodeURIComponent(url),'_blank');})();" class="bookmarklet-btn" id="bookmarklet-link">
-            ⚡ SpeedRead
+          <a href={bookmarkletHref} class="bookmarklet-btn" id="bookmarklet-link">
+            SpeedRead this page →
           </a>
           
           <p class="hint mt-4">
@@ -30,7 +32,7 @@ const pageDescription = "Install the SpeedRead bookmarklet to instantly import a
           <h2>How to Use It</h2>
           <ol>
             <li>Navigate to any long-form article, news page, or blog post (e.g., Wikipedia, Medium, NYT).</li>
-            <li>Click the **⚡ SpeedRead** bookmark in your bookmarks bar.</li>
+            <li>Click the <strong>SpeedRead this page</strong> bookmark in your bookmarks bar.</li>
             <li>A new tab will automatically launch with the core text of that article loaded into the speed reader.</li>
           </ol>
         </div>
@@ -78,13 +80,13 @@ const pageDescription = "Install the SpeedRead bookmarklet to instantly import a
   .bookmarklet-btn {
     display: inline-block;
     padding: 0.75rem 2rem;
-    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    background: var(--color-primary);
     color: #ffffff;
     font-weight: 700;
     border-radius: 0.5rem;
     cursor: grab;
     text-decoration: none;
-    box-shadow: var(--shadow-md);
+    box-shadow: none;
     transition: transform 150ms ease;
   }
   .bookmarklet-btn:hover {

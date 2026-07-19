@@ -6,6 +6,22 @@
 const ALLOWED_CONTENT_TYPES = ['text/html', 'application/xhtml+xml', 'text/plain'];
 const MAX_BODY_BYTES = 2 * 1024 * 1024; // 2 MB cap
 
+export function isPrivateHost(hostname) {
+  const host = hostname.toLowerCase().replace(/^\[|\]$/g, '');
+  if (host === 'localhost' || host.endsWith('.localhost') || host.endsWith('.local')) return true;
+  if (host === '::1' || host.startsWith('fc') || host.startsWith('fd') || host.startsWith('fe80:')) return true;
+
+  const octets = host.split('.').map(Number);
+  if (octets.length !== 4 || octets.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
+  const [a, b] = octets;
+  return a === 0 || a === 10 || a === 127 ||
+    (a === 100 && b >= 64 && b <= 127) ||
+    (a === 169 && b === 254) ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    a >= 224;
+}
+
 export async function onRequestGet(context) {
   const { request } = context;
   const url = new URL(request.url);
@@ -31,6 +47,13 @@ export async function onRequestGet(context) {
 
   if (!['http:', 'https:'].includes(parsed.protocol)) {
     return new Response(JSON.stringify({ error: 'Only http/https URLs are supported' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  if (isPrivateHost(parsed.hostname)) {
+    return new Response(JSON.stringify({ error: 'Private network URLs are not supported' }), {
       status: 400,
       headers: { 'Content-Type': 'application/json' },
     });

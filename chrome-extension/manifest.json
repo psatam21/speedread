@@ -2,12 +2,12 @@
   "manifest_version": 3,
   "name": "SpeedRead — Speed Reader for Chrome",
   "short_name": "SpeedRead",
-  "version": "1.2.0",
-  "description": "Speed-read any webpage with RSVP. Optional Lifetime Premium license sign-in (up to 5 devices).",
-  "homepage_url": "https://speedread-web.com/extension",
+  "version": "1.2.1",
+  "description": "Speed-read any webpage with RSVP in the SpeedRead reader.",
+  "homepage_url": "https://speedread-orcin.vercel.app/extension",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
-  "host_permissions": ["https://speedread-web.com/*"],
+  "host_permissions": ["https://speedread-orcin.vercel.app/*"],
   "optional_host_permissions": [
     "http://localhost:4321/*",
     "http://127.0.0.1:4321/*",
@@ -18,7 +18,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://speedread-web.com/*"],
+      "matches": ["https://speedread-orcin.vercel.app/*"],
       "js": ["content-handoff.js"],
       "run_at": "document_start"
     }

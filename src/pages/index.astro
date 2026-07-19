@@ -2,27 +2,85 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Free Online Speed Reader — RSVP, Bionic Reading & TTS | SpeedRead";
-const pageDescription = "Free online speed reader. Flash RSVP reading, bionic text, PDF/EPUB upload, image OCR, and synced text-to-speech. No install. Read faster with WPM control up to 1000+.";
+const pageTitle = "Online Speed Reader — RSVP, Bionic & TTS | SpeedRead";
+const pageDescription = "Free online speed reader with RSVP, bionic text, PDF and EPUB import, image OCR, and synced speech. No install or account required.";
+const siteUrl = new URL('/', Astro.site || Astro.url).href;
+const webAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'SpeedRead',
+  url: siteUrl,
+  applicationCategory: 'EducationalApplication',
+  operatingSystem: 'Any',
+  browserRequirements: 'Requires JavaScript',
+  offers: {
+    '@type': 'AggregateOffer',
+    lowPrice: '0',
+    highPrice: '9.00',
+    priceCurrency: 'USD',
+    offerCount: '2',
+  },
+  description: 'Free online speed reader with RSVP, bionic reading, PDF and EPUB import, and text-to-speech.',
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <!-- Top App Section: Interactive Reader Workspace -->
   <section class="app-section">
     <div class="container app-workspace">
-      
+
+      <!-- Hero -->
+      <header class="hero">
+        <div class="hero-copy">
+          <h1>Finish the backlog.<br />Keep the meaning.</h1>
+          <p class="hero-sub">
+            RSVP speed reading that helps you read faster<br />while understanding more.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#importer-card">Try it with your text</a>
+            <button class="hero-demo-link" id="btn-hero-demo" type="button">Try a sample text</button>
+          </div>
+          <ul class="hero-trust" aria-label="Product benefits">
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 6v4m0 3h.01" /></svg><span><strong>100% private</strong><small>Your text stays<br />in your browser.</small></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z" /></svg><span><strong>Up to 3x faster</strong><small>Read more in less time<br />without losing meaning.</small></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="m12 4 1.4 2.6L16 8l-2.6 1.4L12 12l-1.4-2.6L8 8l2.6-1.4L12 4Z" /></svg><span><strong>Better focus</strong><small>Fewer distractions.<br />More comprehension.</small></span></li>
+          </ul>
+        </div>
+        <div class="hero-reader" aria-label="Animated RSVP reading preview">
+          <div class="hero-reader-top"><strong>RSVP Reader</strong><div class="hero-reader-tools"><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div></div>
+          <div class="hero-preview-stage">
+            <p><i></i>Optimal recognition point</p>
+            <div class="hero-word" aria-live="off"><span id="hero-word-left">cre</span><strong id="hero-word-orp">a</strong><span id="hero-word-right">te</span></div>
+          </div>
+          <div class="hero-demo-controls">
+            <div class="hero-speed-control"><span>WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
+          </div>
+          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with SpeedRead<b>350 <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
+        </div>
+      </header>
+
+      <section class="hero-import-rail" aria-labelledby="hero-import-title">
+        <div class="hero-import-heading"><div><h2 id="hero-import-title">Bring in text</h2><p>Choose a source, then start reading in seconds.</p></div></div>
+        <div class="hero-import-options">
+          <button class="hero-import-option" type="button" data-open-tab="paste"><strong>Paste text</strong><span>Type or paste anything</span></button>
+          <button class="hero-import-option" type="button" data-open-tab="upload"><strong>Upload a file</strong><span>PDF, EPUB, or TXT</span></button>
+          <button class="hero-import-option" type="button" data-open-tab="ocr"><strong>Scan an image</strong><span>On-device OCR</span></button>
+          <button class="hero-import-option" type="button" data-open-tab="url"><strong>Extract a web link</strong><span>Pull in an article</span></button>
+        </div>
+      </section>
+
       <!-- ---------------- READER SCREEN ---------------- -->
       <div id="reader-screen" class="glass app-card hidden mb-6">
         <div class="reader-header">
-          <h3>📖 SpeedRead Engine</h3>
+          <h3>Reader</h3>
           <button class="btn btn-secondary btn-sm" id="btn-close-reader">✕ Close</button>
         </div>
 
         <!-- Reading Mode Switcher -->
         <div class="mode-switcher mt-4">
-          <button class="mode-btn active" data-mode="rsvp">⚡ RSVP Mode (Flashing)</button>
-          <button class="mode-btn" data-mode="bionic">👁️ Bionic Mode</button>
-          <button class="mode-btn" data-mode="standard">📖 Standard Mode</button>
+          <button class="mode-btn active" data-mode="rsvp">RSVP</button>
+          <button class="mode-btn" data-mode="bionic">Bionic</button>
+          <button class="mode-btn" data-mode="standard">Standard</button>
         </div>
 
         <!-- Interactive Workspace -->
@@ -71,8 +129,8 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             <button class="control-btn" id="btn-rsvp-prev" title="Previous word (ArrowLeft)">⏮</button>
             <button class="control-btn play-btn" id="btn-rsvp-play" title="Play/Pause (Space)">▶ Play</button>
             <button class="control-btn" id="btn-rsvp-next" title="Next word (ArrowRight)">⏭</button>
-            <button class="control-btn" id="btn-rsvp-tts" title="Toggle Text-to-Speech Audio">🔊 Audio Sync: Off</button>
-            <button class="control-btn" id="btn-fullscreen" title="Toggle distraction-free fullscreen">⛶ Fullscreen</button>
+            <button class="control-btn" id="btn-rsvp-tts" title="Toggle Text-to-Speech Audio">Audio Sync: Off</button>
+            <button class="control-btn" id="btn-fullscreen" title="Toggle distraction-free fullscreen">Fullscreen</button>
           </div>
 
           <!-- Setting Tuners -->
@@ -135,14 +193,19 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
 
       <!-- ---------------- IMPORTER CARD ---------------- -->
       <div class="glass app-card" id="importer-card">
+        <div class="importer-heading">
+          <div>
+            <h2>Bring in text</h2>
+            <p class="muted">Choose one source. AI works on the document you load here.</p>
+          </div>
+          <p class="document-status" id="document-status" role="status">No document loaded yet</p>
+        </div>
         
-        <!-- Tab Selectors for Import -->
-        <div class="tabs">
-          <button class="tab-btn active" data-tab="paste">📄 Paste Text</button>
-          <button class="tab-btn" data-tab="upload">📁 Upload Files</button>
-          <button class="tab-btn" data-tab="ocr">📷 Image OCR</button>
-          <button class="tab-btn" data-tab="url">🔗 Extract URL</button>
-          <button class="tab-btn" data-tab="ai">🤖 AI Chat & Summary</button>
+        <div class="tabs" aria-label="Document sources">
+          <button class="tab-btn active" data-tab="paste">Paste text</button>
+          <button class="tab-btn" data-tab="upload">Upload file</button>
+          <button class="tab-btn" data-tab="ocr">Image OCR</button>
+          <button class="tab-btn" data-tab="url">Extract URL</button>
         </div>
 
         <!-- Import Panels -->
@@ -154,7 +217,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             
             <!-- Find & Replace Accordion -->
             <details class="text-clean-details mt-2">
-              <summary>🛠️ Text Cleaning Tools (Find & Replace)</summary>
+              <summary>Text cleaning tools (Find &amp; Replace)</summary>
               <div class="find-replace-grid mt-2">
                 <input type="text" id="input-find" placeholder="Find text..." />
                 <input type="text" id="input-replace" placeholder="Replace with..." />
@@ -163,29 +226,27 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             </details>
 
             <div class="input-actions mt-4">
-              <button class="btn btn-primary" id="btn-load-paste">Start Reading ⚡</button>
-              <button class="btn btn-secondary" id="btn-demo">Try Demo Text</button>
+              <button class="btn btn-primary" id="btn-load-paste">Start reading</button>
+              <button class="btn btn-secondary" id="btn-demo">Try demo text</button>
             </div>
           </div>
 
           <!-- Upload Panel -->
           <div class="tab-content" id="tab-upload">
             <div class="dropzone" id="file-dropzone">
-              <span class="dropzone-icon">📥</span>
               <p>Drag and drop a file here, or <span class="browse-link">browse files</span></p>
               <span class="dropzone-formats">Supports PDF, EPUB, TXT</span>
               <input type="file" id="file-input" accept=".pdf,.epub,.txt" class="hidden" />
             </div>
             <div id="file-progress" class="hidden">
               <div class="progress-bar-container"><div class="progress-bar" id="upload-progress-bar"></div></div>
-              <p id="file-status">Parsing file...</p>
+              <p id="file-status" role="status" aria-live="polite">Parsing file...</p>
             </div>
           </div>
 
           <!-- OCR Panel -->
           <div class="tab-content" id="tab-ocr">
             <div class="dropzone" id="ocr-dropzone">
-              <span class="dropzone-icon">📷</span>
               <p>Drag and drop an image / screenshot of text, or <span class="browse-link">browse files</span></p>
               <span class="dropzone-formats">Extracts text client-side using On-Device OCR</span>
               <input type="file" id="ocr-input" accept="image/*" class="hidden" />
@@ -202,11 +263,14 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
               <input type="url" id="url-input" placeholder="Enter article or webpage URL (e.g., https://example.com/article)" />
               <button class="btn btn-primary" id="btn-load-url">Extract Text</button>
             </div>
-            <p class="input-hint">Extracts core article text from public web pages client-side using a clean readability parser.</p>
+            <p class="input-hint">Fetches core text from a public webpage through SpeedRead's extractor, then opens it in your reader.</p>
           </div>
 
-          <!-- AI Chat & Summary Panel -->
-          <div class="tab-content" id="tab-ai">
+          <section class="ai-workspace" aria-labelledby="ai-workspace-title">
+            <div class="ai-workspace-copy">
+              <h3 id="ai-workspace-title">AI workspace</h3>
+              <p id="ai-document-status">Load a document above, then summarize it or ask questions about it.</p>
+            </div>
             <div class="ai-config">
               <label for="ai-key">Gemini API Key (stored locally):</label>
               <div class="key-input-row">
@@ -215,9 +279,9 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
                 <a href="https://aistudio.google.com/" target="_blank" class="api-link">Get Free Key ↗</a>
               </div>
             </div>
-            <div class="ai-actions mt-4">
-              <button class="btn btn-primary" id="btn-ai-summary">✨ Generate Summary</button>
-              <button class="btn btn-secondary" id="btn-ai-chat">💬 Chat with Document</button>
+            <div class="ai-actions">
+              <button class="btn btn-primary" id="btn-ai-summary" disabled>Generate summary</button>
+              <button class="btn btn-secondary" id="btn-ai-chat" disabled>Chat with document</button>
             </div>
             
             <div id="ai-response-box" class="hidden glass mt-4">
@@ -236,9 +300,40 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
                 </div>
               </div>
             </div>
-          </div>
+          </section>
 
         </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="launch-paths" aria-labelledby="launch-paths-title">
+    <div class="container">
+      <div class="launch-paths-heading">
+        <h2 id="launch-paths-title">One reader. Four ways in.</h2>
+        <p>Use the smallest capture flow that fits what you are reading.</p>
+      </div>
+      <div class="launch-paths-list">
+        <a href="#importer-card" class="launch-path">
+          <span class="launch-path-mark" aria-hidden="true"></span>
+          <span><strong>Paste or upload</strong><small>Text, PDF, EPUB, TXT or image OCR</small></span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="/extension" class="launch-path">
+          <span class="launch-path-mark" aria-hidden="true"></span>
+          <span><strong>Chrome extension</strong><small>Send the active article in one click</small></span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="/bookmarklet" class="launch-path">
+          <span class="launch-path-mark" aria-hidden="true"></span>
+          <span><strong>Bookmarklet</strong><small>No install, just drag it to your bookmarks bar</small></span>
+          <span aria-hidden="true">→</span>
+        </a>
+        <a href="#importer-card" class="launch-path" data-open-tab="url">
+          <span class="launch-path-mark" aria-hidden="true"></span>
+          <span><strong>Public URL</strong><small>Pull the article body into the reader</small></span>
+          <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </section>
@@ -251,12 +346,12 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
   </section>
 
   <!-- Monetization & Analytics Section -->
-  <section class="pricing-analytics-section mt-8">
+  <section class="pricing-analytics-section mt-8" id="pricing">
     <div class="container pricing-analytics-grid">
       
       <!-- Analytics Stored locally -->
       <div class="glass dashboard-card">
-        <h3>📊 Your Reading Dashboard</h3>
+        <h3>Your reading dashboard</h3>
         <p class="muted">Your statistics are stored entirely in your local browser.</p>
         <div class="stats-grid mt-4">
           <div class="stat-box">
@@ -273,33 +368,33 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           </div>
           <div class="stat-box">
             <span class="stat-value" id="stats-streak">0</span>
-            <span class="stat-label">Day Streak 🔥</span>
+            <span class="stat-label">Day Streak</span>
           </div>
         </div>
         <div class="actions mt-6">
-          <button class="btn btn-secondary" id="btn-share-stats">Share Achievement ⚡</button>
+          <button class="btn btn-secondary" id="btn-share-stats">Share achievement</button>
         </div>
       </div>
 
       <!-- Lifetime Premium Block -->
       <div class="glass pricing-card premium-badge">
         <div class="pricing-tag">Lifetime</div>
-        <h3>Lifetime Lifetime</h3>
+        <h3>Lifetime Premium</h3>
         <div class="price-row mt-2">
           <span class="price-strike">$29.99</span>
           <span class="price-value">$9.00</span>
           <span class="price-term">one-time / forever</span>
         </div>
         <ul class="pricing-features mt-4">
-          <li>✨ 100% Ad-Free Reading Environment</li>
-          <li>📂 Unlimited document length (no 3,000-word cap)</li>
-          <li>🤖 Gemini AI summary & chat (no BYOK required)</li>
-          <li>🔑 Multi-device license (up to 5 devices, revocable)</li>
-          <li>🗣️ Neural TTS voices (Chrome/Edge system voices)</li>
+          <li>100% ad-free reading environment</li>
+          <li>Unlimited document length (no 3,000-word cap)</li>
+          <li>Gemini AI summary &amp; chat (no API key needed)</li>
+          <li>Multi-device license (up to 5 devices, revocable)</li>
+          <li>Neural TTS voices (Chrome/Edge system voices)</li>
         </ul>
         <div class="pricing-actions mt-6">
           <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $9</button>
-          <p class="muted text-center mt-2">One-time payment. Works on unlimited personal devices.</p>
+          <p class="muted text-center mt-2">One-time payment. Activate up to 5 personal devices.</p>
         </div>
 
         <!-- Multi-device license: activate key + device slots (max 5) -->
@@ -338,7 +433,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       <div class="seo-layout">
         
         <div class="seo-text">
-          <h1>Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h1>
+          <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
             SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). It combines RSVP (Rapid Serial Visual Presentation), bionic reading, and synchronized text-to-speech so you can reduce eye fatigue, cut sub-vocalization, and finish long material faster — without installing an app or creating an account.
           </p>
@@ -444,7 +539,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
   <!-- Modal for Share Canvas Card -->
   <div id="share-modal" class="modal hidden">
     <div class="modal-content glass">
-      <h3>🎉 Achievement Card Generated!</h3>
+      <h3>Achievement card ready</h3>
       <p class="muted">Right-click the image below to copy or save it to share on LinkedIn, Twitter, or with friends.</p>
       <div class="canvas-preview mt-4">
         <img id="share-card-img" alt="SpeedRead Stats Achievement Card" />
@@ -455,25 +550,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
     </div>
   </div>
 
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "SpeedRead",
-      "url": "https://speedread-web.com/",
-      "applicationCategory": "EducationalApplication",
-      "operatingSystem": "Any",
-      "browserRequirements": "Requires JavaScript",
-      "offers": {
-        "@type": "AggregateOffer",
-        "lowPrice": "0",
-        "highPrice": "9.00",
-        "priceCurrency": "USD",
-        "offerCount": "2"
-      },
-      "description": "Free online speed reader with RSVP, bionic reading, PDF/EPUB upload, and text-to-speech."
-    }
-  </script>
+  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
   <script type="application/ld+json" is:inline>
     {
       "@context": "https://schema.org",
@@ -545,6 +622,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       theme: 'light',
       font: 'sans',
       fontSize: 24,
+      sourceLabel: '',
       ttsActive: false,
       timer: null,
       ttsUtterance: null,
@@ -757,6 +835,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       document.getElementById('font-size-display').textContent = state.fontSize;
       
       document.getElementById('select-font').value = state.font;
+      document.documentElement.setAttribute('data-font', state.font);
       
       updateStatsUI();
       applyPremiumUI();
@@ -824,6 +903,46 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       state.currentIndex = 0;
     };
 
+    const updateDocumentContext = () => {
+      const hasDocument = Boolean(state.text.trim());
+      const source = state.sourceLabel || 'Document';
+      const wordCount = state.words.length.toLocaleString();
+      const status = hasDocument ? `Loaded: ${source} · ${wordCount} words` : 'No document loaded yet';
+      document.getElementById('document-status').textContent = status;
+      document.getElementById('ai-document-status').textContent = hasDocument
+        ? `Ready to work with ${source} (${wordCount} words).`
+        : 'Load a document above, then summarize it or ask questions about it.';
+      document.getElementById('btn-ai-summary').disabled = !hasDocument;
+      document.getElementById('btn-ai-chat').disabled = !hasDocument;
+    };
+
+    let ttsVisualQueue = [];
+    let ttsVisualTimer = null;
+
+    const renderQueuedTTSWord = () => {
+      ttsVisualTimer = null;
+      const nextIndex = ttsVisualQueue.shift();
+      if (nextIndex === undefined || !state.isPlaying) return;
+
+      state.currentIndex = nextIndex;
+      state.stats.wordsRead += 1;
+      state.stats.timeSpent += 1 / state.wpm;
+      if (state.stats.wordsRead % 50 === 0) saveStats();
+      renderRSVPWord();
+
+      if (ttsVisualQueue.length) {
+        ttsVisualTimer = setTimeout(renderQueuedTTSWord, Math.max(16, 60000 / state.wpm));
+      }
+    };
+
+    const queueTTSVisualWord = (matchedIndex) => {
+      const lastIndex = ttsVisualQueue.length ? ttsVisualQueue[ttsVisualQueue.length - 1] : state.currentIndex;
+      for (let index = lastIndex + 1; index <= matchedIndex; index += 1) {
+        ttsVisualQueue.push(index);
+      }
+      if (!ttsVisualTimer && ttsVisualQueue.length) renderQueuedTTSWord();
+    };
+
     // Display current RSVP word
     const renderRSVPWord = () => {
       if (state.currentIndex >= state.words.length) {
@@ -856,17 +975,16 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       document.getElementById('reading-time-left').textContent = `${minLeft} min remaining`;
     };
 
-    let rsvpExpectedTime = null;
-
     // Main RSVP playback loop
     const playRSVP = () => {
       if (state.currentIndex >= state.words.length) {
         state.currentIndex = 0;
       }
       state.isPlaying = true;
+      ttsVisualQueue = [];
+      clearTimeout(ttsVisualTimer);
+      ttsVisualTimer = null;
       document.getElementById('btn-rsvp-play').textContent = "⏸ Pause";
-      rsvpExpectedTime = null;
-
       if (state.ttsActive) {
         speakWithTTS();
       } else {
@@ -918,22 +1036,17 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       renderRSVPWord();
       state.currentIndex++;
 
-      // Apply drift correction to maintain precise frame schedules at 1000 WPM
-      if (rsvpExpectedTime === null) {
-        rsvpExpectedTime = Date.now();
-      }
-      rsvpExpectedTime += delay;
-      const drift = Date.now() - rsvpExpectedTime;
-      const nextDelay = Math.max(0, delay - drift);
-
-      state.timer = setTimeout(runRSVPTimer, nextDelay);
+      // Never compress delayed frames into zero-delay callbacks: every word needs a paint.
+      state.timer = setTimeout(runRSVPTimer, delay);
     };
 
     const pauseReader = () => {
       state.isPlaying = false;
       document.getElementById('btn-rsvp-play').textContent = "▶ Play";
       clearTimeout(state.timer);
-      rsvpExpectedTime = null;
+      clearTimeout(ttsVisualTimer);
+      ttsVisualTimer = null;
+      ttsVisualQueue = [];
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
@@ -989,19 +1102,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             matchedIdx = state.wordObjects.findIndex(w => w.startIndex > charIndex) - 1;
           }
 
-          if (matchedIdx !== -1 && matchedIdx !== state.currentIndex) {
-            state.currentIndex = matchedIdx;
-            
-            // Record reading stats (in-memory)
-            state.stats.wordsRead += 1;
-            state.stats.timeSpent += (60 / state.wpm) / 60;
-            
-            if (state.stats.wordsRead % 50 === 0) {
-              saveStats();
-            }
-            
-            renderRSVPWord();
-          }
+          if (matchedIdx !== -1) queueTTSVisualWord(matchedIdx);
         }
       };
 
@@ -1099,38 +1200,56 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
 
     // Load PDF parser
     const handlePDFUpload = async (file) => {
-      if (!isPDFJSLoaded) {
-        document.getElementById('file-status').textContent = "Downloading PDF parser...";
-        await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        isPDFJSLoaded = true;
-      }
-
-      document.getElementById('file-status').textContent = "Parsing PDF text content...";
+      const status = document.getElementById('file-status');
       try {
+        if (!isPDFJSLoaded) {
+          status.textContent = "Downloading PDF parser...";
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js');
+          pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+          isPDFJSLoaded = true;
+        }
+
+        status.textContent = "Parsing PDF text content...";
         const reader = new FileReader();
-        reader.onload = async function(e) {
-          const typedarray = new Uint8Array(e.target.result);
-          const pdf = await pdfjsLib.getDocument(typedarray).promise;
-          let fullText = '';
-          const maxPages = Math.min(200, pdf.numPages); // Soft-cap page lengths to prevent RAM crash
-          
-          for (let i = 1; i <= maxPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + '\n\n';
-            
-            // Progress tracker
-            const percent = Math.round((i / maxPages) * 100);
-            document.getElementById('upload-progress-bar').style.width = percent + '%';
+        reader.onerror = () => { status.textContent = "Could not read this PDF file."; };
+        reader.onload = async (event) => {
+          try {
+            const typedarray = new Uint8Array(event.target.result);
+            const pdf = await pdfjsLib.getDocument(typedarray).promise;
+            let fullText = '';
+            const maxPages = Math.min(200, pdf.numPages);
+
+            for (let i = 1; i <= maxPages; i++) {
+              const page = await pdf.getPage(i);
+              const textContent = await page.getTextContent();
+              fullText += textContent.items
+                .map((item) => `${item.str}${item.hasEOL ? '\n' : ' '}`)
+                .join('') + '\n\n';
+              document.getElementById('upload-progress-bar').style.width = `${Math.round((i / maxPages) * 100)}%`;
+            }
+
+            if (!fullText.trim()) {
+              status.textContent = "No selectable text found. Running on-device OCR…";
+              const ocrText = await extractPDFWithOCR(pdf, maxPages, status);
+              if (ocrText.trim()) {
+                status.textContent = `OCR loaded ${maxPages} page${maxPages === 1 ? '' : 's'}.`;
+                initReaderSession(ocrText, file.name);
+              } else {
+                status.textContent = "No text could be read from this PDF.";
+              }
+              return;
+            }
+
+            status.textContent = `Loaded ${maxPages} page${maxPages === 1 ? '' : 's'}.`;
+            initReaderSession(fullText, file.name);
+          } catch (err) {
+            status.textContent = "Could not extract text from this PDF. Try Image OCR for scanned pages.";
+            console.error(err);
           }
-          
-          initReaderSession(fullText);
         };
         reader.readAsArrayBuffer(file);
       } catch (err) {
-        alert("Failed to parse PDF document.");
+        status.textContent = "Could not load the PDF parser. Please try again.";
         console.error(err);
       }
     };
@@ -1170,7 +1289,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             document.getElementById('upload-progress-bar').style.width = percent + '%';
           }
 
-          initReaderSession(fullText);
+          initReaderSession(fullText, file.name);
         };
         reader.readAsArrayBuffer(file);
       } catch (err) {
@@ -1179,22 +1298,47 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       }
     };
 
+    const getOCRWorker = async (status) => {
+      if (!isTesseractLoaded) {
+        status.textContent = "Downloading OCR engine…";
+        await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js');
+        isTesseractLoaded = true;
+      }
+      return Tesseract.createWorker('eng');
+    };
+
+    const extractPDFWithOCR = async (pdf, maxPages, status) => {
+      const worker = await getOCRWorker(status);
+      let text = '';
+      try {
+        for (let i = 1; i <= maxPages; i++) {
+          status.textContent = `Reading scanned page ${i} of ${maxPages}…`;
+          const page = await pdf.getPage(i);
+          const viewport = page.getViewport({ scale: 2 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          const result = await worker.recognize(canvas);
+          text += `${result.data.text}\n\n`;
+          document.getElementById('upload-progress-bar').style.width = `${Math.round((i / maxPages) * 100)}%`;
+        }
+      } finally {
+        await worker.terminate();
+      }
+      return text;
+    };
+
     // OCR engine handler
     const handleOCRUpload = async (file) => {
       document.getElementById('ocr-progress').classList.remove('hidden');
       document.getElementById('ocr-progress-bar').style.width = '10%';
-
-      if (!isTesseractLoaded) {
-        document.getElementById('ocr-status').textContent = "Downloading Tesseract OCR Engine...";
-        await loadScript('https://cdn.jsdelivr.net/npm/tesseract.js@5.0.3/dist/tesseract.min.js');
-        isTesseractLoaded = true;
-      }
-
-      document.getElementById('ocr-status').textContent = "Extracting text from image locally...";
+      const status = document.getElementById('ocr-status');
       document.getElementById('ocr-progress-bar').style.width = '30%';
 
       try {
-        const worker = await Tesseract.createWorker('eng');
+        const worker = await getOCRWorker(status);
+        status.textContent = "Extracting text from image locally…";
         document.getElementById('ocr-progress-bar').style.width = '50%';
         const ret = await worker.recognize(file);
         document.getElementById('ocr-progress-bar').style.width = '90%';
@@ -1209,7 +1353,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           return;
         }
 
-        initReaderSession(extractedText);
+        initReaderSession(extractedText, file.name);
       } catch (err) {
         alert("OCR parsing failed.");
         console.error(err);
@@ -1218,7 +1362,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
     };
 
     // Load parsed text into reader session
-    const initReaderSession = (text) => {
+    const initReaderSession = (text, sourceLabel = 'Document') => {
       if (!text || text.trim().length === 0) {
         alert("No valid text extracted.");
         return;
@@ -1245,6 +1389,8 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       }
       
       parseText(text);
+      state.sourceLabel = sourceLabel;
+      updateDocumentContext();
       
       // Reset reader panels
       const readerScreen = document.getElementById('reader-screen');
@@ -1314,7 +1460,52 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       // Demo button loader
       document.getElementById('btn-demo').addEventListener('click', () => {
         const demo = "Rapid Serial Visual Presentation (RSVP) is a reading technique that flashes words in a single location on the screen. By removing horizontal eye movements, readers can quickly scan literature and dramatically decrease strain. Bionic Reading bold highlights the prefix structure of letters, guiding your focus down lines seamlessly. Synced Audio combines with RSVP to form a multi-channel learning experience, ensuring high focus at faster speeds.";
-        document.getElementById('text-input').value = demo;
+        const textInput = document.getElementById('text-input');
+        textInput.value = demo;
+        textInput.dispatchEvent(new Event('input', { bubbles: true }));
+      });
+
+      document.getElementById('btn-hero-demo')?.addEventListener('click', () => {
+        document.getElementById('btn-demo').click();
+        document.getElementById('btn-load-paste').click();
+      });
+
+      const previewWords = ['Finish', 'more', 'reading', 'with', 'less', 'friction', 'and', 'keep', 'your', 'focus', 'from', 'first', 'page', 'to', 'final', 'point'];
+      let previewIndex = 0;
+      let heroPreviewTimer;
+      let heroPreviewPlaying = true;
+      const heroPlayButton = document.getElementById('hero-play');
+      const renderHeroPreview = () => {
+        const word = previewWords[previewIndex++ % previewWords.length];
+        const orpIndex = getOrpIndex(word);
+        document.getElementById('hero-word-left').textContent = word.slice(0, orpIndex);
+        document.getElementById('hero-word-orp').textContent = word.charAt(orpIndex);
+        document.getElementById('hero-word-right').textContent = word.slice(orpIndex + 1);
+        document.querySelector('.hero-word').classList.remove('is-changing');
+        requestAnimationFrame(() => document.querySelector('.hero-word').classList.add('is-changing'));
+      };
+      const updateHeroPlayback = () => {
+        clearInterval(heroPreviewTimer);
+        heroPlayButton.textContent = heroPreviewPlaying ? 'Ⅱ' : '▶';
+        heroPlayButton.setAttribute('aria-pressed', String(heroPreviewPlaying));
+        heroPlayButton.setAttribute('aria-label', heroPreviewPlaying ? 'Pause RSVP preview' : 'Play RSVP preview');
+        if (heroPreviewPlaying) heroPreviewTimer = setInterval(renderHeroPreview, 60000 / Number(document.getElementById('hero-wpm-slider').value));
+      };
+      document.getElementById('hero-wpm-slider').addEventListener('input', (event) => {
+        document.getElementById('hero-wpm-output').textContent = event.target.value;
+        updateHeroPlayback();
+      });
+      heroPlayButton.addEventListener('click', () => {
+        heroPreviewPlaying = !heroPreviewPlaying;
+        updateHeroPlayback();
+      });
+      updateHeroPlayback();
+
+      document.querySelectorAll('[data-open-tab]').forEach((trigger) => {
+        trigger.addEventListener('click', () => {
+          document.querySelector(`.tab-btn[data-tab="${trigger.dataset.openTab}"]`)?.click();
+          document.getElementById('importer-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
       });
 
       // Load pasted text
@@ -1324,7 +1515,20 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           alert("Please paste some text to begin.");
           return;
         }
-        initReaderSession(pasteVal);
+        initReaderSession(pasteVal, 'Pasted text');
+      });
+
+      document.getElementById('text-input').addEventListener('input', (event) => {
+        const pastedText = event.target.value.trim();
+        if (pastedText) {
+          parseText(pastedText);
+          state.sourceLabel = 'Pasted text';
+          updateDocumentContext();
+        } else if (state.sourceLabel === 'Pasted text') {
+          parseText('');
+          state.sourceLabel = '';
+          updateDocumentContext();
+        }
       });
 
       // Close button
@@ -1363,7 +1567,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       const ttsBtn = document.getElementById('btn-rsvp-tts');
       ttsBtn.addEventListener('click', () => {
         state.ttsActive = !state.ttsActive;
-        ttsBtn.textContent = state.ttsActive ? "🔊 Audio Sync: On" : "🔊 Audio Sync: Off";
+        ttsBtn.textContent = state.ttsActive ? "Audio Sync: On" : "Audio Sync: Off";
         ttsBtn.classList.toggle('active', state.ttsActive);
         if (state.isPlaying) {
           pauseReader();
@@ -1438,7 +1642,9 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       sizeSlider.addEventListener('input', (e) => {
         state.fontSize = parseInt(e.target.value);
         document.getElementById('font-size-display').textContent = state.fontSize;
-        document.querySelector('.rsvp-word-container').style.fontSize = state.fontSize / 6 + 'rem';
+        document.querySelectorAll('.rsvp-word-container, .standard-reader-view').forEach((view) => {
+          view.style.fontSize = state.fontSize / 6 + 'rem';
+        });
         localStorage.setItem('fontSize', state.fontSize.toString());
       });
 
@@ -1477,14 +1683,15 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
         const file = e.target.files[0];
         if (file) {
           document.getElementById('file-progress').classList.remove('hidden');
-          if (file.name.endsWith('.pdf')) {
+          const filename = file.name.toLowerCase();
+          if (filename.endsWith('.pdf')) {
             handlePDFUpload(file);
-          } else if (file.name.endsWith('.epub')) {
+          } else if (filename.endsWith('.epub')) {
             handleEPUBUpload(file);
           } else {
             // Text file
             const reader = new FileReader();
-            reader.onload = (event) => initReaderSession(event.target.result);
+            reader.onload = (event) => initReaderSession(event.target.result, file.name);
             reader.readAsText(file);
           }
         }
@@ -1529,7 +1736,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             alert("Could not extract clean body content. Copy pasting is recommended.");
             return;
           }
-          initReaderSession(`${title}\n\n${paragraphs}`);
+          initReaderSession(`${title}\n\n${paragraphs}`, title);
         } catch (err) {
           alert("Failed to load webpage content.");
           document.getElementById('btn-load-url').textContent = "Extract Text";
@@ -1552,6 +1759,17 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       const getGeminiKey = () => localStorage.getItem('gemini_key') || "";
       document.getElementById('ai-key').value = getGeminiKey();
 
+      async function getGeminiModels(key) {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${key}`);
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data?.error?.message || `Unable to list Gemini models (${res.status})`);
+        const available = new Set((data.models || []).filter((model) => model.supportedGenerationMethods?.includes('generateContent')).map((model) => model.name.replace('models/', '')));
+        const preferred = ['gemini-3.5-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+        const models = [...preferred.filter((name) => available.has(name)), ...[...available].filter((name) => name.startsWith('gemini') && !preferred.includes(name))];
+        if (!models.length) throw new Error('This API key has no supported Gemini text model. Enable Gemini API access in Google AI Studio.');
+        return models;
+      }
+
       async function callGemini(bodyPayload) {
         if (isPremium() && getPremiumToken()) {
           const res = await fetch('/api/gemini', {
@@ -1570,12 +1788,18 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
         }
         const key = getGeminiKey();
         if (!key) throw new Error('NO_KEY');
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bodyPayload),
-        });
-        return res.json();
+        const models = await getGeminiModels(key);
+        let lastError;
+        for (const model of models) {
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyPayload),
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok) return data;
+          lastError = data?.error?.message || `Gemini request failed (${res.status})`;
+          if (res.status !== 404) break;
+        }
+        throw new Error(lastError);
       }
 
       // Helper to ensure text is loaded before running AI operations
@@ -1584,6 +1808,8 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           const pasteVal = document.getElementById('text-input').value;
           if (pasteVal.trim()) {
             parseText(pasteVal);
+            state.sourceLabel = 'Pasted text';
+            updateDocumentContext();
             return true;
           }
           alert("Please paste text or upload a file first!");
@@ -1608,18 +1834,19 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             }]
           });
           
-          const summaryText = data.candidates[0].content.parts[0].text;
+          const summaryText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!summaryText) throw new Error('Gemini returned no summary text.');
           
           document.getElementById('ai-response-box').classList.remove('hidden');
-          document.getElementById('ai-response-title').textContent = "⚡ AI Summary";
+          document.getElementById('ai-response-title').textContent = "AI summary";
           document.getElementById('ai-summary-view').classList.remove('hidden');
           document.getElementById('ai-chat-view').classList.add('hidden');
           document.getElementById('ai-response-text').innerText = summaryText;
-          summaryBtn.textContent = "✨ Generate Summary";
+          summaryBtn.textContent = "Generate summary";
         } catch (err) {
           if (err.message === 'NO_KEY') return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
-          alert("AI Summarization failed. Verify API key.");
-          summaryBtn.textContent = "✨ Generate Summary";
+          alert(`AI Summarization failed: ${err.message}`);
+          summaryBtn.textContent = "Generate summary";
           console.error(err);
         }
       });
@@ -1631,7 +1858,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
         }
         
         document.getElementById('ai-response-box').classList.remove('hidden');
-        document.getElementById('ai-response-title').textContent = "💬 Chat with Document";
+        document.getElementById('ai-response-title').textContent = "Chat with document";
         document.getElementById('ai-summary-view').classList.add('hidden');
         document.getElementById('ai-chat-view').classList.remove('hidden');
         
@@ -1670,7 +1897,8 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
             }]
           });
           
-          const reply = data.candidates[0].content.parts[0].text;
+          const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
+          if (!reply) throw new Error('Gemini returned no chat response.');
           
           const loadingEl = document.getElementById(loadingId);
           if (loadingEl) loadingEl.remove();
@@ -1681,7 +1909,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           const loadingEl = document.getElementById(loadingId);
           if (loadingEl) loadingEl.remove();
           
-          chatHistory.innerHTML += `<div class="chat-message assistant error">Failed to get response from Gemini. Check your API key.</div>`;
+          chatHistory.innerHTML += `<div class="chat-message assistant error">${escapeHtml(`Gemini failed: ${err.message}`)}</div>`;
           chatHistory.scrollTop = chatHistory.scrollHeight;
           console.error(err);
         }
@@ -1817,7 +2045,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
         // Sub Brand slogan
         ctx.fillStyle = '#94a3b8';
         ctx.font = '500 18px system-ui, sans-serif';
-        ctx.fillText('Double your reading speed, eliminate sub-vocalization. speedread-web.com', 60, 340);
+        ctx.fillText(`Read faster with RSVP, bionic reading and TTS. ${location.hostname}`, 60, 340);
 
         // Output canvas image into preview image element
         document.getElementById('share-card-img').src = canvas.toDataURL('image/png');
@@ -2008,7 +2236,7 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
           }
           const combined = title ? `${title}\n\n${text}` : text;
           history.replaceState(null, '', window.location.pathname);
-          initReaderSession(combined);
+          initReaderSession(combined, title || 'Chrome extension article');
           return true;
         } catch (e) {
           console.warn('Extension handoff failed', e);
@@ -2050,7 +2278,199 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
   <style>
     /* Styling elements specific to workspace and layout */
     .app-section {
-      padding-top: 2.5rem;
+      padding-top: clamp(2rem, 5vw, 4rem);
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      align-items: center;
+      gap: clamp(2rem, 7vw, 5.5rem);
+      margin: 0 auto clamp(2.5rem, 7vw, 5rem);
+      text-align: left;
+    }
+    .hero-copy { animation: hero-enter 520ms var(--ease-out) both; }
+    .hero-reader { animation: reader-enter 680ms 80ms var(--ease-out) both; }
+    .hero h1 {
+      font-size: clamp(2.65rem, 4.6vw, 4.35rem);
+      letter-spacing: -0.04em;
+      line-height: 0.98;
+      margin-bottom: var(--space-4);
+      max-width: 11ch;
+    }
+    .hero-kicker {
+      color: var(--color-primary);
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+    }
+    .hero-sub {
+      color: var(--color-text-muted);
+      font-size: clamp(1rem, 1.5vw, 1.15rem);
+      line-height: 1.65;
+      max-width: 58ch;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.9rem;
+      margin-top: 1.5rem;
+    }
+    .hero-demo-link {
+      border: 0;
+      background: transparent;
+      color: var(--color-text);
+      font: inherit;
+      font-size: 0.875rem;
+      font-weight: 700;
+      padding: 0.6rem 0;
+      cursor: pointer;
+      border-bottom: 1px solid var(--color-text);
+    }
+    .hero-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: clamp(2rem, 5vw, 4rem); padding: 0; list-style: none; }
+    .hero-trust li { display: flex; gap: 0.7rem; align-items: flex-start; padding-right: 1rem; border-right: 1px solid var(--color-border); }
+    .hero-trust li:last-child { border: 0; }
+    .hero-trust li::before { content: none; }
+    .hero-trust svg { flex: 0 0 2rem; width: 2rem; height: 2rem; stroke: var(--color-primary); stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .hero-trust strong, .hero-trust small { display: block; }
+    .hero-trust strong { color: var(--color-text); font-size: 0.78rem; }
+    .hero-trust small { margin-top: 0.25rem; color: var(--color-text-muted); font-size: 0.68rem; line-height: 1.45; }
+    .hero-trust li::before { content: '✓'; color: var(--color-primary); margin-right: 0.4rem; }
+    .hero-speed-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
+    .hero-speed-compare div { padding: 0.85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); }
+    .hero-speed-compare span { display: block; color: var(--color-text-muted); font-size: 0.72rem; font-weight: 700; }
+    .hero-speed-compare strong { display: block; margin-top: 0.2rem; font-size: 1.1rem; letter-spacing: -0.03em; }
+    .hero-speed-note { margin: 0.65rem 0 0; color: var(--color-text-muted); font-size: 0.8rem; }
+    .hero-trust li::before { content: none; }
+    .hero-reader {
+      background: #09131e;
+      color: #fff;
+      border-radius: var(--radius-xl);
+      padding: 1.25rem;
+      min-height: 440px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 16px 35px rgba(4, 15, 30, 0.2);
+    }
+    .hero-reader-top, .hero-reader-bottom {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+    }
+    .hero-word {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: baseline;
+      font-size: clamp(3rem, 7vw, 5.5rem);
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      line-height: 1;
+    }
+    .hero-word span:first-child { text-align: right; }
+    .hero-word strong { color: var(--color-accent); }
+    .hero-word.is-changing { animation: hero-word-flash 180ms var(--ease-out); }
+    .hero-demo-controls { padding: 1rem; border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius-md); background: rgba(255,255,255,0.05); }
+    .hero-demo-controls label { display: block; margin-bottom: 0.6rem; color: rgba(255,255,255,0.72); font-size: 0.72rem; font-weight: 700; }
+    .hero-demo-controls input { width: 100%; accent-color: var(--color-accent); cursor: pointer; }
+    @keyframes hero-word-flash { from { opacity: 0.35; transform: translateY(0.15em); } to { opacity: 1; transform: translateY(0); } }
+
+    .hero-reader-top { padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.14); color: white; font-size: 0.9rem; }
+    .hero-reader-tools button { border: 0; padding: 0; background: transparent; color: white; font: inherit; font-size: 1rem; cursor: pointer; }
+    .hero-preview-stage { flex: 1; display: grid; place-content: center; min-height: 170px; }
+    .hero-preview-stage > p { margin: 0 auto 1.4rem; color: var(--color-primary); font-size: 0.7rem; font-weight: 700; }
+    .hero-preview-stage > p i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
+    .hero-word { width: 100%; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
+    .hero-word #hero-word-left { text-align: right; overflow: visible; }
+    .hero-word #hero-word-right { text-align: left; overflow: visible; }
+    .hero-word strong { padding: 0.06em 0.1em; border-radius: 0.08em; color: white; background: var(--color-primary); }
+    .hero-demo-controls, .hero-reader-bottom { padding: 1rem; border: 1px solid rgba(255,255,255,0.11); border-radius: var(--radius-md); background: rgba(255,255,255,0.045); }
+    .hero-speed-control { display: grid; grid-template-columns: 5rem 1fr; align-items: center; gap: 0.5rem; }
+    .hero-speed-control > span { color: rgba(255,255,255,0.72); font-size: 0.72rem; }
+    .hero-speed-control > span strong { display: block; color: white; font-size: 1.55rem; line-height: 1.1; }
+    .hero-demo-controls input { width: 100%; accent-color: var(--color-primary); }
+    .hero-wpm-ticks { display: flex; justify-content: space-between; margin-top: 0.3rem; color: rgba(255,255,255,0.64); font-size: 0.64rem; }
+    .hero-reader-bottom { display: block; margin-top: 0.9rem; color: white; font-size: 0.7rem; }
+    .hero-reader-bottom > strong { display: block; margin-bottom: 0.8rem; }
+    .hero-reader-bottom > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.7rem; align-items: center; }
+    .hero-reader-bottom span { color: rgba(255,255,255,0.6); }
+    .hero-reader-bottom b { display: block; margin-top: 0.25rem; color: white; font-size: 1.9rem; line-height: 1; }
+    .hero-reader-bottom b small { font-size: 0.65rem; font-weight: 500; }
+    .hero-reader-bottom .hero-rsvp-pace { color: var(--color-primary); }
+    .hero-reader-bottom .hero-rsvp-pace b { color: var(--color-primary); }
+    .hero-reader-bottom > p { margin: 0.75rem 0 0; color: rgba(255,255,255,0.55); font-size: 0.62rem; }
+
+    .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
+    .app-section .dropzone-formats { color: var(--color-text-subtle); }
+
+    .launch-paths {
+      margin-top: clamp(3rem, 8vw, 6rem);
+      padding: clamp(3.5rem, 8vw, 6rem) 0;
+      background: var(--color-primary);
+      color: white;
+    }
+    .launch-paths-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    .launch-paths-heading h2 { color: white; font-size: clamp(2rem, 5vw, 4rem); letter-spacing: -0.04em; margin: 0; }
+    .launch-paths-heading p { max-width: 38ch; color: rgba(255,255,255,0.78); }
+    .launch-paths-list { border-top: 1px solid rgba(255,255,255,0.3); }
+    .launch-path {
+      display: grid;
+      grid-template-columns: 1.25rem 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      color: white;
+      padding: 1.15rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.3);
+    }
+    .launch-path:hover { color: white; padding-left: 0.5rem; }
+    .launch-path-mark { width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--color-accent); }
+    .launch-path strong, .launch-path small { display: block; }
+    .launch-path strong { font-size: 1.05rem; }
+    .launch-path small { margin-top: 0.15rem; color: rgba(255,255,255,0.72); }
+
+    .hero-import-rail { margin-top: clamp(2rem, 5vw, 4rem); padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--color-border); border-radius: var(--radius-xl); background: var(--color-bg-card); animation: rail-enter 700ms 180ms var(--ease-out) both; }
+    .hero-import-heading { margin-bottom: 1.25rem; }
+    .hero-import-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
+    .hero-import-heading p { margin: 0.2rem 0 0; color: var(--color-text-muted); font-size: 0.9rem; }
+    .hero-import-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+    .hero-import-option { min-height: 6.75rem; padding: 1rem; text-align: left; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: transparent; color: var(--color-text); cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
+    .hero-import-option:hover { border-color: var(--color-primary); box-shadow: 0 12px 24px var(--color-primary-shadow); transform: translateY(-3px); }
+    .hero-import-option strong, .hero-import-option span { display: block; }
+    .hero-import-option strong { margin-bottom: 0.35rem; font-size: 0.95rem; }
+    .hero-import-option span { color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.35; }
+
+    @media (max-width: 760px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero h1 { max-width: 12ch; }
+      .hero-reader { min-height: 260px; transform: none; }
+      .hero-trust { grid-template-columns: 1fr; }
+      .hero-trust li { padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
+      .hero-reader-bottom b { font-size: 1.45rem; }
+      .hero-import-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .launch-paths-heading { align-items: start; flex-direction: column; }
+    }
+    @keyframes hero-enter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes reader-enter { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes rail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-copy, .hero-reader, .hero-import-rail { animation: none; }
+      .hero-import-option { transition: none; }
+    }
+
+    .seo-title {
+      font-size: 1.5rem;
     }
     
     textarea {
@@ -2077,6 +2497,25 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       gap: 1rem;
       margin-top: 1.25rem;
     }
+
+    .importer-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .importer-heading h2 { font-size: 1.25rem; margin-bottom: 0.25rem; }
+    .document-status {
+      max-width: 28ch;
+      padding: 0.45rem 0.65rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+      line-height: 1.35;
+      text-align: right;
+    }
     
     .dropzone {
       border: 2px dashed var(--color-border);
@@ -2090,11 +2529,6 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
     .dropzone:hover {
       border-color: var(--color-primary);
       background-color: var(--color-bg-card);
-    }
-    .dropzone-icon {
-      font-size: 3rem;
-      display: block;
-      margin-bottom: 0.5rem;
     }
     .browse-link {
       color: var(--color-primary);
@@ -2137,10 +2571,30 @@ const pageDescription = "Free online speed reader. Flash RSVP reading, bionic te
       flex-direction: column;
       gap: 0.5rem;
     }
+    .ai-workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 1rem 1.5rem;
+      align-items: end;
+      border-top: 1px solid var(--color-border);
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+    }
+    .ai-workspace-copy h3 { font-size: 1rem; margin-bottom: 0.25rem; }
+    .ai-workspace-copy p { color: var(--color-text-muted); font-size: 0.9rem; }
+    .ai-workspace .ai-config, .ai-workspace #ai-response-box { grid-column: 1 / -1; }
+    .ai-actions { display: flex; flex-wrap: wrap; gap: 0.65rem; }
+    .ai-actions .btn:disabled { cursor: not-allowed; }
     .key-input-row {
       display: flex;
       gap: 0.75rem;
       align-items: center;
+    }
+    @media (max-width: 640px) {
+      .importer-heading, .ai-workspace { grid-template-columns: 1fr; display: grid; }
+      .document-status { max-width: none; text-align: left; }
+      .key-input-row { flex-wrap: wrap; }
+      .key-input-row input { min-width: 100%; }
     }
     .key-input-row input {
       flex: 1;

@@ -1,7 +1,8 @@
-/** @type {{ API_BASE: string, APP_ORIGIN: string, MAX_DEVICES: number, PRODUCT_NAME: string }} */
+/** @type {{ API_BASE: string, APP_ORIGIN: string, PREMIUM_AVAILABLE: boolean, MAX_DEVICES: number, PRODUCT_NAME: string }} */
 const SR_DEFAULTS = {
-  API_BASE: 'https://speedread-web.com',
-  APP_ORIGIN: 'https://speedread-web.com',
+  API_BASE: '',
+  APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+  PREMIUM_AVAILABLE: false,
   MAX_DEVICES: 5,
   PRODUCT_NAME: 'SpeedRead',
 };

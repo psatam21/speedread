@@ -14,7 +14,7 @@ const pageDescription = "Free online bionic reading tool. Bold word prefixes for
         <p class="lede">
           Bionic reading highlights the first part of each word so your eyes lock fixation points faster and your brain fills in the rest. Use it free in SpeedRead — paste text, upload a file, or pull any public URL.
         </p>
-        <a href="/#importer-card" class="btn btn-primary mt-4">Open Bionic Mode ⚡</a>
+        <a href="/#importer-card" class="btn btn-primary mt-4">Open bionic mode</a>
 
         <h2 class="mt-8">How to use bionic reading on SpeedRead</h2>
         <ol class="steps">
@@ -61,12 +61,12 @@ const pageDescription = "Free online bionic reading tool. Bold word prefixes for
   .max-w-3xl { max-width: 800px; margin: 0 auto; }
   .content-card {
     padding: 2.5rem;
-    border-radius: 1rem;
+    border-radius: var(--radius-lg);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
   }
   .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; }
-  h1 { font-size: 1.85rem; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }

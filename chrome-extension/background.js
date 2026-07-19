@@ -16,7 +16,7 @@ function ensureContextMenu() {
 chrome.runtime.onInstalled.addListener((details) => {
   ensureContextMenu();
   if (details.reason === 'install') {
-    chrome.tabs.create({ url: 'https://speedread-web.com/extension' });
+    chrome.tabs.create({ url: 'https://speedread-orcin.vercel.app/extension' });
   }
 });
 
