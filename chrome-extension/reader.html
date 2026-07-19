@@ -26,6 +26,11 @@
           <button id="back" type="button" aria-label="Go back ten words">−10</button>
           <button id="play" type="button">Pause</button>
           <button id="forward" type="button" aria-label="Go forward ten words">+10</button>
+          <label for="mode">Mode</label>
+          <select id="mode" aria-label="Reading mode">
+            <option value="1">Single word</option>
+            <option value="3">3-word phrase</option>
+          </select>
           <label for="wpm">WPM <output id="wpm-value">350</output></label>
           <input id="wpm" type="range" min="100" max="1000" step="25" value="350" />
         </div>

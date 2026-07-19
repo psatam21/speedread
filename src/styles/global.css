@@ -435,6 +435,18 @@ textarea:focus-visible {
   padding-left: 8px;
 }
 
+.focus-word {
+  border-radius: var(--radius-xs);
+  padding: 0 2px;
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+}
+
+.focus-word.active {
+  color: #ffffff;
+  background: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-primary-shadow);
+}
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;

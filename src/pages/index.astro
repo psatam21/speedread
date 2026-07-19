@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
 const pageTitle = "Online Speed Reader — RSVP, Bionic & TTS | SpeedRead";
-const pageDescription = "Free online speed reader with RSVP, bionic text, PDF and EPUB import, image OCR, and synced speech. No install or account required.";
+const pageDescription = "Free online speed reader with flash, phrase and focus modes, bionic text, PDF and EPUB import, OCR, and synced speech. No account required.";
 const siteUrl = new URL('/', Astro.site || Astro.url).href;
 const webAppSchema = {
   '@context': 'https://schema.org',
@@ -78,10 +78,13 @@ const webAppSchema = {
 
         <!-- Reading Mode Switcher -->
         <div class="mode-switcher mt-4">
-          <button class="mode-btn active" data-mode="rsvp">RSVP</button>
+          <button class="mode-btn active" data-mode="rsvp" title="One word at a fixed focal point">Flash</button>
+          <button class="mode-btn" data-mode="phrase" title="Three words at a time for more context">Phrase</button>
+          <button class="mode-btn" data-mode="focus" title="Full text with a moving focus highlight">Focus</button>
           <button class="mode-btn" data-mode="bionic">Bionic</button>
-          <button class="mode-btn" data-mode="standard">Standard</button>
+          <button class="mode-btn" data-mode="standard">Page</button>
         </div>
+        <p class="mode-description" id="mode-description">One word at a fixed focal point for maximum speed.</p>
 
         <!-- Interactive Workspace -->
         <div class="reader-display-container">
@@ -445,7 +448,7 @@ const webAppSchema = {
         <div class="seo-text">
           <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
-            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). It combines RSVP (Rapid Serial Visual Presentation), bionic reading, and synchronized text-to-speech so you can reduce eye fatigue, cut sub-vocalization, and finish long material faster — without installing an app or creating an account.
+            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word flash, three-word phrase, moving focus highlight, bionic, or clean page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
           </p>
 
           <h2>How to use this online speed reader</h2>
@@ -628,7 +631,7 @@ const webAppSchema = {
       currentIndex: 0,
       wpm: 300,
       isPlaying: false,
-      mode: 'rsvp', // rsvp, bionic, standard
+      mode: 'rsvp', // rsvp, phrase, focus, bionic, standard
       theme: 'light',
       font: 'sans',
       fontSize: 24,
@@ -953,7 +956,9 @@ const webAppSchema = {
       if (!ttsVisualTimer && ttsVisualQueue.length) renderQueuedTTSWord();
     };
 
-    // Display current RSVP word
+    const getChunkSize = () => state.mode === 'phrase' ? 3 : 1;
+
+    // Display the current word or phrase at the fixed ORP
     const renderRSVPWord = () => {
       if (state.currentIndex >= state.words.length) {
         pauseReader();
@@ -966,7 +971,10 @@ const webAppSchema = {
       const orpIdx = getOrpIndex(word);
       const left = word.substring(0, orpIdx);
       const orp = word.charAt(orpIdx);
-      const right = word.substring(orpIdx + 1);
+      const phraseTail = state.mode === 'phrase'
+        ? state.words.slice(state.currentIndex + 1, state.currentIndex + getChunkSize()).join(' ')
+        : '';
+      const right = word.substring(orpIdx + 1) + (phraseTail ? ` ${phraseTail}` : '');
 
       // Render segments
       document.getElementById('word-left').textContent = left;
@@ -983,6 +991,7 @@ const webAppSchema = {
       const wordsLeft = state.words.length - state.currentIndex;
       const minLeft = Math.ceil(wordsLeft / state.wpm);
       document.getElementById('reading-time-left').textContent = `${minLeft} min remaining`;
+      if (state.mode === 'focus') updateFocusWord();
     };
 
     // Main RSVP playback loop
@@ -1024,8 +1033,9 @@ const webAppSchema = {
         return;
       }
 
-      const word = state.words[state.currentIndex];
-      const baseDelay = (60 / state.wpm) * 1000;
+      const chunkSize = Math.min(getChunkSize(), state.words.length - state.currentIndex);
+      const word = state.words[Math.min(state.words.length - 1, state.currentIndex + chunkSize - 1)];
+      const baseDelay = (60 / state.wpm) * 1000 * chunkSize;
       
       // Intelligent pause delay mapping for punctuation
       let delay = baseDelay;
@@ -1035,7 +1045,7 @@ const webAppSchema = {
       }
 
       // Record reading stats in memory
-      state.stats.wordsRead += 1;
+      state.stats.wordsRead += chunkSize;
       state.stats.timeSpent += (delay / 60000); // convert delay to fractional minutes
       
       // Save stats to disk only every 50 words to prevent I/O blocking
@@ -1044,7 +1054,7 @@ const webAppSchema = {
       }
 
       renderRSVPWord();
-      state.currentIndex++;
+      state.currentIndex += chunkSize;
 
       // Never compress delayed frames into zero-delay callbacks: every word needs a paint.
       state.timer = setTimeout(runRSVPTimer, delay);
@@ -1175,6 +1185,35 @@ const webAppSchema = {
       });
     };
 
+    const renderFocusText = () => {
+      const view = document.getElementById('standard-text-view');
+      const fragment = document.createDocumentFragment();
+      state.words.forEach((word, index) => {
+        const span = document.createElement('span');
+        span.className = 'focus-word';
+        span.dataset.wordIndex = index.toString();
+        span.textContent = `${word} `;
+        fragment.appendChild(span);
+      });
+      view.replaceChildren(fragment);
+      view.onclick = (event) => {
+        const word = event.target.closest('.focus-word');
+        if (!word) return;
+        state.currentIndex = Number(word.dataset.wordIndex);
+        renderRSVPWord();
+      };
+    };
+
+    const updateFocusWord = () => {
+      const view = document.getElementById('standard-text-view');
+      const previous = view.querySelector('.focus-word.active');
+      if (previous) previous.classList.remove('active');
+      const current = view.querySelector(`[data-word-index="${state.currentIndex}"]`);
+      if (!current) return;
+      current.classList.add('active');
+      current.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+
     // Setup active mode panes
     const setMode = (modeName) => {
       state.mode = modeName;
@@ -1182,14 +1221,28 @@ const webAppSchema = {
         btn.classList.toggle('active', btn.dataset.mode === modeName);
       });
 
-      document.getElementById('rsvp-pane').classList.toggle('hidden', modeName !== 'rsvp');
+      document.getElementById('rsvp-pane').classList.toggle('hidden', !['rsvp', 'phrase'].includes(modeName));
       document.getElementById('bionic-pane').classList.toggle('hidden', modeName !== 'bionic');
-      document.getElementById('standard-pane').classList.toggle('hidden', modeName !== 'standard');
+      document.getElementById('standard-pane').classList.toggle('hidden', !['focus', 'standard'].includes(modeName));
+
+      const descriptions = {
+        rsvp: 'One word at a fixed focal point for maximum speed.',
+        phrase: 'Three-word groups preserve more context while reducing eye movement.',
+        focus: 'Keep the surrounding paragraph visible while the current word advances.',
+        bionic: 'Bold word beginnings guide your eyes through the full text.',
+        standard: 'A clean, distraction-free page for self-paced reading.',
+      };
+      document.getElementById('mode-description').textContent = descriptions[modeName];
 
       if (modeName === 'bionic') {
         renderBionicText();
+      } else if (modeName === 'focus') {
+        renderFocusText();
+        renderRSVPWord();
       } else if (modeName === 'standard') {
         renderStandardText();
+      } else {
+        renderRSVPWord();
       }
     };
 
@@ -1563,13 +1616,13 @@ const webAppSchema = {
 
       document.getElementById('btn-rsvp-prev').addEventListener('click', () => {
         pauseReader();
-        state.currentIndex = Math.max(0, state.currentIndex - 2);
+        state.currentIndex = Math.max(0, state.currentIndex - getChunkSize());
         renderRSVPWord();
       });
 
       document.getElementById('btn-rsvp-next').addEventListener('click', () => {
         pauseReader();
-        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 2);
+        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + getChunkSize());
         renderRSVPWord();
       });
 
@@ -1588,7 +1641,7 @@ const webAppSchema = {
       // Fullscreen mode toggler
       const fsBtn = document.getElementById('btn-fullscreen');
       fsBtn.addEventListener('click', () => {
-        const container = document.querySelector('.rsvp-word-container');
+        const container = document.querySelector('.reader-display-container');
         if (!document.fullscreenElement) {
           container.requestFullscreen().catch(err => {
             alert(`Error transitioning to fullscreen: ${err.message}`);
@@ -2667,6 +2720,12 @@ const webAppSchema = {
       background-color: var(--color-bg-card);
       color: var(--color-text);
       border-color: var(--color-border);
+    }
+    .mode-description {
+      margin: 0.55rem 0 0;
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+      text-align: center;
     }
     
     .rsvp-progress-bar-container {

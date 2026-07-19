@@ -7,6 +7,7 @@
 
 - Premium license sign-in (same `/api/activate-license` + 5 device slots)
 - Local RSVP popup for selected text or the active page
+- Single-word and three-word phrase display modes
 - Context menu: **Speed read this page**
 - Keyboard: **Alt+Shift+S**
 - Explicit web-app button for the full workspace
