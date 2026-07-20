@@ -30,7 +30,7 @@ const envSlotMap: Record<string, string | undefined> = {
 
 const unitId = unitIdProp || envSlotMap[placement];
 const showRealAd = Boolean(client && unitId);
-const showPlaceholder = import.meta.env.DEV || import.meta.env.PUBLIC_ADSENSE_SHOW_PLACEHOLDERS === 'true';
+const showPlaceholder = !showRealAd || import.meta.env.PUBLIC_ADSENSE_SHOW_PLACEHOLDERS === 'true';
 ---
 
 {showRealAd ? (
@@ -54,7 +54,9 @@ const showPlaceholder = import.meta.env.DEV || import.meta.env.PUBLIC_ADSENSE_SH
   <div class="ad-slot ad-slot--placeholder" aria-hidden="true">
     <span class="ad-label">{label}</span>
     <div class="ad-placeholder-box">
-      AdSense unit ({placement}) — set PUBLIC_ADSENSE_CLIENT_ID + PUBLIC_ADSENSE_SLOT_{placement}
+      {import.meta.env.DEV
+        ? `AdSense unit (${placement}) — set PUBLIC_ADSENSE_CLIENT_ID + PUBLIC_ADSENSE_SLOT_${placement}`
+        : 'Reserved advertisement space'}
     </div>
   </div>
 ) : null}
@@ -72,13 +74,16 @@ const showPlaceholder = import.meta.env.DEV || import.meta.env.PUBLIC_ADSENSE_SH
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-text-subtle, #94a3b8);
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
   }
   .ad-slot--placeholder .ad-placeholder-box {
-    padding: 1.75rem 1rem;
+    display: grid;
+    min-height: 90px;
+    padding: 1rem;
+    place-items: center;
     border: 1px dashed var(--color-border, #e2e8f0);
-    border-radius: 0.5rem;
-    background: var(--color-bg-subtle, #f1f5f9);
+    border-radius: var(--radius-md, 0.5rem);
+    background: var(--color-bg-card, #ffffff);
     color: var(--color-text-subtle, #94a3b8);
     font-size: 0.8rem;
     font-weight: 600;

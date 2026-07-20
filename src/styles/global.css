@@ -531,6 +531,14 @@ textarea:focus-visible {
 }
 
 @media (max-width: 600px) {
+  .container {
+    padding-inline: 1rem;
+  }
+
+  .btn {
+    min-height: 2.75rem;
+  }
+
   .app-card {
     padding: var(--space-4);
   }

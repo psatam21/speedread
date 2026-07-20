@@ -400,7 +400,7 @@ const webAppSchema = {
   </section>
 
   <!-- Visible in-page ad after a content-rich section, away from reader controls -->
-  <section class="ads-section ads-section-top" aria-label="Sponsored content">
+  <section class="ads-section ads-section-top" id="sponsor" aria-label="Sponsored content">
     <div class="container">
       <AdSlot placement="TOP" format="horizontal" />
     </div>
@@ -2805,13 +2805,24 @@ const webAppSchema = {
     .hero-import-option span { color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.35; }
 
     @media (max-width: 760px) {
-      .hero { grid-template-columns: 1fr; }
-      .hero h1 { max-width: 12ch; }
-      .hero-copy { padding-right: 0; }
-      .hero-reader { min-height: 460px; transform: none; box-shadow: 8px 8px 0 rgba(24,24,27,0.12); }
+      .hero { display: flex; flex-direction: column; margin-bottom: 3rem; padding-top: 2.75rem; }
+      .hero-copy { display: contents; }
+      .hero-kicker { margin-bottom: 1.25rem; }
+      .hero h1 { max-width: 11ch; font-size: clamp(3rem, 14vw, 4.5rem); line-height: 0.91; }
+      .hero-sub { margin-bottom: 0; }
+      .hero-sub br { display: none; }
+      .hero-actions { margin-top: 1.25rem; }
+      .hero-start-note { margin-bottom: 2rem; }
+      .hero-reader { order: 2; min-height: 430px; transform: none; box-shadow: 7px 7px 0 rgba(24,24,27,0.12); }
+      .hero-preview-stage { min-height: 200px; }
+      .hero-word { font-size: clamp(2.7rem, 13vw, 4rem); }
+      .hero-speed-control { grid-template-columns: 5.5rem 1fr; gap: 0.65rem; }
+      .hero-wpm-ticks span:nth-child(even) { display: none; }
+      .hero-reader-bottom b { font-size: 1.35rem; }
+      .hero-gain-stats span { padding: 0.75rem 1rem; }
       .hero-trust { grid-template-columns: 1fr; }
-      .hero-trust li { padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
-      .hero-reader-bottom b { font-size: 1.45rem; }
+      .hero-trust { order: 3; margin: 2rem 0 0; }
+      .hero-trust li { min-height: 3.75rem; padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
       .hero-import-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .outcomes-heading, .outcomes-grid, .composite-stories { grid-template-columns: 1fr; }
       .outcomes-grid article + article, .composite-stories figure + figure { border-left: 0; border-top: 1px solid var(--color-border); }
@@ -2959,6 +2970,23 @@ const webAppSchema = {
       .document-status { max-width: none; text-align: left; }
       .key-input-row { flex-wrap: wrap; }
       .key-input-row input { min-width: 100%; }
+      .mode-switcher { overflow-x: auto; scrollbar-width: none; }
+      .mode-switcher::-webkit-scrollbar { display: none; }
+      .mode-btn { flex: 0 0 auto; min-height: 2.75rem; padding: 0.65rem 0.9rem; }
+      .reader-display-container { overflow: hidden; }
+      .playback-controls { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.5rem; }
+      .control-btn { min-height: 2.75rem; padding: 0.55rem 0.4rem; font-size: 0.78rem; }
+      .control-btn.play-btn { grid-column: span 2; padding: 0.55rem 0.75rem; }
+      #btn-rsvp-tts { grid-column: span 2; }
+      #btn-fullscreen { grid-column: 1 / -1; }
+      .tuner-grid, .tuner-card { min-width: 0; }
+      .tuner-card input, .tuner-card select { width: 100%; min-width: 0; }
+      .find-replace-grid { grid-template-columns: 1fr; }
+      .find-replace-grid > * { width: 100%; min-width: 0; }
+      .dashboard-card, .pricing-card { padding: 1.25rem; }
+      .stat-box { padding: 1rem 0.65rem; }
+      .stat-value { font-size: 1.65rem; }
+      .stat-label { font-size: 0.7rem; }
     }
     .key-input-row input {
       flex: 1;
@@ -3155,7 +3183,11 @@ const webAppSchema = {
     }
     
     .ads-section {
-      margin-top: 2.5rem;
+      margin-top: 0;
+      padding: 2rem 0;
+      scroll-margin-top: 6rem;
+      border-block: 1px solid var(--color-border);
+      background: var(--color-bg-subtle);
     }
     .ads-section.hidden {
       display: none !important;

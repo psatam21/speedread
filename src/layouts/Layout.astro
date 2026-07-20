@@ -149,9 +149,22 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
           <a href="/account" class:list={["nav-link", { active: pathname === '/account' }]}>Account</a>
-          <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">◐</button>
+          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">◐</button>
           <a href="/#pricing" class="nav-cta">Lifetime · $9</a>
         </nav>
+        <details class="mobile-nav">
+          <summary aria-label="Open navigation">Menu</summary>
+          <div class="mobile-nav-panel">
+            <a href="/">Reader</a>
+            <a href="/how-it-works">How it works</a>
+            <a href="/rsvp-reader">RSVP</a>
+            <a href="/bionic-reading">Bionic</a>
+            <a href="/extension">Chrome extension</a>
+            <a href="/account">Account</a>
+            <a href="/#pricing" class="mobile-nav-cta">Lifetime · $9</a>
+            <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">◐ Theme</button>
+          </div>
+        </details>
       </div>
     </header>
 
@@ -191,17 +204,21 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     </footer>
 
     <script is:inline>
-      const themeToggle = document.getElementById('theme-toggle');
+      const themeToggles = document.querySelectorAll('[data-theme-toggle]');
       const syncThemeToggle = () => {
         const isDark = document.documentElement.dataset.theme === 'dark' || document.documentElement.dataset.theme === 'amoled';
-        themeToggle?.setAttribute('aria-pressed', String(isDark));
-        themeToggle?.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        themeToggles.forEach((toggle) => {
+          toggle.setAttribute('aria-pressed', String(isDark));
+          toggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        });
       };
-      themeToggle?.addEventListener('click', () => {
-        const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
-        document.documentElement.setAttribute('data-theme', nextTheme);
-        localStorage.setItem('theme', nextTheme);
-        syncThemeToggle();
+      themeToggles.forEach((toggle) => {
+        toggle.addEventListener('click', () => {
+          const nextTheme = document.documentElement.dataset.theme === 'light' ? 'dark' : 'light';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          localStorage.setItem('theme', nextTheme);
+          syncThemeToggle();
+        });
       });
       syncThemeToggle();
     </script>
@@ -347,6 +364,50 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         font-weight: 700;
       }
       .nav-cta:hover { background: var(--color-primary-hover); color: white; }
+      .mobile-nav { display: none; position: relative; }
+      .mobile-nav summary {
+        display: grid;
+        min-width: 3rem;
+        min-height: 2.75rem;
+        place-items: center;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        background: var(--color-bg-card);
+        color: var(--color-text);
+        cursor: pointer;
+        font-size: 0.78rem;
+        font-weight: 750;
+        list-style: none;
+      }
+      .mobile-nav summary::-webkit-details-marker { display: none; }
+      .mobile-nav-panel {
+        position: absolute;
+        top: calc(100% + 0.55rem);
+        right: 0;
+        display: grid;
+        width: min(19rem, calc(100vw - 2rem));
+        padding: 0.5rem;
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        background: var(--color-bg-card);
+        box-shadow: var(--shadow-lg);
+      }
+      .mobile-nav-panel a, .mobile-nav-panel .theme-toggle {
+        display: flex;
+        width: 100%;
+        min-height: 2.75rem;
+        align-items: center;
+        padding: 0.65rem 0.75rem;
+        border: 0;
+        border-radius: var(--radius-md);
+        background: transparent;
+        color: var(--color-text);
+        font-size: 0.85rem;
+        font-weight: 650;
+        text-decoration: none;
+      }
+      .mobile-nav-panel a:hover, .mobile-nav-panel .theme-toggle:hover { background: var(--color-bg-subtle); }
+      .mobile-nav-panel .mobile-nav-cta { background: var(--color-primary); color: white; }
 
       .site-footer {
         border-top: 1px solid var(--color-border);
@@ -371,27 +432,15 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       .footer-group p { color: var(--color-text); font-weight: 700; margin-bottom: 0.2rem; }
       .footer-group a { color: var(--color-text-muted); }
       .footer-group a:hover { color: var(--color-primary); }
-      @media (max-width: 480px) {
+      @media (max-width: 840px) {
         .header-container {
-          flex-direction: column;
-          height: auto;
-          padding: 0.75rem 1rem;
-          gap: 0.75rem;
+          min-height: 3.75rem;
+          padding-block: 0.45rem;
         }
-        .nav-links {
-          gap: 0.15rem;
-          width: 100%;
-          justify-content: center;
-        }
-        .nav-link {
-          font-size: 0.75rem;
-          padding: 0.35rem 0.45rem;
-        }
-        .nav-link:nth-child(3), .nav-link:nth-child(4) { display: none; }
+        .nav-links { display: none; }
+        .mobile-nav { display: block; }
         .launch-strip-inner { justify-content: space-between; }
         .launch-strip-inner > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-      }
-      @media (max-width: 760px) {
         .footer-container { grid-template-columns: 1fr 1fr; }
         .footer-brand { grid-column: 1 / -1; }
       }
