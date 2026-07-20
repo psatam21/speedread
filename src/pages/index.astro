@@ -116,9 +116,7 @@ const webAppSchema = {
                 <span class="word-right" id="word-right"></span>
               </div>
             </div>
-            <div class="rsvp-progress-bar-container">
-              <div class="rsvp-progress-bar" id="rsvp-progress"></div>
-            </div>
+            <input class="reader-progress-scrubber" id="rsvp-progress" data-reader-scrubber type="range" min="0" max="100" value="0" aria-label="Reading position" />
           </div>
 
           <div id="flow-pane" class="reader-pane hidden">
@@ -134,7 +132,7 @@ const webAppSchema = {
               </div>
               <p class="flow-context-line" id="flow-next-line"></p>
             </div>
-            <div class="rsvp-progress-bar-container"><div class="rsvp-progress-bar" id="flow-progress"></div></div>
+            <input class="reader-progress-scrubber" id="flow-progress" data-reader-scrubber type="range" min="0" max="100" value="0" aria-label="Reading position" />
           </div>
 
           <!-- Bionic Reader Pane -->
@@ -214,7 +212,7 @@ const webAppSchema = {
 
           <!-- Position/Timeline slider -->
           <div class="timeline-row">
-            <input type="range" id="slider-progress" min="0" max="100" value="0" />
+            <input type="range" id="slider-progress" data-reader-scrubber min="0" max="100" value="0" aria-label="Reading position" />
             <div class="timeline-labels">
               <span id="reading-time-left">0 min remaining</span>
               <span id="reading-percentage">Word 0 / 0 (0%)</span>
@@ -1008,6 +1006,7 @@ const webAppSchema = {
       getFlowContext,
       clampReaderIndex,
       getPlaybackStart,
+      getIndexFromPercent,
     } = window.SpeedReadReaderCore;
 
     // Parse text to word mappings with coordinate tracking
@@ -1086,9 +1085,7 @@ const webAppSchema = {
 
       // Update progress sliders
       const percentage = Math.round((state.currentIndex / Math.max(1, state.words.length - 1)) * 100);
-      document.getElementById('rsvp-progress').style.width = percentage + '%';
-      document.getElementById('flow-progress').style.width = percentage + '%';
-      document.getElementById('slider-progress').value = percentage;
+      document.querySelectorAll('[data-reader-scrubber]').forEach((slider) => { slider.value = percentage; });
       document.getElementById('reading-percentage').textContent = `Word ${state.currentIndex + 1} / ${state.words.length} (${percentage}%)`;
       
       // Est. remaining time
@@ -1133,9 +1130,7 @@ const webAppSchema = {
       if (state.currentIndex >= state.words.length) {
         pauseReader();
         state.currentIndex = state.words.length;
-        document.getElementById('rsvp-progress').style.width = '100%';
-        document.getElementById('flow-progress').style.width = '100%';
-        document.getElementById('slider-progress').value = '100';
+        document.querySelectorAll('[data-reader-scrubber]').forEach((slider) => { slider.value = '100'; });
         document.getElementById('reading-percentage').textContent = `Complete · ${state.words.length} words`;
         document.getElementById('reading-time-left').textContent = 'Complete';
         saveStats();
@@ -1331,7 +1326,11 @@ const webAppSchema = {
       view.querySelectorAll('.focus-word').forEach((word) => {
         word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
       });
-      current.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      const viewRect = view.getBoundingClientRect();
+      const currentRect = current.getBoundingClientRect();
+      if (currentRect.top < viewRect.top || currentRect.bottom > viewRect.bottom) {
+        current.scrollIntoView({ block: 'center', behavior: 'auto' });
+      }
     };
 
     const renderFlowWord = () => {
@@ -1868,13 +1867,11 @@ const webAppSchema = {
       });
 
       // Reading Position slider
-      const progressSlider = document.getElementById('slider-progress');
-      progressSlider.addEventListener('input', (e) => {
+      document.querySelectorAll('[data-reader-scrubber]').forEach((progressSlider) => progressSlider.addEventListener('input', (e) => {
         pauseReader();
-        const percent = parseInt(e.target.value);
-        state.currentIndex = Math.round((percent / 100) * (state.words.length - 1));
+        state.currentIndex = getIndexFromPercent(Number(e.target.value), state.words.length);
         renderRSVPWord();
-      });
+      }));
 
       // File drag-and-drop detection
       const dropzone = document.getElementById('file-dropzone');
@@ -2629,17 +2626,17 @@ const webAppSchema = {
     .hero-gain-stats strong { display: block; color: var(--color-primary); font-size: 1rem; }
 
     .flow-reader-view { padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); overflow: hidden; }
-    .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.16; white-space: nowrap; overflow: hidden; }
+    .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.28; white-space: nowrap; overflow: hidden; }
     .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
-    .flow-focus-line { position: absolute; left: 33.333%; inset-block: 0; width: 1px; background: var(--color-border); pointer-events: none; }
-    .flow-anchor-line { display: grid; grid-template-columns: calc(33.333% - 0.5ch) 1ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
+    .flow-focus-line { position: absolute; left: 50%; inset-block: 0; width: 1px; background: var(--color-border); pointer-events: none; }
+    .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
     .flow-left, .flow-right { display: flex; align-items: baseline; min-width: 0; overflow: hidden; }
     .flow-left { justify-content: flex-end; text-align: right; }
     .flow-right { justify-content: flex-start; text-align: left; }
-    .flow-left > span, .flow-right > span { min-width: 0; overflow: hidden; color: var(--color-text-muted); opacity: 0.35; white-space: nowrap; }
+    .flow-left > span, .flow-right > span { min-width: 0; overflow: hidden; color: var(--color-text-muted); opacity: 1; white-space: nowrap; }
     .flow-left > span:not(:empty) { margin-right: 0.45ch; }
     .flow-right > span:not(:empty) { margin-left: 0.45ch; }
-    .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.55em; color: var(--color-text); }
+    .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.7em; color: var(--color-text); }
     .flow-anchor-line b { width: 1ch; text-align: center; color: var(--color-primary); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
@@ -2949,19 +2946,13 @@ const webAppSchema = {
       text-align: center;
     }
     
-    .rsvp-progress-bar-container {
+    .reader-progress-scrubber {
+      display: block;
       width: 100%;
-      height: 4px;
-      background-color: var(--color-border);
-      border-radius: var(--radius-xs);
-      overflow: hidden;
       margin-top: 1rem;
-    }
-    .rsvp-progress-bar {
-      height: 100%;
-      background-color: var(--color-primary);
-      width: 0%;
-      transition: width 100ms linear;
+      accent-color: var(--color-primary);
+      cursor: ew-resize;
+      touch-action: pan-y;
     }
     
     .controls-hud {

@@ -338,7 +338,7 @@ textarea:focus-visible {
 
 .rsvp-focus-line {
   position: absolute;
-  left: 33.333%;
+  left: 50%;
   width: 1px;
   height: 100%;
   background-color: var(--color-border);
@@ -348,7 +348,7 @@ textarea:focus-visible {
 
 .rsvp-horizontal-ticks {
   position: absolute;
-  left: 33.333%;
+  left: 50%;
   width: 12px;
   transform: translateX(-50%);
   height: 100%;
@@ -368,7 +368,7 @@ textarea:focus-visible {
 
 .word-wrapper {
   display: grid;
-  grid-template-columns: calc(33.333% - 0.5ch) 1ch minmax(0, 1fr);
+  grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr);
   align-items: baseline;
   width: 100%;
   padding: 0;
@@ -416,6 +416,7 @@ textarea:focus-visible {
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
   max-width: 72ch;
+  min-height: 20rem;
 }
 
 .reader-sentence {
@@ -436,10 +437,12 @@ textarea:focus-visible {
 }
 
 .focus-word {
+  display: inline-block;
   border-radius: var(--radius-xs);
   padding: 0 2px;
   opacity: 0.18;
-  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out), font-size var(--duration-fast) var(--ease-out);
+  transform-origin: center bottom;
+  transition: color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), opacity var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
 }
 
 .focus-word.active-line {
@@ -450,7 +453,7 @@ textarea:focus-visible {
   color: var(--color-primary);
   background: transparent;
   box-shadow: inset 0 -2px 0 var(--color-primary);
-  font-size: 1.18em;
+  transform: scale(1.18);
   font-weight: 800;
 }
 

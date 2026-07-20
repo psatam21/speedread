@@ -38,11 +38,16 @@
     return clampReaderIndex(index, length);
   };
 
+  const getIndexFromPercent = (percent, length) => (
+    clampReaderIndex(Math.round((percent / 100) * Math.max(0, length - 1)), length)
+  );
+
   root.SpeedReadReaderCore = {
     getOrpIndex,
     getPhraseParts,
     getFlowContext,
     clampReaderIndex,
     getPlaybackStart,
+    getIndexFromPercent,
   };
 })(globalThis);
