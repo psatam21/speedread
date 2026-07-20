@@ -32,6 +32,7 @@ const webAppSchema = {
       <!-- Hero -->
       <header class="hero">
         <div class="hero-copy">
+          <p class="hero-kicker"><span>01</span> Local-first reading instrument</p>
           <h1>Finish the backlog.<br />Keep the meaning.</h1>
           <p class="hero-sub">
             RSVP speed reading that helps you read faster<br />while understanding more.
@@ -48,13 +49,18 @@ const webAppSchema = {
           </ul>
         </div>
         <div class="hero-reader" aria-label="Animated RSVP reading preview">
-          <div class="hero-reader-top"><strong>RSVP Reader</strong><div class="hero-reader-tools"><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div></div>
+          <div class="hero-reader-top">
+            <div class="hero-reader-identity"><span aria-hidden="true"><i></i><i></i><i></i></span><strong>speedread_engine</strong></div>
+            <div class="hero-reader-tools"><span>LOCAL / ACTIVE</span><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div>
+          </div>
           <div class="hero-preview-stage">
+            <span class="hero-reticle hero-reticle-top" aria-hidden="true"></span>
+            <span class="hero-reticle hero-reticle-bottom" aria-hidden="true"></span>
             <p><i></i>Optimal recognition point</p>
             <div class="hero-word" aria-live="off"><span id="hero-word-left">cre</span><strong id="hero-word-orp">a</strong><span id="hero-word-right">te</span></div>
           </div>
           <div class="hero-demo-controls">
-            <div class="hero-speed-control"><span>WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
+            <div class="hero-speed-control"><span>Velocity / WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
           </div>
           <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with SpeedRead<b>350 <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
         </div>
@@ -2399,7 +2405,7 @@ const webAppSchema = {
   <style>
     /* Styling elements specific to workspace and layout */
     .app-section {
-      padding-top: clamp(2rem, 5vw, 4rem);
+      padding-top: 0;
       background: var(--color-bg);
       color: var(--color-text);
     }
@@ -2407,26 +2413,32 @@ const webAppSchema = {
     .hero {
       display: grid;
       grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      align-items: center;
-      gap: clamp(2rem, 7vw, 5.5rem);
+      align-items: stretch;
+      gap: 0;
       margin: 0 auto clamp(2.5rem, 7vw, 5rem);
       text-align: left;
     }
-    .hero-copy { animation: hero-enter 520ms var(--ease-out) both; }
+    .hero-copy { padding: clamp(3rem, 7vw, 6.5rem) clamp(1.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem) 0; animation: hero-enter 520ms var(--ease-out) both; }
     .hero-reader { animation: reader-enter 680ms 80ms var(--ease-out) both; }
     .hero h1 {
-      font-size: clamp(2.65rem, 4.6vw, 4.35rem);
-      letter-spacing: -0.04em;
-      line-height: 0.98;
+      font-size: clamp(3.1rem, 6vw, 6rem);
+      letter-spacing: -0.065em;
+      line-height: 0.88;
       margin-bottom: var(--space-4);
       max-width: 11ch;
     }
     .hero-kicker {
-      color: var(--color-primary);
-      font-size: 0.8rem;
-      font-weight: 800;
-      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--color-text-muted);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
     }
+    .hero-kicker span { color: var(--color-primary); font-variant-numeric: tabular-nums; }
     .hero-sub {
       color: var(--color-text-muted);
       font-size: clamp(1rem, 1.5vw, 1.15rem);
@@ -2468,15 +2480,17 @@ const webAppSchema = {
     .hero-speed-note { margin: 0.65rem 0 0; color: var(--color-text-muted); font-size: 0.8rem; }
     .hero-trust li::before { content: none; }
     .hero-reader {
-      background: #09131e;
+      position: relative;
+      background: #09090b;
       color: #fff;
-      border-radius: var(--radius-xl);
-      padding: 1.25rem;
-      min-height: 440px;
+      border: 1px solid #27272a;
+      border-radius: 0;
+      padding: 0;
+      min-height: 560px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 0 16px 35px rgba(4, 15, 30, 0.2);
+      box-shadow: 18px 18px 0 rgba(24, 24, 27, 0.12);
     }
     .hero-reader-top, .hero-reader-bottom {
       display: flex;
@@ -2503,22 +2517,29 @@ const webAppSchema = {
     .hero-demo-controls input { width: 100%; accent-color: var(--color-accent); cursor: pointer; }
     @keyframes hero-word-flash { from { opacity: 0.35; transform: translateY(0.15em); } to { opacity: 1; transform: translateY(0); } }
 
-    .hero-reader-top { padding-bottom: 1rem; border-bottom: 1px solid rgba(255,255,255,0.14); color: white; font-size: 0.9rem; }
+    .hero-reader-top { min-height: 2.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid #27272a; color: white; font: 600 0.68rem/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero-reader-identity, .hero-reader-identity > span, .hero-reader-tools { display: flex; align-items: center; gap: 0.55rem; }
+    .hero-reader-identity i { display: block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #52525b; }
+    .hero-reader-identity i:last-child { background: var(--color-primary); box-shadow: 0 0 0 3px rgba(234,88,12,0.15); }
+    .hero-reader-tools > span { color: #71717a; font-size: 0.58rem; }
     .hero-reader-tools button { border: 0; padding: 0; background: transparent; color: white; font: inherit; font-size: 1rem; cursor: pointer; }
-    .hero-preview-stage { flex: 1; display: grid; place-content: center; min-height: 170px; }
-    .hero-preview-stage > p { margin: 0 auto 1.4rem; color: var(--color-primary); font-size: 0.7rem; font-weight: 700; }
+    .hero-preview-stage { position: relative; flex: 1; display: grid; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-preview-stage > p { margin: 0 auto 1.8rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-preview-stage > p i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
     .hero-word { width: 100%; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
-    .hero-word strong { padding: 0.06em 0.1em; border-radius: 0.08em; color: white; background: var(--color-primary); }
-    .hero-demo-controls, .hero-reader-bottom { padding: 1rem; border: 1px solid rgba(255,255,255,0.11); border-radius: var(--radius-md); background: rgba(255,255,255,0.045); }
-    .hero-speed-control { display: grid; grid-template-columns: 5rem 1fr; align-items: center; gap: 0.5rem; }
+    .hero-word strong { padding: 0.06em 0.1em; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
+    .hero-reticle-top { top: 1.5rem; }
+    .hero-reticle-bottom { bottom: 1.5rem; }
+    .hero-demo-controls, .hero-reader-bottom { padding: 1rem 1.25rem; border: 0; border-top: 1px solid #27272a; border-radius: 0; background: #18181b; }
+    .hero-speed-control { display: grid; grid-template-columns: 7rem 1fr; align-items: center; gap: 1rem; }
     .hero-speed-control > span { color: rgba(255,255,255,0.72); font-size: 0.72rem; }
     .hero-speed-control > span strong { display: block; color: white; font-size: 1.55rem; line-height: 1.1; }
     .hero-demo-controls input { width: 100%; accent-color: var(--color-primary); }
     .hero-wpm-ticks { display: flex; justify-content: space-between; margin-top: 0.3rem; color: rgba(255,255,255,0.64); font-size: 0.64rem; }
-    .hero-reader-bottom { display: block; margin-top: 0.9rem; color: white; font-size: 0.7rem; }
+    .hero-reader-bottom { display: block; margin-top: 0; color: white; font-size: 0.7rem; }
     .hero-reader-bottom > strong { display: block; margin-bottom: 0.8rem; }
     .hero-reader-bottom > div { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.7rem; align-items: center; }
     .hero-reader-bottom span { color: rgba(255,255,255,0.6); }
@@ -2581,13 +2602,15 @@ const webAppSchema = {
     .reading-fit p { max-width: 48ch; margin: 0; color: var(--color-text-muted); font-size: 0.9rem; }
     .reading-fit > a { align-self: center; font-weight: 700; white-space: nowrap; }
 
-    .hero-import-rail { margin-top: clamp(2rem, 5vw, 4rem); padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--color-border); border-radius: var(--radius-xl); background: var(--color-bg-card); animation: rail-enter 700ms 180ms var(--ease-out) both; }
-    .hero-import-heading { margin-bottom: 1.25rem; }
+    .hero-import-rail { margin-top: 0; padding: 0; border: 1px solid var(--color-text); border-radius: 0; background: var(--color-bg-card); box-shadow: 8px 8px 0 var(--color-text); animation: rail-enter 700ms 180ms var(--ease-out) both; }
+    .hero-import-heading { margin: 0; padding: 1rem 1.25rem; border-bottom: 1px solid var(--color-border); background: var(--color-bg-subtle); }
     .hero-import-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
     .hero-import-heading p { margin: 0.2rem 0 0; color: var(--color-text-muted); font-size: 0.9rem; }
-    .hero-import-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
-    .hero-import-option { min-height: 6.75rem; padding: 1rem; text-align: left; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: transparent; color: var(--color-text); cursor: pointer; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease; }
-    .hero-import-option:hover { border-color: var(--color-primary); box-shadow: 0 12px 24px var(--color-primary-shadow); transform: translateY(-3px); }
+    .hero-import-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
+    .hero-import-option { min-height: 6.75rem; padding: 1rem 1.25rem; text-align: left; border: 0; border-right: 1px solid var(--color-border); border-radius: 0; background: transparent; color: var(--color-text); cursor: pointer; transition: background-color 120ms ease, color 120ms ease; }
+    .hero-import-option:last-child { border-right: 0; }
+    .hero-import-option:hover { background: var(--color-text); color: var(--color-bg-card); }
+    .hero-import-option:hover span { color: var(--color-bg-subtle); }
     .hero-import-option strong, .hero-import-option span { display: block; }
     .hero-import-option strong { margin-bottom: 0.35rem; font-size: 0.95rem; }
     .hero-import-option span { color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.35; }
@@ -2595,7 +2618,8 @@ const webAppSchema = {
     @media (max-width: 760px) {
       .hero { grid-template-columns: 1fr; }
       .hero h1 { max-width: 12ch; }
-      .hero-reader { min-height: 260px; transform: none; }
+      .hero-copy { padding-right: 0; }
+      .hero-reader { min-height: 460px; transform: none; box-shadow: 8px 8px 0 rgba(24,24,27,0.12); }
       .hero-trust { grid-template-columns: 1fr; }
       .hero-trust li { padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
       .hero-reader-bottom b { font-size: 1.45rem; }
