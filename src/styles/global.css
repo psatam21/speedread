@@ -387,10 +387,6 @@ textarea:focus-visible {
   text-align: center;
   font-weight: 800;
   padding: 0 1px;
-  position: relative;
-  z-index: 1;
-  background: var(--color-bg-subtle);
-  box-shadow: 0 0 0 0.08em var(--color-bg-subtle);
 }
 
 .word-right {
