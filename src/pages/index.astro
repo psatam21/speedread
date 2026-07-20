@@ -399,6 +399,13 @@ const webAppSchema = {
     </div>
   </section>
 
+  <!-- Visible in-page ad after a content-rich section, away from reader controls -->
+  <section class="ads-section ads-section-top" aria-label="Sponsored content">
+    <div class="container">
+      <AdSlot placement="TOP" format="horizontal" />
+    </div>
+  </section>
+
   <section class="reading-methods" aria-labelledby="reading-methods-title">
     <div class="container">
       <div class="reading-methods-heading">
@@ -459,13 +466,6 @@ const webAppSchema = {
         </div>
         <a href="/how-it-works">See how each mode works <span aria-hidden="true">-&gt;</span></a>
       </div>
-    </div>
-  </section>
-
-  <!-- Google AdSense — hidden when Premium active -->
-  <section class="ads-section ads-section-top">
-    <div class="container">
-      <AdSlot placement="TOP" format="horizontal" />
     </div>
   </section>
 
@@ -2307,7 +2307,7 @@ const webAppSchema = {
       });
       
       document.getElementById('btn-pricing-signin')?.addEventListener('click', () => {
-        document.getElementById('account-open')?.click();
+        window.location.href = '/account?next=%2F%23pricing';
       });
 
       // Dodo Payments checkout
@@ -2319,9 +2319,7 @@ const webAppSchema = {
           const supabase = globalThis.speedreadSupabase;
           const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
           if (!session) {
-            document.getElementById('account-open')?.click();
-            btn.disabled = false;
-            btn.textContent = 'Get Lifetime Pro — $9';
+            window.location.href = '/account?next=%2F%23pricing';
             return;
           }
           const res = await fetch('/api/create-checkout', {
@@ -2664,7 +2662,7 @@ const webAppSchema = {
     .hero-reader-top { min-height: 2.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid #27272a; color: white; font: 600 0.68rem/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; }
     .hero-reader-identity, .hero-reader-identity > span, .hero-reader-tools { display: flex; align-items: center; gap: 0.55rem; }
     .hero-reader-identity i { display: block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #52525b; }
-    .hero-reader-identity i:last-child { background: var(--color-primary); box-shadow: 0 0 0 3px rgba(234,88,12,0.15); }
+    .hero-reader-identity i:last-child { background: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-muted); }
     .hero-reader-tools > span { color: #71717a; font-size: 0.58rem; }
     .hero-reader-tools button { border: 0; padding: 0; background: transparent; color: white; font: inherit; font-size: 1rem; cursor: pointer; }
     .hero-preview-stage { position: relative; flex: 1; display: grid; grid-template-columns: 1fr; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }

@@ -147,39 +147,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
           <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
-          <button class="nav-account" id="account-open" type="button">Sign in</button>
+          <a href="/account" class:list={["nav-link", { active: pathname === '/account' }]}>Account</a>
           <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">◐</button>
           <a href="/#pricing" class="nav-cta">Lifetime · $9</a>
         </nav>
       </div>
     </header>
-
-    <dialog class="account-dialog" id="account-dialog" aria-labelledby="account-title">
-      <form class="account-card" id="account-form">
-        <div class="account-card-head">
-          <div>
-            <p class="account-kicker">SpeedRead account</p>
-            <h2 id="account-title">Keep Premium tied to you.</h2>
-          </div>
-          <button class="account-close" id="account-close" type="button" aria-label="Close account dialog">×</button>
-        </div>
-        <p class="account-copy">Sign in to carry Lifetime Premium and reading totals across devices. Your documents still stay in this browser.</p>
-        <div class="account-fields" id="account-fields">
-          <label>Email<input id="account-email" type="email" autocomplete="email" required /></label>
-          <label>Password<input id="account-password" type="password" autocomplete="current-password" minlength="8" required /></label>
-        </div>
-        <p class="account-status" id="account-status" role="status" aria-live="polite"></p>
-        <div class="account-actions" id="account-actions">
-          <button class="btn btn-primary" type="submit">Sign in</button>
-          <button class="btn btn-secondary" id="account-signup" type="button">Create account</button>
-        </div>
-        <div class="account-session hidden" id="account-session">
-          <div><span>Signed in as</span><strong id="account-identity"></strong></div>
-          <div><span>Plan</span><strong id="account-plan">Free</strong></div>
-          <button class="btn btn-secondary" id="account-signout" type="button">Sign out</button>
-        </div>
-      </form>
-    </dialog>
 
     <main id="main-content">
       <slot />
@@ -235,87 +208,27 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     <script>
       import { createClient } from '@supabase/supabase-js';
 
-      const accountButton = document.getElementById('account-open');
-      const accountDialog = document.getElementById('account-dialog');
-      const accountForm = document.getElementById('account-form');
-      const accountFields = document.getElementById('account-fields');
-      const accountActions = document.getElementById('account-actions');
-      const accountSession = document.getElementById('account-session');
-      const accountStatus = document.getElementById('account-status');
-      const accountIdentity = document.getElementById('account-identity');
-      const accountPlan = document.getElementById('account-plan');
-      const accountEmail = document.getElementById('account-email');
-      const accountPassword = document.getElementById('account-password');
       const url = document.body.dataset.supabaseUrl;
       const key = document.body.dataset.supabaseAnonKey;
       const supabase = url && key ? createClient(url, key) : null;
 
       (globalThis as any).speedreadSupabase = supabase;
 
-      const setStatus = (message, isError = false) => {
-        if (!accountStatus) return;
-        accountStatus.textContent = message;
-        accountStatus.classList.toggle('is-error', isError);
-      };
-
       const renderAccount = async (session) => {
         const user = session?.user;
-        accountFields?.classList.toggle('hidden', Boolean(user));
-        accountActions?.classList.toggle('hidden', Boolean(user));
-        accountSession?.classList.toggle('hidden', !user);
-        if (accountButton) accountButton.textContent = user ? 'Account' : 'Sign in';
         if (!user) {
-          setStatus('');
           globalThis.dispatchEvent(new CustomEvent('speedread:account', { detail: { user: null, premium: false } }));
           return;
         }
 
-        if (accountIdentity) accountIdentity.textContent = user.email || 'SpeedRead member';
         const { data } = await supabase
           .from('entitlements')
           .select('status, product_key')
           .eq('user_id', user.id)
           .maybeSingle();
         const premium = data?.status === 'active';
-        if (accountPlan) accountPlan.textContent = premium ? 'Lifetime Premium' : 'Free';
-        setStatus(premium ? 'Lifetime Premium is active on this account.' : 'Your account is ready. Premium will attach here after purchase.');
         globalThis.dispatchEvent(new CustomEvent('speedread:account', { detail: { user, premium } }));
       };
-
-      accountButton?.addEventListener('click', () => accountDialog?.showModal());
-      document.getElementById('account-close')?.addEventListener('click', () => accountDialog?.close());
-      accountDialog?.addEventListener('click', (event) => {
-        if (event.target === accountDialog) accountDialog.close();
-      });
-
-      accountForm?.addEventListener('submit', async (event) => {
-        event.preventDefault();
-        if (!supabase) return setStatus('Account service is not configured yet.', true);
-        setStatus('Signing in…');
-        const { error } = await supabase.auth.signInWithPassword({
-          email: accountEmail?.value.trim() || '',
-          password: accountPassword?.value || '',
-        });
-        if (error) setStatus(error.message, true);
-      });
-
-      document.getElementById('account-signup')?.addEventListener('click', async () => {
-        if (!supabase) return setStatus('Account service is not configured yet.', true);
-        setStatus('Creating your account…');
-        const { data, error } = await supabase.auth.signUp({
-          email: accountEmail?.value.trim() || '',
-          password: accountPassword?.value || '',
-        });
-        if (error) return setStatus(error.message, true);
-        setStatus(data.session ? 'Account created.' : 'Check your email to confirm your account.');
-      });
-
-      document.getElementById('account-signout')?.addEventListener('click', async () => {
-        if (supabase) {
-          await supabase.auth.signOut();
-          window.location.reload();
-        }
-      });
 
       if (supabase) {
         const { data } = await supabase.auth.getSession();
@@ -323,8 +236,6 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         supabase.auth.onAuthStateChange((_event, session) => {
           window.setTimeout(() => renderAccount(session), 0);
         });
-      } else if (accountButton) {
-        accountButton.title = 'Account service is being configured';
       }
     </script>
 
@@ -416,16 +327,6 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         text-decoration: none;
       }
       .nav-link.active { color: var(--color-text); background: var(--color-primary-muted); }
-      .nav-account {
-        border: 0;
-        background: transparent;
-        color: var(--color-text-muted);
-        padding: 0.4rem 0.6rem;
-        border-radius: 6px;
-        font: 550 0.8125rem/1 var(--font-sans);
-        cursor: pointer;
-      }
-      .nav-account:hover { color: var(--color-text); background: var(--color-bg-subtle); }
       .theme-toggle {
         width: 2rem;
         height: 2rem;
@@ -446,34 +347,6 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       }
       .nav-cta:hover { background: var(--color-primary-hover); color: white; }
 
-      .account-dialog {
-        width: min(92vw, 31rem);
-        padding: 0;
-        border: 1px solid var(--color-border);
-        border-radius: 14px;
-        background: var(--color-bg-card);
-        color: var(--color-text);
-        box-shadow: 0 24px 80px rgba(0, 0, 0, 0.28);
-      }
-      .account-dialog::backdrop { background: rgba(0, 0, 0, 0.62); backdrop-filter: blur(3px); }
-      .account-card { padding: 1.5rem; }
-      .account-card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
-      .account-card-head h2 { max-width: 12ch; margin: 0.25rem 0 0; font-size: 2rem; line-height: 1; }
-      .account-kicker { margin: 0; color: var(--color-primary); font-size: 0.72rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-      .account-copy { margin: 1rem 0; color: var(--color-text-muted); font-size: 0.86rem; line-height: 1.6; }
-      .account-close { width: 2rem; height: 2rem; border: 1px solid var(--color-border); border-radius: 50%; background: transparent; color: var(--color-text); cursor: pointer; font-size: 1.15rem; }
-      .account-fields { display: grid; gap: 0.8rem; }
-      .account-fields label { display: grid; gap: 0.35rem; color: var(--color-text-muted); font-size: 0.75rem; font-weight: 700; }
-      .account-fields input { width: 100%; padding: 0.72rem 0.8rem; border: 1px solid var(--color-border); border-radius: 7px; background: var(--color-bg-subtle); color: var(--color-text); font: inherit; }
-      .account-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; margin-top: 1rem; }
-      .account-status { min-height: 1.4em; margin: 0.75rem 0 0; color: var(--color-text-muted); font-size: 0.76rem; }
-      .account-status.is-error { color: #dc2626; }
-      .account-session { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: end; padding-top: 0.5rem; }
-      .account-session div span, .account-session div strong { display: block; }
-      .account-session div span { color: var(--color-text-muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; }
-      .account-session div strong { margin-top: 0.25rem; font-size: 0.83rem; overflow-wrap: anywhere; }
-      .account-session .btn { grid-column: 1 / -1; }
-      
       .site-footer {
         border-top: 1px solid var(--color-border);
         padding: clamp(3rem, 8vw, 5rem) 0;
