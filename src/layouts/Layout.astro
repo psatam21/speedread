@@ -141,6 +141,7 @@ const isHome = pathname === '/';
         
         <nav class="nav-links" aria-label="Primary">
           <a href="/" class:list={["nav-link", { active: isHome }]}>Reader</a>
+          <a href="/how-it-works" class:list={["nav-link", { active: pathname === '/how-it-works' }]}>How it works</a>
           <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
@@ -164,6 +165,7 @@ const isHome = pathname === '/';
         <div class="footer-group">
           <p>Read</p>
           <a href="/">Speed reader</a>
+          <a href="/how-it-works">How it works</a>
           <a href="/rsvp-reader">RSVP reader</a>
           <a href="/bionic-reading">Bionic reading</a>
           <a href="/pdf-to-speech">PDF to speech</a>
@@ -347,7 +349,7 @@ const isHome = pathname === '/';
           font-size: 0.75rem;
           padding: 0.35rem 0.45rem;
         }
-        .nav-link:nth-child(2), .nav-link:nth-child(3) { display: none; }
+        .nav-link:nth-child(3), .nav-link:nth-child(4) { display: none; }
         .launch-strip-inner { justify-content: space-between; }
         .launch-strip-inner > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
       }

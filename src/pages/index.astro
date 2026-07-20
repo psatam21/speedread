@@ -40,6 +40,7 @@ const webAppSchema = {
             <a class="btn btn-primary" href="#importer-card">Try it with your text</a>
             <button class="hero-demo-link" id="btn-hero-demo" type="button">Try a sample text</button>
           </div>
+          <p class="hero-start-note">No account required. Switch reading modes without reloading your document.</p>
           <ul class="hero-trust" aria-label="Product benefits">
             <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 6v4m0 3h.01" /></svg><span><strong>100% private</strong><small>Your text stays<br />in your browser.</small></span></li>
             <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z" /></svg><span><strong>Up to 3x faster</strong><small>Read more in less time<br />without losing meaning.</small></span></li>
@@ -347,6 +348,63 @@ const webAppSchema = {
           <span><strong>Public URL</strong><small>Pull the article body into the reader</small></span>
           <span aria-hidden="true">→</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="reading-methods" aria-labelledby="reading-methods-title">
+    <div class="container">
+      <div class="reading-methods-heading">
+        <div>
+          <p class="section-label">One document, five ways to read</p>
+          <h2 id="reading-methods-title">Speed is a dial. Context is a choice.</h2>
+        </div>
+        <p>Use fast flash reading to clear a queue, then move toward full-page context when the material deserves more attention.</p>
+      </div>
+
+      <div class="method-ladder" role="list" aria-label="SpeedRead reading modes">
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">01</span>
+          <span><strong>Flash</strong><small>One word at an anchored focal point</small></span>
+          <span class="method-context"><b>Least visual context</b><small>Fast triage and familiar material</small></span>
+          <span class="method-pace">300-600 WPM</span>
+        </a>
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">02</span>
+          <span><strong>Phrase</strong><small>Three-word groups preserve local meaning</small></span>
+          <span class="method-context"><b>More sentence context</b><small>Reports, newsletters and articles</small></span>
+          <span class="method-pace">280-500 WPM</span>
+        </a>
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">03</span>
+          <span><strong>Focus</strong><small>A moving highlight inside the full paragraph</small></span>
+          <span class="method-context"><b>Full paragraph visible</b><small>Dense ideas and first-pass research</small></span>
+          <span class="method-pace">220-400 WPM</span>
+        </a>
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">04</span>
+          <span><strong>Bionic</strong><small>Word prefixes create scanning anchors</small></span>
+          <span class="method-context"><b>Self-paced full page</b><small>Reference reading and review</small></span>
+          <span class="method-pace">Your pace</span>
+        </a>
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">05</span>
+          <span><strong>Page</strong><small>Clean, distraction-reduced document view</small></span>
+          <span class="method-context"><b>Maximum context</b><small>Study, comparison and careful rereading</small></span>
+          <span class="method-pace">Your pace</span>
+        </a>
+      </div>
+
+      <div class="reading-fit">
+        <div>
+          <h3>Where SpeedRead earns its place</h3>
+          <p>Saved articles, newsletters, meeting notes, industry reports, long email threads and a first pass through research.</p>
+        </div>
+        <div>
+          <h3>When to slow down</h3>
+          <p>Contracts, equations, unfamiliar technical material and anything you must quote precisely. Drop the WPM or switch to Focus or Page.</p>
+        </div>
+        <a href="/how-it-works">See how each mode works <span aria-hidden="true">-&gt;</span></a>
       </div>
     </div>
   </section>
@@ -2393,6 +2451,7 @@ const webAppSchema = {
       cursor: pointer;
       border-bottom: 1px solid var(--color-text);
     }
+    .hero-start-note { margin: 0.9rem 0 0; color: var(--color-text-muted); font-size: 0.78rem; }
     .hero-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: clamp(2rem, 5vw, 4rem); padding: 0; list-style: none; }
     .hero-trust li { display: flex; gap: 0.7rem; align-items: flex-start; padding-right: 1rem; border-right: 1px solid var(--color-border); }
     .hero-trust li:last-child { border: 0; }
@@ -2503,6 +2562,25 @@ const webAppSchema = {
     .launch-path strong { font-size: 1.05rem; }
     .launch-path small { margin-top: 0.15rem; color: rgba(255,255,255,0.72); }
 
+    .reading-methods { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--color-bg); }
+    .reading-methods-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+    .section-label { margin: 0 0 0.75rem; color: var(--color-primary); font-weight: 700; }
+    .reading-methods-heading h2 { max-width: 14ch; margin: 0; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 0.98; letter-spacing: -0.04em; }
+    .reading-methods-heading > p { max-width: 48ch; margin: 0; color: var(--color-text-muted); }
+    .method-ladder { border-top: 1px solid var(--color-border); }
+    .method-row { display: grid; grid-template-columns: 2.5rem minmax(190px, 1fr) minmax(230px, 1fr) auto; gap: 1.25rem; align-items: center; min-height: 6.25rem; padding: 1rem 0; border-bottom: 1px solid var(--color-border); color: var(--color-text); transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
+    .method-row:hover { color: var(--color-text); background: var(--color-primary-muted); transform: translateX(0.5rem); }
+    .method-row strong, .method-row small, .method-context b { display: block; }
+    .method-row strong { font-size: 1.25rem; letter-spacing: -0.02em; }
+    .method-row small { margin-top: 0.2rem; color: var(--color-text-muted); line-height: 1.4; }
+    .method-index { color: var(--color-text-subtle); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+    .method-context b { color: var(--color-text); font-size: 0.85rem; }
+    .method-pace { color: var(--color-primary); font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+    .reading-fit { display: grid; grid-template-columns: 1fr 1fr auto; gap: clamp(1.5rem, 4vw, 3rem); align-items: start; margin-top: 2.25rem; }
+    .reading-fit h3 { margin: 0 0 0.5rem; font-size: 1rem; }
+    .reading-fit p { max-width: 48ch; margin: 0; color: var(--color-text-muted); font-size: 0.9rem; }
+    .reading-fit > a { align-self: center; font-weight: 700; white-space: nowrap; }
+
     .hero-import-rail { margin-top: clamp(2rem, 5vw, 4rem); padding: clamp(1.25rem, 3vw, 2rem); border: 1px solid var(--color-border); border-radius: var(--radius-xl); background: var(--color-bg-card); animation: rail-enter 700ms 180ms var(--ease-out) both; }
     .hero-import-heading { margin-bottom: 1.25rem; }
     .hero-import-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
@@ -2523,13 +2601,17 @@ const webAppSchema = {
       .hero-reader-bottom b { font-size: 1.45rem; }
       .hero-import-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .launch-paths-heading { align-items: start; flex-direction: column; }
+      .reading-methods-heading { grid-template-columns: 1fr; }
+      .method-row { grid-template-columns: 2rem 1fr auto; gap: 0.75rem; }
+      .method-context { display: none; }
+      .reading-fit { grid-template-columns: 1fr; }
     }
     @keyframes hero-enter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes reader-enter { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
     @keyframes rail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) {
       .hero-copy, .hero-reader, .hero-import-rail { animation: none; }
-      .hero-import-option { transition: none; }
+      .hero-import-option, .method-row { transition: none; }
     }
 
     .seo-title {
