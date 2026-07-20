@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 
 const pageTitle = "Privacy Policy — SpeedRead";
-const pageDescription = "Privacy Policy for SpeedRead. Learn about how we process text entirely on your device with zero server-side storage, cookie usage, and analytics.";
+const pageDescription = "Privacy Policy for SpeedRead. Learn how documents stay on-device while optional accounts, reading totals, payments, and AI are processed.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -10,7 +10,7 @@ const pageDescription = "Privacy Policy for SpeedRead. Learn about how we proces
     <div class="container max-w-xl">
       <div class="glass content-card">
         <h1>Privacy policy</h1>
-        <p class="muted">Last Updated: July 17, 2026</p>
+        <p class="muted">Last Updated: July 20, 2026</p>
 
         <div class="content mt-6">
           <p>
@@ -22,7 +22,7 @@ const pageDescription = "Privacy Policy for SpeedRead. Learn about how we proces
             <strong>Document privacy first.</strong> RSVP, bionic formatting, Text-to-Speech, PDF/EPUB extraction, and image OCR run locally in your browser. Pasted text and uploaded files are not stored on SpeedRead servers.
           </p>
           <p>
-            Optional features that contact a network: (a) Extract URL — our server fetches the public page you request so CORS is not required; (b) Gemini AI — free users send requests with their own key to Google; Premium users may use our authenticated proxy; (c) payments and license verification with our payment provider; (d) the optional Chrome extension activates a Premium license and may send extracted article text only to SpeedRead when you click Speed read (not continuous browsing history).
+            Optional features that contact a network: (a) Extract URL, where our server fetches the public page you request; (b) AI, where free users may call Google with their own key and Premium users may use our authenticated OpenRouter proxy; (c) account authentication and aggregate reading totals through Supabase; (d) payment confirmation through our payment provider; and (e) the optional Chrome extension when you explicitly send an article to SpeedRead.
           </p>
 
           <h2>1b. Chrome Extension</h2>
@@ -32,12 +32,13 @@ const pageDescription = "Privacy Policy for SpeedRead. Learn about how we proces
 
           <h2>2. Information We Collect</h2>
           <p>
-            If you contact us directly or purchase a Pro lifetime membership, we may collect minimal metadata:
+            If you create an account, contact us, or purchase a Lifetime Premium membership, we may collect minimal metadata:
           </p>
           <ul>
             <li><strong>Contact information:</strong> Name, email address, and the contents of any message you send us.</li>
-            <li><strong>Transaction Information:</strong> Payment metadata when purchasing Lifetime Premium (handled by our payment processor; we do not store card numbers). We issue a signed license key so you can activate Premium on multiple devices.</li>
-            <li><strong>License Key:</strong> Stored only in your browser (localStorage) after purchase or activation. We do not maintain a user account database.</li>
+            <li><strong>Account information:</strong> Email address, authentication identifiers, and Premium entitlement status. Passwords are handled by Supabase Auth and are not visible to SpeedRead.</li>
+            <li><strong>Reading totals:</strong> Signed-in users may sync word counts, reading speed, session duration, and estimated time saved. Document text is not included.</li>
+            <li><strong>Transaction information:</strong> Payment identifiers and status used to attach Lifetime Premium to your account. Card details remain with the payment processor.</li>
           </ul>
 
           <h2>3. Cookies and Web Beacons</h2>

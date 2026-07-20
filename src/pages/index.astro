@@ -383,13 +383,13 @@ const webAppSchema = {
   <section class="outcomes-section" aria-labelledby="outcomes-title">
     <div class="container">
       <div class="outcomes-heading">
-        <div><p class="section-label">Reading impact</p><h2 id="outcomes-title">Every faster page gives time back.</h2></div>
-        <p>See what changes when a 240 WPM reading habit moves to 450 WPM.</p>
+        <div><p class="section-label">Reading impact</p><h2 id="outcomes-title">Compare it to what you actually read.</h2></div>
+        <p>Estimated at 450 WPM versus a 240 WPM baseline. Pick the reading job that looks most like your day.</p>
       </div>
       <div class="outcomes-grid">
-        <article><strong>19 min</strong><span>saved every 10,000 words</span><small>450 WPM compared with 240 WPM</small></article>
-        <article><strong>97 min</strong><span>reclaimed in a 50,000-word week</span><small>Enough time for another report or case</small></article>
-        <article><strong>84 hrs</strong><span>given back over one year</span><small>At the same weekly reading volume</small></article>
+        <article><small>Newsletter or daily brief · 2,500 words</small><strong>10 → 6 min</strong><span>about 5 minutes saved</span></article>
+        <article><small>Long report or case · 10,000 words</small><strong>42 → 22 min</strong><span>about 19 minutes saved</span></article>
+        <article><small>Short business book · 50,000 words</small><strong>3h 28 → 1h 51</strong><span>about 97 minutes saved</span></article>
       </div>
       <div class="composite-stories">
         <figure class="story-card"><p class="story-eyebrow">Weekly product review</p><blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote><figcaption><span class="story-avatar">PM</span><span><strong>Product reader</strong><small>Reports and roadmaps</small></span><i>01</i></figcaption></figure>
@@ -476,7 +476,7 @@ const webAppSchema = {
       <!-- Analytics Stored locally -->
       <div class="glass dashboard-card">
         <h3>Your reading dashboard</h3>
-        <p class="muted">Your statistics are stored entirely in your local browser.</p>
+        <p class="muted">Documents stay local. Signed-in users can sync reading totals across devices.</p>
         <div class="stats-grid mt-4">
           <div class="stat-box">
             <span class="stat-value" id="stats-words">0</span>
@@ -512,17 +512,23 @@ const webAppSchema = {
         <ul class="pricing-features mt-4">
           <li>100% ad-free reading environment</li>
           <li>Unlimited document length (no 3,000-word cap)</li>
-          <li>Gemini AI summary &amp; chat (no API key needed)</li>
-          <li>Multi-device license (up to 5 devices, revocable)</li>
+          <li>AI summary &amp; chat (no API key needed)</li>
+          <li>Premium follows your signed-in account</li>
           <li>Neural TTS voices (Chrome/Edge system voices)</li>
         </ul>
         <div class="pricing-actions mt-6">
           <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $9</button>
-          <p class="muted text-center mt-2">One-time payment. Activate up to 5 personal devices.</p>
+          <p class="muted text-center mt-2">One-time payment. Sign in once, then use Premium across your devices.</p>
+        </div>
+
+        <div class="account-purchase-panel mt-6" id="account-purchase-panel">
+          <strong>Account-linked purchase</strong>
+          <p id="account-purchase-copy">Sign in before checkout so Lifetime Premium is attached to your account automatically.</p>
+          <button class="btn btn-secondary" id="btn-pricing-signin" type="button">Sign in or create account</button>
         </div>
 
         <!-- Multi-device license: activate key + device slots (max 5) -->
-        <div class="license-panel mt-6" id="license-panel">
+        <div class="license-panel mt-6 hidden" id="license-panel" aria-hidden="true">
           <h4 class="license-heading">Already purchased?</h4>
           <p class="muted license-hint">Paste your lifetime license key. Premium binds to this device (max 5 devices). Sharing past the limit is blocked.</p>
           <div class="license-row">
@@ -638,14 +644,14 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>How does multi-device Premium work?</summary>
             <div class="faq-answer">
-              <p>After a successful one-time payment you receive a lifetime license key. Paste that key on any browser or device using Activate under the Premium card. Ads stay off and the word limit is removed on each activated device. Keep a copy of the key somewhere safe.</p>
+              <p>Sign in before checkout and the one-time purchase is attached to your SpeedRead account. Sign into the same account on another device to restore Premium without copying a license key.</p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Is SpeedRead really free?</summary>
             <div class="faq-answer">
-              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9) removes ads, lifts the 3,000-word cap, and includes multi-device license + Gemini proxy.</p>
+              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9) removes ads, lifts the 3,000-word cap, and includes account-linked hosted AI.</p>
             </div>
           </details>
         </div>
@@ -717,7 +723,7 @@ const webAppSchema = {
           "name": "How does multi-device Premium work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "After payment you receive a lifetime license key. Paste that key on any browser or device to unlock Premium. Keep a backup of the key."
+            "text": "Sign in before checkout and Lifetime Premium is attached to your SpeedRead account. Sign into that account on another device to restore Premium."
           }
         },
         {
@@ -725,7 +731,7 @@ const webAppSchema = {
           "name": "Is SpeedRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and multi-device license."
+            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and account-linked hosted AI."
           }
         }
       ]
@@ -761,6 +767,23 @@ const webAppSchema = {
     };
 
     // ── Device-bound premium ──────────────────────────────────────────
+    let accountUser = null;
+    window.addEventListener('speedread:account', (event) => {
+      accountUser = event.detail?.user || null;
+      if (event.detail?.premium) {
+        state.isPremium = true;
+        applyPremiumUI();
+      }
+      const copy = document.getElementById('account-purchase-copy');
+      const signInButton = document.getElementById('btn-pricing-signin');
+      if (copy) {
+        copy.textContent = accountUser
+          ? `Signed in as ${accountUser.email}. Your purchase will attach to this account.`
+          : 'Sign in before checkout so Lifetime Premium is attached to your account automatically.';
+      }
+      signInButton?.classList.toggle('hidden', Boolean(accountUser));
+    });
+
     const getDeviceId = () => {
       let id = localStorage.getItem('device_id');
       if (!id) {
@@ -849,12 +872,12 @@ const webAppSchema = {
         if (cached?.devices) renderDeviceList(cached.devices, cached.maxDevices || 5);
       } catch (_) {}
 
-      if (state.isPremium && getDeviceSession()) {
+      if (state.isPremium) {
         document.querySelectorAll('.ads-section').forEach(el => el.classList.add('hidden'));
         
         const buyBtn = document.getElementById('btn-buy-premium');
         if (buyBtn) {
-          buyBtn.textContent = "Premium active on this device";
+          buyBtn.textContent = accountUser ? "Lifetime Premium active" : "Premium active on this device";
           buyBtn.disabled = true;
           buyBtn.classList.add('btn-premium-active');
         }
@@ -971,9 +994,8 @@ const webAppSchema = {
       document.getElementById('stats-words').textContent = state.stats.wordsRead.toLocaleString();
       document.getElementById('stats-time').textContent = Math.round(state.stats.timeSpent) + 'm';
       
-      // Traditional reading speed is 200 WPM
-      // SpeedRead saves time = (Words Read / 200) - (Words Read / RSVP WPM)
-      const traditionalTime = state.stats.wordsRead / 200;
+      // Compare against the same 240 WPM baseline used in the reading scenarios.
+      const traditionalTime = state.stats.wordsRead / 240;
       const speedreadTime = state.stats.timeSpent; // actual reading time
       const timeSaved = Math.max(0, traditionalTime - speedreadTime);
       document.getElementById('stats-saved').textContent = Math.round(timeSaved) + 'm';
@@ -995,9 +1017,35 @@ const webAppSchema = {
       document.getElementById('stats-streak').textContent = state.stats.streak;
     };
 
+    let statsSyncInFlight = false;
+    const syncReadingStats = async () => {
+      if (statsSyncInFlight) return;
+      const supabase = globalThis.speedreadSupabase;
+      if (!supabase) return;
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) return;
+
+      const lastSynced = Number(localStorage.getItem('supabase_synced_words') || 0);
+      const unsyncedWords = Math.floor(state.stats.wordsRead - lastSynced);
+      if (unsyncedWords < 100) return;
+
+      statsSyncInFlight = true;
+      const wordsRead = Math.min(unsyncedWords, 1000000);
+      const { error } = await supabase.from('reading_sessions').insert({
+        user_id: session.user.id,
+        words_read: wordsRead,
+        reading_wpm: state.wpm,
+        baseline_wpm: 240,
+        seconds_spent: Math.max(1, Math.round((wordsRead / state.wpm) * 60)),
+      });
+      if (!error) localStorage.setItem('supabase_synced_words', String(lastSynced + wordsRead));
+      statsSyncInFlight = false;
+    };
+
     const saveStats = () => {
       localStorage.setItem('stats', JSON.stringify(state.stats));
       updateStatsUI();
+      void syncReadingStats();
     };
 
     const {
@@ -1945,7 +1993,7 @@ const webAppSchema = {
 
       // Gemini: device session only (not raw license key)
       const getPremiumToken = () => getDeviceSession();
-      const isPremium = () => state.isPremium && !!getDeviceSession();
+      const isPremium = () => state.isPremium;
 
       document.getElementById('btn-save-key').addEventListener('click', () => {
         const key = document.getElementById('ai-key').value;
@@ -1970,12 +2018,18 @@ const webAppSchema = {
       }
 
       async function callGemini(bodyPayload) {
-        if (isPremium() && getPremiumToken()) {
+        if (isPremium()) {
+          let premiumToken = getPremiumToken();
+          if (accountUser && globalThis.speedreadSupabase) {
+            const { data: { session } } = await globalThis.speedreadSupabase.auth.getSession();
+            premiumToken = session?.access_token || premiumToken;
+          }
+          if (!premiumToken) throw new Error('Sign in again to use hosted AI.');
           const res = await fetch('/api/gemini', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              'Authorization': `Bearer ${getPremiumToken()}`,
+              'Authorization': `Bearer ${premiumToken}`,
             },
             body: JSON.stringify(bodyPayload),
           });
@@ -2184,7 +2238,7 @@ const webAppSchema = {
         const stats = {
           wordsRead: state.stats.wordsRead,
           speed: state.wpm,
-          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 200) - state.stats.timeSpent))
+          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 240) - state.stats.timeSpent))
         };
         
         const canvas = document.createElement('canvas');
@@ -2252,13 +2306,28 @@ const webAppSchema = {
         document.getElementById('share-modal').classList.add('hidden');
       });
       
+      document.getElementById('btn-pricing-signin')?.addEventListener('click', () => {
+        document.getElementById('account-open')?.click();
+      });
+
       // Dodo Payments checkout
       document.getElementById('btn-buy-premium').addEventListener('click', async (e) => {
         const btn = e.currentTarget;
         btn.disabled = true;
         btn.textContent = 'Redirecting to checkout...';
         try {
-          const res = await fetch('/api/create-checkout', { method: 'POST' });
+          const supabase = globalThis.speedreadSupabase;
+          const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
+          if (!session) {
+            document.getElementById('account-open')?.click();
+            btn.disabled = false;
+            btn.textContent = 'Get Lifetime Pro — $9';
+            return;
+          }
+          const res = await fetch('/api/create-checkout', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
           const data = await res.json();
           if (!data.checkout_url) throw new Error(data.error || 'No checkout URL returned');
           window.location.href = data.checkout_url;
@@ -2374,6 +2443,12 @@ const webAppSchema = {
           .then((data) => {
             history.replaceState(null, '', window.location.pathname);
             if (data.ok) {
+              if (data.account_linked) {
+                state.isPremium = true;
+                applyPremiumUI();
+                alert('Payment confirmed. Lifetime Premium is now attached to your SpeedRead account.');
+                return;
+              }
               unlockPremium({
                 licenseKey: data.license_key,
                 sessionToken: data.token,
@@ -2681,7 +2756,7 @@ const webAppSchema = {
     .outcomes-grid article { padding: clamp(1.25rem, 3vw, 2rem); }
     .outcomes-grid article + article { border-left: 1px solid var(--color-border); }
     .outcomes-grid strong, .outcomes-grid span, .outcomes-grid small { display: block; }
-    .outcomes-grid strong { color: var(--color-primary); font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.05em; }
+    .outcomes-grid strong { color: var(--color-primary); font-size: clamp(1.8rem, 4vw, 3.25rem); line-height: 1; letter-spacing: -0.05em; white-space: nowrap; }
     .outcomes-grid span { margin-top: 0.6rem; color: var(--color-text); font-size: 0.82rem; font-weight: 700; }
     .outcomes-grid small { margin-top: 0.3rem; color: var(--color-text-muted); font-size: 0.7rem; }
     .composite-stories { display: grid; grid-template-columns: repeat(3, 1fr); border-inline: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
@@ -3092,6 +3167,14 @@ const webAppSchema = {
       border-top: 1px solid var(--color-border);
       padding-top: 1.25rem;
     }
+    .account-purchase-panel {
+      padding: 1rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-bg-subtle);
+    }
+    .account-purchase-panel strong { display: block; color: var(--color-text); font-size: 0.82rem; }
+    .account-purchase-panel p { margin: 0.35rem 0 0.8rem; color: var(--color-text-muted); font-size: 0.75rem; line-height: 1.5; }
     .license-heading {
       font-size: 0.95rem;
       margin-bottom: 0.35rem;
