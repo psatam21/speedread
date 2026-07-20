@@ -54,6 +54,7 @@ const webAppSchema = {
             <div class="hero-reader-tools"><span>LOCAL / ACTIVE</span><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div>
           </div>
           <div class="hero-preview-stage">
+            <span class="hero-focus-line" aria-hidden="true"></span>
             <span class="hero-reticle hero-reticle-top" aria-hidden="true"></span>
             <span class="hero-reticle hero-reticle-bottom" aria-hidden="true"></span>
             <p><i></i>Optimal recognition point</p>
@@ -62,7 +63,11 @@ const webAppSchema = {
           <div class="hero-demo-controls">
             <div class="hero-speed-control"><span>Velocity / WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
           </div>
-          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with SpeedRead<b>350 <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
+          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with SpeedRead<b><span id="hero-compare-wpm">350</span> <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
+          <div class="hero-gain-stats" aria-live="polite">
+            <span><strong id="hero-pace-gain">+46%</strong> faster pace</span>
+            <span><strong id="hero-time-saved">7 min</strong> saved per 5,000 words</span>
+          </div>
         </div>
       </header>
 
@@ -88,6 +93,7 @@ const webAppSchema = {
           <button class="mode-btn active" data-mode="rsvp" title="One word at a fixed focal point">Flash</button>
           <button class="mode-btn" data-mode="phrase" title="Three words at a time for more context">Phrase</button>
           <button class="mode-btn" data-mode="focus" title="Full text with a moving focus highlight">Focus</button>
+          <button class="mode-btn" data-mode="flow" title="Fixed focal point with paragraph context">Flow</button>
           <button class="mode-btn" data-mode="bionic">Bionic</button>
           <button class="mode-btn" data-mode="standard">Page</button>
         </div>
@@ -113,6 +119,22 @@ const webAppSchema = {
             <div class="rsvp-progress-bar-container">
               <div class="rsvp-progress-bar" id="rsvp-progress"></div>
             </div>
+          </div>
+
+          <div id="flow-pane" class="reader-pane hidden">
+            <div class="flow-reader-view">
+              <p class="flow-context-line" id="flow-previous-line"></p>
+              <div class="flow-anchor-stage">
+                <span class="flow-focus-line" aria-hidden="true"></span>
+                <div class="flow-anchor-line">
+                  <span class="flow-left"><span id="flow-left-context"></span> <strong id="flow-word-left"></strong></span>
+                  <b id="flow-word-orp"></b>
+                  <span class="flow-right"><strong id="flow-word-right"></strong> <span id="flow-right-context"></span></span>
+                </div>
+              </div>
+              <p class="flow-context-line" id="flow-next-line"></p>
+            </div>
+            <div class="rsvp-progress-bar-container"><div class="rsvp-progress-bar" id="flow-progress"></div></div>
           </div>
 
           <!-- Bionic Reader Pane -->
@@ -358,11 +380,30 @@ const webAppSchema = {
     </div>
   </section>
 
+  <section class="outcomes-section" aria-labelledby="outcomes-title">
+    <div class="container">
+      <div class="outcomes-heading">
+        <div><p class="section-label">Illustrative reader outcomes</p><h2 id="outcomes-title">What consistent practice can unlock.</h2></div>
+        <p>Composite examples, not live platform telemetry. Your private dashboard records your real words, pace, streak, and estimated time saved in this browser.</p>
+      </div>
+      <div class="outcomes-grid">
+        <article><strong>19 min</strong><span>saved per 10,000 words at 450 WPM versus 240 WPM</span></article>
+        <article><strong>+88%</strong><span>reading pace when moving from 240 to 450 WPM</span></article>
+        <article><strong>~95 min</strong><span>reclaimed across five 10,000-word weekly reading blocks</span></article>
+      </div>
+      <div class="composite-stories">
+        <figure><blockquote>“I clear the research backlog before the weekly review instead of carrying it into Friday.”</blockquote><figcaption>Composite story · Product manager</figcaption></figure>
+        <figure><blockquote>“Phrase mode keeps enough context visible that faster reading no longer feels like guessing.”</blockquote><figcaption>Composite story · MBA candidate</figcaption></figure>
+        <figure><blockquote>“The local dashboard made improvement tangible without sending my documents anywhere.”</blockquote><figcaption>Composite story · Research analyst</figcaption></figure>
+      </div>
+    </div>
+  </section>
+
   <section class="reading-methods" aria-labelledby="reading-methods-title">
     <div class="container">
       <div class="reading-methods-heading">
         <div>
-          <p class="section-label">One document, five ways to read</p>
+          <p class="section-label">One document, six ways to read</p>
           <h2 id="reading-methods-title">Speed is a dial. Context is a choice.</h2>
         </div>
         <p>Use fast flash reading to clear a queue, then move toward full-page context when the material deserves more attention.</p>
@@ -389,12 +430,18 @@ const webAppSchema = {
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">04</span>
+          <span><strong>Flow</strong><small>A fixed focal point with moving paragraph context</small></span>
+          <span class="method-context"><b>Three context lines</b><small>Fast reading without losing the surrounding thread</small></span>
+          <span class="method-pace">240-450 WPM</span>
+        </a>
+        <a href="#importer-card" class="method-row" role="listitem">
+          <span class="method-index">05</span>
           <span><strong>Bionic</strong><small>Word prefixes create scanning anchors</small></span>
           <span class="method-context"><b>Self-paced full page</b><small>Reference reading and review</small></span>
           <span class="method-pace">Your pace</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
-          <span class="method-index">05</span>
+          <span class="method-index">06</span>
           <span><strong>Page</strong><small>Clean, distraction-reduced document view</small></span>
           <span class="method-context"><b>Maximum context</b><small>Study, comparison and careful rereading</small></span>
           <span class="method-pace">Your pace</span>
@@ -512,7 +559,7 @@ const webAppSchema = {
         <div class="seo-text">
           <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
-            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word flash, three-word phrase, moving focus highlight, bionic, or clean page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
+            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
           </p>
 
           <h2>How to use this online speed reader</h2>
@@ -686,6 +733,7 @@ const webAppSchema = {
   </script>
 
   <!-- Core JavaScript Script Loader & App Logic -->
+  <script is:inline src="/reader-core.js"></script>
   <script is:inline>
     // State management
     const state = {
@@ -695,7 +743,7 @@ const webAppSchema = {
       currentIndex: 0,
       wpm: 300,
       isPlaying: false,
-      mode: 'rsvp', // rsvp, phrase, focus, bionic, standard
+      mode: 'rsvp', // rsvp, phrase, focus, flow, bionic, standard
       theme: 'light',
       font: 'sans',
       fontSize: 24,
@@ -952,15 +1000,7 @@ const webAppSchema = {
       updateStatsUI();
     };
 
-    // Calculate ORP character index
-    const getOrpIndex = (word) => {
-      const len = word.length;
-      if (len <= 1) return 0;
-      if (len <= 5) return 1;
-      if (len <= 9) return 2;
-      if (len <= 13) return 3;
-      return 4;
-    };
+    const { getOrpIndex, getPhraseParts, getFlowContext } = window.SpeedReadReaderCore;
 
     // Parse text to word mappings with coordinate tracking
     const parseText = (textVal) => {
@@ -1020,8 +1060,6 @@ const webAppSchema = {
       if (!ttsVisualTimer && ttsVisualQueue.length) renderQueuedTTSWord();
     };
 
-    const getChunkSize = () => state.mode === 'phrase' ? 3 : 1;
-
     // Display the current word or phrase at the fixed ORP
     const renderRSVPWord = () => {
       if (state.currentIndex >= state.words.length) {
@@ -1033,21 +1071,19 @@ const webAppSchema = {
       if (!word) return;
 
       const orpIdx = getOrpIndex(word);
-      const left = word.substring(0, orpIdx);
-      const orp = word.charAt(orpIdx);
-      const phraseTail = state.mode === 'phrase'
-        ? state.words.slice(state.currentIndex + 1, state.currentIndex + getChunkSize()).join(' ')
-        : '';
-      const right = word.substring(orpIdx + 1) + (phraseTail ? ` ${phraseTail}` : '');
+      const parts = state.mode === 'phrase'
+        ? getPhraseParts(state.words, state.currentIndex)
+        : { left: word.substring(0, orpIdx), orp: word.charAt(orpIdx), right: word.substring(orpIdx + 1) };
 
       // Render segments
-      document.getElementById('word-left').textContent = left;
-      document.getElementById('word-orp').textContent = orp;
-      document.getElementById('word-right').textContent = right;
+      document.getElementById('word-left').textContent = parts.left;
+      document.getElementById('word-orp').textContent = parts.orp;
+      document.getElementById('word-right').textContent = parts.right;
 
       // Update progress sliders
       const percentage = Math.round((state.currentIndex / Math.max(1, state.words.length - 1)) * 100);
       document.getElementById('rsvp-progress').style.width = percentage + '%';
+      document.getElementById('flow-progress').style.width = percentage + '%';
       document.getElementById('slider-progress').value = percentage;
       document.getElementById('reading-percentage').textContent = `Word ${state.currentIndex + 1} / ${state.words.length} (${percentage}%)`;
       
@@ -1056,6 +1092,7 @@ const webAppSchema = {
       const minLeft = Math.ceil(wordsLeft / state.wpm);
       document.getElementById('reading-time-left').textContent = `${minLeft} min remaining`;
       if (state.mode === 'focus') updateFocusWord();
+      if (state.mode === 'flow') renderFlowWord();
     };
 
     // Main RSVP playback loop
@@ -1097,7 +1134,7 @@ const webAppSchema = {
         return;
       }
 
-      const chunkSize = Math.min(getChunkSize(), state.words.length - state.currentIndex);
+      const chunkSize = 1;
       const word = state.words[Math.min(state.words.length - 1, state.currentIndex + chunkSize - 1)];
       const baseDelay = (60 / state.wpm) * 1000 * chunkSize;
       
@@ -1275,7 +1312,23 @@ const webAppSchema = {
       const current = view.querySelector(`[data-word-index="${state.currentIndex}"]`);
       if (!current) return;
       current.classList.add('active');
+      const lineTop = current.offsetTop;
+      view.querySelectorAll('.focus-word').forEach((word) => {
+        word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
+      });
       current.scrollIntoView({ block: 'center', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+
+    const renderFlowWord = () => {
+      const context = getFlowContext(state.words, state.currentIndex);
+      const orpIndex = getOrpIndex(context.word);
+      document.getElementById('flow-previous-line').textContent = context.previous;
+      document.getElementById('flow-left-context').textContent = context.left;
+      document.getElementById('flow-word-left').textContent = context.word.slice(0, orpIndex);
+      document.getElementById('flow-word-orp').textContent = context.word.charAt(orpIndex);
+      document.getElementById('flow-word-right').textContent = context.word.slice(orpIndex + 1);
+      document.getElementById('flow-right-context').textContent = context.right;
+      document.getElementById('flow-next-line').textContent = context.next;
     };
 
     // Setup active mode panes
@@ -1286,6 +1339,7 @@ const webAppSchema = {
       });
 
       document.getElementById('rsvp-pane').classList.toggle('hidden', !['rsvp', 'phrase'].includes(modeName));
+      document.getElementById('flow-pane').classList.toggle('hidden', modeName !== 'flow');
       document.getElementById('bionic-pane').classList.toggle('hidden', modeName !== 'bionic');
       document.getElementById('standard-pane').classList.toggle('hidden', !['focus', 'standard'].includes(modeName));
 
@@ -1293,6 +1347,7 @@ const webAppSchema = {
         rsvp: 'One word at a fixed focal point for maximum speed.',
         phrase: 'Three-word groups preserve more context while reducing eye movement.',
         focus: 'Keep the surrounding paragraph visible while the current word advances.',
+        flow: 'Keep a fixed focal point while nearby words and lines move through context.',
         bionic: 'Bold word beginnings guide your eyes through the full text.',
         standard: 'A clean, distraction-free page for self-paced reading.',
       };
@@ -1302,6 +1357,8 @@ const webAppSchema = {
         renderBionicText();
       } else if (modeName === 'focus') {
         renderFocusText();
+        renderRSVPWord();
+      } else if (modeName === 'flow') {
         renderRSVPWord();
       } else if (modeName === 'standard') {
         renderStandardText();
@@ -1619,7 +1676,14 @@ const webAppSchema = {
         if (heroPreviewPlaying) heroPreviewTimer = setInterval(renderHeroPreview, 60000 / Number(document.getElementById('hero-wpm-slider').value));
       };
       document.getElementById('hero-wpm-slider').addEventListener('input', (event) => {
-        document.getElementById('hero-wpm-output').textContent = event.target.value;
+        const wpm = Number(event.target.value);
+        const baseline = 240;
+        const paceGain = Math.round(((wpm / baseline) - 1) * 100);
+        const minutesSaved = Math.max(0, Math.round((5000 / baseline) - (5000 / wpm)));
+        document.getElementById('hero-wpm-output').textContent = wpm;
+        document.getElementById('hero-compare-wpm').textContent = wpm;
+        document.getElementById('hero-pace-gain').textContent = `${paceGain >= 0 ? '+' : ''}${paceGain}%`;
+        document.getElementById('hero-time-saved').textContent = `${minutesSaved} min`;
         updateHeroPlayback();
       });
       heroPlayButton.addEventListener('click', () => {
@@ -1680,13 +1744,13 @@ const webAppSchema = {
 
       document.getElementById('btn-rsvp-prev').addEventListener('click', () => {
         pauseReader();
-        state.currentIndex = Math.max(0, state.currentIndex - getChunkSize());
+        state.currentIndex = Math.max(0, state.currentIndex - 1);
         renderRSVPWord();
       });
 
       document.getElementById('btn-rsvp-next').addEventListener('click', () => {
         pauseReader();
-        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + getChunkSize());
+        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 1);
         renderRSVPWord();
       });
 
@@ -2502,7 +2566,7 @@ const webAppSchema = {
     }
     .hero-word {
       display: grid;
-      grid-template-columns: 1fr auto 1fr;
+      grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr);
       align-items: baseline;
       font-size: clamp(3rem, 7vw, 5.5rem);
       font-weight: 800;
@@ -2511,11 +2575,11 @@ const webAppSchema = {
     }
     .hero-word span:first-child { text-align: right; }
     .hero-word strong { color: var(--color-accent); }
-    .hero-word.is-changing { animation: hero-word-flash 180ms var(--ease-out); }
+    .hero-word.is-changing { animation: hero-word-flash 120ms linear; }
     .hero-demo-controls { padding: 1rem; border: 1px solid rgba(255,255,255,0.14); border-radius: var(--radius-md); background: rgba(255,255,255,0.05); }
     .hero-demo-controls label { display: block; margin-bottom: 0.6rem; color: rgba(255,255,255,0.72); font-size: 0.72rem; font-weight: 700; }
     .hero-demo-controls input { width: 100%; accent-color: var(--color-accent); cursor: pointer; }
-    @keyframes hero-word-flash { from { opacity: 0.35; transform: translateY(0.15em); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hero-word-flash { from { opacity: 0.72; } to { opacity: 1; } }
 
     .hero-reader-top { min-height: 2.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid #27272a; color: white; font: 600 0.68rem/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; }
     .hero-reader-identity, .hero-reader-identity > span, .hero-reader-tools { display: flex; align-items: center; gap: 0.55rem; }
@@ -2523,13 +2587,14 @@ const webAppSchema = {
     .hero-reader-identity i:last-child { background: var(--color-primary); box-shadow: 0 0 0 3px rgba(234,88,12,0.15); }
     .hero-reader-tools > span { color: #71717a; font-size: 0.58rem; }
     .hero-reader-tools button { border: 0; padding: 0; background: transparent; color: white; font: inherit; font-size: 1rem; cursor: pointer; }
-    .hero-preview-stage { position: relative; flex: 1; display: grid; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-preview-stage { position: relative; flex: 1; display: grid; grid-template-columns: 1fr; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
     .hero-preview-stage > p { margin: 0 auto 1.8rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-preview-stage > p i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
-    .hero-word { width: 100%; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
+    .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
-    .hero-word strong { padding: 0.06em 0.1em; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-word strong { width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: #3f3f46; transform: translateX(-50%); pointer-events: none; }
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
     .hero-reticle-bottom { bottom: 1.5rem; }
@@ -2538,6 +2603,7 @@ const webAppSchema = {
     .hero-speed-control > span { color: rgba(255,255,255,0.72); font-size: 0.72rem; }
     .hero-speed-control > span strong { display: block; color: white; font-size: 1.55rem; line-height: 1.1; }
     .hero-demo-controls input { width: 100%; accent-color: var(--color-primary); }
+    #hero-wpm-slider { position: relative; z-index: 2; cursor: ew-resize; touch-action: pan-y; pointer-events: auto; }
     .hero-wpm-ticks { display: flex; justify-content: space-between; margin-top: 0.3rem; color: rgba(255,255,255,0.64); font-size: 0.64rem; }
     .hero-reader-bottom { display: block; margin-top: 0; color: white; font-size: 0.7rem; }
     .hero-reader-bottom > strong { display: block; margin-bottom: 0.8rem; }
@@ -2547,7 +2613,23 @@ const webAppSchema = {
     .hero-reader-bottom b small { font-size: 0.65rem; font-weight: 500; }
     .hero-reader-bottom .hero-rsvp-pace { color: var(--color-primary); }
     .hero-reader-bottom .hero-rsvp-pace b { color: var(--color-primary); }
+    #hero-compare-wpm { color: inherit; }
     .hero-reader-bottom > p { margin: 0.75rem 0 0; color: rgba(255,255,255,0.55); font-size: 0.62rem; }
+    .hero-gain-stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #27272a; background: #09090b; }
+    .hero-gain-stats span { padding: 0.85rem 1.25rem; color: #71717a; font-size: 0.64rem; }
+    .hero-gain-stats span + span { border-left: 1px solid #27272a; }
+    .hero-gain-stats strong { display: block; color: var(--color-primary); font-size: 1rem; }
+
+    .flow-reader-view { padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); overflow: hidden; }
+    .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.16; white-space: nowrap; overflow: hidden; }
+    .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
+    .flow-focus-line { position: absolute; left: 33.333%; inset-block: 0; width: 1px; background: var(--color-border); pointer-events: none; }
+    .flow-anchor-line { display: grid; grid-template-columns: calc(33.333% - 0.5ch) 1ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
+    .flow-left { text-align: right; overflow: visible; }
+    .flow-right { text-align: left; overflow: visible; }
+    .flow-left > span, .flow-right > span { color: var(--color-text-muted); opacity: 0.35; }
+    .flow-anchor-line strong, .flow-anchor-line b { font-size: 1.55em; color: var(--color-text); }
+    .flow-anchor-line b { width: 1ch; text-align: center; color: var(--color-primary); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
     .app-section .dropzone-formats { color: var(--color-text-subtle); }
@@ -2582,6 +2664,22 @@ const webAppSchema = {
     .launch-path strong, .launch-path small { display: block; }
     .launch-path strong { font-size: 1.05rem; }
     .launch-path small { margin-top: 0.15rem; color: rgba(255,255,255,0.72); }
+
+    .outcomes-section { padding: clamp(4rem, 8vw, 6rem) 0; border-bottom: 1px solid var(--color-border); background: var(--color-bg-card); }
+    .outcomes-heading { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; }
+    .outcomes-heading h2 { max-width: 13ch; margin: 0; font-size: clamp(2.4rem, 6vw, 4.5rem); line-height: 0.98; letter-spacing: -0.05em; }
+    .outcomes-heading > p { color: var(--color-text-muted); font-size: 0.85rem; }
+    .outcomes-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 2.5rem; border: 1px solid var(--color-border); }
+    .outcomes-grid article { padding: clamp(1.25rem, 3vw, 2rem); }
+    .outcomes-grid article + article { border-left: 1px solid var(--color-border); }
+    .outcomes-grid strong, .outcomes-grid span { display: block; }
+    .outcomes-grid strong { color: var(--color-primary); font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; letter-spacing: -0.05em; }
+    .outcomes-grid span { margin-top: 0.6rem; color: var(--color-text-muted); font-size: 0.78rem; }
+    .composite-stories { display: grid; grid-template-columns: repeat(3, 1fr); border-inline: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
+    .composite-stories figure { margin: 0; padding: clamp(1.25rem, 3vw, 2rem); }
+    .composite-stories figure + figure { border-left: 1px solid var(--color-border); }
+    .composite-stories blockquote { margin: 0; color: var(--color-text); font-size: 0.95rem; line-height: 1.6; }
+    .composite-stories figcaption { margin-top: 1rem; color: var(--color-text-subtle); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; }
 
     .reading-methods { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--color-bg); }
     .reading-methods-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
@@ -2624,6 +2722,8 @@ const webAppSchema = {
       .hero-trust li { padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
       .hero-reader-bottom b { font-size: 1.45rem; }
       .hero-import-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .outcomes-heading, .outcomes-grid, .composite-stories { grid-template-columns: 1fr; }
+      .outcomes-grid article + article, .composite-stories figure + figure { border-left: 0; border-top: 1px solid var(--color-border); }
       .launch-paths-heading { align-items: start; flex-direction: column; }
       .reading-methods-heading { grid-template-columns: 1fr; }
       .method-row { grid-template-columns: 2rem 1fr auto; gap: 0.75rem; }

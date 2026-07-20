@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const pageTitle = "How SpeedRead Works - Five Speed Reading Modes";
+const pageTitle = "How SpeedRead Works - Six Speed Reading Modes";
 const pageDescription = "Learn when to use flash RSVP, phrase, focus, bionic, or page reading. See how ORP alignment, punctuation-aware pacing, and local document processing work.";
 const howToSchema = {
   '@context': 'https://schema.org',
@@ -10,7 +10,7 @@ const howToSchema = {
   description: pageDescription,
   step: [
     { '@type': 'HowToStep', name: 'Bring in the material', text: 'Paste text, upload a supported document, scan an image, extract a public URL, or send a page from the Chrome extension.' },
-    { '@type': 'HowToStep', name: 'Choose the right reading mode', text: 'Choose Flash, Phrase, Focus, Bionic, or Page based on how much context the material requires.' },
+    { '@type': 'HowToStep', name: 'Choose the right reading mode', text: 'Choose Flash, Phrase, Focus, Flow, Bionic, or Page based on how much context the material requires.' },
     { '@type': 'HowToStep', name: 'Adjust as you read', text: 'Pause, rewind, change WPM, switch themes, or enable Audio Sync without reloading the document.' },
   ],
 };
@@ -24,7 +24,7 @@ const howToSchema = {
         <h1>One document.<br />The right amount of context.</h1>
       </div>
       <div class="method-hero-copy">
-        <p>Speed reading is not a contest to show one word as fast as possible. SpeedRead lets you move between five views without losing your place, so the format can match the material.</p>
+        <p>Speed reading is not a contest to show one word as fast as possible. SpeedRead lets you move between six views without losing your place, so the format can match the material.</p>
         <a class="btn btn-primary" href="/#importer-card">Try it with your text</a>
         <small>No account required. Your uploaded files are parsed in your browser.</small>
       </div>
@@ -61,6 +61,11 @@ const howToSchema = {
           <dl><div><dt>Context</dt><dd>Full paragraph</dd></div><div><dt>Starting pace</dt><dd>220-320 WPM</dd></div></dl>
         </article>
         <article>
+          <span>Anchored context</span><h2>Flow</h2>
+          <p>The current word stays on a fixed focal line while nearby words and adjacent lines remain visible. Use it when Flash feels too sparse.</p>
+          <dl><div><dt>Context</dt><dd>Three lines</dd></div><div><dt>Starting pace</dt><dd>240-360 WPM</dd></div></dl>
+        </article>
+        <article>
           <span>Self-paced</span><h2>Bionic</h2>
           <p>Bold word beginnings provide visual anchors while you control the scan. Useful for reference material and rereading.</p>
           <dl><div><dt>Context</dt><dd>Full page</dd></div><div><dt>Pace</dt><dd>You control it</dd></div></dl>
@@ -92,7 +97,7 @@ const howToSchema = {
       <h2>From source to focused reading in three steps.</h2>
       <ol>
         <li><span>1</span><div><strong>Bring in the material</strong><p>Paste text, upload PDF, EPUB or TXT, scan an image, extract a public URL, or send a page from the Chrome extension.</p></div></li>
-        <li><span>2</span><div><strong>Choose context before speed</strong><p>Pick Flash, Phrase, Focus, Bionic or Page. Start at a comfortable pace instead of chasing the highest number.</p></div></li>
+        <li><span>2</span><div><strong>Choose context before speed</strong><p>Pick Flash, Phrase, Focus, Flow, Bionic or Page. Start at a comfortable pace instead of chasing the highest number.</p></div></li>
         <li><span>3</span><div><strong>Adjust as the material changes</strong><p>Pause, rewind, change WPM, switch themes or enable Audio Sync. Your reading position stays with the document.</p></div></li>
       </ol>
       <a class="btn btn-primary" href="/#importer-card">Start reading now</a>
