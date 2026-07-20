@@ -158,9 +158,11 @@ const webAppSchema = {
           
           <!-- Playback controls -->
           <div class="playback-controls">
-            <button class="control-btn" id="btn-rsvp-prev" title="Previous word (ArrowLeft)">⏮</button>
+            <button class="control-btn" id="btn-rsvp-restart" title="Restart from the beginning">Restart</button>
+            <button class="control-btn" id="btn-rsvp-prev" title="Rewind 10 words (ArrowLeft)">−10</button>
             <button class="control-btn play-btn" id="btn-rsvp-play" title="Play/Pause (Space)">▶ Play</button>
-            <button class="control-btn" id="btn-rsvp-next" title="Next word (ArrowRight)">⏭</button>
+            <button class="control-btn" id="btn-rsvp-next" title="Forward 10 words (ArrowRight)">+10</button>
+            <button class="control-btn" id="btn-rsvp-end" title="Jump to the final word">End</button>
             <button class="control-btn" id="btn-rsvp-tts" title="Toggle Text-to-Speech Audio">Audio Sync: Off</button>
             <button class="control-btn" id="btn-fullscreen" title="Toggle distraction-free fullscreen">Fullscreen</button>
           </div>
@@ -383,8 +385,8 @@ const webAppSchema = {
   <section class="outcomes-section" aria-labelledby="outcomes-title">
     <div class="container">
       <div class="outcomes-heading">
-        <div><p class="section-label">Illustrative reader outcomes</p><h2 id="outcomes-title">What consistent practice can unlock.</h2></div>
-        <p>Composite examples, not live platform telemetry. Your private dashboard records your real words, pace, streak, and estimated time saved in this browser.</p>
+        <div><p class="section-label">Sample reader feedback</p><h2 id="outcomes-title">What consistent practice can unlock.</h2></div>
+        <p>Presentation copy for this sample site. Replace these profiles with verified customer quotes before a public launch.</p>
       </div>
       <div class="outcomes-grid">
         <article><strong>19 min</strong><span>saved per 10,000 words at 450 WPM versus 240 WPM</span></article>
@@ -392,9 +394,9 @@ const webAppSchema = {
         <article><strong>~95 min</strong><span>reclaimed across five 10,000-word weekly reading blocks</span></article>
       </div>
       <div class="composite-stories">
-        <figure><blockquote>“I clear the research backlog before the weekly review instead of carrying it into Friday.”</blockquote><figcaption>Composite story · Product manager</figcaption></figure>
-        <figure><blockquote>“Phrase mode keeps enough context visible that faster reading no longer feels like guessing.”</blockquote><figcaption>Composite story · MBA candidate</figcaption></figure>
-        <figure><blockquote>“The local dashboard made improvement tangible without sending my documents anywhere.”</blockquote><figcaption>Composite story · Research analyst</figcaption></figure>
+        <figure><blockquote>“I now finish long product reports before the review meeting instead of carrying them into the next day.”</blockquote><figcaption><span class="story-avatar">MS</span><span><strong>Maya Shah</strong><small>Product Manager · Bengaluru</small></span></figcaption></figure>
+        <figure><blockquote>“Phrase mode gives me enough context to move faster without feeling like I am skimming past the argument.”</blockquote><figcaption><span class="story-avatar">AM</span><span><strong>Arjun Mehta</strong><small>MBA Candidate · Mumbai</small></span></figcaption></figure>
+        <figure><blockquote>“The private dashboard made my progress visible, and I can use client documents without uploading them anywhere.”</blockquote><figcaption><span class="story-avatar">NR</span><span><strong>Neha Rao</strong><small>Research Analyst · Delhi</small></span></figcaption></figure>
       </div>
     </div>
   </section>
@@ -1000,7 +1002,13 @@ const webAppSchema = {
       updateStatsUI();
     };
 
-    const { getOrpIndex, getPhraseParts, getFlowContext } = window.SpeedReadReaderCore;
+    const {
+      getOrpIndex,
+      getPhraseParts,
+      getFlowContext,
+      clampReaderIndex,
+      getPlaybackStart,
+    } = window.SpeedReadReaderCore;
 
     // Parse text to word mappings with coordinate tracking
     const parseText = (textVal) => {
@@ -1062,11 +1070,7 @@ const webAppSchema = {
 
     // Display the current word or phrase at the fixed ORP
     const renderRSVPWord = () => {
-      if (state.currentIndex >= state.words.length) {
-        pauseReader();
-        state.currentIndex = state.words.length - 1;
-        return;
-      }
+      if (!state.words.length || state.currentIndex >= state.words.length) return;
       const word = state.words[state.currentIndex];
       if (!word) return;
 
@@ -1097,9 +1101,8 @@ const webAppSchema = {
 
     // Main RSVP playback loop
     const playRSVP = () => {
-      if (state.currentIndex >= state.words.length) {
-        state.currentIndex = 0;
-      }
+      state.currentIndex = getPlaybackStart(state.currentIndex, state.words.length);
+      renderRSVPWord();
       state.isPlaying = true;
       ttsVisualQueue = [];
       clearTimeout(ttsVisualTimer);
@@ -1129,7 +1132,12 @@ const webAppSchema = {
 
       if (state.currentIndex >= state.words.length) {
         pauseReader();
-        state.currentIndex = state.words.length - 1;
+        state.currentIndex = state.words.length;
+        document.getElementById('rsvp-progress').style.width = '100%';
+        document.getElementById('flow-progress').style.width = '100%';
+        document.getElementById('slider-progress').value = '100';
+        document.getElementById('reading-percentage').textContent = `Complete · ${state.words.length} words`;
+        document.getElementById('reading-time-left').textContent = 'Complete';
         saveStats();
         return;
       }
@@ -1173,6 +1181,13 @@ const webAppSchema = {
       }
       // Save stats immediately on pause
       saveStats();
+    };
+
+    const seekReader = (index) => {
+      pauseReader();
+      if (!state.words.length) return;
+      state.currentIndex = clampReaderIndex(index, state.words.length);
+      renderRSVPWord();
     };
 
     // Text-to-Speech Synchronization using Web Speech API
@@ -1742,17 +1757,13 @@ const webAppSchema = {
         }
       });
 
+      document.getElementById('btn-rsvp-restart').addEventListener('click', () => seekReader(0));
       document.getElementById('btn-rsvp-prev').addEventListener('click', () => {
-        pauseReader();
-        state.currentIndex = Math.max(0, state.currentIndex - 1);
-        renderRSVPWord();
+        const currentIndex = state.currentIndex >= state.words.length ? state.words.length - 1 : state.currentIndex;
+        seekReader(currentIndex - 10);
       });
-
-      document.getElementById('btn-rsvp-next').addEventListener('click', () => {
-        pauseReader();
-        state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 1);
-        renderRSVPWord();
-      });
+      document.getElementById('btn-rsvp-next').addEventListener('click', () => seekReader(state.currentIndex + 10));
+      document.getElementById('btn-rsvp-end').addEventListener('click', () => seekReader(state.words.length - 1));
 
       // TTS audio toggler
       const ttsBtn = document.getElementById('btn-rsvp-tts');
@@ -2153,14 +2164,11 @@ const webAppSchema = {
 
         // Timeline jumps (ArrowLeft/Right)
         if (e.code === 'ArrowLeft') {
-          pauseReader();
-          state.currentIndex = Math.max(0, state.currentIndex - 5);
-          renderRSVPWord();
+          const currentIndex = state.currentIndex >= state.words.length ? state.words.length - 1 : state.currentIndex;
+          seekReader(currentIndex - 10);
         }
         if (e.code === 'ArrowRight') {
-          pauseReader();
-          state.currentIndex = Math.min(state.words.length - 1, state.currentIndex + 5);
-          renderRSVPWord();
+          seekReader(state.currentIndex + 10);
         }
 
         // Theme shortcuts cycle: D key
@@ -2625,10 +2633,13 @@ const webAppSchema = {
     .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
     .flow-focus-line { position: absolute; left: 33.333%; inset-block: 0; width: 1px; background: var(--color-border); pointer-events: none; }
     .flow-anchor-line { display: grid; grid-template-columns: calc(33.333% - 0.5ch) 1ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
-    .flow-left { text-align: right; overflow: visible; }
-    .flow-right { text-align: left; overflow: visible; }
-    .flow-left > span, .flow-right > span { color: var(--color-text-muted); opacity: 0.35; }
-    .flow-anchor-line strong, .flow-anchor-line b { font-size: 1.55em; color: var(--color-text); }
+    .flow-left, .flow-right { display: flex; align-items: baseline; min-width: 0; overflow: hidden; }
+    .flow-left { justify-content: flex-end; text-align: right; }
+    .flow-right { justify-content: flex-start; text-align: left; }
+    .flow-left > span, .flow-right > span { min-width: 0; overflow: hidden; color: var(--color-text-muted); opacity: 0.35; white-space: nowrap; }
+    .flow-left > span:not(:empty) { margin-right: 0.45ch; }
+    .flow-right > span:not(:empty) { margin-left: 0.45ch; }
+    .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.55em; color: var(--color-text); }
     .flow-anchor-line b { width: 1ch; text-align: center; color: var(--color-primary); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
@@ -2679,7 +2690,11 @@ const webAppSchema = {
     .composite-stories figure { margin: 0; padding: clamp(1.25rem, 3vw, 2rem); }
     .composite-stories figure + figure { border-left: 1px solid var(--color-border); }
     .composite-stories blockquote { margin: 0; color: var(--color-text); font-size: 0.95rem; line-height: 1.6; }
-    .composite-stories figcaption { margin-top: 1rem; color: var(--color-text-subtle); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; }
+    .composite-stories figcaption { display: flex; align-items: center; gap: 0.65rem; margin-top: 1rem; color: var(--color-text-subtle); }
+    .composite-stories figcaption > span:last-child, .composite-stories figcaption strong, .composite-stories figcaption small { display: block; }
+    .composite-stories figcaption strong { color: var(--color-text); font-size: 0.78rem; }
+    .composite-stories figcaption small { margin-top: 0.1rem; font-size: 0.65rem; }
+    .story-avatar { display: grid; flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--color-primary-muted); color: var(--color-primary); font-size: 0.68rem; font-weight: 800; }
 
     .reading-methods { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--color-bg); }
     .reading-methods-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 3.5rem); }

@@ -28,5 +28,21 @@
     next: words.slice(index + 9, index + 19).join(' '),
   });
 
-  root.SpeedReadReaderCore = { getOrpIndex, getPhraseParts, getFlowContext };
+  const clampReaderIndex = (index, length) => {
+    if (length <= 0) return 0;
+    return Math.max(0, Math.min(length - 1, index));
+  };
+
+  const getPlaybackStart = (index, length) => {
+    if (length <= 0 || index >= length - 1) return 0;
+    return clampReaderIndex(index, length);
+  };
+
+  root.SpeedReadReaderCore = {
+    getOrpIndex,
+    getPhraseParts,
+    getFlowContext,
+    clampReaderIndex,
+    getPlaybackStart,
+  };
 })(globalThis);

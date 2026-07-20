@@ -1,7 +1,13 @@
 import assert from 'node:assert/strict';
 import '../public/reader-core.js';
 
-const { getOrpIndex, getPhraseParts, getFlowContext } = globalThis.SpeedReadReaderCore;
+const {
+  getOrpIndex,
+  getPhraseParts,
+  getFlowContext,
+  clampReaderIndex,
+  getPlaybackStart,
+} = globalThis.SpeedReadReaderCore;
 assert.equal(getOrpIndex('horizontal'), 3);
 assert.deepEqual(getPhraseParts(['keep', 'the', 'meaning'], 1), {
   left: 'keep t',
@@ -9,4 +15,9 @@ assert.deepEqual(getPhraseParts(['keep', 'the', 'meaning'], 1), {
   right: 'e meaning',
 });
 assert.equal(getFlowContext('one two three four five six seven eight nine ten'.split(' '), 4).word, 'five');
+assert.equal(clampReaderIndex(-10, 10), 0);
+assert.equal(clampReaderIndex(15, 10), 9);
+assert.equal(getPlaybackStart(5, 10), 5);
+assert.equal(getPlaybackStart(9, 10), 0);
+assert.equal(getPlaybackStart(10, 10), 0);
 console.log('reader-core checks passed');
