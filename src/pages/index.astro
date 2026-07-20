@@ -2598,7 +2598,7 @@ const webAppSchema = {
     .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
-    .hero-word strong { width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-word strong { position: relative; z-index: 1; width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: #09090b; box-shadow: 0 0 0 0.08em #09090b; }
     .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: #3f3f46; transform: translateX(-50%); pointer-events: none; }
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
@@ -2637,7 +2637,7 @@ const webAppSchema = {
     .flow-left > span:not(:empty) { margin-right: 0.45ch; }
     .flow-right > span:not(:empty) { margin-left: 0.45ch; }
     .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.7em; color: var(--color-text); }
-    .flow-anchor-line b { width: 1ch; text-align: center; color: var(--color-primary); }
+    .flow-anchor-line b { position: relative; z-index: 1; width: 1ch; text-align: center; color: var(--color-primary); background: var(--color-bg-subtle); box-shadow: 0 0 0 0.08em var(--color-bg-subtle); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
     .app-section .dropzone-formats { color: var(--color-text-subtle); }
