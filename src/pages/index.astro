@@ -2599,7 +2599,7 @@ const webAppSchema = {
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
     .hero-word strong { width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
-    .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: #3f3f46; transform: translateX(-50%); pointer-events: none; }
+    .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: linear-gradient(to bottom, #3f3f46 0 calc(50% - clamp(1.8rem, 3vw, 2.7rem)), transparent calc(50% - clamp(1.8rem, 3vw, 2.7rem)) calc(50% + clamp(1.8rem, 3vw, 2.7rem)), #3f3f46 calc(50% + clamp(1.8rem, 3vw, 2.7rem))); transform: translateX(-50%); pointer-events: none; }
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
     .hero-reticle-bottom { bottom: 1.5rem; }
@@ -2628,7 +2628,7 @@ const webAppSchema = {
     .flow-reader-view { padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); overflow: hidden; }
     .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.28; white-space: nowrap; overflow: hidden; }
     .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
-    .flow-focus-line { position: absolute; left: 50%; inset-block: 0; width: 1px; background: var(--color-border); pointer-events: none; }
+    .flow-focus-line { position: absolute; left: 50%; inset-block: 0; width: 1px; background: linear-gradient(to bottom, var(--color-border) 0 calc(50% - 0.95rem), transparent calc(50% - 0.95rem) calc(50% + 0.95rem), var(--color-border) calc(50% + 0.95rem)); pointer-events: none; }
     .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.85ch) 1.7ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
     .flow-left, .flow-right { display: flex; align-items: baseline; min-width: 0; overflow: hidden; }
     .flow-left { justify-content: flex-end; text-align: right; }

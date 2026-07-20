@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "test": "node scripts/test-reader-core.mjs && node scripts/test-reader-ui-contracts.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "deploy": "astro build && wrangler pages deploy dist",
