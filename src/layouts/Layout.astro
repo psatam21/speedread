@@ -26,6 +26,7 @@ const adsenseVerification = import.meta.env.PUBLIC_ADSENSE_VERIFICATION as strin
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
 const pathname = Astro.url.pathname;
 const isHome = pathname === '/';
+const allowAds = pathname !== '/account';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
 ---
@@ -112,7 +113,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     )}
 
     <!-- Google AdSense (Auto Ads + manual units) -->
-    {adsenseClient && (
+    {adsenseClient && allowAds && (
       <script
         async
         src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${adsenseClient}`}
