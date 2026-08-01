@@ -1696,7 +1696,13 @@ const webAppSchema = {
     };
 
     if (window.speechSynthesis) {
-      window.speechSynthesis.onvoiceschanged = populateVoices;
+      // Chrome can fire voiceschanged mid-utterance, and calling getVoices() (inside
+      // populateVoices) while speech is in flight silently cancels it as "interrupted".
+      // Skip the rebuild while actively speaking so a fresh play never gets killed.
+      window.speechSynthesis.onvoiceschanged = () => {
+        if (window.speechSynthesis.speaking) return;
+        populateVoices();
+      };
     }
 
     // ---------------- EVENT LIFECYCLES ----------------
