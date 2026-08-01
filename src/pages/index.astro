@@ -757,6 +757,7 @@ const webAppSchema = {
       ttsActive: false,
       timer: null,
       ttsUtterance: null,
+      ttsHeartbeat: null,
       isPremium: false,
       stats: {
         wordsRead: 0,
@@ -1217,6 +1218,7 @@ const webAppSchema = {
       document.getElementById('btn-rsvp-play').textContent = "▶ Play";
       clearTimeout(state.timer);
       clearTimeout(ttsVisualTimer);
+      clearInterval(state.ttsHeartbeat);
       ttsVisualTimer = null;
       ttsVisualQueue = [];
       if (window.speechSynthesis) {
@@ -1239,12 +1241,18 @@ const webAppSchema = {
         alert("Text to speech is not supported in this browser.");
         return;
       }
-      // Only cancel if something is actually queued — an unconditional cancel() right
-      // before speak() can make Chrome silently drop the new utterance, and it isn't
-      // needed on a fresh play (nothing to interrupt yet).
-      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
-        window.speechSynthesis.cancel();
-      }
+      clearInterval(state.ttsHeartbeat);
+      const wasBusy = window.speechSynthesis.speaking || window.speechSynthesis.pending;
+      window.speechSynthesis.cancel();
+      // cancel() is asynchronous in Chrome — queuing a new utterance in the same tick
+      // (or even next tick) can hit it mid-teardown and get silently dropped/interrupted.
+      // Give it a beat to actually finish before speaking again.
+      setTimeout(() => doSpeak(), wasBusy ? 150 : 0);
+    };
+
+    const doSpeak = () => {
+      // Play/pause may have been toggled during the cancel() settle delay.
+      if (!state.isPlaying || !state.ttsActive) return;
 
       const startIndexOffset = state.wordObjects[state.currentIndex]?.startIndex || 0;
       // CRITICAL: Slice directly from original text to keep word character offsets perfectly aligned
@@ -1295,8 +1303,24 @@ const webAppSchema = {
         }
       };
 
+      utterance.onstart = () => {
+        if (!isCurrent()) return;
+        // Chrome silently halts long-running speech after ~15s unless nudged;
+        // a pause/resume heartbeat keeps the engine alive.
+        clearInterval(state.ttsHeartbeat);
+        state.ttsHeartbeat = setInterval(() => {
+          if (!isCurrent() || !window.speechSynthesis.speaking) {
+            clearInterval(state.ttsHeartbeat);
+            return;
+          }
+          window.speechSynthesis.pause();
+          window.speechSynthesis.resume();
+        }, 5000);
+      };
+
       utterance.onend = () => {
         if (!isCurrent()) return;
+        clearInterval(state.ttsHeartbeat);
         pauseReader();
         state.currentIndex = state.words.length;
         saveStats();
@@ -1304,6 +1328,7 @@ const webAppSchema = {
 
       utterance.onerror = (e) => {
         if (!isCurrent()) return;
+        clearInterval(state.ttsHeartbeat);
         console.error("TTS speech error", e);
         pauseReader();
       };
@@ -1696,6 +1721,9 @@ const webAppSchema = {
     };
 
     if (window.speechSynthesis) {
+      // Chrome can carry a wedged "speaking" queue over from a previous session on the
+      // same page/tab; force-clear it before this session ever calls speak().
+      window.speechSynthesis.cancel();
       // Chrome can fire voiceschanged mid-utterance, and calling getVoices() (inside
       // populateVoices) while speech is in flight silently cancels it as "interrupted".
       // Skip the rebuild while actively speaking so a fresh play never gets killed.
