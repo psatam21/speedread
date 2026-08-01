@@ -396,7 +396,7 @@ textarea:focus-visible {
 
 .word-wrapper {
   display: grid;
-  grid-template-columns: calc(50% - 0.5ch) 1.4ch minmax(0, 1fr);
+  grid-template-columns: calc(50% - 0.5ch) max-content minmax(0, 1fr);
   align-items: baseline;
   width: 100%;
   padding: 0;
@@ -410,12 +410,9 @@ textarea:focus-visible {
 }
 
 .word-orp {
-  width: 1.4ch;
-  overflow: visible;
   color: var(--color-accent);
   text-align: center;
   font-weight: 800;
-  padding: 0 1px;
 }
 
 .word-right {

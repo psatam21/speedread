@@ -1239,7 +1239,12 @@ const webAppSchema = {
         alert("Text to speech is not supported in this browser.");
         return;
       }
-      window.speechSynthesis.cancel();
+      // Only cancel if something is actually queued — an unconditional cancel() right
+      // before speak() can make Chrome silently drop the new utterance, and it isn't
+      // needed on a fresh play (nothing to interrupt yet).
+      if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+        window.speechSynthesis.cancel();
+      }
 
       const startIndexOffset = state.wordObjects[state.currentIndex]?.startIndex || 0;
       // CRITICAL: Slice directly from original text to keep word character offsets perfectly aligned
@@ -1303,8 +1308,7 @@ const webAppSchema = {
         pauseReader();
       };
 
-      // Chrome silently drops a speak() issued in the same tick as cancel(); defer one tick.
-      setTimeout(() => window.speechSynthesis.speak(utterance), 0);
+      window.speechSynthesis.speak(utterance);
     };
 
     // Escape HTML special chars so pasted/extracted text can't be rendered as markup
@@ -2676,10 +2680,10 @@ const webAppSchema = {
     .hero-preview-stage { position: relative; flex: 1; display: grid; grid-template-columns: 1fr; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
     .hero-preview-stage > p { margin: 0 auto 1.8rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-preview-stage > p i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
-    .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) 1.4ch minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
+    .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) max-content minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
-    .hero-word strong { width: 1.4ch; overflow: visible; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-word strong { padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
     .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: linear-gradient(to bottom, #3f3f46 0 calc(50% - clamp(1.8rem, 3vw, 2.7rem)), transparent calc(50% - clamp(1.8rem, 3vw, 2.7rem)) calc(50% + clamp(1.8rem, 3vw, 2.7rem)), #3f3f46 calc(50% + clamp(1.8rem, 3vw, 2.7rem))); transform: translateX(-50%); pointer-events: none; }
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
@@ -2710,7 +2714,7 @@ const webAppSchema = {
     .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.28; white-space: nowrap; overflow: hidden; }
     .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
     .flow-focus-line { position: absolute; left: 50%; inset-block: 0; width: 1px; background: linear-gradient(to bottom, var(--color-border) 0 calc(50% - 0.95rem), transparent calc(50% - 0.95rem) calc(50% + 0.95rem), var(--color-border) calc(50% + 0.95rem)); pointer-events: none; }
-    .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.85ch) 1.9ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
+    .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.85ch) max-content minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
     .flow-left, .flow-right { display: flex; align-items: baseline; min-width: 0; overflow: hidden; }
     .flow-left { justify-content: flex-end; text-align: right; }
     .flow-right { justify-content: flex-start; text-align: left; }
@@ -2718,7 +2722,7 @@ const webAppSchema = {
     .flow-left > span:not(:empty) { margin-right: 0.45ch; }
     .flow-right > span:not(:empty) { margin-left: 0.45ch; }
     .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.7em; color: var(--color-text); }
-    .flow-anchor-line b { width: 1.9ch; overflow: visible; text-align: center; color: var(--color-primary); }
+    .flow-anchor-line b { text-align: center; color: var(--color-primary); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
     .app-section .dropzone-formats { color: var(--color-text-subtle); }
