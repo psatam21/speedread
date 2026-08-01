@@ -1245,25 +1245,30 @@ const webAppSchema = {
       // CRITICAL: Slice directly from original text to keep word character offsets perfectly aligned
       const remainingText = state.text.slice(startIndexOffset);
 
-      state.ttsUtterance = new SpeechSynthesisUtterance(remainingText);
-      state.ttsUtterance.rate = Math.min(3.0, Math.max(0.5, state.wpm / 150)); // Map WPM to speech rate (standard is ~150 WPM)
-      state.ttsUtterance.pitch = parseFloat(document.getElementById('slider-pitch').value || '1.0');
+      const utterance = new SpeechSynthesisUtterance(remainingText);
+      state.ttsUtterance = utterance;
+      utterance.rate = Math.min(3.0, Math.max(0.5, state.wpm / 150)); // Map WPM to speech rate (standard is ~150 WPM)
+      utterance.pitch = parseFloat(document.getElementById('slider-pitch').value || '1.0');
 
       // Set chosen voice from selection dropdown
       const selectedVoiceName = document.getElementById('select-voice').value;
       const voices = window.speechSynthesis.getVoices();
       if (selectedVoiceName && voices.length > 0) {
-        state.ttsUtterance.voice = voices.find(v => v.name === selectedVoiceName);
+        utterance.voice = voices.find(v => v.name === selectedVoiceName);
       } else if (voices.length > 0) {
         // Prioritize English neural/natural/online voices for a realistic human feel
-        const neuralVoice = voices.find(v => v.lang.startsWith('en') && 
+        const neuralVoice = voices.find(v => v.lang.startsWith('en') &&
           (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Online') || v.localService === false)
         );
-        state.ttsUtterance.voice = neuralVoice || voices.find(v => v.lang.startsWith('en')) || voices[0];
+        utterance.voice = neuralVoice || voices.find(v => v.lang.startsWith('en')) || voices[0];
       }
 
-      state.ttsUtterance.onboundary = (event) => {
-        if (event.name === 'word' && state.isPlaying) {
+      // Cancelling the previous utterance can still fire ITS onend/onerror asynchronously;
+      // guard every handler so a stale callback can't stomp on a newer playback.
+      const isCurrent = () => state.ttsUtterance === utterance;
+
+      utterance.onboundary = (event) => {
+        if (isCurrent() && event.name === 'word' && state.isPlaying) {
           const charIndex = event.charIndex + startIndexOffset;
           
           // Find matching word based on character coordinates
@@ -1285,18 +1290,20 @@ const webAppSchema = {
         }
       };
 
-      state.ttsUtterance.onend = () => {
+      utterance.onend = () => {
+        if (!isCurrent()) return;
         pauseReader();
         state.currentIndex = state.words.length;
         saveStats();
       };
 
-      state.ttsUtterance.onerror = (e) => {
+      utterance.onerror = (e) => {
+        if (!isCurrent()) return;
         console.error("TTS speech error", e);
         pauseReader();
       };
 
-      window.speechSynthesis.speak(state.ttsUtterance);
+      window.speechSynthesis.speak(utterance);
     };
 
     // Escape HTML special chars so pasted/extracted text can't be rendered as markup
@@ -2668,10 +2675,10 @@ const webAppSchema = {
     .hero-preview-stage { position: relative; flex: 1; display: grid; grid-template-columns: 1fr; place-content: center; min-height: 250px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
     .hero-preview-stage > p { margin: 0 auto 1.8rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-preview-stage > p i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
-    .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) 1ch minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
+    .hero-word { width: 100%; grid-template-columns: calc(50% - 0.5ch) minmax(1ch, max-content) minmax(0, 1fr); font-size: clamp(3.2rem, 6vw, 5rem); }
     .hero-word #hero-word-left { text-align: right; overflow: visible; }
     .hero-word #hero-word-right { text-align: left; overflow: visible; }
-    .hero-word strong { width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
+    .hero-word strong { min-width: 1ch; padding: 0; text-align: center; border-radius: 0; color: var(--color-primary); background: transparent; }
     .hero-focus-line { position: absolute; left: 50%; top: 1.5rem; bottom: 1.5rem; width: 1px; background: linear-gradient(to bottom, #3f3f46 0 calc(50% - clamp(1.8rem, 3vw, 2.7rem)), transparent calc(50% - clamp(1.8rem, 3vw, 2.7rem)) calc(50% + clamp(1.8rem, 3vw, 2.7rem)), #3f3f46 calc(50% + clamp(1.8rem, 3vw, 2.7rem))); transform: translateX(-50%); pointer-events: none; }
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
@@ -2702,7 +2709,7 @@ const webAppSchema = {
     .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.28; white-space: nowrap; overflow: hidden; }
     .flow-anchor-stage { position: relative; margin: 0.75rem -1.25rem; padding: 1.5rem 0; border-block: 1px solid var(--color-border); overflow: hidden; }
     .flow-focus-line { position: absolute; left: 50%; inset-block: 0; width: 1px; background: linear-gradient(to bottom, var(--color-border) 0 calc(50% - 0.95rem), transparent calc(50% - 0.95rem) calc(50% + 0.95rem), var(--color-border) calc(50% + 0.95rem)); pointer-events: none; }
-    .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.85ch) 1.7ch minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
+    .flow-anchor-line { display: grid; grid-template-columns: calc(50% - 0.85ch) minmax(1.7ch, max-content) minmax(0, 1fr); align-items: baseline; white-space: nowrap; font-size: 1rem; }
     .flow-left, .flow-right { display: flex; align-items: baseline; min-width: 0; overflow: hidden; }
     .flow-left { justify-content: flex-end; text-align: right; }
     .flow-right { justify-content: flex-start; text-align: left; }
@@ -2710,7 +2717,7 @@ const webAppSchema = {
     .flow-left > span:not(:empty) { margin-right: 0.45ch; }
     .flow-right > span:not(:empty) { margin-left: 0.45ch; }
     .flow-anchor-line strong, .flow-anchor-line b { flex: 0 0 auto; font-size: 1.7em; color: var(--color-text); }
-    .flow-anchor-line b { width: 1ch; text-align: center; color: var(--color-primary); }
+    .flow-anchor-line b { min-width: 1ch; text-align: center; color: var(--color-primary); }
 
     .app-section .dropzone, .app-section .dropzone p, .app-section .ai-config label, .app-section #file-status, .app-section #ocr-status, .app-section .standard-reader-view { color: var(--color-text); }
     .app-section .dropzone-formats { color: var(--color-text-subtle); }
