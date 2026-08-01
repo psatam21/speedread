@@ -42,6 +42,37 @@
     clampReaderIndex(Math.round((percent / 100) * Math.max(0, length - 1)), length)
   );
 
+  // Chrome kills a single long utterance after ~15s, and remote voices fail sooner,
+  // so speech has to be queued in short pieces. Splits on sentence ends where possible,
+  // else on a space. Each chunk carries its absolute offset in the source string so
+  // onboundary charIndex can still be mapped back to a word.
+  const chunkForTTS = (text, baseOffset = 0, maxLen = 180) => {
+    const chunks = [];
+    let pos = 0;
+    while (pos < text.length) {
+      while (pos < text.length && /\s/.test(text[pos])) pos += 1;
+      if (pos >= text.length) break;
+
+      if (text.length - pos <= maxLen) {
+        chunks.push({ text: text.slice(pos), offset: baseOffset + pos });
+        break;
+      }
+
+      const slice = text.slice(pos, pos + maxLen);
+      const sentenceEnd = Math.max(
+        slice.lastIndexOf('. '), slice.lastIndexOf('! '),
+        slice.lastIndexOf('? '), slice.lastIndexOf('\n')
+      );
+      // Only honour a sentence break if it isn't so early that chunks get tiny.
+      let cut = sentenceEnd > maxLen * 0.4 ? sentenceEnd + 1 : slice.lastIndexOf(' ');
+      if (cut <= 0) cut = maxLen; // ponytail: unbroken run longer than maxLen, hard split
+
+      chunks.push({ text: text.slice(pos, pos + cut), offset: baseOffset + pos });
+      pos += cut;
+    }
+    return chunks;
+  };
+
   root.SpeedReadReaderCore = {
     getOrpIndex,
     getPhraseParts,
@@ -49,5 +80,6 @@
     clampReaderIndex,
     getPlaybackStart,
     getIndexFromPercent,
+    chunkForTTS,
   };
 })(globalThis);

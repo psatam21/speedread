@@ -757,7 +757,9 @@ const webAppSchema = {
       ttsActive: false,
       timer: null,
       ttsUtterance: null,
-      ttsHeartbeat: null,
+      ttsChunks: [],
+      ttsChunkIndex: 0,
+      ttsRunId: 0,
       isPremium: false,
       stats: {
         wordsRead: 0,
@@ -1056,6 +1058,7 @@ const webAppSchema = {
       clampReaderIndex,
       getPlaybackStart,
       getIndexFromPercent,
+      chunkForTTS,
     } = window.SpeedReadReaderCore;
 
     // Parse text to word mappings with coordinate tracking
@@ -1218,7 +1221,8 @@ const webAppSchema = {
       document.getElementById('btn-rsvp-play').textContent = "▶ Play";
       clearTimeout(state.timer);
       clearTimeout(ttsVisualTimer);
-      clearInterval(state.ttsHeartbeat);
+      // Invalidate the in-flight chunk sequence so its callbacks stop queueing more.
+      state.ttsRunId = (state.ttsRunId || 0) + 1;
       ttsVisualTimer = null;
       ttsVisualQueue = [];
       if (window.speechSynthesis) {
@@ -1241,7 +1245,6 @@ const webAppSchema = {
         alert("Text to speech is not supported in this browser.");
         return;
       }
-      clearInterval(state.ttsHeartbeat);
       const wasBusy = window.speechSynthesis.speaking || window.speechSynthesis.pending;
       window.speechSynthesis.cancel();
       // cancel() is asynchronous in Chrome — queuing a new utterance in the same tick
@@ -1250,86 +1253,91 @@ const webAppSchema = {
       setTimeout(() => doSpeak(), wasBusy ? 150 : 0);
     };
 
+    // Pick the voice to speak with. Remote voices (localService === false) stream from
+    // Google's servers and routinely die mid-sentence with 'interrupted'; local system
+    // voices are far more reliable, so they win unless the user picked one explicitly.
+    const pickTTSVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return null;
+
+      const chosenName = document.getElementById('select-voice').value;
+      if (chosenName) {
+        const exact = voices.find(v => v.name === chosenName);
+        if (exact) return exact;
+        // Fall through rather than assigning undefined, which breaks playback outright.
+      }
+
+      const english = voices.filter(v => v.lang.startsWith('en'));
+      const pool = english.length ? english : voices;
+      const local = pool.filter(v => v.localService !== false);
+      return local.find(v => /Natural|Neural/i.test(v.name)) || local[0] || pool[0];
+    };
+
     const doSpeak = () => {
       // Play/pause may have been toggled during the cancel() settle delay.
       if (!state.isPlaying || !state.ttsActive) return;
 
       const startIndexOffset = state.wordObjects[state.currentIndex]?.startIndex || 0;
-      // CRITICAL: Slice directly from original text to keep word character offsets perfectly aligned
-      const remainingText = state.text.slice(startIndexOffset);
+      // Offsets stay relative to the ORIGINAL text so boundary events map back to words.
+      state.ttsChunks = chunkForTTS(state.text.slice(startIndexOffset), startIndexOffset);
+      state.ttsChunkIndex = 0;
+      // Bumped on every fresh playback; stale callbacks compare against it and bail.
+      state.ttsRunId = (state.ttsRunId || 0) + 1;
+      speakChunk(state.ttsRunId);
+    };
 
-      const utterance = new SpeechSynthesisUtterance(remainingText);
-      state.ttsUtterance = utterance;
-      utterance.rate = Math.min(3.0, Math.max(0.5, state.wpm / 150)); // Map WPM to speech rate (standard is ~150 WPM)
-      utterance.pitch = parseFloat(document.getElementById('slider-pitch').value || '1.0');
+    const speakChunk = (runId) => {
+      if (runId !== state.ttsRunId || !state.isPlaying || !state.ttsActive) return;
 
-      // Set chosen voice from selection dropdown
-      const selectedVoiceName = document.getElementById('select-voice').value;
-      const voices = window.speechSynthesis.getVoices();
-      if (selectedVoiceName && voices.length > 0) {
-        utterance.voice = voices.find(v => v.name === selectedVoiceName);
-      } else if (voices.length > 0) {
-        // Prioritize English neural/natural/online voices for a realistic human feel
-        const neuralVoice = voices.find(v => v.lang.startsWith('en') &&
-          (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Google') || v.name.includes('Online') || v.localService === false)
-        );
-        utterance.voice = neuralVoice || voices.find(v => v.lang.startsWith('en')) || voices[0];
-      }
-
-      // Cancelling the previous utterance can still fire ITS onend/onerror asynchronously;
-      // guard every handler so a stale callback can't stomp on a newer playback.
-      const isCurrent = () => state.ttsUtterance === utterance;
-
-      utterance.onboundary = (event) => {
-        if (isCurrent() && event.name === 'word' && state.isPlaying) {
-          const charIndex = event.charIndex + startIndexOffset;
-          
-          // Find matching word based on character coordinates
-          let matchedIdx = -1;
-          for (let i = 0; i < state.wordObjects.length; i++) {
-            const w = state.wordObjects[i];
-            if (charIndex >= w.startIndex && charIndex < w.endIndex) {
-              matchedIdx = i;
-              break;
-            }
-          }
-          
-          // Fallback: if charIndex falls on space/punctuation, align to the word immediately preceding it
-          if (matchedIdx === -1) {
-            matchedIdx = state.wordObjects.findIndex(w => w.startIndex > charIndex) - 1;
-          }
-
-          if (matchedIdx !== -1) queueTTSVisualWord(matchedIdx);
-        }
-      };
-
-      utterance.onstart = () => {
-        if (!isCurrent()) return;
-        // Chrome silently halts long-running speech after ~15s unless nudged;
-        // a pause/resume heartbeat keeps the engine alive.
-        clearInterval(state.ttsHeartbeat);
-        state.ttsHeartbeat = setInterval(() => {
-          if (!isCurrent() || !window.speechSynthesis.speaking) {
-            clearInterval(state.ttsHeartbeat);
-            return;
-          }
-          window.speechSynthesis.pause();
-          window.speechSynthesis.resume();
-        }, 5000);
-      };
-
-      utterance.onend = () => {
-        if (!isCurrent()) return;
-        clearInterval(state.ttsHeartbeat);
+      const chunk = state.ttsChunks[state.ttsChunkIndex];
+      if (!chunk) { // every chunk spoken — the document is finished
         pauseReader();
         state.currentIndex = state.words.length;
         saveStats();
+        return;
+      }
+
+      const utterance = new SpeechSynthesisUtterance(chunk.text);
+      state.ttsUtterance = utterance; // also keeps it alive; unreferenced utterances get GC'd mid-speech
+      utterance.rate = Math.min(3.0, Math.max(0.5, state.wpm / 150)); // ~150 WPM is rate 1.0
+      utterance.pitch = parseFloat(document.getElementById('slider-pitch').value || '1.0');
+
+      const voice = pickTTSVoice();
+      if (voice) utterance.voice = voice;
+
+      utterance.onboundary = (event) => {
+        if (runId !== state.ttsRunId || event.name !== 'word' || !state.isPlaying) return;
+        const charIndex = event.charIndex + chunk.offset;
+
+        // Find matching word based on character coordinates
+        let matchedIdx = -1;
+        for (let i = 0; i < state.wordObjects.length; i++) {
+          const w = state.wordObjects[i];
+          if (charIndex >= w.startIndex && charIndex < w.endIndex) {
+            matchedIdx = i;
+            break;
+          }
+        }
+
+        // Fallback: if charIndex falls on space/punctuation, align to the word immediately preceding it
+        if (matchedIdx === -1) {
+          matchedIdx = state.wordObjects.findIndex(w => w.startIndex > charIndex) - 1;
+        }
+
+        if (matchedIdx !== -1) queueTTSVisualWord(matchedIdx);
+      };
+
+      utterance.onend = () => {
+        if (runId !== state.ttsRunId) return;
+        state.ttsChunkIndex += 1;
+        speakChunk(runId);
       };
 
       utterance.onerror = (e) => {
-        if (!isCurrent()) return;
-        clearInterval(state.ttsHeartbeat);
-        console.error("TTS speech error", e);
+        if (runId !== state.ttsRunId) return;
+        // We cancel deliberately on pause/seek/restart; those aren't real failures.
+        if (e.error === 'interrupted' || e.error === 'canceled') return;
+        console.error('TTS speech error', e.error, e);
         pauseReader();
       };
 
