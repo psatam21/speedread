@@ -336,6 +336,29 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
+.reader-display-container:fullscreen {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 2rem;
+  background: var(--color-bg);
+}
+
+.reader-display-container:fullscreen .rsvp-word-container {
+  height: auto;
+  min-height: 220px;
+  font-size: 4.5rem;
+  border: none;
+}
+
+.reader-display-container:fullscreen .flow-anchor-stage,
+.reader-display-container:fullscreen .focus-reader-view,
+.reader-display-container:fullscreen .standard-reader-view {
+  font-size: 1.3em;
+}
+
 .rsvp-focus-line {
   position: absolute;
   left: 50%;
@@ -373,7 +396,7 @@ textarea:focus-visible {
 
 .word-wrapper {
   display: grid;
-  grid-template-columns: calc(50% - 0.5ch) minmax(1ch, max-content) minmax(0, 1fr);
+  grid-template-columns: calc(50% - 0.5ch) 1.4ch minmax(0, 1fr);
   align-items: baseline;
   width: 100%;
   padding: 0;
@@ -387,7 +410,8 @@ textarea:focus-visible {
 }
 
 .word-orp {
-  min-width: 1ch;
+  width: 1.4ch;
+  overflow: visible;
   color: var(--color-accent);
   text-align: center;
   font-weight: 800;
