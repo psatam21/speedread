@@ -201,7 +201,7 @@ const webAppSchema = {
               <select id="select-voice">
                 <option value="">Default System Voice</option>
               </select>
-              <span class="tuner-hint">Use Chrome/Edge for Natural Neural voices</span>
+              <span class="tuner-hint">Uses voices installed on your device. Add more in your system speech settings.</span>
             </div>
 
             <div class="tuner-card">
@@ -1705,27 +1705,31 @@ const webAppSchema = {
       const voiceSelect = document.getElementById('select-voice');
       if (!voiceSelect) return;
       
-      // Clear existing options
+      const previous = voiceSelect.value;
       voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
-      
-      let voices = window.speechSynthesis.getVoices();
-      
-      // Sort voices so neural/natural/online voices come first
+
+      // Remote voices (localService === false — Chrome's "Google ..." set) stream from
+      // Google's servers and abort mid-sentence, so they are not offered at all.
+      const isNatural = (voice) => /Natural|Neural/i.test(voice.name);
+      const voices = window.speechSynthesis.getVoices().filter(v => v.localService !== false);
+
+      // Higher-quality local voices (e.g. "Microsoft Aria Natural") first.
       voices.sort((a, b) => {
-        const isNeuralA = a.name.includes('Natural') || a.name.includes('Neural') || a.name.includes('Google') || a.name.includes('Online') || a.localService === false;
-        const isNeuralB = b.name.includes('Natural') || b.name.includes('Neural') || b.name.includes('Google') || b.name.includes('Online') || b.localService === false;
-        if (isNeuralA && !isNeuralB) return -1;
-        if (!isNeuralA && isNeuralB) return 1;
+        if (isNatural(a) !== isNatural(b)) return isNatural(a) ? -1 : 1;
         return a.name.localeCompare(b.name);
       });
-      
+
       voices.forEach(voice => {
-        const isNeural = voice.name.includes('Natural') || voice.name.includes('Neural') || voice.name.includes('Google') || voice.name.includes('Online') || voice.localService === false;
         const option = document.createElement('option');
         option.value = voice.name;
-        option.textContent = isNeural ? `✨ [Neural] ${voice.name} (${voice.lang})` : `${voice.name} (${voice.lang})`;
+        option.textContent = isNatural(voice)
+          ? `✨ [Natural] ${voice.name} (${voice.lang})`
+          : `${voice.name} (${voice.lang})`;
         voiceSelect.appendChild(option);
       });
+
+      // Keep the current pick across rebuilds instead of silently resetting it.
+      voiceSelect.value = voices.some(v => v.name === previous) ? previous : '';
     };
 
     if (window.speechSynthesis) {
