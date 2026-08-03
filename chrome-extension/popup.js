@@ -27,9 +27,9 @@ const els = {
 
 async function getOrigins() {
   const defaults = globalThis.SR_DEFAULTS || {
-    API_BASE: '',
+    API_BASE: 'https://briskread.com',
     APP_ORIGIN: 'https://briskread.com',
-    PREMIUM_AVAILABLE: false,
+    PREMIUM_AVAILABLE: true,
   };
   const sync = await chrome.storage.sync.get(['api_base', 'app_origin']);
   return {
@@ -177,15 +177,16 @@ async function refreshUI() {
 
   if (els.linkBuy) els.linkBuy.href = `${APP_ORIGIN}/#importer-card`;
 
-  if (!premiumAvailable) {
-    els.tabHint.textContent = 'Read the active page in a private popup. It works offline and does not redirect.';
-  } else if (premium) {
+  if (premium) {
     const max = auth.devices?.maxDevices || 5;
     renderDevices(auth.devices?.devices || [], max, auth.device_id);
-    els.tabHint.textContent = 'Premium active. Read locally, or open the full web workspace.';
+    els.tabHint.textContent =
+      'Premium active. Reads right here on the page — Flash, Focus, AI summary and chat.';
+  } else if (!premiumAvailable) {
+    els.tabHint.textContent = 'Read the active page in a private popup. It works offline and does not redirect.';
   } else {
     els.tabHint.textContent =
-      'Works free. Sign in with your lifetime license for Premium (1 of 5 device slots).';
+      'In-page reading is Premium. Sign in with your lifetime license (1 of 5 device slots).';
   }
 
   if (els.onlineDot) {

@@ -6,8 +6,13 @@
 ## Features
 
 - Premium license sign-in (same `/api/activate-license` + 5 device slots)
-- Local RSVP popup for selected text or the active page
-- Single-word and three-word phrase display modes
+- **In-page overlay** (`overlay.js`, Premium): reads the current tab without redirecting.
+  Shadow DOM root, Escape to close. Modes: **Flash** (RSVP) and **Focus** first, then
+  Phrase / Flow / Bionic / Page. AI summary + document chat via `/api/gemini`
+  (proxied through the service worker). Free users see an upsell to
+  `https://briskread.com/#pricing`.
+- Falls back to the standalone `reader.html` popup window on pages where content
+  scripts are blocked (`chrome://`, Web Store, PDF viewer)
 - Context menu: **Speed read this page**
 - Keyboard: **Alt+Shift+S**
 - Explicit web-app button for the full workspace
