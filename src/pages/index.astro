@@ -91,8 +91,8 @@ const webAppSchema = {
         <!-- Reading Mode Switcher -->
         <div class="mode-switcher mt-4">
           <button class="mode-btn active" data-mode="rsvp" title="One word at a fixed focal point">Flash</button>
-          <button class="mode-btn" data-mode="phrase" title="Three words at a time for more context">Phrase</button>
           <button class="mode-btn" data-mode="focus" title="Full text with a moving focus highlight">Focus</button>
+          <button class="mode-btn" data-mode="phrase" title="Three words at a time for more context">Phrase</button>
           <button class="mode-btn" data-mode="flow" title="Fixed focal point with paragraph context">Flow</button>
           <button class="mode-btn" data-mode="bionic">Bionic</button>
           <button class="mode-btn" data-mode="standard">Page</button>
@@ -1885,14 +1885,23 @@ const webAppSchema = {
       // Fullscreen mode toggler
       const fsBtn = document.getElementById('btn-fullscreen');
       fsBtn.addEventListener('click', () => {
-        const container = document.querySelector('.reader-display-container');
+        // Fullscreen the whole reader card, not just the word display: the playback
+        // controls, mode switcher and tuners live outside .reader-display-container,
+        // so fullscreening that alone left no way to pause or change speed.
         if (!document.fullscreenElement) {
-          container.requestFullscreen().catch(err => {
-            alert(`Error transitioning to fullscreen: ${err.message}`);
+          document.getElementById('reader-screen').requestFullscreen().catch(err => {
+            alert(`Could not enter fullscreen: ${err.message}`);
           });
         } else {
           document.exitFullscreen();
         }
+      });
+
+      // Escape and F11 exit without going through our button, so track the real state.
+      document.addEventListener('fullscreenchange', () => {
+        const active = Boolean(document.fullscreenElement);
+        fsBtn.textContent = active ? 'Exit fullscreen' : 'Fullscreen';
+        fsBtn.classList.toggle('active', active);
       });
 
       // WPM Slider handler

@@ -327,7 +327,10 @@ textarea:focus-visible {
   font-weight: 700;
   font-family: var(--font-current);
   width: 100%;
-  height: 168px;
+  /* min-height, not height: the font-size tuner scales this box's font, and a
+     fixed height clips descenders and collides with the focal ticks at 40px+. */
+  min-height: 168px;
+  padding: 1.75rem 0;
   position: relative;
   border: 1px solid var(--color-border);
   margin: var(--space-5) 0;
@@ -336,27 +339,56 @@ textarea:focus-visible {
   overflow: hidden;
 }
 
-.reader-display-container:fullscreen {
+/* Fullscreen targets #reader-screen (the whole card) so the mode switcher and
+   playback controls come with it. Fullscreening only the word display left no
+   way to pause or change speed without leaving fullscreen. */
+#reader-screen:fullscreen {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  margin: 0;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  border: none;
+  border-radius: 0;
+  background: var(--color-bg);
+  overflow-y: auto;
+}
+
+/* The reading surface takes the leftover space and centres in it. */
+#reader-screen:fullscreen .reader-display-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  padding: 2rem;
-  background: var(--color-bg);
+  min-height: 0;
 }
 
-.reader-display-container:fullscreen .rsvp-word-container {
-  height: auto;
-  min-height: 220px;
-  font-size: 4.5rem;
+#reader-screen:fullscreen .rsvp-word-container {
+  min-height: min(46vh, 340px);
+  font-size: clamp(3rem, 9vw, 7rem);
   border: none;
+  background: transparent;
 }
 
-.reader-display-container:fullscreen .flow-anchor-stage,
-.reader-display-container:fullscreen .focus-reader-view,
-.reader-display-container:fullscreen .standard-reader-view {
-  font-size: 1.3em;
+#reader-screen:fullscreen .flow-anchor-line {
+  font-size: clamp(1rem, 2vw, 1.6rem);
+}
+
+#reader-screen:fullscreen .focus-reader-view,
+#reader-screen:fullscreen .standard-reader-view {
+  font-size: clamp(1.05rem, 1.9vw, 1.6rem);
+  max-height: none;
+}
+
+/* Chrome and reading stats are noise on a distraction-free screen. */
+#reader-screen:fullscreen .reader-header,
+#reader-screen:fullscreen .ad-slot {
+  display: none;
+}
+
+#reader-screen:fullscreen .controls-hud {
+  flex: 0 0 auto;
 }
 
 .rsvp-focus-line {
@@ -566,7 +598,8 @@ textarea:focus-visible {
 
   .rsvp-word-container {
     font-size: 2rem !important;
-    height: 120px;
+    min-height: 120px;
+    padding: 1.25rem 0;
     margin: var(--space-4) 0;
   }
 
