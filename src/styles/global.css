@@ -428,7 +428,10 @@ textarea:focus-visible {
 
 .word-wrapper {
   display: grid;
-  grid-template-columns: calc(50% - 0.5ch) max-content minmax(0, 1fr);
+  /* Equal side tracks put the focal column dead centre whatever the glyph's
+     width, so a narrow "i" lands on the line exactly like a wide "m". A
+     calc(50% - 0.5ch) side track only centres glyphs that are exactly 1ch. */
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: baseline;
   width: 100%;
   padding: 0;
