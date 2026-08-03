@@ -8,7 +8,7 @@
 - Premium license sign-in (same `/api/activate-license` + 5 device slots)
 - **In-page overlay** (`overlay.js`, Premium): reads the current tab without redirecting.
   Shadow DOM root, Escape to close. Modes: **Flash** (RSVP) and **Focus** first, then
-  Phrase / Flow / Bionic / Page. AI summary + document chat via `/api/gemini`
+  Phrase / Flow / Bionic / Page. AI summary + document chat via your own Gemini key (set in Options)
   (proxied through the service worker). Free users see an upsell to
   `https://briskread.com/#pricing`.
 - Falls back to the standalone `reader.html` popup window on pages where content

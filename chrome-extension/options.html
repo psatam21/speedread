@@ -35,6 +35,22 @@
         </p>
       </section>
 
+      <section class="panel">
+        <h2>Gemini API key</h2>
+        <p class="hint">
+          AI summary and document chat call Google directly with your own key. It is stored in this browser's
+          extension storage and never sent to BriskRead.
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free key ↗</a>
+        </p>
+        <label for="gemini-key">API key</label>
+        <input type="password" id="gemini-key" placeholder="AIza…" spellcheck="false" autocomplete="off" />
+        <div class="row" style="margin-top: 12px">
+          <button type="button" class="btn btn-primary" id="btn-save-key">Save key</button>
+          <button type="button" class="btn btn-secondary" id="btn-clear-key">Clear</button>
+        </div>
+        <p class="status" id="key-status" role="status"></p>
+      </section>
+
       <details class="panel">
         <summary><strong>Developer endpoints</strong></summary>
         <p class="hint">

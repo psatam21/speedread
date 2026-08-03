@@ -92,23 +92,35 @@ async function openOverlay(tab, { selectionText = '' } = {}) {
 
 chrome.tabs.onRemoved.addListener((tabId) => chrome.storage.local.remove(overlayKey(tabId)));
 
-/** POST to /api/gemini from the SW so host-page CORS never applies. */
+/**
+ * Call Gemini from the SW with the user's own key, so host-page CORS never
+ * applies and the key never leaves this browser. Model list is tried in order
+ * because key tiers differ in which models they can reach.
+ */
+const GEMINI_MODELS = ['gemini-3.5-flash', 'gemini-2.5-flash-lite', 'gemini-2.5-flash'];
+
 async function callGemini(prompt) {
-  const auth = await srGetAuth();
-  if (!auth.is_premium || !auth.premium_token) {
-    return { ok: false, error: 'Premium required. Sign in from the BriskRead popup.' };
+  const { gemini_key: key } = await chrome.storage.local.get('gemini_key');
+  if (!key) {
+    return { ok: false, error: 'Add your free Gemini API key in BriskRead options to use AI.' };
   }
-  const { API_BASE } = await srGetOrigins();
-  const res = await fetch(`${API_BASE}/api/gemini`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.premium_token}` },
-    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] }),
-  });
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) return { ok: false, error: data.error || `AI request failed (${res.status})` };
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!text) return { ok: false, error: 'AI returned an empty response' };
-  return { ok: true, text };
+  const body = JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] });
+  let lastError = 'AI request failed';
+  for (const model of GEMINI_MODELS) {
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(key)}`,
+      { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }
+    );
+    const data = await res.json().catch(() => ({}));
+    if (res.ok) {
+      const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!text) return { ok: false, error: 'AI returned an empty response' };
+      return { ok: true, text };
+    }
+    lastError = data?.error?.message || `AI request failed (${res.status})`;
+    if (res.status !== 404) break; // only a missing model is worth retrying
+  }
+  return { ok: false, error: lastError };
 }
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {

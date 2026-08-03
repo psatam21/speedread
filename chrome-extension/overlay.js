@@ -140,7 +140,7 @@ input[type=range] { accent-color: #3a5cf0; }
       <main>
         <div class="gate">
           <h2>In-page reading is Premium</h2>
-          <p>Lifetime Premium unlocks the on-page reader, Focus and Flash modes, AI summaries and document chat — on every site, without leaving the tab.</p>
+          <p>Lifetime Premium unlocks the on-page reader, Focus and Flash modes, AI summaries and document chat with your own Gemini key — on every site, without leaving the tab.</p>
           <p><a href="${PRICING_URL}" target="_blank" rel="noopener">Get Lifetime Premium</a></p>
           <p style="font-size:13px">Already bought it? Open the BriskRead extension popup and paste your license key.</p>
         </div>
@@ -333,7 +333,7 @@ input[type=range] { accent-color: #3a5cf0; }
     render();
   }
 
-  /* ---- AI (same /api/gemini contract as the web app; proxied through the SW
+  /* ---- AI (your own Gemini key, called from the SW so host-page CORS never applies
          so the host page's origin never matters and no CORS is needed) ---- */
 
   function addMsg(cls, text) {

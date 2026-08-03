@@ -1,0 +1,341 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "Reading Speed Test — Free WPM Test with Comprehension | BriskRead";
+const pageDescription = "Free reading speed test. Read a passage, answer comprehension questions, and get your words-per-minute score plus how you compare to average adult readers.";
+
+const passages = [
+  {
+    id: 'sleep',
+    title: 'Why sleep consolidates memory',
+    words: 218,
+    text: `Sleep is not a passive shutdown. During the night the brain replays the day's experiences, running the same neural sequences that fired while you were awake, only faster and in compressed bursts. Researchers first observed this in rats that had learned a maze: while the animals slept, the neurons that had mapped the route fired again in the same order, as if the maze were being rerun in miniature.
+
+This replay appears to be how a fragile memory becomes a durable one. A new memory is initially held in the hippocampus, a structure that learns quickly but has limited capacity. Over successive nights, replay gradually transfers the pattern into the cortex, where it can be stored indefinitely alongside everything else you know. The hippocampus is freed up for the next day.
+
+Different stages of sleep seem to handle different jobs. Slow-wave sleep, concentrated in the first half of the night, favours factual and spatial memory. Rapid eye movement sleep, which dominates the second half, appears more involved in emotional processing and in linking new information to existing knowledge. This is one reason cutting sleep short is worse than it sounds: losing the last two hours of the night does not remove a fixed slice of rest, it removes a specific stage disproportionately.
+
+The practical consequence is uncomfortable for anyone who studies late. Material reviewed and then slept on is retained substantially better than material reviewed and then followed by a short night. The review is not the whole of learning. The night that follows it is doing a large part of the work.`,
+  },
+  {
+    id: 'containers',
+    title: 'The shipping container and globalisation',
+    words: 205,
+    text: `Before the shipping container, loading a cargo ship was slow, dangerous, manual work. Dockworkers moved barrels, sacks and crates by hand and winch, item by item. A ship could spend longer sitting in port being loaded than it spent at sea. The cost of moving goods across an ocean was high enough that most manufacturing stayed close to its customers.
+
+Malcom McLean, an American trucking operator, was not a shipping man. He was frustrated by watching his trucks wait at docks while their contents were unpacked and reloaded piece by piece. His idea was blunt: stop unpacking. Move the whole truck body, sealed, from the road onto the ship and off again at the other end. In 1956 he converted a tanker and ran the first container voyage from Newark to Houston.
+
+The saving was not marginal. Loading costs fell by well over ninety percent. But the container's real effect was not on any single ship. Because the boxes were standardised, ports, cranes, trucks and rail wagons could all be rebuilt around the same dimensions, and the whole chain became one system rather than a series of handovers.
+
+That is what made distant manufacturing viable. Once distance stopped being expensive, supply chains could stretch across the world, and they did.`,
+  },
+];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Reading speed test</h1>
+        <p class="lede">
+          Read a passage at your normal pace, then answer three questions about it. You get a words-per-minute score and a comprehension score, because speed without comprehension is not reading. Takes about two minutes.
+        </p>
+
+        <div class="test-shell mt-6" id="test-shell">
+          <!-- Step 1: choose -->
+          <div class="test-step" id="step-choose">
+            <h2>Pick a passage</h2>
+            <div class="passage-picker" id="passage-picker">
+              {passages.map((p) => (
+                <button type="button" class="passage-option" data-passage={p.id}>
+                  <strong>{p.title}</strong>
+                  <span class="muted">{p.words} words</span>
+                </button>
+              ))}
+            </div>
+            <p class="muted mt-3">The timer starts the moment the passage appears, so get comfortable first.</p>
+          </div>
+
+          <!-- Step 2: read -->
+          <div class="test-step hidden" id="step-read">
+            <div class="test-header">
+              <h2 id="reading-title">Read at your normal pace</h2>
+              <span class="timer" id="timer">0:00</span>
+            </div>
+            <div class="passage-body" id="passage-body"></div>
+            <button class="btn btn-primary mt-4" id="btn-done-reading">I've finished reading</button>
+          </div>
+
+          <!-- Step 3: quiz -->
+          <div class="test-step hidden" id="step-quiz">
+            <h2>Three quick questions</h2>
+            <p class="muted">No scrolling back — answer from memory.</p>
+            <div id="quiz-body" class="mt-4"></div>
+            <button class="btn btn-primary mt-4" id="btn-submit-quiz">See my score</button>
+          </div>
+
+          <!-- Step 4: result -->
+          <div class="test-step hidden" id="step-result">
+            <h2>Your result</h2>
+            <div class="result-grid">
+              <div class="result-stat">
+                <span class="result-value" id="result-wpm">—</span>
+                <span class="result-label">words per minute</span>
+              </div>
+              <div class="result-stat">
+                <span class="result-value" id="result-comp">—</span>
+                <span class="result-label">comprehension</span>
+              </div>
+              <div class="result-stat">
+                <span class="result-value" id="result-effective">—</span>
+                <span class="result-label">effective WPM</span>
+              </div>
+            </div>
+            <p class="result-verdict" id="result-verdict"></p>
+            <div class="result-actions mt-4">
+              <a href="/#importer-card" class="btn btn-primary">Train with the reader</a>
+              <button type="button" class="btn btn-secondary" id="btn-retake">Take it again</button>
+            </div>
+          </div>
+        </div>
+
+        <AdSlot placement="MID" />
+
+        <h2 class="mt-8">How the score is calculated</h2>
+        <p>
+          Your raw score is the passage word count divided by the minutes you spent reading. Comprehension is the share of the three questions you answered correctly. Effective WPM multiplies the two, which is the number worth tracking: reading at 900 WPM while understanding a third of it is slower than reading at 300 and understanding all of it.
+        </p>
+
+        <h2 class="mt-8">What the numbers mean</h2>
+        <ul>
+          <li><strong>Under 200 WPM</strong> — below typical adult pace. Often subvocalisation, or reading on a screen with a lot of visual noise.</li>
+          <li><strong>200–300 WPM</strong> — the range most adults land in for ordinary prose.</li>
+          <li><strong>300–450 WPM</strong> — fast. Usually a practised reader on familiar subject matter.</li>
+          <li><strong>Above 450 WPM</strong> — genuinely quick, and worth checking your comprehension score before celebrating.</li>
+        </ul>
+        <p>
+          Claims of 1,000+ WPM with full comprehension do not survive testing. Above roughly 500–600 WPM, comprehension drops measurably for most people on unfamiliar material. Techniques like RSVP help by removing wasted eye movement, not by removing the need to process the words.
+        </p>
+
+        <h2 class="mt-8">How to actually get faster</h2>
+        <ol class="steps">
+          <li>Test yourself first so you have a baseline that is not a guess.</li>
+          <li>Reduce subvocalisation — the inner voice reading each word — by pacing slightly faster than comfortable.</li>
+          <li>Stop regressing. Re-reading the same line is where most reading time disappears; an <a href="/rsvp-reader">RSVP reader</a> makes it impossible.</li>
+          <li>Practise on material you already understand before pushing speed on hard text.</li>
+          <li>Re-test after a couple of weeks and compare effective WPM, not raw WPM.</li>
+        </ol>
+
+        <h2 class="mt-8">Privacy</h2>
+        <p>
+          The test runs entirely in this page. Nothing you read, answer or score is sent anywhere. See the <a href="/privacy">privacy policy</a>.
+        </p>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/bionic-reading-converter">Bionic reading converter</a> ·
+            <a href="/how-it-works">How speed reading works</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline define:vars={{ passages }}>
+  (() => {
+    const QUIZZES = {
+      sleep: [
+        {
+          q: 'Where is a new memory initially held?',
+          options: ['The cortex', 'The hippocampus', 'The brainstem'],
+          answer: 1,
+        },
+        {
+          q: 'Which sleep stage favours factual and spatial memory?',
+          options: ['Slow-wave sleep', 'REM sleep', 'Light sleep'],
+          answer: 0,
+        },
+        {
+          q: 'Why is cutting the night short worse than it sounds?',
+          options: [
+            'It removes a fixed slice of total rest',
+            'It removes a specific stage disproportionately',
+            'It prevents the brain from replaying anything',
+          ],
+          answer: 1,
+        },
+      ],
+      containers: [
+        {
+          q: 'What was Malcom McLean’s background?',
+          options: ['Shipping', 'Trucking', 'Port construction'],
+          answer: 1,
+        },
+        {
+          q: 'By roughly how much did loading costs fall?',
+          options: ['About half', 'Around seventy percent', 'Well over ninety percent'],
+          answer: 2,
+        },
+        {
+          q: 'What made the container’s real effect so large?',
+          options: [
+            'Ships became much faster',
+            'Standard dimensions let the whole chain become one system',
+            'Dockworkers were retrained',
+          ],
+          answer: 1,
+        },
+      ],
+    };
+
+    const byId = (id) => document.getElementById(id);
+    const steps = {
+      choose: byId('step-choose'),
+      read: byId('step-read'),
+      quiz: byId('step-quiz'),
+      result: byId('step-result'),
+    };
+    const show = (name) => {
+      Object.entries(steps).forEach(([key, el]) => el.classList.toggle('hidden', key !== name));
+    };
+
+    let current = null;
+    let startedAt = 0;
+    let tick = null;
+
+    const stopTimer = () => { if (tick) clearInterval(tick); tick = null; };
+
+    const startReading = (id) => {
+      current = passages.find((p) => p.id === id);
+      byId('reading-title').textContent = current.title;
+      byId('passage-body').innerHTML = current.text
+        .split('\n\n')
+        .map((para) => `<p>${para}</p>`)
+        .join('');
+      show('read');
+      startedAt = Date.now();
+      stopTimer();
+      tick = setInterval(() => {
+        const s = Math.floor((Date.now() - startedAt) / 1000);
+        byId('timer').textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      }, 250);
+    };
+
+    document.querySelectorAll('[data-passage]').forEach((btn) => {
+      btn.addEventListener('click', () => startReading(btn.dataset.passage));
+    });
+
+    let elapsedSeconds = 0;
+
+    byId('btn-done-reading').addEventListener('click', () => {
+      elapsedSeconds = (Date.now() - startedAt) / 1000;
+      stopTimer();
+      const quiz = QUIZZES[current.id];
+      byId('quiz-body').innerHTML = quiz
+        .map((item, qi) => `
+          <fieldset class="quiz-item">
+            <legend>${qi + 1}. ${item.q}</legend>
+            ${item.options.map((opt, oi) => `
+              <label class="quiz-option">
+                <input type="radio" name="q${qi}" value="${oi}" />
+                <span>${opt}</span>
+              </label>`).join('')}
+          </fieldset>`)
+        .join('');
+      show('quiz');
+    });
+
+    byId('btn-submit-quiz').addEventListener('click', () => {
+      const quiz = QUIZZES[current.id];
+      const correct = quiz.reduce((total, item, qi) => {
+        const picked = document.querySelector(`input[name="q${qi}"]:checked`);
+        return total + (picked && Number(picked.value) === item.answer ? 1 : 0);
+      }, 0);
+
+      // Guard the divide: a click-through in under a second would otherwise
+      // report a five-figure WPM instead of an obviously invalid run.
+      const minutes = Math.max(elapsedSeconds, 1) / 60;
+      const wpm = Math.round(current.words / minutes);
+      const comprehension = correct / quiz.length;
+      const effective = Math.round(wpm * comprehension);
+
+      // Under 15s nobody read 200+ words. Show no score rather than a bogus one.
+      const tooFast = elapsedSeconds < 15;
+      byId('result-wpm').textContent = tooFast ? '—' : wpm;
+      byId('result-comp').textContent = `${correct}/${quiz.length}`;
+      byId('result-effective').textContent = tooFast ? '—' : effective;
+
+      let verdict;
+      if (tooFast) {
+        verdict = 'That was too fast to be a real read of this passage. Try again and read it properly.';
+      } else if (comprehension < 0.67) {
+        verdict = `You read at ${wpm} WPM but held on to ${correct} of ${quiz.length}. Slow down until comprehension is solid, then push speed from there.`;
+      } else if (wpm < 200) {
+        verdict = `${wpm} WPM with good comprehension. You are below typical adult pace, so there is real headroom here — this is the profile that gains the most from pacing practice.`;
+      } else if (wpm < 300) {
+        verdict = `${wpm} WPM with good comprehension puts you in the normal adult range. Cutting regressions is usually the fastest win from here.`;
+      } else if (wpm < 450) {
+        verdict = `${wpm} WPM with good comprehension is genuinely fast. Most of your remaining gains will come from eliminating eye movement rather than reading harder.`;
+      } else {
+        verdict = `${wpm} WPM with good comprehension is excellent. Re-test on unfamiliar material to check it holds.`;
+      }
+      byId('result-verdict').textContent = verdict;
+      show('result');
+    });
+
+    byId('btn-retake').addEventListener('click', () => {
+      current = null;
+      elapsedSeconds = 0;
+      byId('timer').textContent = '0:00';
+      show('choose');
+    });
+  })();
+</script>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card { padding: 2.5rem; border-radius: 1rem; background: var(--color-bg-card); border: 1px solid var(--color-border); }
+  .lede { color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.65; }
+  .content-card h2 { font-size: 1.35rem; }
+  .content-card p, .content-card ul, .content-card ol, .content-card li { color: var(--color-text-muted); line-height: 1.65; }
+  .content-card ul, .content-card ol { margin-left: 1.25rem; }
+  .hidden { display: none; }
+
+  .test-shell {
+    border: 1px solid var(--color-border); border-radius: 0.85rem;
+    background: var(--color-bg); padding: 1.5rem;
+  }
+  .passage-picker { display: grid; gap: 0.75rem; }
+  .passage-option {
+    display: flex; flex-direction: column; gap: 0.25rem; text-align: left;
+    padding: 1rem; border-radius: 0.6rem; cursor: pointer;
+    border: 1px solid var(--color-border); background: var(--color-bg-card);
+    color: var(--color-text); font: inherit;
+  }
+  .passage-option:hover, .passage-option:focus-visible { border-color: var(--color-primary); }
+
+  .test-header { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .timer { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 1.25rem; color: var(--color-accent); }
+  .passage-body { margin-top: 1rem; font-size: 1.05rem; line-height: 1.8; }
+  .passage-body p { margin-bottom: 1rem; }
+
+  .quiz-item { border: 0; padding: 0; margin: 0 0 1.5rem; }
+  .quiz-item legend { font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; }
+  .quiz-option { display: flex; gap: 0.6rem; align-items: center; padding: 0.35rem 0; cursor: pointer; }
+
+  .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem; margin-top: 1rem; }
+  .result-stat {
+    display: flex; flex-direction: column; align-items: center; gap: 0.2rem;
+    padding: 1rem; border-radius: 0.6rem; border: 1px solid var(--color-border); background: var(--color-bg-card);
+  }
+  .result-value { font-size: 2rem; font-weight: 800; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  .result-label { font-size: 0.85rem; color: var(--color-text-muted); text-align: center; }
+  .result-verdict { margin-top: 1.25rem; }
+  .result-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+  .related p { line-height: 2; }
+</style>

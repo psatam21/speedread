@@ -522,7 +522,6 @@ const webAppSchema = {
         <ul class="pricing-features mt-4">
           <li>100% ad-free reading environment</li>
           <li>Unlimited document length (no 3,000-word cap)</li>
-          <li>AI summary &amp; chat (no API key needed)</li>
           <li>Premium follows your signed-in account</li>
           <li>Speed-read any page in the Chrome extension, without leaving it</li>
         </ul>
@@ -600,7 +599,7 @@ const webAppSchema = {
           
           <h2>Dual-Channel Audio Narration &amp; PDF to speech</h2>
           <p>
-            Layering TTS on visual flashes creates dual-channel focus: ears and eyes stay on the same stream. Use Chrome or Edge for neural/natural voices. Upload a PDF or EPUB and narrate client-side — see also our <a href="/pdf-to-speech">PDF to speech</a> guide. Files are parsed in the browser; optional URL extraction and AI features call first-party or Google APIs as described in the privacy policy.
+            Layering TTS on visual flashes creates dual-channel focus: ears and eyes stay on the same stream. Use Chrome or Edge for neural/natural voices. Upload a PDF or EPUB and narrate client-side — see also our <a href="/pdf-to-speech">PDF to speech</a> guide. Files are parsed in the browser; optional URL extraction calls our server and AI features call Google directly with your own key, as described in the privacy policy.
           </p>
 
           <h2>Common use cases</h2>
@@ -648,7 +647,7 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>Is there an API key required for AI features?</summary>
             <div class="faq-answer">
-              <p>Free users can bring a free Gemini API key (stored only in your browser). Lifetime Premium includes AI summary and document chat via our secure server proxy — no personal Gemini key required.</p>
+              <p>Yes. AI summary and document chat use your own free Gemini API key, stored only in your browser and sent straight to Google — never to our servers. Google's free tier covers normal use.</p>
             </div>
           </details>
 
@@ -662,7 +661,7 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>Is BriskRead really free?</summary>
             <div class="faq-answer">
-              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($8.99) removes ads, lifts the 3,000-word cap, and includes account-linked hosted AI.</p>
+              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($8.99) removes ads, lifts the 3,000-word cap, and unlocks in-page reading in the Chrome extension.</p>
             </div>
           </details>
         </div>
@@ -726,7 +725,7 @@ const webAppSchema = {
           "name": "Is there an API key required for AI features?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Free users can bring a free Gemini API key stored in the browser. Lifetime Premium includes AI summary and document chat via a secure server proxy without a personal Gemini key."
+            "text": "AI summary and document chat use your own free Gemini API key, stored only in your browser and sent straight to Google, never to BriskRead servers."
           }
         },
         {
@@ -742,7 +741,7 @@ const webAppSchema = {
           "name": "Is BriskRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $8.99 one-time for ad-free unlimited reading and account-linked hosted AI."
+            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $8.99 one-time for ad-free unlimited reading and in-page reading in the Chrome extension."
           }
         }
       ]
@@ -2117,10 +2116,6 @@ const webAppSchema = {
         }
       });
 
-      // Gemini: device session only (not raw license key)
-      const getPremiumToken = () => getDeviceSession();
-      const isPremium = () => state.isPremium;
-
       document.getElementById('btn-save-key').addEventListener('click', () => {
         const key = document.getElementById('ai-key').value;
         if (key) {
@@ -2143,28 +2138,10 @@ const webAppSchema = {
         return models;
       }
 
+      // AI is bring-your-own-key for everyone. The old hosted proxy only accepted
+      // Supabase JWTs, so anyone who activated via a license key got a 401 on a
+      // feature they had paid for. Deleting the proxy deletes that whole class of bug.
       async function callGemini(bodyPayload) {
-        if (isPremium()) {
-          let premiumToken = getPremiumToken();
-          if (accountUser && globalThis.briskreadSupabase) {
-            const { data: { session } } = await globalThis.briskreadSupabase.auth.getSession();
-            premiumToken = session?.access_token || premiumToken;
-          }
-          if (!premiumToken) throw new Error('Sign in again to use hosted AI.');
-          const res = await fetch('/api/gemini', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${premiumToken}`,
-            },
-            body: JSON.stringify(bodyPayload),
-          });
-          if (!res.ok) {
-            const err = await res.json().catch(() => ({}));
-            throw new Error(err.error || 'Premium AI proxy failed');
-          }
-          return res.json();
-        }
         const key = getGeminiKey();
         if (!key) throw new Error('NO_KEY');
         const models = await getGeminiModels(key);
@@ -2199,7 +2176,7 @@ const webAppSchema = {
 
       document.getElementById('btn-ai-summary').addEventListener('click', async () => {
         if (!ensureTextLoaded()) return;
-        if (!isPremium() && !getGeminiKey()) return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
+        if (!getGeminiKey()) return alert("Add your free Gemini API key above to use AI summary and chat.");
         
         const summaryBtn = document.getElementById('btn-ai-summary');
         summaryBtn.textContent = "Summarizing...";
@@ -2232,9 +2209,7 @@ const webAppSchema = {
 
       document.getElementById('btn-ai-chat').addEventListener('click', () => {
         if (!ensureTextLoaded()) return;
-        if (!isPremium() && !getGeminiKey()) {
-          return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
-        }
+        if (!getGeminiKey()) return alert("Add your free Gemini API key above to use AI summary and chat.");
         
         document.getElementById('ai-response-box').classList.remove('hidden');
         document.getElementById('ai-response-title').textContent = "Chat with document";
@@ -2247,7 +2222,7 @@ const webAppSchema = {
       });
 
       document.getElementById('btn-send-chat').addEventListener('click', async () => {
-        if (!isPremium() && !getGeminiKey()) return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
+        if (!getGeminiKey()) return alert("Add your free Gemini API key above to use AI summary and chat.");
         
         const inputEl = document.getElementById('chat-user-input');
         const query = inputEl.value.trim();

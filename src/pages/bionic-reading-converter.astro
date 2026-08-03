@@ -1,0 +1,156 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "Bionic Reading Converter — Free Online Text Bolder | BriskRead";
+const pageDescription = "Paste any text and convert it to bionic-style reading with bolded word beginnings. Adjustable fixation strength, instant copy, works offline in your browser.";
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Bionic reading converter</h1>
+        <p class="lede">
+          Paste text below and it converts instantly. Each word gets its opening letters bolded, which gives your eye a fixed anchor to jump to instead of scanning the whole word. Everything runs in your browser — nothing is uploaded.
+        </p>
+
+        <div class="converter mt-6">
+          <label for="bionic-input">Your text</label>
+          <textarea id="bionic-input" rows="7" placeholder="Paste an article, an email, a chapter…"></textarea>
+
+          <div class="converter-controls mt-4">
+            <label for="bionic-strength">Fixation strength: <output id="bionic-strength-out">Medium</output></label>
+            <input type="range" id="bionic-strength" min="1" max="3" step="1" value="2" />
+            <button class="btn btn-secondary" id="bionic-copy" type="button">Copy result</button>
+          </div>
+
+          <h2 class="mt-6">Converted text</h2>
+          <div id="bionic-output" class="bionic-output" aria-live="polite"></div>
+          <p class="muted mt-2" id="bionic-count">0 words</p>
+
+          <a href="/#importer-card" class="btn btn-primary mt-4">Read this at 400 WPM instead</a>
+        </div>
+
+        <AdSlot placement="MID" />
+
+        <h2 class="mt-8">What the converter actually does</h2>
+        <p>
+          Bionic-style formatting bolds the first portion of each word. Short words get one bolded letter, longer words get more, so the bolded fragment stays roughly proportional. The claim is that your brain completes the rest of the word from the bolded prefix, so you fixate less on each word. Evidence for a genuine speed gain is mixed, but many readers report the page feels easier to hold attention on, which matters more for a long backlog than raw WPM.
+        </p>
+
+        <h2 class="mt-8">Fixation strength</h2>
+        <ul>
+          <li><strong>Light</strong> — roughly a third of each word. Least visually noisy, good for long sessions.</li>
+          <li><strong>Medium</strong> — about half. The default, and closest to what most bionic tools produce.</li>
+          <li><strong>Heavy</strong> — around two thirds. Strongest anchor, but the contrast between bold and plain drops.</li>
+        </ul>
+
+        <h2 class="mt-8">Why convert instead of just reading?</h2>
+        <p>
+          The converter is useful when the text is going somewhere else — a document you'll print, a passage you're studying, notes you want to re-read. If you just want to get through the text now, skip the conversion and open it in the <a href="/">reader</a>, where Bionic is one of six modes and you can pair it with pacing.
+        </p>
+
+        <h2 class="mt-8">Privacy</h2>
+        <p>
+          The conversion is plain JavaScript running on this page. Your text never leaves the browser, there is no upload, and closing the tab discards it. See the <a href="/privacy">privacy policy</a>.
+        </p>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/bionic-reading">What is bionic reading?</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  (() => {
+    const input = document.getElementById('bionic-input');
+    const output = document.getElementById('bionic-output');
+    const count = document.getElementById('bionic-count');
+    const strength = document.getElementById('bionic-strength');
+    const strengthOut = document.getElementById('bionic-strength-out');
+    const copyBtn = document.getElementById('bionic-copy');
+    const LABELS = { 1: 'Light', 2: 'Medium', 3: 'Heavy' };
+    const RATIOS = { 1: 0.34, 2: 0.5, 3: 0.66 };
+
+    const SAMPLE =
+      'Reading a long article is mostly a problem of attention, not of eyesight. ' +
+      'Bolding the opening letters of each word gives your eye a fixed place to land, ' +
+      'so it stops drifting back over text it has already covered.';
+
+    const WORD = "A-Za-zÀ-ɏ'";
+    const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+
+    // Walk words and the gaps between them in one pass. Words are letters only,
+    // so they need no escaping; everything else does. Escaping the whole string
+    // up front instead would turn "&lt;" into text the word regex then bolds.
+    const convert = (text, ratio) =>
+      text.replace(new RegExp(`([${WORD}]+)|([^${WORD}]+)`, 'g'), (_, word, gap) => {
+        if (!word) return esc(gap);
+        const cut = Math.max(1, Math.round(word.length * ratio));
+        return `<strong>${word.slice(0, cut)}</strong>${word.slice(cut)}`;
+      });
+
+    const wordCount = (text) => (text.trim() ? text.trim().split(/\s+/).length : 0);
+
+    const render = () => {
+      const ratio = RATIOS[strength.value];
+      strengthOut.textContent = LABELS[strength.value];
+      const text = input.value || SAMPLE;
+      output.innerHTML = convert(text, ratio).replace(/\n/g, '<br />');
+      count.textContent = `${wordCount(text)} words${input.value ? '' : ' (sample text)'}`;
+    };
+
+    input.addEventListener('input', render);
+    strength.addEventListener('input', render);
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        // Copy rich text so the bolding survives a paste into a doc; plain text
+        // is the fallback item so terminals and code editors still get something.
+        const html = new Blob([output.innerHTML], { type: 'text/html' });
+        const plain = new Blob([output.innerText], { type: 'text/plain' });
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': html, 'text/plain': plain })]);
+        copyBtn.textContent = 'Copied';
+      } catch {
+        await navigator.clipboard.writeText(output.innerText).catch(() => {});
+        copyBtn.textContent = 'Copied as plain text';
+      }
+      setTimeout(() => { copyBtn.textContent = 'Copy result'; }, 1800);
+    });
+
+    render();
+  })();
+</script>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card { padding: 2.5rem; border-radius: 1rem; background: var(--color-bg-card); border: 1px solid var(--color-border); }
+  .lede { color: var(--color-text-muted); font-size: 1.05rem; line-height: 1.65; }
+  .content-card h2 { font-size: 1.35rem; }
+  .content-card p, .content-card ul, .content-card li { color: var(--color-text-muted); line-height: 1.65; }
+  .content-card ul { margin-left: 1.25rem; }
+  .converter label { display: block; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+  .converter textarea {
+    width: 100%; padding: 0.9rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); font: inherit; resize: vertical;
+  }
+  .converter-controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .converter-controls input[type="range"] { flex: 1; min-width: 160px; }
+  .bionic-output {
+    padding: 1.25rem; border-radius: 0.6rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); line-height: 1.85; font-size: 1.05rem;
+    color: var(--color-text-muted); min-height: 6rem;
+  }
+  .bionic-output strong { color: var(--color-text); font-weight: 700; }
+  .related p { line-height: 2; }
+</style>

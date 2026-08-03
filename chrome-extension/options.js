@@ -50,4 +50,32 @@ document.getElementById('btn-reset').addEventListener('click', async () => {
   status.className = 'status ok';
 });
 
+// Gemini key: local storage, never chrome.storage.sync — a sync'd API key would
+// ride Google's account sync to every machine the user signs into.
+const keyEl = document.getElementById('gemini-key');
+const keyStatus = document.getElementById('key-status');
+
+document.getElementById('btn-save-key').addEventListener('click', async () => {
+  const key = keyEl.value.trim();
+  if (!key) {
+    keyStatus.textContent = 'Enter a key first.';
+    keyStatus.className = 'status error';
+    return;
+  }
+  await chrome.storage.local.set({ gemini_key: key });
+  keyStatus.textContent = 'Key saved. AI summary and chat are ready.';
+  keyStatus.className = 'status ok';
+});
+
+document.getElementById('btn-clear-key').addEventListener('click', async () => {
+  await chrome.storage.local.remove('gemini_key');
+  keyEl.value = '';
+  keyStatus.textContent = 'Key removed.';
+  keyStatus.className = 'status ok';
+});
+
+chrome.storage.local.get('gemini_key').then(({ gemini_key }) => {
+  keyEl.value = gemini_key || '';
+});
+
 load();
