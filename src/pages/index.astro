@@ -16,7 +16,7 @@ const webAppSchema = {
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
-    highPrice: '9.00',
+    highPrice: '8.99',
     priceCurrency: 'USD',
     offerCount: '2',
   },
@@ -506,7 +506,7 @@ const webAppSchema = {
         <h3>Lifetime Premium</h3>
         <div class="price-row mt-2">
           <span class="price-strike">$29.99</span>
-          <span class="price-value">$9.00</span>
+          <span class="price-value">$8.99</span>
           <span class="price-term">one-time / forever</span>
         </div>
         <ul class="pricing-features mt-4">
@@ -517,7 +517,7 @@ const webAppSchema = {
           <li>Neural TTS voices (Chrome/Edge system voices)</li>
         </ul>
         <div class="pricing-actions mt-6">
-          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $9</button>
+          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $8.99</button>
           <p class="muted text-center mt-2">One-time payment. Sign in once, then use Premium across your devices.</p>
         </div>
 
@@ -651,7 +651,7 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>Is SpeedRead really free?</summary>
             <div class="faq-answer">
-              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9) removes ads, lifts the 3,000-word cap, and includes account-linked hosted AI.</p>
+              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($8.99) removes ads, lifts the 3,000-word cap, and includes account-linked hosted AI.</p>
             </div>
           </details>
         </div>
@@ -731,7 +731,7 @@ const webAppSchema = {
           "name": "Is SpeedRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and account-linked hosted AI."
+            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $8.99 one-time for ad-free unlimited reading and account-linked hosted AI."
           }
         }
       ]
@@ -1662,7 +1662,7 @@ const webAppSchema = {
       // Enforce free tier limits: 3000 words limit on uploads
       const tempWords = text.trim().split(/\s+/);
       if (tempWords.length > 3000 && !state.isPremium) {
-        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Premium Lifetime ($9.00 one-time) to read unlimited length books and unlock a completely ad-free workspace!`);
+        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Premium Lifetime ($8.99 one-time) to read unlimited length books and unlock a completely ad-free workspace!`);
         if (upgrade) {
           setTimeout(() => {
             const pricing = document.querySelector('.pricing-card');
@@ -2391,7 +2391,7 @@ const webAppSchema = {
           alert('Could not start checkout. Please try again shortly.');
           console.error(err);
           btn.disabled = false;
-          btn.textContent = 'Get Lifetime Pro — $9';
+          btn.textContent = 'Get Lifetime Pro — $8.99';
         }
       });
 
