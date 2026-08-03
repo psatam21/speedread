@@ -1,17 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const pageTitle = "Chrome Extension — SpeedRead Premium Login & Speed Reader";
-const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any tab with RSVP and sign in with your Lifetime Premium license (up to 5 devices).";
+const pageTitle = "Chrome Extension — BriskRead Premium Login & Speed Reader";
+const pageDescription = "Install the BriskRead Chrome extension. Speed-read any tab with RSVP and sign in with your Lifetime Premium license (up to 5 devices).";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="ext-page mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
-        <h1>SpeedRead for Chrome</h1>
+        <h1>BriskRead for Chrome</h1>
         <p class="lede">
-          Extract any article into the SpeedRead workspace in one click. Sign in with your Lifetime Premium license — same multi-device subscription as the website (max 5 devices).
+          Extract any article into the BriskRead workspace in one click. Sign in with your Lifetime Premium license — same multi-device subscription as the website (max 5 devices).
         </p>
 
         <div class="actions">
@@ -23,7 +23,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
         <ul>
           <li><strong>Right-click selected text or a page:</strong> opens a private RSVP popup immediately. You stay on the current tab.</li>
           <li><strong>Speed read this page:</strong> extracts the page and opens the same local reader.</li>
-          <li><strong>Open SpeedRead app:</strong> intentionally opens the full website for files, OCR, bionic reading, speech and AI.</li>
+          <li><strong>Open BriskRead app:</strong> intentionally opens the full website for files, OCR, bionic reading, speech and AI.</li>
           <li><strong>Options:</strong> contains developer endpoint settings. Normal users can leave the defaults unchanged.</li>
         </ul>
 
@@ -32,7 +32,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
           <li>Download the release zip from the project release folder, or clone the repo and open <code>chrome-extension/</code>.</li>
           <li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li>
           <li>Click <strong>Load unpacked</strong> and select the <code>chrome-extension</code> directory (unzipped, with <code>manifest.json</code> at the root).</li>
-          <li>Pin SpeedRead. Optional: right-click a page → <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
+          <li>Pin BriskRead. Optional: right-click a page → <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
         </ol>
 
         <h2>Install from the Chrome Web Store</h2>
@@ -53,7 +53,7 @@ const pageDescription = "Install the SpeedRead Chrome extension. Speed-read any 
         <h2>What we access</h2>
         <ul>
           <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
-          <li><strong>SpeedRead</strong> — license activation API and opening the reader with your session.</li>
+          <li><strong>BriskRead</strong> — license activation API and opening the reader with your session.</li>
           <li><strong>Storage</strong> — license key and device session stay on your machine in extension storage.</li>
         </ul>
         <p class="muted">

@@ -26,19 +26,19 @@ export default async function handler(request, response) {
   const payment = await paymentResponse.json();
   if (payment.status !== 'succeeded') return json(response, 409, { ok: false, status: payment.status });
 
-  let userId = payment.metadata?.speedread_user_id;
+  let userId = payment.metadata?.briskread_user_id;
   if (!userId && payment.checkout_session_id) {
     const checkoutResponse = await fetch(`${base}/checkouts/${encodeURIComponent(payment.checkout_session_id)}`, {
       headers: { Authorization: `Bearer ${process.env.DODO_API_KEY}` },
     });
     if (checkoutResponse.ok) {
       const checkout = await checkoutResponse.json();
-      userId = checkout.metadata?.speedread_user_id;
+      userId = checkout.metadata?.briskread_user_id;
     }
   }
 
   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(userId || '')) {
-    return json(response, 409, { error: 'This payment is not linked to a SpeedRead account' });
+    return json(response, 409, { error: 'This payment is not linked to a BriskRead account' });
   }
 
   const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY, {
@@ -46,7 +46,7 @@ export default async function handler(request, response) {
   });
   const { error } = await supabase.from('entitlements').upsert({
     user_id: userId,
-    product_key: 'speedread_lifetime',
+    product_key: 'briskread_lifetime',
     status: 'active',
     source: 'dodo',
     source_payment_id: paymentId,

@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Online Speed Reader — RSVP, Bionic & TTS | SpeedRead";
+const pageTitle = "Online Speed Reader — RSVP, Bionic & TTS | BriskRead";
 const pageDescription = "Free online speed reader with flash, phrase and focus modes, bionic text, PDF and EPUB import, OCR, and synced speech. No account required.";
 const siteUrl = new URL('/', Astro.site || Astro.url).href;
 const webAppSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'SpeedRead',
+  name: 'BriskRead',
   url: siteUrl,
   applicationCategory: 'EducationalApplication',
   operatingSystem: 'Any',
@@ -33,9 +33,9 @@ const webAppSchema = {
       <header class="hero">
         <div class="hero-copy">
           <p class="hero-kicker"><span>01</span> Local-first reading instrument</p>
-          <h1>Finish the backlog.<br />Keep the meaning.</h1>
+          <h1>Finish the backlog.<br />Read it once.</h1>
           <p class="hero-sub">
-            RSVP speed reading that helps you read faster<br />while understanding more.
+            RSVP speed reading that gets you through the pile<br />without a second pass.
           </p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#importer-card">Try it with your text</a>
@@ -50,7 +50,7 @@ const webAppSchema = {
         </div>
         <div class="hero-reader" aria-label="Animated RSVP reading preview">
           <div class="hero-reader-top">
-            <div class="hero-reader-identity"><span aria-hidden="true"><i></i><i></i><i></i></span><strong>speedread_engine</strong></div>
+            <div class="hero-reader-identity"><span aria-hidden="true"><i></i><i></i><i></i></span><strong>briskread_engine</strong></div>
             <div class="hero-reader-tools"><span>LOCAL / ACTIVE</span><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div>
           </div>
           <div class="hero-preview-stage">
@@ -63,7 +63,7 @@ const webAppSchema = {
           <div class="hero-demo-controls">
             <div class="hero-speed-control"><span>Velocity / WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
           </div>
-          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with SpeedRead<b><span id="hero-compare-wpm">350</span> <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
+          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with BriskRead<b><span id="hero-compare-wpm">350</span> <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
           <div class="hero-gain-stats" aria-live="polite">
             <span><strong id="hero-pace-gain">+46%</strong> faster pace</span>
             <span><strong id="hero-time-saved">7 min</strong> saved per 5,000 words</span>
@@ -295,7 +295,7 @@ const webAppSchema = {
               <input type="url" id="url-input" placeholder="Enter article or webpage URL (e.g., https://example.com/article)" />
               <button class="btn btn-primary" id="btn-load-url">Extract Text</button>
             </div>
-            <p class="input-hint">Fetches core text from a public webpage through SpeedRead's extractor, then opens it in your reader.</p>
+            <p class="input-hint">Fetches core text from a public webpage through BriskRead's extractor, then opens it in your reader.</p>
           </div>
 
           <section class="ai-workspace" aria-labelledby="ai-workspace-title">
@@ -316,7 +316,7 @@ const webAppSchema = {
                   <li>Open Google AI Studio and sign in.</li>
                   <li>Select <strong>Create API key</strong> and choose or create a Google Cloud project.</li>
                   <li>Copy the key, paste it above, and select <strong>Save Key</strong>.</li>
-                  <li>Keep it private. SpeedRead stores it only in this browser.</li>
+                  <li>Keep it private. BriskRead stores it only in this browser.</li>
                 </ol>
                 <p>Google offers a free Gemini API tier with usage limits. Some models, regions and higher-volume use may require billing.</p>
               </details>
@@ -416,7 +416,7 @@ const webAppSchema = {
         <p>Use fast flash reading to clear a queue, then move toward full-page context when the material deserves more attention.</p>
       </div>
 
-      <div class="method-ladder" role="list" aria-label="SpeedRead reading modes">
+      <div class="method-ladder" role="list" aria-label="BriskRead reading modes">
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">01</span>
           <span><strong>Flash</strong><small>One word at an anchored focal point</small></span>
@@ -457,7 +457,7 @@ const webAppSchema = {
 
       <div class="reading-fit">
         <div>
-          <h3>Where SpeedRead earns its place</h3>
+          <h3>Where BriskRead earns its place</h3>
           <p>Saved articles, newsletters, meeting notes, industry reports, long email threads and a first pass through research.</p>
         </div>
         <div>
@@ -565,7 +565,7 @@ const webAppSchema = {
         <div class="seo-text">
           <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
-            SpeedRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
+            BriskRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
           </p>
 
           <h2>How to use this online speed reader</h2>
@@ -579,7 +579,7 @@ const webAppSchema = {
           
           <h2>Rapid Serial Visual Presentation (RSVP)</h2>
           <p>
-            Traditional reading forces horizontal eye movement and micro-pauses (saccades). RSVP mode flashes single words at a fixed focal point. SpeedRead calculates the Optimal Recognition Point of each word — the focal letter is highlighted — so your brain processes language without hunting along a line. Punctuation gets slightly longer delays so comprehension stays intact at high WPM.
+            Traditional reading forces horizontal eye movement and micro-pauses (saccades). RSVP mode flashes single words at a fixed focal point. BriskRead calculates the Optimal Recognition Point of each word — the focal letter is highlighted — so your brain processes language without hunting along a line. Punctuation gets slightly longer delays so comprehension stays intact at high WPM.
           </p>
           
           <h2>Bionic Reading Mode</h2>
@@ -630,7 +630,7 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>How do I install the Web-to-Reader Bookmarklet?</summary>
             <div class="faq-answer">
-              <p>Go to the <a href="/bookmarklet">Bookmarklet page</a>, and drag the "⚡ SpeedRead" link directly into your browser's bookmarks bar. Whenever you are reading an article on any news website, simply click that bookmark, and it will instantly load the page's text into our reader workspace.</p>
+              <p>Go to the <a href="/bookmarklet">Bookmarklet page</a>, and drag the "⚡ BriskRead" link directly into your browser's bookmarks bar. Whenever you are reading an article on any news website, simply click that bookmark, and it will instantly load the page's text into our reader workspace.</p>
             </div>
           </details>
 
@@ -644,12 +644,12 @@ const webAppSchema = {
           <details class="faq-item">
             <summary>How does multi-device Premium work?</summary>
             <div class="faq-answer">
-              <p>Sign in before checkout and the one-time purchase is attached to your SpeedRead account. Sign into the same account on another device to restore Premium without copying a license key.</p>
+              <p>Sign in before checkout and the one-time purchase is attached to your BriskRead account. Sign into the same account on another device to restore Premium without copying a license key.</p>
             </div>
           </details>
 
           <details class="faq-item">
-            <summary>Is SpeedRead really free?</summary>
+            <summary>Is BriskRead really free?</summary>
             <div class="faq-answer">
               <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($8.99) removes ads, lifts the 3,000-word cap, and includes account-linked hosted AI.</p>
             </div>
@@ -672,7 +672,7 @@ const webAppSchema = {
       <h3>Achievement card ready</h3>
       <p class="muted">Right-click the image below to copy or save it to share on LinkedIn, Twitter, or with friends.</p>
       <div class="canvas-preview mt-4">
-        <img id="share-card-img" alt="SpeedRead Stats Achievement Card" />
+        <img id="share-card-img" alt="BriskRead Stats Achievement Card" />
       </div>
       <div class="modal-actions mt-4">
         <button class="btn btn-secondary" id="btn-close-modal">Close</button>
@@ -723,12 +723,12 @@ const webAppSchema = {
           "name": "How does multi-device Premium work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Sign in before checkout and Lifetime Premium is attached to your SpeedRead account. Sign into that account on another device to restore Premium."
+            "text": "Sign in before checkout and Lifetime Premium is attached to your BriskRead account. Sign into that account on another device to restore Premium."
           }
         },
         {
           "@type": "Question",
-          "name": "Is SpeedRead really free?",
+          "name": "Is BriskRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $8.99 one-time for ad-free unlimited reading and account-linked hosted AI."
@@ -771,7 +771,7 @@ const webAppSchema = {
 
     // ── Device-bound premium ──────────────────────────────────────────
     let accountUser = null;
-    window.addEventListener('speedread:account', (event) => {
+    window.addEventListener('briskread:account', (event) => {
       accountUser = event.detail?.user || null;
       if (event.detail?.premium) {
         state.isPremium = true;
@@ -999,8 +999,8 @@ const webAppSchema = {
       
       // Compare against the same 240 WPM baseline used in the reading scenarios.
       const traditionalTime = state.stats.wordsRead / 240;
-      const speedreadTime = state.stats.timeSpent; // actual reading time
-      const timeSaved = Math.max(0, traditionalTime - speedreadTime);
+      const briskreadTime = state.stats.timeSpent; // actual reading time
+      const timeSaved = Math.max(0, traditionalTime - briskreadTime);
       document.getElementById('stats-saved').textContent = Math.round(timeSaved) + 'm';
       
       // Validate streak
@@ -1023,7 +1023,7 @@ const webAppSchema = {
     let statsSyncInFlight = false;
     const syncReadingStats = async () => {
       if (statsSyncInFlight) return;
-      const supabase = globalThis.speedreadSupabase;
+      const supabase = globalThis.briskreadSupabase;
       if (!supabase) return;
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) return;
@@ -1059,7 +1059,7 @@ const webAppSchema = {
       getPlaybackStart,
       getIndexFromPercent,
       chunkForTTS,
-    } = window.SpeedReadReaderCore;
+    } = window.BriskReadReaderCore;
 
     // Parse text to word mappings with coordinate tracking
     const parseText = (textVal) => {
@@ -2078,8 +2078,8 @@ const webAppSchema = {
       async function callGemini(bodyPayload) {
         if (isPremium()) {
           let premiumToken = getPremiumToken();
-          if (accountUser && globalThis.speedreadSupabase) {
-            const { data: { session } } = await globalThis.speedreadSupabase.auth.getSession();
+          if (accountUser && globalThis.briskreadSupabase) {
+            const { data: { session } } = await globalThis.briskreadSupabase.auth.getSession();
             premiumToken = session?.access_token || premiumToken;
           }
           if (!premiumToken) throw new Error('Sign in again to use hosted AI.');
@@ -2330,7 +2330,7 @@ const webAppSchema = {
         // Header Title
         ctx.fillStyle = '#ffffff';
         ctx.font = '800 40px system-ui, -apple-system, sans-serif';
-        ctx.fillText('⚡ SpeedRead Milestone', 60, 90);
+        ctx.fillText('⚡ BriskRead Milestone', 60, 90);
 
         // Dividers
         ctx.fillStyle = '#ef4444';
@@ -2374,7 +2374,7 @@ const webAppSchema = {
         btn.disabled = true;
         btn.textContent = 'Redirecting to checkout...';
         try {
-          const supabase = globalThis.speedreadSupabase;
+          const supabase = globalThis.briskreadSupabase;
           const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
           if (!session) {
             window.location.href = '/account?next=%2F%23pricing';
@@ -2502,7 +2502,7 @@ const webAppSchema = {
               if (data.account_linked) {
                 state.isPremium = true;
                 applyPremiumUI();
-                alert('Payment confirmed. Lifetime Premium is now attached to your SpeedRead account.');
+                alert('Payment confirmed. Lifetime Premium is now attached to your BriskRead account.');
                 return;
               }
               unlockPremium({

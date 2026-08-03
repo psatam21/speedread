@@ -25,7 +25,7 @@ function delayFor(word) {
   return delay;
 }
 
-console.assert(orpIndex('create') === 2 && delayFor('stop.') > 60000 / wpm, 'SpeedRead reader timing self-check failed');
+console.assert(orpIndex('create') === 2 && delayFor('stop.') > 60000 / wpm, 'BriskRead reader timing self-check failed');
 
 function render() {
   const word = words[index] || '';

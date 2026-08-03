@@ -1,6 +1,6 @@
 /**
  * Zip chrome-extension for Chrome Web Store upload.
- * Output: release/speedread-extension-vX.Y.Z.zip
+ * Output: release/briskread-extension-vX.Y.Z.zip
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -23,7 +23,7 @@ if (fs.existsSync(imagineSrc) || fs.existsSync(imagineSrcPng)) {
 
 const manifest = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8'));
 const version = manifest.version || '0.0.0';
-const zipName = `speedread-extension-v${version}.zip`;
+const zipName = `briskread-extension-v${version}.zip`;
 const zipPath = path.join(releaseDir, zipName);
 
 fs.mkdirSync(releaseDir, { recursive: true });

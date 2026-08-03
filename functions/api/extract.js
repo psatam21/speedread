@@ -62,7 +62,7 @@ export async function onRequestGet(context) {
   try {
     const res = await fetch(target, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; SpeedReadBot/1.0)',
+        'User-Agent': 'Mozilla/5.0 (compatible; BriskReadBot/1.0)',
         'Accept': 'text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8',
       },
       redirect: 'follow',

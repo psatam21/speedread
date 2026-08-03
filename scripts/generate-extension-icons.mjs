@@ -1,5 +1,5 @@
 /**
- * Generate SpeedRead extension icons (16/32/48/128 PNG).
+ * Generate BriskRead extension icons (16/32/48/128 PNG).
  * Prefers sharp; falls back to a minimal pure-PNG writer if sharp is missing.
  */
 import fs from 'node:fs';

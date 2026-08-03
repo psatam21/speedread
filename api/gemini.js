@@ -47,8 +47,8 @@ export default async function handler(request, response) {
     headers: {
       Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://speedread-orcin.vercel.app',
-      'X-OpenRouter-Title': 'SpeedRead',
+      'HTTP-Referer': 'https://briskread.com',
+      'X-OpenRouter-Title': 'BriskRead',
     },
     body: JSON.stringify({
       model: process.env.OPENROUTER_MODEL || 'deepseek/deepseek-v4-flash',

@@ -61,7 +61,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site || Astro.url).href} />
-    <meta property="og:site_name" content="SpeedRead" />
+    <meta property="og:site_name" content="BriskRead" />
     <meta property="og:locale" content="en_US" />
 
     <!-- Twitter -->
@@ -133,12 +133,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     </div>
     <header class="site-header">
       <div class="container header-container">
-        <a href="/" class="logo-link" aria-label="SpeedRead home">
+        <a href="/" class="logo-link" aria-label="BriskRead home">
           <div class="logo-container">
             <svg class="logo-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
               <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" />
             </svg>
-            <span class="logo-text">SpeedRead</span>
+            <span class="logo-text">BriskRead</span>
           </div>
         </a>
         
@@ -175,9 +175,9 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     <footer class="site-footer">
       <div class="container footer-container">
         <div class="footer-brand">
-          <a href="/" class="footer-logo">SpeedRead<span>.</span></a>
+          <a href="/" class="footer-logo">BriskRead<span>.</span></a>
           <p>Read the backlog, not the interface. RSVP, bionic reading, OCR and synced speech in one private browser tool.</p>
-          <p class="footer-note">© {new Date().getFullYear()} SpeedRead</p>
+          <p class="footer-note">© {new Date().getFullYear()} BriskRead</p>
         </div>
         <div class="footer-group">
           <p>Read</p>
@@ -230,12 +230,12 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       const key = document.body.dataset.supabaseAnonKey;
       const supabase = url && key ? createClient(url, key) : null;
 
-      (globalThis as any).speedreadSupabase = supabase;
+      (globalThis as any).briskreadSupabase = supabase;
 
       const renderAccount = async (session) => {
         const user = session?.user;
         if (!user) {
-          globalThis.dispatchEvent(new CustomEvent('speedread:account', { detail: { user: null, premium: false } }));
+          globalThis.dispatchEvent(new CustomEvent('briskread:account', { detail: { user: null, premium: false } }));
           return;
         }
 
@@ -245,7 +245,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
           .eq('user_id', user.id)
           .maybeSingle();
         const premium = data?.status === 'active';
-        globalThis.dispatchEvent(new CustomEvent('speedread:account', { detail: { user, premium } }));
+        globalThis.dispatchEvent(new CustomEvent('briskread:account', { detail: { user, premium } }));
       };
 
       if (supabase) {

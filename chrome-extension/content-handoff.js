@@ -42,7 +42,7 @@
         chrome.runtime.sendMessage({ type: 'SR_CLEAR_HANDOFF' }).catch(() => {});
       }
     } catch (e) {
-      console.warn('[SpeedRead] handoff apply failed', e);
+      console.warn('[BriskRead] handoff apply failed', e);
     }
     return wrote;
   }

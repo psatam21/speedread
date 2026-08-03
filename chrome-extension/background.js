@@ -1,7 +1,7 @@
 /* global importScripts, srGetAuth, srGetHandoff, srClearHandoff, extractArticleInPage */
 importScripts('config.js', 'lib/storage.js', 'lib/extract.js');
 
-const MENU_ID = 'speedread-page';
+const MENU_ID = 'briskread-page';
 
 function ensureContextMenu() {
   chrome.contextMenus.removeAll(() => {
@@ -16,7 +16,7 @@ function ensureContextMenu() {
 chrome.runtime.onInstalled.addListener((details) => {
   ensureContextMenu();
   if (details.reason === 'install') {
-    chrome.tabs.create({ url: 'https://speedread-orcin.vercel.app/extension' });
+    chrome.tabs.create({ url: 'https://briskread.com/extension' });
   }
 });
 
@@ -30,7 +30,7 @@ async function extractFromTab(tabId) {
   return results?.[0]?.result || null;
 }
 
-async function openSpeedRead(tab, { selectionText = '' } = {}) {
+async function openBriskRead(tab, { selectionText = '' } = {}) {
   let article = null;
 
   try {
@@ -49,7 +49,7 @@ async function openSpeedRead(tab, { selectionText = '' } = {}) {
       }
     }
   } catch (err) {
-    console.warn('[SpeedRead] extract failed', err);
+    console.warn('[BriskRead] extract failed', err);
   }
 
   if (!article?.text?.trim()) {
@@ -72,13 +72,13 @@ async function openSpeedRead(tab, { selectionText = '' } = {}) {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId !== MENU_ID) return;
-  await openSpeedRead(tab, { selectionText: info.selectionText || '' });
+  await openBriskRead(tab, { selectionText: info.selectionText || '' });
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
   if (command !== 'speed-read-tab') return;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab) await openSpeedRead(tab);
+  if (tab) await openBriskRead(tab);
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -112,11 +112,11 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     return true;
   }
 
-  if (message?.type === 'SR_OPEN_SPEEDREAD') {
+  if (message?.type === 'SR_OPEN_BRISKREAD') {
     (async () => {
       try {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        await openSpeedRead(tab || null);
+        await openBriskRead(tab || null);
         sendResponse({ ok: true });
       } catch (e) {
         sendResponse({ ok: false, error: e.message });

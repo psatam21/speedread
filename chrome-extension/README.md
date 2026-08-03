@@ -1,7 +1,7 @@
-# SpeedRead Chrome Extension (production)
+# BriskRead Chrome Extension (production)
 
 **Version:** see `manifest.json`  
-**Store-ready package:** `npm run ext:pack` → `release/speedread-extension-v*.zip`
+**Store-ready package:** `npm run ext:pack` → `release/briskread-extension-v*.zip`
 
 ## Features
 
@@ -26,26 +26,26 @@
 npm run ext:pack
 ```
 
-Upload `release/speedread-extension-vX.Y.Z.zip` in the [Developer Dashboard](https://chrome.google.com/webstore/devconsole).
+Upload `release/briskread-extension-vX.Y.Z.zip` in the [Developer Dashboard](https://chrome.google.com/webstore/devconsole).
 
 ### Store listing checklist
 
 | Field | Value |
 |--------|--------|
-| Name | SpeedRead — Speed Reader for Chrome |
+| Name | BriskRead — Speed Reader for Chrome |
 | Summary | Speed-read any webpage; optional Lifetime Premium login |
 | Category | Productivity |
 | Language | English |
-| Homepage | https://speedread-web.com/extension |
-| Privacy policy | https://speedread-web.com/privacy |
+| Homepage | https://briskread.com/extension |
+| Privacy policy | https://briskread.com/privacy |
 | Single purpose | Speed-read web pages with optional paid license |
-| Permissions justification | activeTab/scripting: extract on user action; storage: license; contextMenus: shortcut; host speedread-web.com: activate + open reader |
+| Permissions justification | activeTab/scripting: extract on user action; storage: license; contextMenus: shortcut; host briskread.com: activate + open reader |
 
 Screenshots: capture extension popup, local RSVP reader and Options explanation.
 
 ## Production requirements
 
-1. Site deployed at `https://speedread-web.com` with Pages Functions
+1. Site deployed at `https://briskread.com` with Pages Functions
 2. KV binding `LICENSES` + `JWT_SECRET` + Dodo env for purchases
 3. Content script matches only production origin (see `manifest.json`)
 

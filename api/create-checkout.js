@@ -41,7 +41,7 @@ export default async function handler(request, response) {
     body: JSON.stringify({
       product_cart: [{ product_id: process.env.DODO_PRODUCT_ID, quantity: 1 }],
       return_url: `${origin}/?checkout=return`,
-      metadata: { speedread_user_id: user.id },
+      metadata: { briskread_user_id: user.id },
     }),
   });
 

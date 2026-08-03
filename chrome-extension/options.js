@@ -2,7 +2,7 @@
 
 const defaults = globalThis.SR_DEFAULTS || {
   API_BASE: '',
-  APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+  APP_ORIGIN: 'https://briskread.com',
 };
 
 const apiEl = document.getElementById('api-base');

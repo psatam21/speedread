@@ -3,14 +3,14 @@ import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout
-  title="Your Account | SpeedRead"
-  description="Sign in to manage your SpeedRead account, reading totals, and Lifetime Premium access."
+  title="Your Account | BriskRead"
+  description="Sign in to manage your BriskRead account, reading totals, and Lifetime Premium access."
   noindex={true}
 >
   <section class="account-page" aria-labelledby="account-page-title">
     <div class="container account-shell">
       <div class="account-intro">
-        <p class="account-kicker">Your SpeedRead account</p>
+        <p class="account-kicker">Your BriskRead account</p>
         <h1 id="account-page-title">Your reading progress, wherever you open it.</h1>
         <p class="account-lede">Sign in to keep Lifetime Premium and your reading totals connected across devices. The documents you import stay in your browser.</p>
 
@@ -54,7 +54,7 @@ import Layout from '../layouts/Layout.astro';
 
           <div class="account-session hidden" id="account-signed-in">
             <p class="account-session-label">Signed in</p>
-            <h2 id="account-identity">SpeedRead member</h2>
+            <h2 id="account-identity">BriskRead member</h2>
             <div class="account-plan-row">
               <span>Current plan</span>
               <strong id="account-plan">Free</strong>
@@ -66,7 +66,7 @@ import Layout from '../layouts/Layout.astro';
           </div>
         </form>
 
-        <p class="account-footnote">Authentication is handled by Supabase. SpeedRead never sees your password.</p>
+        <p class="account-footnote">Authentication is handled by Supabase. BriskRead never sees your password.</p>
       </div>
     </div>
   </section>
@@ -95,7 +95,7 @@ import Layout from '../layouts/Layout.astro';
       signedIn?.classList.toggle('hidden', !user);
       if (!user) return;
 
-      if (identity) identity.textContent = user.email || 'SpeedRead member';
+      if (identity) identity.textContent = user.email || 'BriskRead member';
       if (plan) plan.textContent = premium ? 'Lifetime Premium' : 'Free';
       if (sessionCopy) sessionCopy.textContent = premium
         ? 'Lifetime Premium is active on this account.'
@@ -109,13 +109,13 @@ import Layout from '../layouts/Layout.astro';
       }
     };
 
-    globalThis.addEventListener('speedread:account', (event) => {
+    globalThis.addEventListener('briskread:account', (event) => {
       renderAccount((event as CustomEvent).detail);
     });
 
     form?.addEventListener('submit', async (event) => {
       event.preventDefault();
-      const supabase = (globalThis as any).speedreadSupabase;
+      const supabase = (globalThis as any).briskreadSupabase;
       if (!supabase) return setStatus('Account service is not configured yet.', true);
       setStatus('Signing in...');
       const { error } = await supabase.auth.signInWithPassword({
@@ -127,7 +127,7 @@ import Layout from '../layouts/Layout.astro';
 
     document.getElementById('account-signup')?.addEventListener('click', async () => {
       if (!form?.reportValidity()) return;
-      const supabase = (globalThis as any).speedreadSupabase;
+      const supabase = (globalThis as any).briskreadSupabase;
       if (!supabase) return setStatus('Account service is not configured yet.', true);
       setStatus('Creating your account...');
       const { data, error } = await supabase.auth.signUp({
@@ -139,7 +139,7 @@ import Layout from '../layouts/Layout.astro';
     });
 
     document.getElementById('account-signout')?.addEventListener('click', async () => {
-      const supabase = (globalThis as any).speedreadSupabase;
+      const supabase = (globalThis as any).briskreadSupabase;
       if (!supabase) return;
       await supabase.auth.signOut();
       window.location.reload();

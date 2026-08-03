@@ -73,7 +73,7 @@
     return chunks;
   };
 
-  root.SpeedReadReaderCore = {
+  root.BriskReadReaderCore = {
     getOrpIndex,
     getPhraseParts,
     getFlowContext,

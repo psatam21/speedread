@@ -1,10 +1,10 @@
 /** @type {{ API_BASE: string, APP_ORIGIN: string, PREMIUM_AVAILABLE: boolean, MAX_DEVICES: number, PRODUCT_NAME: string }} */
 const SR_DEFAULTS = {
   API_BASE: '',
-  APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+  APP_ORIGIN: 'https://briskread.com',
   PREMIUM_AVAILABLE: false,
   MAX_DEVICES: 5,
-  PRODUCT_NAME: 'SpeedRead',
+  PRODUCT_NAME: 'BriskRead',
 };
 
 // Overridden at runtime from chrome.storage.sync (options page)

@@ -1,13 +1,13 @@
 {
   "manifest_version": 3,
-  "name": "SpeedRead — Speed Reader for Chrome",
-  "short_name": "SpeedRead",
+  "name": "BriskRead — Speed Reader for Chrome",
+  "short_name": "BriskRead",
   "version": "1.4.0",
   "description": "Speed-read selected text or any webpage in a private RSVP popup.",
-  "homepage_url": "https://speedread-orcin.vercel.app/extension",
+  "homepage_url": "https://briskread.com/extension",
   "minimum_chrome_version": "116",
   "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
-  "host_permissions": ["https://speedread-orcin.vercel.app/*"],
+  "host_permissions": ["https://briskread.com/*"],
   "optional_host_permissions": [
     "http://localhost:4321/*",
     "http://127.0.0.1:4321/*",
@@ -18,13 +18,13 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://speedread-orcin.vercel.app/*"],
+      "matches": ["https://briskread.com/*"],
       "js": ["content-handoff.js"],
       "run_at": "document_start"
     }
   ],
   "action": {
-    "default_title": "SpeedRead",
+    "default_title": "BriskRead",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

@@ -1,8 +1,8 @@
-# SpeedRead
+# BriskRead
 
 Free online **speed reader** — RSVP flash reading, bionic text, PDF/EPUB upload, image OCR, synced TTS, and optional Gemini AI. Built as an Astro micro-tool for Cloudflare Pages + AdSense.
 
-**Live target:** [https://speedread-web.com](https://speedread-web.com)
+**Live target:** [https://briskread.com](https://briskread.com)
 
 ## Stack
 
@@ -48,4 +48,4 @@ Load `chrome-extension/` unpacked (see `chrome-extension/README.md`).
 | `src/pages/rsvp-reader.astro` etc. | SEO satellite pages |
 | `src/components/AdSlot.astro` | AdSense units |
 | `functions/api/*` | extract, checkout, license, gemini |
-| `chrome-extension/` | SpeedRead Sync |
+| `chrome-extension/` | BriskRead Sync |

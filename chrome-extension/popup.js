@@ -28,7 +28,7 @@ const els = {
 async function getOrigins() {
   const defaults = globalThis.SR_DEFAULTS || {
     API_BASE: '',
-    APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+    APP_ORIGIN: 'https://briskread.com',
     PREMIUM_AVAILABLE: false,
   };
   const sync = await chrome.storage.sync.get(['api_base', 'app_origin']);
@@ -258,7 +258,7 @@ async function handleLogin() {
     const msg =
       err?.name === 'AbortError'
         ? 'Request timed out. Check your connection.'
-        : 'Could not reach SpeedRead. Check network or Options → API base.';
+        : 'Could not reach BriskRead. Check network or Options → API base.';
     setStatus(els.loginStatus, msg, 'error');
   } finally {
     els.btnLogin.disabled = false;
@@ -341,7 +341,7 @@ async function handleRevoke(deviceId) {
   }
 }
 
-async function openSpeedRead(withArticle) {
+async function openBriskRead(withArticle) {
   setStatus(els.actionStatus, withArticle ? 'Opening reader…' : 'Opening app…');
   els.btnRead.disabled = true;
   try {
@@ -373,7 +373,7 @@ async function openSpeedRead(withArticle) {
       return;
     }
 
-    const response = await chrome.runtime.sendMessage({ type: 'SR_OPEN_SPEEDREAD' });
+    const response = await chrome.runtime.sendMessage({ type: 'SR_OPEN_BRISKREAD' });
     if (response && response.ok === false) {
       setStatus(els.actionStatus, response.error || 'Failed to open.', 'error');
       return;
@@ -381,7 +381,7 @@ async function openSpeedRead(withArticle) {
     setStatus(els.actionStatus, 'Opened.', 'ok');
     window.close();
   } catch (err) {
-    setStatus(els.actionStatus, err.message || 'Failed to open SpeedRead.', 'error');
+    setStatus(els.actionStatus, err.message || 'Failed to open BriskRead.', 'error');
   } finally {
     els.btnRead.disabled = false;
   }
@@ -431,8 +431,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const btn = e.target.closest('.btn-revoke');
     if (btn) handleRevoke(btn.getAttribute('data-device-id'));
   });
-  els.btnRead.addEventListener('click', () => openSpeedRead(true));
-  els.btnOpenApp.addEventListener('click', () => openSpeedRead(false));
+  els.btnRead.addEventListener('click', () => openBriskRead(true));
+  els.btnOpenApp.addEventListener('click', () => openBriskRead(false));
   if (els.linkOptions) {
     els.linkOptions.addEventListener('click', (e) => {
       e.preventDefault();

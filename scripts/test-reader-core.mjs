@@ -9,7 +9,7 @@ const {
   getPlaybackStart,
   getIndexFromPercent,
   chunkForTTS,
-} = globalThis.SpeedReadReaderCore;
+} = globalThis.BriskReadReaderCore;
 assert.equal(getOrpIndex('horizontal'), 3);
 assert.deepEqual(getPhraseParts(['keep', 'the', 'meaning'], 1), {
   left: 'keep t',

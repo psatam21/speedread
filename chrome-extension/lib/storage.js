@@ -51,8 +51,8 @@ async function srGetAuth() {
 async function srGetOrigins() {
   const sync = await chrome.storage.sync.get([SR_KEYS.apiBase, SR_KEYS.appOrigin]);
   const defaults = globalThis.SR_DEFAULTS || {
-    API_BASE: 'https://speedread-orcin.vercel.app',
-    APP_ORIGIN: 'https://speedread-orcin.vercel.app',
+    API_BASE: 'https://briskread.com',
+    APP_ORIGIN: 'https://briskread.com',
   };
   return {
     API_BASE: (sync[SR_KEYS.apiBase] || defaults.API_BASE).replace(/\/$/, ''),

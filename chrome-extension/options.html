@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>SpeedRead Options</title>
+    <title>BriskRead Options</title>
     <link rel="stylesheet" href="popup.css" />
     <style>
       body {
@@ -22,7 +22,7 @@
       <header class="header">
         <img src="icons/icon48.png" class="logo" alt="" width="36" height="36" />
         <div class="header-text">
-          <h1>SpeedRead Options</h1>
+          <h1>BriskRead Options</h1>
           <p>Reader and developer preferences</p>
         </div>
       </header>
@@ -38,12 +38,12 @@
       <details class="panel">
         <summary><strong>Developer endpoints</strong></summary>
         <p class="hint">
-          Production defaults point at the live SpeedRead app. Change only for local development.
+          Production defaults point at the live BriskRead app. Change only for local development.
         </p>
         <label for="api-base">API base (license activate)</label>
-        <input type="url" id="api-base" placeholder="https://speedread-orcin.vercel.app" spellcheck="false" />
+        <input type="url" id="api-base" placeholder="https://briskread.com" spellcheck="false" />
         <label for="app-origin" style="margin-top: 10px">App origin (reader UI)</label>
-        <input type="url" id="app-origin" placeholder="https://speedread-orcin.vercel.app" spellcheck="false" />
+        <input type="url" id="app-origin" placeholder="https://briskread.com" spellcheck="false" />
         <div class="row" style="margin-top: 12px">
           <button type="button" class="btn btn-primary" id="btn-save">Save</button>
           <button type="button" class="btn btn-secondary" id="btn-reset">Reset defaults</button>
@@ -55,8 +55,8 @@
         <h2>Privacy</h2>
         <p class="hint">
           Article text is extracted and read locally in the extension. The website opens only when you explicitly
-          choose <strong>Open SpeedRead app</strong>. License keys stay in extension storage. See
-          <a href="https://speedread-orcin.vercel.app/privacy" target="_blank" rel="noopener">privacy policy</a>.
+          choose <strong>Open BriskRead app</strong>. License keys stay in extension storage. See
+          <a href="https://briskread.com/privacy" target="_blank" rel="noopener">privacy policy</a>.
         </p>
       </section>
     </div>
