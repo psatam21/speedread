@@ -2,8 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Online Speed Reader — RSVP, Bionic & TTS | BriskRead";
-const pageDescription = "Free online speed reader with flash, phrase and focus modes, bionic text, PDF and EPUB import, OCR, and synced speech. No account required.";
+const pageTitle = "Speed Reader with Audio Sync — RSVP + TTS | BriskRead";
+const pageDescription = "Free dual-channel speed reader: RSVP flash reading locked to speech, plus Focus, Bionic, PDF/EPUB import, and OCR. Eyes and ears on the same stream — no account required.";
 const siteUrl = new URL('/', Astro.site || Astro.url).href;
 const webAppSchema = {
   '@context': 'https://schema.org',
@@ -20,7 +20,7 @@ const webAppSchema = {
     priceCurrency: 'USD',
     offerCount: '2',
   },
-  description: 'Free online speed reader with RSVP, bionic reading, PDF and EPUB import, and text-to-speech.',
+  description: 'Dual-channel speed reader with RSVP flash, synced text-to-speech, bionic reading, and local PDF/EPUB import.',
 };
 ---
 
@@ -37,23 +37,37 @@ const webAppSchema = {
       <!-- Hero: polished two-column (no long-scroll theater) -->
       <header class="hero">
         <div class="hero-copy">
-          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Local-first reading instrument</p>
+          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Dual-channel speed reader</p>
           <h1 class="hero-title">
-            <span class="hero-line"><span class="hero-line-inner">Finish the backlog.</span></span>
-            <span class="hero-line"><span class="hero-line-inner">Read it once.</span></span>
+            <span class="hero-line"><span class="hero-line-inner">See it. Hear it.</span></span>
+            <span class="hero-line"><span class="hero-line-inner">Finish it.</span></span>
           </h1>
           <p class="hero-sub">
-            RSVP speed reading that gets you through the pile<br />without a second pass.
+            Most speed readers only flash words. BriskRead locks <strong>RSVP to audio</strong> so your eyes and ears track the same stream — then switch to Focus, Bionic, or full page when the material needs more context.
           </p>
+          <ul class="hero-pitch" aria-label="Why BriskRead">
+            <li>
+              <span class="hero-pitch-tag">Audio Sync</span>
+              <span>Speech and flash move together — the feature almost every RSVP tool skips.</span>
+            </li>
+            <li>
+              <span class="hero-pitch-tag">Six modes</span>
+              <span>Flash, Phrase, Focus, Flow, Bionic, Page on one document.</span>
+            </li>
+            <li>
+              <span class="hero-pitch-tag">Your files</span>
+              <span>PDF, EPUB, paste, OCR — parsed in your browser, not uploaded for storage.</span>
+            </li>
+          </ul>
           <div class="hero-actions">
-            <a class="btn btn-primary" href="#importer-card">Try it with your text</a>
-            <button class="btn btn-secondary" id="btn-hero-demo" type="button">Try a sample text</button>
+            <a class="btn btn-primary" href="#importer-card">Start with your text</a>
+            <button class="btn btn-secondary" id="btn-hero-demo" type="button">Hear a sample</button>
           </div>
-          <p class="hero-start-note">No account required. Switch reading modes without reloading your document.</p>
+          <p class="hero-start-note">Free to try · No account required · Turn on <strong>Audio Sync</strong> in the reader to pair speech with Flash mode</p>
           <ul class="hero-trust" aria-label="Product benefits">
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Zm0 6v4m0 3h.01" /></svg><span><strong>100% private</strong><small>Your text stays<br />in your browser.</small></span></li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z" /></svg><span><strong>Up to 3x faster</strong><small>Read more in less time<br />without losing meaning.</small></span></li>
-            <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="m12 4 1.4 2.6L16 8l-2.6 1.4L12 12l-1.4-2.6L8 8l2.6-1.4L12 4Z" /></svg><span><strong>Better focus</strong><small>Fewer distractions.<br />More comprehension.</small></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span><strong>Audio Sync TTS</strong><small>Eyes + ears on the<br />same word stream.</small></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z" /></svg><span><strong>Up to 3× pace</strong><small>Clear the pile faster<br />without a second pass.</small></span></li>
+            <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.5 3 8 7 10 4-2 7-5.5 7-10V6l-7-3Z"/><path d="M9 12l2 2 4-4"/></svg><span><strong>Private by default</strong><small>Files stay local.<br />You own the text.</small></span></li>
           </ul>
         </div>
         <div class="hero-stage">
@@ -96,24 +110,24 @@ const webAppSchema = {
       <div class="motion-marquee" aria-hidden="true">
         <div class="marquee-track">
           <div class="marquee-group">
+            <span><i class="marquee-dot"></i>Audio Sync · eyes + ears</span>
             <span><i class="marquee-dot"></i>Flash RSVP</span>
+            <span><i class="marquee-dot"></i>Focus · fixed eye line</span>
             <span><i class="marquee-dot"></i>Bionic reading</span>
             <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
-            <span><i class="marquee-dot"></i>Audio Sync TTS</span>
+            <span><i class="marquee-dot"></i>Dual-channel focus</span>
             <span><i class="marquee-dot"></i>Chrome extension</span>
-            <span><i class="marquee-dot"></i>100% private</span>
-            <span><i class="marquee-dot"></i>No account required</span>
-            <span><i class="marquee-dot"></i>Up to 3× faster</span>
+            <span><i class="marquee-dot"></i>Private · local-first</span>
           </div>
-          <div class="marquee-group">
+          <div class="marquee-group" aria-hidden="true">
+            <span><i class="marquee-dot"></i>Audio Sync · eyes + ears</span>
             <span><i class="marquee-dot"></i>Flash RSVP</span>
+            <span><i class="marquee-dot"></i>Focus · fixed eye line</span>
             <span><i class="marquee-dot"></i>Bionic reading</span>
             <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
-            <span><i class="marquee-dot"></i>Audio Sync TTS</span>
+            <span><i class="marquee-dot"></i>Dual-channel focus</span>
             <span><i class="marquee-dot"></i>Chrome extension</span>
-            <span><i class="marquee-dot"></i>100% private</span>
-            <span><i class="marquee-dot"></i>No account required</span>
-            <span><i class="marquee-dot"></i>Up to 3× faster</span>
+            <span><i class="marquee-dot"></i>Private · local-first</span>
           </div>
         </div>
       </div>
@@ -684,7 +698,7 @@ const webAppSchema = {
           <ul>
             <li><strong>Six modes</strong> — Flash, Phrase, Focus, Flow, Bionic, Page</li>
             <li><strong>Import</strong> — paste, PDF, EPUB, TXT, on-device OCR, extract URL</li>
-            <li><strong>Audio sync</strong> — Web Speech TTS with the visual stream</li>
+            <li><strong>Audio Sync (differentiators)</strong> — TTS locked to the visual flash so eyes and ears share one stream</li>
             <li><strong>AI workspace</strong> — summary &amp; chat with your own Gemini key (BYOK)</li>
             <li><strong>Stats dashboard</strong> — words, time, streak, share cards</li>
             <li><strong>Profiles</strong> — named slots you fill with your own speed/mode</li>
@@ -2692,8 +2706,17 @@ const webAppSchema = {
       });
 
       document.getElementById('btn-hero-demo')?.addEventListener('click', () => {
-        document.getElementById('btn-demo').click();
-        document.getElementById('btn-load-paste').click();
+        document.getElementById('btn-demo')?.click();
+        document.getElementById('btn-load-paste')?.click();
+        // Pitch is dual-channel — turn Audio Sync on so the sample is heard + seen
+        setTimeout(() => {
+          if (!state.ttsActive) {
+            document.getElementById('btn-rsvp-tts')?.click();
+          }
+          if (!state.isPlaying) {
+            document.getElementById('btn-rsvp-play')?.click();
+          }
+        }, 120);
       });
 
       const previewWords = ['Finish', 'more', 'reading', 'with', 'less', 'friction', 'and', 'keep', 'your', 'focus', 'from', 'first', 'page', 'to', 'final', 'point'];
@@ -4036,7 +4059,44 @@ const webAppSchema = {
       color: var(--color-text-muted);
       font-size: clamp(0.95rem, 1.35vw, 1.08rem);
       line-height: 1.55;
-      max-width: 34ch;
+      max-width: 38rem;
+      margin: 0 0 1rem;
+    }
+    .hero-sub strong {
+      color: var(--color-text);
+      font-weight: 700;
+    }
+    .hero-pitch {
+      list-style: none;
+      margin: 0 0 0.25rem;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      max-width: 38rem;
+    }
+    .hero-pitch li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.55rem 0.7rem;
+      align-items: baseline;
+      font-size: 0.86rem;
+      line-height: 1.45;
+      color: var(--color-text-muted);
+    }
+    .hero-pitch-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.16rem 0.48rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--color-primary) 28%, transparent);
+      color: var(--color-primary);
+      font-size: 0.66rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
     .hero-actions {
       display: flex;
@@ -4047,6 +4107,7 @@ const webAppSchema = {
     }
     .hero-actions .btn { min-height: 2.55rem; padding-inline: 1.15rem; }
     .hero-start-note { margin: 0.65rem 0 0; color: var(--color-text-subtle); font-size: 0.76rem; }
+    .hero-start-note strong { color: var(--color-primary); font-weight: 700; }
     .hero-trust {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -4558,11 +4619,12 @@ const webAppSchema = {
       .hero { display: flex; flex-direction: column; margin-bottom: 3rem; padding-top: 2.75rem; }
       .hero-copy { display: contents; }
       .hero-kicker { margin-bottom: 1.25rem; }
-      .hero h1.hero-title, .hero-title { max-width: 11ch; font-size: clamp(3rem, 14vw, 4.5rem); line-height: 0.91; }
-      .hero-sub { margin-bottom: 0; }
+      .hero h1.hero-title, .hero-title { max-width: 12ch; font-size: clamp(2.75rem, 12vw, 4.25rem); line-height: 0.92; }
+      .hero-sub { margin-bottom: 0.85rem; max-width: none; }
       .hero-sub br { display: none; }
+      .hero-pitch { order: 1; margin: 0 0 0.5rem; }
       .hero-actions { margin-top: 1.25rem; }
-      .hero-start-note { margin-bottom: 2rem; }
+      .hero-start-note { margin-bottom: 1.25rem; }
       .hero-reader { order: 2; min-height: 430px; transform: none; border-radius: 12px; }
       .hero-trust li + li { border-left: 0; }
       .hero-preview-stage { min-height: 200px; }
