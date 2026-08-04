@@ -166,58 +166,85 @@ const marqueeFeatures = [
         </div>
       </section>
 
-      <!-- ---------------- WORKSPACE: library / queue / profiles ---------------- -->
-      <section class="glass app-card mb-6" id="workspace-card" aria-labelledby="workspace-title">
-        <div class="workspace-head">
+      <!-- ---------------- WORKSPACE: library / queue (simple) · advanced tucked away ---------------- -->
+      <section class="workspace-shell mb-6" id="workspace-card" aria-labelledby="workspace-title">
+        <div class="workspace-intro">
           <div>
-            <h2 id="workspace-title">Your reading workspace</h2>
-            <p class="muted">Library, this week’s queue, and mode profiles — saved on this device.</p>
+            <p class="section-label">Continue later</p>
+            <h2 id="workspace-title">Your library &amp; queue</h2>
+            <p class="workspace-lede">Documents you open can save here. Resume when you’re ready — sign in to sync across devices.</p>
           </div>
-          <p class="workspace-queue-summary muted" id="queue-summary" role="status">Queue empty</p>
-        </div>
-
-        <div class="profile-bar" role="group" aria-label="Reading profiles">
-          <span class="profile-bar-label">Profile slots</span>
-          <div class="profile-pills" id="profile-pills"></div>
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-save-profile" title="Save current mode, speed, and font into the selected profile">Save current settings</button>
-          <p class="profile-hint muted" id="profile-hint">Profiles start empty. Pick mode/speed yourself, then save into a named slot. Sign in to sync library &amp; queue across devices.</p>
-          <p class="workspace-sync-status muted" id="workspace-sync-status" role="status"></p>
-        </div>
-
-        <div class="retention-settings-bar" role="group" aria-label="Check-in settings">
-          <span class="profile-bar-label">Check-ins</span>
-          <label class="retention-toggle">
-            <input type="radio" name="retention-mode" value="auto" id="retention-mode-auto" />
-            Auto every <strong>1000</strong> words
-          </label>
-          <label class="retention-toggle">
-            <input type="radio" name="retention-mode" value="manual" id="retention-mode-manual" />
-            Manual only
-          </label>
-          <p class="profile-hint muted">MCQs only — pulled from the text you just read. No free-writing.</p>
+          <div class="workspace-status-pills">
+            <span class="workspace-pill" id="queue-summary" role="status">Queue empty</span>
+            <span class="workspace-pill workspace-pill-muted" id="workspace-sync-status" role="status"></span>
+          </div>
         </div>
 
         <div class="workspace-grid">
-          <div class="workspace-panel">
+          <article class="workspace-panel glass">
             <div class="workspace-panel-head">
-              <h3>Library</h3>
-              <span class="muted" id="library-cap-hint"></span>
+              <div>
+                <h3>Saved</h3>
+                <p class="workspace-panel-sub" id="library-cap-hint"></p>
+              </div>
             </div>
             <ul class="workspace-list" id="library-list" aria-label="Saved documents"></ul>
-            <p class="workspace-empty muted" id="library-empty">No saved docs yet. Load text below and it appears here so you can resume later.</p>
-          </div>
-          <div class="workspace-panel">
+            <div class="workspace-empty" id="library-empty">
+              <strong>Nothing saved yet</strong>
+              <p>Load text below — turn on “Save to library” if you want it here for later.</p>
+            </div>
+          </article>
+          <article class="workspace-panel glass">
             <div class="workspace-panel-head">
-              <h3>This week’s queue</h3>
+              <div>
+                <h3>Up next</h3>
+                <p class="workspace-panel-sub">This week’s reading list</p>
+              </div>
               <div class="workspace-panel-actions">
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-export-queue" title="Export queue as Markdown for any AI">Export MD</button>
-                <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-done-queue">Clear done</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-export-queue" title="Export queue as Markdown">Export</button>
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-clear-done-queue">Clear done</button>
               </div>
             </div>
             <ul class="workspace-list" id="queue-list" aria-label="Reading queue"></ul>
-            <p class="workspace-empty muted" id="queue-empty">Add docs from the library or importer to plan a backlog sprint.</p>
-          </div>
+            <div class="workspace-empty" id="queue-empty">
+              <strong>Queue is empty</strong>
+              <p>Optional: add docs with “Add to queue” when you import, or from Saved.</p>
+            </div>
+          </article>
         </div>
+
+        <details class="workspace-advanced glass">
+          <summary>
+            <span>Optional settings</span>
+            <small>Profiles &amp; check-ins — skip if you’re just trying the reader</small>
+          </summary>
+          <div class="workspace-advanced-body">
+            <div class="workspace-adv-block" role="group" aria-label="Reading profiles">
+              <div class="workspace-adv-copy">
+                <h4>Quick presets</h4>
+                <p id="profile-hint">Save your current speed and mode under a name. Totally optional.</p>
+              </div>
+              <div class="profile-pills" id="profile-pills"></div>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-save-profile" title="Save current mode, speed, and font into the selected profile">Save current settings</button>
+            </div>
+            <div class="workspace-adv-block" role="group" aria-label="Check-in settings">
+              <div class="workspace-adv-copy">
+                <h4>Comprehension check-ins</h4>
+                <p>Short multiple-choice questions from the text you just read.</p>
+              </div>
+              <div class="retention-segment" role="radiogroup" aria-label="Check-in mode">
+                <label class="retention-seg">
+                  <input type="radio" name="retention-mode" value="auto" id="retention-mode-auto" />
+                  <span>Auto · every 1,000 words</span>
+                </label>
+                <label class="retention-seg">
+                  <input type="radio" name="retention-mode" value="manual" id="retention-mode-manual" />
+                  <span>Manual only</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </details>
       </section>
 
       <!-- ---------------- READER SCREEN ---------------- -->
@@ -1605,12 +1632,12 @@ const marqueeFeatures = [
           return `<li class="workspace-item" data-lib-id="${item.id}">
             <div class="workspace-item-main">
               <strong>${safeTitle}</strong>
-              <span class="muted">${(item.wordCount || 0).toLocaleString()} words · ${pct}% · ${item.progress?.mode || 'rsvp'}</span>
+              <span class="muted">${(item.wordCount || 0).toLocaleString()} words · ${pct}% done</span>
             </div>
             <div class="workspace-item-actions">
-              <button type="button" class="btn btn-primary btn-sm" data-action="open-lib">Resume</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-action="queue-lib">Queue</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-action="del-lib" title="Delete">✕</button>
+              <button type="button" class="btn btn-primary btn-sm" data-action="open-lib">Open</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-action="queue-lib">Up next</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="del-lib" title="Remove">✕</button>
             </div>
           </li>`;
         }).join('');
@@ -1629,7 +1656,7 @@ const marqueeFeatures = [
             <div class="workspace-item-actions">
               <button type="button" class="btn btn-primary btn-sm" data-action="open-queue" ${entry.libraryId ? '' : 'disabled'}>Open</button>
               <button type="button" class="btn btn-secondary btn-sm" data-action="toggle-queue">${done ? 'Undo' : 'Done'}</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-action="del-queue" title="Remove">✕</button>
+              <button type="button" class="btn btn-ghost btn-sm" data-action="del-queue" title="Remove">✕</button>
             </div>
           </li>`;
         }).join('');
@@ -1645,12 +1672,12 @@ const marqueeFeatures = [
       const active = api.getActiveProfile();
       const activeId = active?.id || null;
       wrap.innerHTML = api.listProfiles().map((p) =>
-        `<button type="button" class="profile-pill${p.id === activeId ? ' is-active' : ''}${p.saved ? ' is-saved' : ''}" data-profile="${p.id}" title="${(p.description || '').replace(/"/g, '')}">${p.label}${p.saved ? '' : ' ·'}</button>`
+        `<button type="button" class="profile-pill${p.id === activeId ? ' is-active' : ''}${p.saved ? ' is-saved' : ''}" data-profile="${p.id}" title="${(p.description || '').replace(/"/g, '')}">${p.label}</button>`
       ).join('');
       if (hint) {
-        hint.textContent = active
-          ? `${active.label}: ${active.description}`
-          : 'No profile selected. Set mode/WPM as you like, select a slot, then Save current settings.';
+        hint.textContent = active?.settings
+          ? `${active.label} is set to your saved speed/mode. Click Save current settings to update it.`
+          : 'Optional: pick a name, set speed/mode in the reader, then save.';
       }
       // Retention radios
       const settings = api.getSettings();
@@ -5284,83 +5311,290 @@ const marqueeFeatures = [
       letter-spacing: 0.04em;
     }
 
-    /* Workspace: library / queue / profiles */
-    .workspace-head {
+    /* Workspace — matches marketing sections, not a settings console */
+    .workspace-shell {
+      margin-top: 0.5rem;
+    }
+    .workspace-intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 1rem 1.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.15rem;
+    }
+    .workspace-intro h2 {
+      margin: 0 0 0.35rem;
+      font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+      letter-spacing: -0.03em;
+      font-weight: 700;
+    }
+    .workspace-lede {
+      margin: 0;
+      max-width: 36rem;
+      color: var(--color-text-muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+    .workspace-status-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: flex-end;
+    }
+    .workspace-pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.85rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card);
+      color: var(--color-text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .workspace-pill:empty { display: none; }
+    .workspace-pill-muted {
+      color: var(--color-text-subtle);
+      background: transparent;
+    }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.9rem;
+    }
+    @media (max-width: 800px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+      .workspace-intro { align-items: flex-start; }
+      .workspace-status-pills { justify-content: flex-start; }
+    }
+    .workspace-panel {
+      padding: 1.15rem 1.2rem 1.2rem;
+      border-radius: var(--radius-xl);
+      min-height: 12rem;
+      display: flex;
+      flex-direction: column;
+    }
+    .workspace-panel-head {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 1rem;
-      flex-wrap: wrap;
-      margin-bottom: 1rem;
+      gap: 0.65rem;
+      margin-bottom: 0.85rem;
     }
-    .workspace-head h2 { margin: 0 0 0.25rem; font-size: 1.25rem; }
-    .workspace-queue-summary { margin: 0; font-size: 0.85rem; }
-    .profile-bar {
+    .workspace-panel-head h3 {
+      margin: 0;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .workspace-panel-sub {
+      margin: 0.2rem 0 0;
+      color: var(--color-text-subtle);
+      font-size: 0.75rem;
+      line-height: 1.35;
+    }
+    .workspace-panel-actions {
       display: flex;
       flex-wrap: wrap;
+      gap: 0.25rem;
+    }
+    .btn-ghost {
+      border: 0;
+      background: transparent;
+      color: var(--color-text-muted);
+      font-weight: 600;
+      box-shadow: none;
+    }
+    .btn-ghost:hover {
+      color: var(--color-primary);
+      background: var(--color-primary-muted);
+    }
+    .workspace-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 260px;
+      overflow: auto;
+      flex: 1;
+    }
+    .workspace-item {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 0.5rem 0.75rem;
-      margin-bottom: 1.1rem;
-      padding-bottom: 1rem;
+      gap: 0.65rem;
+      padding: 0.7rem 0.8rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--color-bg) 55%, var(--color-bg-card));
+      transition: border-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+    }
+    .workspace-item:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+    }
+    .workspace-item.is-done { opacity: 0.5; }
+    .workspace-item-main {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-width: 0;
+      flex: 1;
+    }
+    .workspace-item-main strong {
+      font-size: 0.88rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .workspace-item-main .muted { font-size: 0.72rem; color: var(--color-text-subtle); }
+    .workspace-item-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      flex-shrink: 0;
+    }
+    .workspace-item-actions .btn {
+      min-height: 2rem;
+      padding-inline: 0.65rem;
+      font-size: 0.75rem;
+    }
+    .workspace-empty {
+      margin-top: auto;
+      padding: 1.1rem 0.25rem 0.35rem;
+      text-align: left;
+    }
+    .workspace-empty.hidden { display: none; }
+    .workspace-empty strong {
+      display: block;
+      font-size: 0.88rem;
+      font-weight: 650;
+      margin-bottom: 0.25rem;
+    }
+    .workspace-empty p {
+      margin: 0;
+      color: var(--color-text-subtle);
+      font-size: 0.8rem;
+      line-height: 1.45;
+      max-width: 28ch;
+    }
+
+    .workspace-advanced {
+      margin-top: 0.9rem;
+      border-radius: var(--radius-xl);
+      padding: 0;
+      overflow: hidden;
+    }
+    .workspace-advanced > summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      padding: 0.95rem 1.2rem;
+      user-select: none;
+    }
+    .workspace-advanced > summary::-webkit-details-marker { display: none; }
+    .workspace-advanced > summary span {
+      font-size: 0.9rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+    .workspace-advanced > summary small {
+      color: var(--color-text-subtle);
+      font-size: 0.78rem;
+      font-weight: 500;
+    }
+    .workspace-advanced[open] > summary {
       border-bottom: 1px solid var(--color-border);
     }
-    .profile-bar-label {
-      font-size: 0.75rem;
+    .workspace-advanced-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem 1.25rem;
+      padding: 1.1rem 1.2rem 1.25rem;
+    }
+    @media (max-width: 800px) {
+      .workspace-advanced-body { grid-template-columns: 1fr; }
+    }
+    .workspace-adv-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7rem;
+      align-items: flex-start;
+    }
+    .workspace-adv-copy h4 {
+      margin: 0 0 0.25rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: var(--color-text-subtle);
+    }
+    .workspace-adv-copy p {
+      margin: 0;
+      color: var(--color-text-muted);
+      font-size: 0.8rem;
+      line-height: 1.45;
     }
     .profile-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
     .profile-pill {
       border: 1px solid var(--color-border);
-      background: var(--color-surface, transparent);
+      background: var(--color-bg-card);
       color: var(--color-text);
       border-radius: 999px;
-      padding: 0.35rem 0.85rem;
-      font-size: 0.82rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
       font-weight: 600;
       cursor: pointer;
+      transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .profile-pill:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
     }
     .profile-pill.is-active {
       background: var(--color-primary);
       border-color: var(--color-primary);
       color: #fff;
     }
-    .profile-hint { margin: 0; flex: 1 1 100%; font-size: 0.8rem; }
-    .workspace-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+    .profile-pill.is-saved:not(.is-active) {
+      border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+      background: var(--color-primary-muted);
     }
-    @media (max-width: 800px) {
-      .workspace-grid { grid-template-columns: 1fr; }
-    }
-    .workspace-panel-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 0.5rem;
-      margin-bottom: 0.65rem;
-    }
-    .workspace-panel-head h3 { margin: 0; font-size: 0.95rem; }
-    .workspace-panel-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-    .workspace-sync-status { margin: 0; flex: 1 1 100%; font-size: 0.78rem; }
-    .retention-settings-bar {
-      display: flex;
+    .retention-segment {
+      display: inline-flex;
       flex-wrap: wrap;
-      align-items: center;
-      gap: 0.5rem 0.85rem;
-      margin-bottom: 1.1rem;
-      padding-bottom: 0.85rem;
-      border-bottom: 1px solid var(--color-border);
+      padding: 0.2rem;
+      gap: 0.2rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
     }
-    .retention-toggle {
+    .retention-seg {
+      cursor: pointer;
+    }
+    .retention-seg input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .retention-seg span {
       display: inline-flex;
       align-items: center;
-      gap: 0.35rem;
-      font-size: 0.84rem;
-      cursor: pointer;
+      min-height: 2rem;
+      padding: 0.3rem 0.85rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out);
+    }
+    .retention-seg input:checked + span {
+      background: var(--color-bg-card);
+      color: var(--color-text);
+      box-shadow: var(--shadow-sm);
     }
     .import-dest-options {
       display: flex;
@@ -5375,7 +5609,6 @@ const marqueeFeatures = [
       font-weight: 600;
       cursor: pointer;
     }
-    .profile-pill.is-saved { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); }
     /* Focus / Page pane: size to the device viewport, not a fixed desktop box */
     #standard-text-view.standard-reader-view,
     #bionic-text-view.standard-reader-view {
@@ -5422,39 +5655,6 @@ const marqueeFeatures = [
         height: clamp(16rem, calc(100dvh - 20rem), 48rem);
       }
     }
-    .workspace-list {
-      list-style: none;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      max-height: 280px;
-      overflow: auto;
-    }
-    .workspace-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 0.6rem;
-      padding: 0.65rem 0.75rem;
-      border: 1px solid var(--color-border);
-      border-radius: 12px;
-      background: color-mix(in srgb, var(--color-surface, #fff) 88%, transparent);
-    }
-    .workspace-item.is-done { opacity: 0.55; }
-    .workspace-item-main { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
-    .workspace-item-main strong {
-      font-size: 0.88rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .workspace-item-main .muted { font-size: 0.75rem; }
-    .workspace-item-actions { display: flex; flex-wrap: wrap; gap: 0.3rem; flex-shrink: 0; }
-    .workspace-empty { margin: 0.25rem 0 0; font-size: 0.82rem; }
-    .workspace-empty.hidden { display: none; }
-
     .reader-header {
       display: flex;
       justify-content: space-between;
