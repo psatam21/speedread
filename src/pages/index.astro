@@ -22,6 +22,40 @@ const webAppSchema = {
   },
   description: 'Dual-channel speed reader with RSVP flash, synced text-to-speech, bionic reading, and local PDF/EPUB import.',
 };
+
+/** Hero ticker — short feature labels (max ~4 words each) */
+const marqueeFeatures = [
+  'Audio Sync TTS',
+  'Flash RSVP',
+  'Phrase mode',
+  'Focus mode',
+  'Flow mode',
+  'Bionic reading',
+  'Page view',
+  'PDF import',
+  'EPUB import',
+  'Image OCR',
+  'Extract URL',
+  'Reading library',
+  'Resume progress',
+  'Weekly queue',
+  'Reading profiles',
+  'Chapter jump',
+  'Retention check-ins',
+  'Highlights',
+  'Markdown export',
+  'Queue export',
+  'Chrome extension',
+  'Read later',
+  'Cross-device sync',
+  'Offline PWA',
+  'Private by default',
+  'Ad-free Premium',
+  'Unlimited length',
+  'Multi-device license',
+  'Share stats',
+  'BYOK AI',
+];
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -110,24 +144,14 @@ const webAppSchema = {
       <div class="motion-marquee" aria-hidden="true">
         <div class="marquee-track">
           <div class="marquee-group">
-            <span><i class="marquee-dot"></i>Audio Sync · eyes + ears</span>
-            <span><i class="marquee-dot"></i>Flash RSVP</span>
-            <span><i class="marquee-dot"></i>Focus · fixed eye line</span>
-            <span><i class="marquee-dot"></i>Bionic reading</span>
-            <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
-            <span><i class="marquee-dot"></i>Dual-channel focus</span>
-            <span><i class="marquee-dot"></i>Chrome extension</span>
-            <span><i class="marquee-dot"></i>Private · local-first</span>
+            {marqueeFeatures.map((label) => (
+              <span><i class="marquee-dot"></i>{label}</span>
+            ))}
           </div>
-          <div class="marquee-group" aria-hidden="true">
-            <span><i class="marquee-dot"></i>Audio Sync · eyes + ears</span>
-            <span><i class="marquee-dot"></i>Flash RSVP</span>
-            <span><i class="marquee-dot"></i>Focus · fixed eye line</span>
-            <span><i class="marquee-dot"></i>Bionic reading</span>
-            <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
-            <span><i class="marquee-dot"></i>Dual-channel focus</span>
-            <span><i class="marquee-dot"></i>Chrome extension</span>
-            <span><i class="marquee-dot"></i>Private · local-first</span>
+          <div class="marquee-group">
+            {marqueeFeatures.map((label) => (
+              <span><i class="marquee-dot"></i>{label}</span>
+            ))}
           </div>
         </div>
       </div>
