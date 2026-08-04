@@ -1,0 +1,52 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/blog-article.css';
+
+const pageTitle = 'How to Speed Read a PDF Online (Private Browser Workflow) | BriskRead';
+const pageDescription =
+  'Speed read PDFs and EPUBs in the browser: upload locally, use RSVP or Focus, OCR for scans, and keep files private. Free PDF speed reading with BriskRead.';
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <article class="blog-article mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass glass-article">
+        <p class="section-label">Workflows</p>
+        <h1>How to speed read a PDF online</h1>
+        <p class="lede">
+          Most “PDF to speech” or “PDF speed reader” tools upload your file. A better default: parse the PDF in the browser, then run RSVP or Focus. That is the <a href="/pdf-to-speech">PDF workflow BriskRead is built for</a>.
+        </p>
+
+        <h2>Step-by-step on BriskRead</h2>
+        <ol>
+          <li>Open the <a href="/">online speed reader</a></li>
+          <li>Choose <strong>Upload file</strong> → PDF, EPUB, or TXT</li>
+          <li>Wait for local parsing (no account required for free use)</li>
+          <li>Start in Flash for known material, or Focus for dense chapters</li>
+          <li>Optional: enable <strong>Audio Sync</strong> for dual-channel reading</li>
+          <li>Save to library if you want to resume later</li>
+        </ol>
+
+        <h2>Scanned PDFs</h2>
+        <p>
+          If the file is image-only, use <strong>Image OCR</strong> (or OCR fallback when text extraction is empty). OCR is slower but still client-side in BriskRead.
+        </p>
+
+        <h2>Free tier note</h2>
+        <p>
+          Free reading has a word-length cap to support hosting and ads. Lifetime Premium removes that cap and ads — useful for full books and long reports.
+        </p>
+
+        <div class="callout">
+          <p>
+            Privacy summary: document bytes for PDF/EPUB/OCR stay in your browser. Optional URL extract and AI features only run when you use them (AI uses your own Gemini key).
+          </p>
+        </div>
+
+        <div class="article-footer">
+          <p>Related: <a href="/pdf-to-speech">PDF to speech guide</a> · <a href="/blog/how-to-speed-read-online">How to speed read online</a></p>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>

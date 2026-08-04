@@ -1,0 +1,135 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const pageTitle = 'Speed Reading Blog — Guides & Comparisons | BriskRead';
+const pageDescription =
+  'Practical guides on online speed reading, RSVP, PDF reading, Audio Sync, and how to pick tools that actually help you finish more text.';
+
+const posts = [
+  {
+    href: '/blog/best-online-speed-readers',
+    title: 'Best online speed readers in 2026',
+    blurb: 'What to look for, common trade-offs, and where BriskRead fits if you want Audio Sync plus local files.',
+    intent: 'best websites for speed reading',
+  },
+  {
+    href: '/blog/how-to-speed-read-online',
+    title: 'How to speed read online (without losing comprehension)',
+    blurb: 'A practical setup: import, pick a mode, pair audio, and check retention on hard material.',
+    intent: 'how to speed read',
+  },
+  {
+    href: '/blog/rsvp-reading-explained',
+    title: 'What is RSVP reading?',
+    blurb: 'Rapid Serial Visual Presentation explained in plain language — when it helps and when to slow down.',
+    intent: 'RSVP reader',
+  },
+  {
+    href: '/blog/speed-read-pdf-online',
+    title: 'How to speed read a PDF online',
+    blurb: 'PDF and EPUB workflows that stay private in the browser, plus when OCR is required.',
+    intent: 'PDF speed reader',
+  },
+  {
+    href: '/blog/audio-sync-speed-reading',
+    title: 'Why Audio Sync beats flash-only speed readers',
+    blurb: 'Dual-channel reading: eyes and ears on the same stream — the feature most RSVP tools skip.',
+    intent: 'speed reading with audio',
+  },
+];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="blog-index mt-8">
+    <div class="container max-w-3xl">
+      <header class="blog-hero">
+        <p class="section-label">BriskRead journal</p>
+        <h1>Guides for people who have more to read than time</h1>
+        <p class="lede">
+          Straight answers on speed reading tools, RSVP, PDFs, and dual-channel Audio Sync — written so humans and search systems can cite them.
+        </p>
+      </header>
+
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <a href={post.href} class="post-card glass">
+              <span class="post-intent">{post.intent}</span>
+              <strong>{post.title}</strong>
+              <span class="post-blurb">{post.blurb}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <p class="blog-cta muted">
+        Prefer to try the product first? <a href="/">Open the free online speed reader</a> or install the <a href="/extension">Chrome extension</a>.
+      </p>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 720px; margin: 0 auto; }
+  .blog-hero { margin-bottom: 2rem; }
+  .blog-hero h1 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.4rem);
+    letter-spacing: -0.035em;
+    line-height: 1.15;
+  }
+  .section-label {
+    margin: 0 0 0.65rem;
+    color: var(--color-primary);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .lede {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1.2rem 1.25rem;
+    border-radius: var(--radius-xl);
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 160ms ease, transform 160ms ease;
+  }
+  .post-card:hover {
+    border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+    transform: translateY(-1px);
+  }
+  .post-intent {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .post-card strong {
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+  .post-blurb {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+  .blog-cta { margin-top: 2rem; font-size: 0.9rem; }
+  .blog-cta a { color: var(--color-primary); font-weight: 600; }
+</style>

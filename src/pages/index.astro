@@ -439,7 +439,7 @@ const marqueeFeatures = [
           <button class="tab-btn active" data-tab="paste">Paste text</button>
           <button class="tab-btn" data-tab="upload">Upload file</button>
           <button class="tab-btn" data-tab="ocr">Image OCR</button>
-          <button class="tab-btn" data-tab="url">Extract URL</button>
+          <button class="tab-btn" data-tab="url">Public URL</button>
         </div>
 
         <!-- Import Panels -->
@@ -505,15 +505,19 @@ const marqueeFeatures = [
 
           <!-- URL Panel -->
           <div class="tab-content" id="tab-url">
+            <div class="url-disclaimer" role="note">
+              <strong>Best reliability: paste or Chrome extension.</strong>
+              <p>Public URL extract is best-effort. Many news sites, Medium, LinkedIn, and paywalled pages block automated fetchers or only load text with JavaScript. If extract fails or looks empty, copy the article text and use <strong>Paste</strong>, or install the <a href="/extension">Chrome extension</a> to read the tab in place.</p>
+            </div>
             <div class="url-input-container">
-              <input type="url" id="url-input" placeholder="Enter article or webpage URL (e.g., https://example.com/article)" />
-              <button class="btn btn-primary" id="btn-load-url">Extract Text</button>
+              <input type="url" id="url-input" placeholder="https://… public article URL" />
+              <button class="btn btn-primary" id="btn-load-url">Try extract</button>
             </div>
             <div class="import-dest-options mt-3" role="group" aria-label="Where to save extracted article">
               <label class="import-check"><input type="checkbox" id="opt-url-library" checked /> Save to library</label>
               <label class="import-check"><input type="checkbox" id="opt-url-queue" /> Add to queue</label>
             </div>
-            <p class="input-hint">Fetches public HTML through BriskRead’s extractor (works best on article pages). Paywalled or JS-only sites may need paste instead. Local preview needs the <code>/api/extract</code> function running (Vercel/production).</p>
+            <p class="input-hint">Works on simple public HTML articles. Not a full browser — no login cookies, no SPA-only sites.</p>
             <p class="input-hint muted" id="url-extract-status" role="status"></p>
           </div>
 
@@ -4739,6 +4743,26 @@ const marqueeFeatures = [
       color: var(--color-text-subtle);
       margin-top: 0.5rem;
     }
+
+    .url-disclaimer {
+      margin: 0 0 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-lg);
+      border: 1px solid color-mix(in srgb, var(--color-warning, #d97706) 35%, var(--color-border));
+      background: color-mix(in srgb, var(--color-warning, #d97706) 8%, var(--color-bg-card));
+    }
+    .url-disclaimer strong {
+      display: block;
+      font-size: 0.88rem;
+      margin-bottom: 0.3rem;
+    }
+    .url-disclaimer p {
+      margin: 0;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+    }
+    .url-disclaimer a { color: var(--color-primary); font-weight: 600; }
     
     .url-input-container {
       display: flex;

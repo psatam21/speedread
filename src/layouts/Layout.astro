@@ -159,6 +159,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
           <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
+          <a href="/blog" class:list={["nav-link", { active: pathname.startsWith('/blog') }]}>Blog</a>
           <a href="/account" class:list={["nav-link", { active: pathname === '/account' }]}>Account</a>
           <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">
             <span class="theme-toggle-icon" aria-hidden="true">◐</span>
@@ -174,6 +175,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
             <a href="/rsvp-reader">RSVP</a>
             <a href="/bionic-reading">Bionic</a>
             <a href="/extension">Chrome extension</a>
+            <a href="/blog">Blog</a>
             <a href="/account">Account</a>
             <a href="/#pricing" class="mobile-nav-cta">Lifetime · $8.99</a>
             <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">◐ Theme</button>
@@ -207,6 +209,13 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
           <p>Capture</p>
           <a href="/extension">Chrome extension</a>
           <a href="/#pricing">Lifetime Premium</a>
+        </div>
+        <div class="footer-group">
+          <p>Learn</p>
+          <a href="/blog">Blog</a>
+          <a href="/blog/best-online-speed-readers">Best online speed readers</a>
+          <a href="/blog/how-to-speed-read-online">How to speed read online</a>
+          <a href="/how-it-works">How it works</a>
         </div>
         <div class="footer-group">
           <p>Company</p>
