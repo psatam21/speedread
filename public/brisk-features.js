@@ -183,7 +183,7 @@
   }
 
   function estimateMinutes(words, wpm) {
-    const rate = Math.max(120, Number(wpm) || 300);
+    const rate = Math.max(120, Number(wpm) || 350);
     return Math.max(1, Math.ceil(words / rate));
   }
 
@@ -259,7 +259,7 @@
         wordCount: wordCount(cleanText),
         createdAt: now(),
         updatedAt: now(),
-        progress: progress || { index: 0, mode: 'rsvp', wpm: 300, pct: 0 },
+        progress: progress || { index: 0, mode: 'rsvp', wpm: 350, pct: 0 },
         profileId: profileId || store.activeProfileId || null,
       };
       store.library.unshift(item);
@@ -289,7 +289,7 @@
     item.progress = {
       index: Math.max(0, Number(progress.index) || 0),
       mode: progress.mode || item.progress?.mode || 'rsvp',
-      wpm: Number(progress.wpm) || item.progress?.wpm || 300,
+      wpm: Number(progress.wpm) || item.progress?.wpm || 350,
       pct: Math.min(100, Math.max(0, Number(progress.pct) || 0)),
     };
     item.updatedAt = now();
@@ -335,7 +335,7 @@
       libraryId: libraryId || null,
       title: title || 'Untitled',
       wordCount: words || 0,
-      estimatedMinutes: estimateMinutes(words || 0, wpm || 300),
+      estimatedMinutes: estimateMinutes(words || 0, wpm || 350),
       status: 'pending',
       order: store.queue.length,
       addedAt: now(),

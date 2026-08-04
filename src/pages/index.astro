@@ -324,8 +324,8 @@ const webAppSchema = {
           <!-- Setting Tuners -->
           <div class="tuner-grid">
             <div class="tuner-card">
-              <label for="slider-wpm">Reading Speed: <span id="wpm-display">300</span> WPM</label>
-              <input type="range" id="slider-wpm" min="100" max="1000" step="25" value="300" />
+              <label for="slider-wpm">Reading Speed: <span id="wpm-display">350</span> WPM</label>
+              <input type="range" id="slider-wpm" min="100" max="1000" step="25" value="350" />
             </div>
             
             <div class="tuner-card">
@@ -540,7 +540,7 @@ const webAppSchema = {
   <section class="launch-paths" aria-labelledby="launch-paths-title">
     <div class="container">
       <div class="launch-paths-heading">
-        <h2 id="launch-paths-title">One reader. Four ways in.</h2>
+        <h2 id="launch-paths-title">One reader. Three ways in.</h2>
         <p>Use the smallest capture flow that fits what you are reading.</p>
       </div>
       <div class="launch-paths-list">
@@ -551,12 +551,7 @@ const webAppSchema = {
         </a>
         <a href="/extension" class="launch-path">
           <span class="launch-path-mark" aria-hidden="true"></span>
-          <span><strong>Chrome extension</strong><small>Send the active article in one click</small></span>
-          <span aria-hidden="true">→</span>
-        </a>
-        <a href="/bookmarklet" class="launch-path">
-          <span class="launch-path-mark" aria-hidden="true"></span>
-          <span><strong>Bookmarklet</strong><small>No install, just drag it to your bookmarks bar</small></span>
+          <span><strong>Chrome extension</strong><small>Speed-read the active tab or selection</small></span>
           <span aria-hidden="true">→</span>
         </a>
         <a href="#importer-card" class="launch-path" data-open-tab="url">
@@ -579,94 +574,58 @@ const webAppSchema = {
         <article><small>Long report or case · 10,000 words</small><strong>42 → 22 min</strong><span>about 19 minutes saved</span></article>
         <article><small>Short business book · 50,000 words</small><strong>3h 28 → 1h 51</strong><span>about 97 minutes saved</span></article>
       </div>
-      <div class="testimonials-band" aria-label="Customer testimonials">
+      <div class="testimonials-band" aria-label="Reader feedback">
         <div class="testimonials-track">
           <div class="testimonials-group">
             <figure class="testimonial-card">
               <blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=32" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Priya Mehta</strong><small>Product Manager · Bengaluru</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">PM</span><span><strong>Priya M.</strong><small>Product · Bengaluru</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Phrase mode keeps enough context that reading faster never feels like guessing on cases.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=12" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Marcus Bell</strong><small>MBA candidate · London</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">MB</span><span><strong>Marcus B.</strong><small>MBA · London</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Sensitive briefings stay on my laptop. The dashboard just shows the time I got back.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=47" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Aisha Rahman</strong><small>Strategy analyst · Dubai</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">AR</span><span><strong>Aisha R.</strong><small>Strategy · Dubai</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Flash mode clears my newsletter backlog in half the time I used to spend skimming.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=15" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>James Okonkwo</strong><small>Founder · Lagos</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">JO</span><span><strong>James O.</strong><small>Founder · Lagos</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“I drop PDFs in, hit play, and actually finish the pack before class starts.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=5" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Sofia Alvarez</strong><small>Law student · Madrid</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">SA</span><span><strong>Sofia A.</strong><small>Law · Madrid</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Client research used to eat evenings. Now I get through dossiers without re-reading every line.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=68" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Daniel Cho</strong><small>Consultant · Singapore</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">DC</span><span><strong>Daniel C.</strong><small>Consulting · Singapore</small></span></figcaption>
             </figure>
           </div>
           <div class="testimonials-group" aria-hidden="true">
             <figure class="testimonial-card">
               <blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=32" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Priya Mehta</strong><small>Product Manager · Bengaluru</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">PM</span><span><strong>Priya M.</strong><small>Product · Bengaluru</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Phrase mode keeps enough context that reading faster never feels like guessing on cases.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=12" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Marcus Bell</strong><small>MBA candidate · London</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">MB</span><span><strong>Marcus B.</strong><small>MBA · London</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Sensitive briefings stay on my laptop. The dashboard just shows the time I got back.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=47" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Aisha Rahman</strong><small>Strategy analyst · Dubai</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">AR</span><span><strong>Aisha R.</strong><small>Strategy · Dubai</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Flash mode clears my newsletter backlog in half the time I used to spend skimming.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=15" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>James Okonkwo</strong><small>Founder · Lagos</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">JO</span><span><strong>James O.</strong><small>Founder · Lagos</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“I drop PDFs in, hit play, and actually finish the pack before class starts.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=5" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Sofia Alvarez</strong><small>Law student · Madrid</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">SA</span><span><strong>Sofia A.</strong><small>Law · Madrid</small></span></figcaption>
             </figure>
             <figure class="testimonial-card">
               <blockquote>“Client research used to eat evenings. Now I get through dossiers without re-reading every line.”</blockquote>
-              <figcaption>
-                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=68" width="48" height="48" alt="" loading="lazy" decoding="async" />
-                <span><strong>Daniel Cho</strong><small>Consultant · Singapore</small></span>
-              </figcaption>
+              <figcaption><span class="testimonial-initials" aria-hidden="true">DC</span><span><strong>Daniel C.</strong><small>Consulting · Singapore</small></span></figcaption>
             </figure>
           </div>
         </div>
@@ -946,7 +905,7 @@ const webAppSchema = {
 
           <h2>How to use this online speed reader</h2>
           <ol class="seo-steps">
-            <li><strong>Load text</strong> — paste an article, upload PDF/EPUB/TXT, run image OCR, or extract a public URL (or use the bookmarklet / Chrome extension).</li>
+            <li><strong>Load text</strong> — paste an article, upload PDF/EPUB/TXT, run image OCR, extract a public URL, or use the Chrome extension.</li>
             <li><strong>Start reading</strong> — RSVP mode flashes one word at a time with Optimal Recognition Point (ORP) alignment.</li>
             <li><strong>Tune speed</strong> — set WPM from 100–1000, press Space to play/pause, and use arrow keys to jump.</li>
             <li><strong>Optional audio</strong> — enable Audio Sync for dual-channel TTS, or switch to Bionic / Standard page view.</li>
@@ -974,7 +933,7 @@ const webAppSchema = {
             <li><strong>Professionals</strong> — clear newsletters, research PDFs, and long emails under time pressure.</li>
             <li><strong>Language practice</strong> — pair visual RSVP with audio to reinforce pacing.</li>
             <li><strong>Accessibility preference</strong> — choose bionic bolding, dyslexia-friendly font option, or high-contrast AMOLED.</li>
-            <li><strong>Web clipping</strong> — send any public article into the reader with one bookmarklet click.</li>
+            <li><strong>Web clipping</strong> — send any public article into the reader with the Chrome extension or Extract URL.</li>
           </ul>
         </div>
 
@@ -1004,7 +963,7 @@ const webAppSchema = {
           </details>
 
           <details class="faq-item">
-            <summary>How do I install the Web-to-Reader Bookmarklet?</summary>
+            <summary>How do I speed-read pages from Chrome?</summary>
             <div class="faq-answer">
               <p>Go to the <a href="/bookmarklet">Bookmarklet page</a>, and drag the "⚡ BriskRead" link directly into your browser's bookmarks bar. Whenever you are reading an article on any news website, simply click that bookmark, and it will instantly load the page's text into our reader workspace.</p>
             </div>
@@ -1150,7 +1109,7 @@ const webAppSchema = {
       words: [],
       wordObjects: [],
       currentIndex: 0,
-      wpm: 300,
+      wpm: 350,
       isPlaying: false,
       mode: 'rsvp', // rsvp, phrase, focus, flow, bionic, standard
       theme: 'light',
@@ -1382,7 +1341,7 @@ const webAppSchema = {
     };
 
     const loadState = () => {
-      state.wpm = parseInt(localStorage.getItem('wpm') || '300');
+      state.wpm = parseInt(localStorage.getItem('wpm') || '350');
       state.theme = localStorage.getItem('theme') || 'light';
       state.font = localStorage.getItem('font') || 'sans';
       state.fontSize = parseInt(localStorage.getItem('fontSize') || '24');
@@ -2185,6 +2144,9 @@ const webAppSchema = {
       document.querySelectorAll('.mode-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.mode === modeName);
       });
+
+      const readerScreen = document.getElementById('reader-screen');
+      if (readerScreen) readerScreen.dataset.readerMode = modeName;
 
       document.getElementById('rsvp-pane').classList.toggle('hidden', !['rsvp', 'phrase'].includes(modeName));
       document.getElementById('flow-pane').classList.toggle('hidden', modeName !== 'flow');
@@ -3028,6 +2990,16 @@ const webAppSchema = {
         btn.addEventListener('click', () => {
           setMode(btn.dataset.mode);
         });
+      });
+
+      // Keep Focus/Page pane eye-line correct when the viewport resizes (mobile rotate, keyboard, etc.)
+      let focusResizeTimer = null;
+      window.addEventListener('resize', () => {
+        if (state.mode !== 'focus' && state.mode !== 'standard') return;
+        clearTimeout(focusResizeTimer);
+        focusResizeTimer = setTimeout(() => {
+          if (typeof updateFocusWord === 'function') updateFocusWord();
+        }, 80);
       });
 
       // Playback buttons
@@ -4473,7 +4445,21 @@ const webAppSchema = {
       gap: 0.75rem;
       margin-top: 1.1rem;
     }
+    .testimonial-initials {
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--color-primary) 14%, var(--color-bg-subtle, #f1f2f6));
+      color: var(--color-primary);
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
     .testimonial-face {
+      display: none;
       width: 2.75rem;
       height: 2.75rem;
       border-radius: 50%;
@@ -5386,18 +5372,51 @@ const webAppSchema = {
       cursor: pointer;
     }
     .profile-pill.is-saved { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); }
-    #standard-text-view.standard-reader-view {
+    /* Focus / Page pane: size to the device viewport, not a fixed desktop box */
+    #standard-text-view.standard-reader-view,
+    #bionic-text-view.standard-reader-view {
       max-height: min(58vh, 520px);
       overflow-y: auto;
       scroll-behavior: auto;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior: contain;
     }
+    #reader-screen[data-reader-mode="focus"] #standard-text-view.standard-reader-view,
+    #reader-screen[data-reader-mode="standard"] #standard-text-view.standard-reader-view,
+    #reader-screen[data-reader-mode="bionic"] #bionic-text-view.standard-reader-view {
+      /* Fill remaining viewport under chrome (header + modes + controls) */
+      height: clamp(14rem, calc(100dvh - 22rem), 42rem);
+      max-height: none;
+      min-height: clamp(12rem, 36dvh, 20rem);
+      font-size: clamp(1rem, 0.9rem + 0.45vw, 1.2rem);
+      line-height: 1.7;
+      padding: clamp(0.75rem, 2.5vw, 1.25rem);
+    }
+    #reader-screen[data-reader-mode="focus"] .reader-display-container,
+    #reader-screen[data-reader-mode="standard"] .reader-display-container,
+    #reader-screen[data-reader-mode="bionic"] .reader-display-container {
+      min-height: 0;
+    }
     #reader-screen.glass {
       max-width: 100%;
     }
     .reader-display-container {
       max-width: 100%;
+    }
+    @media (max-width: 760px) {
+      #reader-screen[data-reader-mode="focus"] #standard-text-view.standard-reader-view,
+      #reader-screen[data-reader-mode="standard"] #standard-text-view.standard-reader-view,
+      #reader-screen[data-reader-mode="bionic"] #bionic-text-view.standard-reader-view {
+        height: clamp(12rem, calc(100dvh - 18rem), 70dvh);
+        min-height: clamp(11rem, 42dvh, 18rem);
+      }
+    }
+    @media (min-width: 1100px) {
+      #reader-screen[data-reader-mode="focus"] #standard-text-view.standard-reader-view,
+      #reader-screen[data-reader-mode="standard"] #standard-text-view.standard-reader-view,
+      #reader-screen[data-reader-mode="bionic"] #bionic-text-view.standard-reader-view {
+        height: clamp(16rem, calc(100dvh - 20rem), 48rem);
+      }
     }
     .workspace-list {
       list-style: none;
@@ -5644,11 +5663,8 @@ const webAppSchema = {
       .tuner-grid {
         grid-template-columns: 1fr !important;
       }
-      #standard-text-view.standard-reader-view {
+      #standard-text-view.standard-reader-view:not(#reader-screen[data-reader-mode="focus"] #standard-text-view) {
         max-height: min(52vh, 420px);
-        font-size: 1.05rem;
-        line-height: 1.65;
-        padding: 0.75rem;
       }
       .rsvp-word-container {
         min-height: 120px;
