@@ -318,3 +318,62 @@ textarea:focus {
   flex-direction: column;
   gap: 8px;
 }
+
+.queue-count {
+  font-weight: 500;
+  color: var(--subtle);
+  font-size: 11px;
+}
+
+.queue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.queue-item {
+  padding: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.queue-item-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin: 0 0 4px;
+}
+
+.queue-item-meta {
+  font-size: 10px;
+  color: var(--subtle);
+  margin: 0 0 6px;
+}
+
+.queue-item-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.queue-item-actions .btn {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 6px;
+  font-size: 10px;
+}
+
+.empty-queue {
+  margin-bottom: 0;
+}

@@ -1,0 +1,25 @@
+{
+  "name": "BriskRead",
+  "short_name": "BriskRead",
+  "description": "Private browser speed reader with RSVP, bionic reading, and OCR.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#5e6ad2",
+  "background_color": "#0b0d17",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}

@@ -32,3 +32,5 @@ release/
 # agent tooling config (not app code)
 .agents/
 .claude/
+.aidesigner/*
+!.aidesigner/.gitkeep

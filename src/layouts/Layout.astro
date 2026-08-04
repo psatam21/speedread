@@ -3,6 +3,7 @@ import '@fontsource/inter/400.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
 import '../styles/global.css';
+import '../styles/motion.css';
 
 interface Props {
   title: string;
@@ -47,13 +48,14 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="generator" content={Astro.generator} />
     
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
-    <meta name="theme-color" content="#5b3ee4" />
+    <meta name="theme-color" content="#5e6ad2" />
     
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -124,10 +126,16 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     )}
   </head>
   <body data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey}>
+    <div class="scroll-progress" aria-hidden="true"></div>
+    <div class="cursor-glow" aria-hidden="true" data-surface="light">
+      <span class="cursor-glow-layer cursor-glow-light"></span>
+      <span class="cursor-glow-layer cursor-glow-dark"></span>
+    </div>
     <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="launch-strip">
       <div class="container launch-strip-inner">
-        <span>Free reader. No account. Your files stay on your device.</span>
+        <span class="launch-pill" aria-hidden="true"></span>
+        <span>Free reader · no account · files stay on your device</span>
         <a href="/#importer-card">Start reading <span aria-hidden="true">→</span></a>
       </div>
     </div>
@@ -135,27 +143,33 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       <div class="container header-container">
         <a href="/" class="logo-link" aria-label="BriskRead home">
           <div class="logo-container">
-            <svg class="logo-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" />
-            </svg>
+            <span class="logo-mark" aria-hidden="true">
+              <svg class="logo-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" />
+              </svg>
+            </span>
             <span class="logo-text">BriskRead</span>
           </div>
         </a>
         
         <nav class="nav-links" aria-label="Primary">
           <a href="/" class:list={["nav-link", { active: isHome }]}>Reader</a>
+          <a href="/#features" class="nav-link">Features</a>
           <a href="/how-it-works" class:list={["nav-link", { active: pathname === '/how-it-works' }]}>How it works</a>
           <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
           <a href="/account" class:list={["nav-link", { active: pathname === '/account' }]}>Account</a>
-          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">◐</button>
+          <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">
+            <span class="theme-toggle-icon" aria-hidden="true">◐</span>
+          </button>
           <a href="/#pricing" class="nav-cta">Lifetime · $8.99</a>
         </nav>
         <details class="mobile-nav">
           <summary aria-label="Open navigation">Menu</summary>
           <div class="mobile-nav-panel">
             <a href="/">Reader</a>
+            <a href="/#features">Features</a>
             <a href="/how-it-works">How it works</a>
             <a href="/rsvp-reader">RSVP</a>
             <a href="/bionic-reading">Bionic</a>
@@ -224,6 +238,14 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       });
       syncThemeToggle();
     </script>
+    <script src="/site-motion.js" defer></script>
+    <script is:inline>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(() => {});
+        });
+      }
+    </script>
 
     <script>
       import { createClient } from '@supabase/supabase-js';
@@ -261,10 +283,10 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
 
     <style>
       .site-header {
-        border-bottom: 1px solid var(--color-border);
+        border-bottom: 1px solid color-mix(in srgb, var(--color-border) 85%, transparent);
         background-color: var(--color-bg-header);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(16px) saturate(1.2);
+        -webkit-backdrop-filter: blur(16px) saturate(1.2);
         position: sticky;
         top: 0;
         z-index: var(--z-sticky, 50);
@@ -273,23 +295,46 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         display: flex;
         justify-content: space-between;
         align-items: center;
-        min-height: 4.25rem;
+        min-height: 3.75rem;
       }
       .launch-strip {
-        background: var(--color-ink);
-        color: var(--color-ink-on);
-        font-size: 0.75rem;
-        font-weight: 600;
+        background: linear-gradient(90deg, #0a0a0c 0%, #12121a 50%, #0a0a0c 100%);
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 0.72rem;
+        font-weight: 550;
+        letter-spacing: 0.01em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
       }
       .launch-strip-inner {
-        min-height: 2rem;
+        min-height: 2.1rem;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 0.75rem;
+        gap: 0.65rem;
         text-align: center;
       }
-      .launch-strip a { color: var(--color-ink-on); text-decoration: underline; text-underline-offset: 3px; }
+      .launch-pill {
+        width: 0.4rem;
+        height: 0.4rem;
+        border-radius: 50%;
+        background: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.28);
+        animation: launch-pulse 2.4s var(--ease-out) infinite;
+      }
+      @keyframes launch-pulse {
+        0%, 100% { box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.22); opacity: 1; }
+        50% { box-shadow: 0 0 0 6px rgba(94, 106, 210, 0.08); opacity: 0.85; }
+      }
+      .launch-strip a {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 650;
+        padding: 0.2rem 0.55rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.08);
+        transition: background-color 140ms var(--ease-out);
+      }
+      .launch-strip a:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
       .skip-link {
         position: fixed;
         left: 1rem;
@@ -312,14 +357,24 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       .logo-container {
         display: flex;
         align-items: center;
-        gap: 0.4rem;
+        gap: 0.55rem;
         font-family: var(--font-sans);
-        font-weight: 700;
-        font-size: 1.15rem;
-        letter-spacing: -0.02em;
+        font-weight: 650;
+        font-size: 1.05rem;
+        letter-spacing: -0.03em;
+      }
+      .logo-mark {
+        display: grid;
+        place-items: center;
+        width: 1.7rem;
+        height: 1.7rem;
+        border-radius: 7px;
+        background: var(--color-primary);
+        color: #fff;
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset;
       }
       .logo-icon {
-        color: var(--color-primary);
+        color: inherit;
         flex-shrink: 0;
       }
       .logo-text {
@@ -327,58 +382,71 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
       }
       .nav-links {
         display: flex;
-        gap: 0.15rem;
+        gap: 0.1rem;
         align-items: center;
         flex-wrap: wrap;
         justify-content: flex-end;
       }
       .nav-link {
-        font-size: 0.8125rem;
-        font-weight: 550;
+        font-size: 0.8rem;
+        font-weight: 500;
         color: var(--color-text-muted);
         text-decoration: none;
-        transition: background-color 120ms ease, color 120ms ease;
-        padding: 0.4rem 0.6rem;
-        border-radius: 6px;
+        transition: background-color 140ms var(--ease-out), color 140ms var(--ease-out);
+        padding: 0.4rem 0.65rem;
+        border-radius: 999px;
       }
       .nav-link:hover {
         color: var(--color-text);
         background-color: var(--color-bg-subtle);
         text-decoration: none;
       }
-      .nav-link.active { color: var(--color-text); background: var(--color-primary-muted); }
+      .nav-link.active {
+        color: var(--color-text);
+        background: var(--color-primary-muted);
+      }
       .theme-toggle {
         width: 2rem;
         height: 2rem;
         border: 1px solid var(--color-border);
-        border-radius: 6px;
+        border-radius: 999px;
         background: var(--color-bg-card);
         color: var(--color-text);
         cursor: pointer;
-        font-size: 1rem;
+        font-size: 0.95rem;
+        transition: border-color 140ms var(--ease-out), transform 140ms var(--ease-out);
       }
+      .theme-toggle:hover { border-color: var(--color-text-subtle); transform: rotate(-12deg); }
       .nav-cta {
-        padding: 0.48rem 0.8rem;
-        border-radius: var(--radius-md);
+        padding: 0.45rem 0.9rem;
+        border-radius: 999px;
         background: var(--color-primary);
         color: white;
-        font-size: 0.8125rem;
-        font-weight: 700;
+        font-size: 0.78rem;
+        font-weight: 650;
+        letter-spacing: -0.01em;
+        transition: background-color 140ms var(--ease-out), transform 140ms var(--ease-out), box-shadow 140ms var(--ease-out);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset;
       }
-      .nav-cta:hover { background: var(--color-primary-hover); color: white; }
+      .nav-cta:hover {
+        background: var(--color-primary-hover);
+        color: white;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 20px -10px var(--color-primary-shadow);
+      }
       .mobile-nav { display: none; position: relative; }
       .mobile-nav summary {
         display: grid;
         min-width: 3rem;
-        min-height: 2.75rem;
+        min-height: 2.5rem;
         place-items: center;
         border: 1px solid var(--color-border);
-        border-radius: var(--radius-md);
+        border-radius: 999px;
         background: var(--color-bg-card);
         color: var(--color-text);
         cursor: pointer;
-        font-size: 0.78rem;
-        font-weight: 750;
+        font-size: 0.75rem;
+        font-weight: 650;
         list-style: none;
       }
       .mobile-nav summary::-webkit-details-marker { display: none; }
@@ -388,7 +456,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         right: 0;
         display: grid;
         width: min(19rem, calc(100vw - 2rem));
-        padding: 0.5rem;
+        padding: 0.45rem;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-lg);
         background: var(--color-bg-card);
@@ -405,16 +473,22 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         background: transparent;
         color: var(--color-text);
         font-size: 0.85rem;
-        font-weight: 650;
+        font-weight: 600;
         text-decoration: none;
       }
       .mobile-nav-panel a:hover, .mobile-nav-panel .theme-toggle:hover { background: var(--color-bg-subtle); }
-      .mobile-nav-panel .mobile-nav-cta { background: var(--color-primary); color: white; }
+      .mobile-nav-panel .mobile-nav-cta {
+        background: var(--color-primary);
+        color: white;
+        border-radius: 999px;
+        justify-content: center;
+        margin-top: 0.15rem;
+      }
 
       .site-footer {
         border-top: 1px solid var(--color-border);
-        padding: clamp(3rem, 8vw, 5rem) 0;
-        margin-top: 4rem;
+        padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+        margin-top: 5rem;
         font-size: 0.8125rem;
         color: var(--color-text-muted);
         background-color: var(--color-bg-footer);
@@ -426,25 +500,40 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         gap: clamp(2rem, 5vw, 4rem);
         text-align: left;
       }
-      .footer-logo { color: var(--color-text); font-size: 1.25rem; font-weight: 800; }
-      .footer-logo span { color: var(--color-accent); }
-      .footer-brand > p { max-width: 40ch; margin-top: 0.75rem; }
-      .footer-note { font-size: 0.75rem; }
+      .footer-logo { color: var(--color-text); font-size: 1.2rem; font-weight: 650; letter-spacing: -0.03em; }
+      .footer-logo span { color: var(--color-primary); }
+      .footer-brand > p { max-width: 40ch; margin-top: 0.75rem; line-height: 1.6; }
+      .footer-note { font-size: 0.75rem; opacity: 0.8; }
       .footer-group { display: flex; flex-direction: column; gap: 0.55rem; }
-      .footer-group p { color: var(--color-text); font-weight: 700; margin-bottom: 0.2rem; }
-      .footer-group a { color: var(--color-text-muted); }
-      .footer-group a:hover { color: var(--color-primary); }
+      .footer-group p {
+        color: var(--color-text);
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        font-size: 0.72rem;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .footer-group a {
+        color: var(--color-text-muted);
+        transition: color 140ms var(--ease-out), transform 140ms var(--ease-out);
+      }
+      .footer-group a:hover { color: var(--color-primary); transform: translateX(2px); }
       @media (max-width: 840px) {
         .header-container {
-          min-height: 3.75rem;
-          padding-block: 0.45rem;
+          min-height: 3.5rem;
+          padding-block: 0.4rem;
         }
         .nav-links { display: none; }
         .mobile-nav { display: block; }
         .launch-strip-inner { justify-content: space-between; }
-        .launch-strip-inner > span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .launch-strip-inner > span:not(.launch-pill) { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        .launch-pill { display: none; }
         .footer-container { grid-template-columns: 1fr 1fr; }
         .footer-brand { grid-column: 1 / -1; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .launch-pill { animation: none; }
+        .nav-cta:hover, .theme-toggle:hover, .footer-group a:hover { transform: none; }
       }
     </style>
   </body>

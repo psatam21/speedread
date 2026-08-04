@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BriskRead — Speed Reader for Chrome",
   "short_name": "BriskRead",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Speed-read any page in place with RSVP and Focus modes — no redirect, no tab switch.",
   "homepage_url": "https://briskread.com/extension",
   "minimum_chrome_version": "116",
@@ -53,6 +53,13 @@
         "mac": "Alt+Shift+S"
       },
       "description": "Speed read the current tab"
+    },
+    "read-later-tab": {
+      "suggested_key": {
+        "default": "Alt+Shift+L",
+        "mac": "Alt+Shift+L"
+      },
+      "description": "Save current tab to BriskRead read-later queue"
     }
   },
   "content_security_policy": {

@@ -26,20 +26,28 @@ const webAppSchema = {
 
 <Layout title={pageTitle} description={pageDescription}>
   <!-- Top App Section: Interactive Reader Workspace -->
-  <section class="app-section">
+  <section class="app-section motion-stage">
+    <div class="aurora" aria-hidden="true">
+      <span class="aurora-blob a"></span>
+      <span class="aurora-blob b"></span>
+      <span class="aurora-blob c"></span>
+    </div>
     <div class="container app-workspace">
 
-      <!-- Hero -->
+      <!-- Hero: polished two-column (no long-scroll theater) -->
       <header class="hero">
         <div class="hero-copy">
-          <p class="hero-kicker"><span>01</span> Local-first reading instrument</p>
-          <h1>Finish the backlog.<br />Read it once.</h1>
+          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Local-first reading instrument</p>
+          <h1 class="hero-title">
+            <span class="hero-line"><span class="hero-line-inner">Finish the backlog.</span></span>
+            <span class="hero-line"><span class="hero-line-inner">Read it once.</span></span>
+          </h1>
           <p class="hero-sub">
             RSVP speed reading that gets you through the pile<br />without a second pass.
           </p>
           <div class="hero-actions">
             <a class="btn btn-primary" href="#importer-card">Try it with your text</a>
-            <button class="hero-demo-link" id="btn-hero-demo" type="button">Try a sample text</button>
+            <button class="btn btn-secondary" id="btn-hero-demo" type="button">Try a sample text</button>
           </div>
           <p class="hero-start-note">No account required. Switch reading modes without reloading your document.</p>
           <ul class="hero-trust" aria-label="Product benefits">
@@ -48,54 +56,178 @@ const webAppSchema = {
             <li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /><path d="m12 4 1.4 2.6L16 8l-2.6 1.4L12 12l-1.4-2.6L8 8l2.6-1.4L12 4Z" /></svg><span><strong>Better focus</strong><small>Fewer distractions.<br />More comprehension.</small></span></li>
           </ul>
         </div>
-        <div class="hero-reader" aria-label="Animated RSVP reading preview">
-          <div class="hero-reader-top">
-            <div class="hero-reader-identity"><span aria-hidden="true"><i></i><i></i><i></i></span><strong>briskread_engine</strong></div>
-            <div class="hero-reader-tools"><span>LOCAL / ACTIVE</span><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div>
-          </div>
-          <div class="hero-preview-stage">
-            <div class="hero-slide is-active" data-hero-slide="rsvp">
-              <span class="hero-focus-line" aria-hidden="true"></span>
-              <span class="hero-reticle hero-reticle-top" aria-hidden="true"></span>
-              <span class="hero-reticle hero-reticle-bottom" aria-hidden="true"></span>
-              <p class="hero-slide-label"><i></i>Flash · optimal recognition point</p>
-              <div class="hero-word" aria-live="off"><span id="hero-word-left">cre</span><strong id="hero-word-orp">a</strong><span id="hero-word-right">te</span></div>
+        <div class="hero-stage">
+          <div class="hero-reader-shell">
+            <div class="hero-reader" aria-label="Animated RSVP reading preview">
+              <div class="hero-reader-top">
+                <div class="hero-reader-identity"><span aria-hidden="true"><i></i><i></i><i></i></span><strong>briskread_engine</strong></div>
+                <div class="hero-reader-tools"><span>LOCAL / ACTIVE</span><button id="hero-play" type="button" aria-pressed="false" aria-label="Pause RSVP preview">Ⅱ</button></div>
+              </div>
+              <div class="hero-preview-stage">
+                <div class="hero-slide is-active" data-hero-slide="rsvp">
+                  <span class="hero-focus-line" aria-hidden="true"></span>
+                  <span class="hero-reticle hero-reticle-top" aria-hidden="true"></span>
+                  <span class="hero-reticle hero-reticle-bottom" aria-hidden="true"></span>
+                  <p class="hero-slide-label"><i></i>Flash · optimal recognition point</p>
+                  <div class="hero-word" aria-live="off"><span id="hero-word-left">cre</span><strong id="hero-word-orp">a</strong><span id="hero-word-right">te</span></div>
+                </div>
+                <div class="hero-slide" data-hero-slide="focus">
+                  <p class="hero-slide-label"><i></i>Focus · context stays visible</p>
+                  <p class="hero-focus-demo" id="hero-focus-demo"></p>
+                </div>
+              </div>
+              <div class="hero-deck-tabs" role="tablist" aria-label="Preview reading mode">
+                <button type="button" class="is-active" data-hero-dot="rsvp" role="tab" aria-selected="true">Flash</button>
+                <button type="button" data-hero-dot="focus" role="tab" aria-selected="false">Focus</button>
+              </div>
+              <div class="hero-demo-controls">
+                <div class="hero-speed-control"><span>Velocity / WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
+              </div>
+              <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with BriskRead<b><span id="hero-compare-wpm">350</span> <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
+              <div class="hero-gain-stats" aria-live="polite">
+                <span><strong id="hero-pace-gain">+46%</strong> faster pace</span>
+                <span><strong id="hero-time-saved">7 min</strong> saved per 5,000 words</span>
+              </div>
             </div>
-            <div class="hero-slide" data-hero-slide="focus">
-              <p class="hero-slide-label"><i></i>Focus · context stays visible</p>
-              <p class="hero-focus-demo" id="hero-focus-demo"></p>
-            </div>
-          </div>
-          <div class="hero-deck-tabs" role="tablist" aria-label="Preview reading mode">
-            <button type="button" class="is-active" data-hero-dot="rsvp" role="tab" aria-selected="true">Flash</button>
-            <button type="button" data-hero-dot="focus" role="tab" aria-selected="false">Focus</button>
-          </div>
-          <div class="hero-demo-controls">
-            <div class="hero-speed-control"><span>Velocity / WPM<strong id="hero-wpm-output">350</strong></span><div><input id="hero-wpm-slider" aria-label="Words per minute" type="range" min="100" max="600" step="10" value="350" /><div class="hero-wpm-ticks"><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></div></div></div>
-          </div>
-          <div class="hero-reader-bottom"><strong>How you compare</strong><div><span>Typical reading<b>~240 <small>WPM</small></b></span><i>→</i><span class="hero-rsvp-pace">RSVP with BriskRead<b><span id="hero-compare-wpm">350</span> <small>WPM</small></b></span></div><p>Based on average adult silent reading speed of 200–280 WPM.</p></div>
-          <div class="hero-gain-stats" aria-live="polite">
-            <span><strong id="hero-pace-gain">+46%</strong> faster pace</span>
-            <span><strong id="hero-time-saved">7 min</strong> saved per 5,000 words</span>
           </div>
         </div>
       </header>
 
-      <section class="hero-import-rail" aria-labelledby="hero-import-title">
+      <div class="motion-marquee" aria-hidden="true">
+        <div class="marquee-track">
+          <div class="marquee-group">
+            <span><i class="marquee-dot"></i>Flash RSVP</span>
+            <span><i class="marquee-dot"></i>Bionic reading</span>
+            <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
+            <span><i class="marquee-dot"></i>Audio Sync TTS</span>
+            <span><i class="marquee-dot"></i>Chrome extension</span>
+            <span><i class="marquee-dot"></i>100% private</span>
+            <span><i class="marquee-dot"></i>No account required</span>
+            <span><i class="marquee-dot"></i>Up to 3× faster</span>
+          </div>
+          <div class="marquee-group">
+            <span><i class="marquee-dot"></i>Flash RSVP</span>
+            <span><i class="marquee-dot"></i>Bionic reading</span>
+            <span><i class="marquee-dot"></i>PDF · EPUB · OCR</span>
+            <span><i class="marquee-dot"></i>Audio Sync TTS</span>
+            <span><i class="marquee-dot"></i>Chrome extension</span>
+            <span><i class="marquee-dot"></i>100% private</span>
+            <span><i class="marquee-dot"></i>No account required</span>
+            <span><i class="marquee-dot"></i>Up to 3× faster</span>
+          </div>
+        </div>
+      </div>
+
+      <section class="hero-import-rail" aria-labelledby="hero-import-title" data-motion="rise">
         <div class="hero-import-heading"><div><h2 id="hero-import-title">Bring in text</h2><p>Choose a source, then start reading in seconds.</p></div></div>
-        <div class="hero-import-options">
-          <button class="hero-import-option" type="button" data-open-tab="paste"><strong>Paste text</strong><span>Type or paste anything</span></button>
-          <button class="hero-import-option" type="button" data-open-tab="upload"><strong>Upload a file</strong><span>PDF, EPUB, or TXT</span></button>
-          <button class="hero-import-option" type="button" data-open-tab="ocr"><strong>Scan an image</strong><span>On-device OCR</span></button>
-          <button class="hero-import-option" type="button" data-open-tab="url"><strong>Extract a web link</strong><span>Pull in an article</span></button>
+        <div class="hero-import-options" data-stagger>
+          <button class="hero-import-option" type="button" data-open-tab="paste">
+            <span class="import-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6M9 16h4"/></svg>
+            </span>
+            <span class="import-idx">01</span><strong>Paste text</strong><span>Type or paste anything</span>
+          </button>
+          <button class="hero-import-option" type="button" data-open-tab="upload">
+            <span class="import-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M20 16v2a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2"/></svg>
+            </span>
+            <span class="import-idx">02</span><strong>Upload a file</strong><span>PDF, EPUB, or TXT</span>
+          </button>
+          <button class="hero-import-option" type="button" data-open-tab="ocr">
+            <span class="import-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V6a2 2 0 0 1 2-2h2"/><path d="M4 16v2a2 2 0 0 0 2 2h2"/><path d="M16 4h2a2 2 0 0 1 2 2v2"/><path d="M16 20h2a2 2 0 0 0 2-2v-2"/><circle cx="12" cy="12" r="3"/><path d="M12 9v0"/></svg>
+            </span>
+            <span class="import-idx">03</span><strong>Scan an image</strong><span>On-device OCR</span>
+          </button>
+          <button class="hero-import-option" type="button" data-open-tab="url">
+            <span class="import-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <span class="import-idx">04</span><strong>Extract a web link</strong><span>Pull in an article</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ---------------- WORKSPACE: library / queue / profiles ---------------- -->
+      <section class="glass app-card mb-6" id="workspace-card" aria-labelledby="workspace-title">
+        <div class="workspace-head">
+          <div>
+            <h2 id="workspace-title">Your reading workspace</h2>
+            <p class="muted">Library, this week’s queue, and mode profiles — saved on this device.</p>
+          </div>
+          <p class="workspace-queue-summary muted" id="queue-summary" role="status">Queue empty</p>
+        </div>
+
+        <div class="profile-bar" role="group" aria-label="Reading profiles">
+          <span class="profile-bar-label">Profile slots</span>
+          <div class="profile-pills" id="profile-pills"></div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-save-profile" title="Save current mode, speed, and font into the selected profile">Save current settings</button>
+          <p class="profile-hint muted" id="profile-hint">Profiles start empty. Pick mode/speed yourself, then save into a named slot. Sign in to sync library &amp; queue across devices.</p>
+          <p class="workspace-sync-status muted" id="workspace-sync-status" role="status"></p>
+        </div>
+
+        <div class="retention-settings-bar" role="group" aria-label="Check-in settings">
+          <span class="profile-bar-label">Check-ins</span>
+          <label class="retention-toggle">
+            <input type="radio" name="retention-mode" value="auto" id="retention-mode-auto" />
+            Auto every <strong>1000</strong> words
+          </label>
+          <label class="retention-toggle">
+            <input type="radio" name="retention-mode" value="manual" id="retention-mode-manual" />
+            Manual only
+          </label>
+          <p class="profile-hint muted">MCQs only — pulled from the text you just read. No free-writing.</p>
+        </div>
+
+        <div class="workspace-grid">
+          <div class="workspace-panel">
+            <div class="workspace-panel-head">
+              <h3>Library</h3>
+              <span class="muted" id="library-cap-hint"></span>
+            </div>
+            <ul class="workspace-list" id="library-list" aria-label="Saved documents"></ul>
+            <p class="workspace-empty muted" id="library-empty">No saved docs yet. Load text below and it appears here so you can resume later.</p>
+          </div>
+          <div class="workspace-panel">
+            <div class="workspace-panel-head">
+              <h3>This week’s queue</h3>
+              <div class="workspace-panel-actions">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-export-queue" title="Export queue as Markdown for any AI">Export MD</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-done-queue">Clear done</button>
+              </div>
+            </div>
+            <ul class="workspace-list" id="queue-list" aria-label="Reading queue"></ul>
+            <p class="workspace-empty muted" id="queue-empty">Add docs from the library or importer to plan a backlog sprint.</p>
+          </div>
         </div>
       </section>
 
       <!-- ---------------- READER SCREEN ---------------- -->
       <div id="reader-screen" class="glass app-card hidden mb-6">
         <div class="reader-header">
-          <h3>Reader</h3>
-          <button class="btn btn-secondary btn-sm" id="btn-close-reader">✕ Close</button>
+          <div class="reader-header-main">
+            <h3 id="reader-doc-title">Reader</h3>
+            <p class="reader-meta muted" id="reader-meta"></p>
+          </div>
+          <div class="reader-header-actions">
+            <button class="btn btn-secondary btn-sm" id="btn-save-library" type="button" title="Save to library">Save</button>
+            <button class="btn btn-secondary btn-sm" id="btn-add-queue" type="button" title="Add to this week’s queue">Queue</button>
+            <button class="btn btn-secondary btn-sm" id="btn-export-md" type="button" title="Export notes as Markdown">Export</button>
+            <button class="btn btn-secondary btn-sm" id="btn-close-reader">✕ Close</button>
+          </div>
+        </div>
+
+        <div class="reader-tools-row">
+          <div class="chapter-map-wrap">
+            <label for="chapter-select">Jump to section</label>
+            <select id="chapter-select" aria-label="Chapter or section map">
+              <option value="0">Beginning</option>
+            </select>
+          </div>
+          <div class="reader-tool-btns">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-highlight-word" title="Highlight current word or phrase">Highlight</button>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-retention-check" title="Comprehension check-in">Check-in</button>
+          </div>
         </div>
 
         <!-- Reading Mode Switcher -->
@@ -231,6 +363,21 @@ const webAppSchema = {
 
         </div>
 
+        <!-- Retention check-in modal -->
+        <div id="retention-modal" class="retention-modal hidden" role="dialog" aria-modal="true" aria-labelledby="retention-title" hidden>
+          <div class="retention-card glass">
+            <div class="retention-card-head">
+              <h3 id="retention-title">Quick check-in</h3>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-retention-skip">Skip</button>
+            </div>
+            <p class="muted" id="retention-sub">Lock in what you just read before continuing.</p>
+            <div id="retention-body" class="retention-body"></div>
+            <div class="retention-actions">
+              <button type="button" class="btn btn-primary" id="btn-retention-save">Save &amp; continue</button>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       <!-- ---------------- IMPORTER CARD ---------------- -->
@@ -267,6 +414,10 @@ const webAppSchema = {
               </div>
             </details>
 
+            <div class="import-dest-options mt-3" role="group" aria-label="Where to save this text">
+              <label class="import-check"><input type="checkbox" id="opt-paste-library" checked /> Save to library</label>
+              <label class="import-check"><input type="checkbox" id="opt-paste-queue" /> Add to queue</label>
+            </div>
             <div class="input-actions mt-4">
               <button class="btn btn-primary" id="btn-load-paste">Start reading</button>
               <button class="btn btn-secondary" id="btn-demo">Try demo text</button>
@@ -279,6 +430,10 @@ const webAppSchema = {
               <p>Drag and drop a file here, or <span class="browse-link">browse files</span></p>
               <span class="dropzone-formats">Supports PDF, EPUB, TXT</span>
               <input type="file" id="file-input" accept=".pdf,.epub,.txt" class="hidden" />
+            </div>
+            <div class="import-dest-options mt-3" role="group" aria-label="Where to save uploaded files">
+              <label class="import-check"><input type="checkbox" id="opt-upload-library" checked /> Save to library</label>
+              <label class="import-check"><input type="checkbox" id="opt-upload-queue" /> Add to queue</label>
             </div>
             <div id="file-progress" class="hidden">
               <div class="progress-bar-container"><div class="progress-bar" id="upload-progress-bar"></div></div>
@@ -293,6 +448,10 @@ const webAppSchema = {
               <span class="dropzone-formats">Extracts text client-side using On-Device OCR</span>
               <input type="file" id="ocr-input" accept="image/*" class="hidden" />
             </div>
+            <div class="import-dest-options mt-3" role="group" aria-label="Where to save OCR text">
+              <label class="import-check"><input type="checkbox" id="opt-ocr-library" checked /> Save to library</label>
+              <label class="import-check"><input type="checkbox" id="opt-ocr-queue" /> Add to queue</label>
+            </div>
             <div id="ocr-progress" class="hidden">
               <div class="progress-bar-container"><div class="progress-bar" id="ocr-progress-bar"></div></div>
               <p id="ocr-status">Initializing Tesseract OCR...</p>
@@ -305,7 +464,12 @@ const webAppSchema = {
               <input type="url" id="url-input" placeholder="Enter article or webpage URL (e.g., https://example.com/article)" />
               <button class="btn btn-primary" id="btn-load-url">Extract Text</button>
             </div>
-            <p class="input-hint">Fetches core text from a public webpage through BriskRead's extractor, then opens it in your reader.</p>
+            <div class="import-dest-options mt-3" role="group" aria-label="Where to save extracted article">
+              <label class="import-check"><input type="checkbox" id="opt-url-library" checked /> Save to library</label>
+              <label class="import-check"><input type="checkbox" id="opt-url-queue" /> Add to queue</label>
+            </div>
+            <p class="input-hint">Fetches public HTML through BriskRead’s extractor (works best on article pages). Paywalled or JS-only sites may need paste instead. Local preview needs the <code>/api/extract</code> function running (Vercel/production).</p>
+            <p class="input-hint muted" id="url-extract-status" role="status"></p>
           </div>
 
           <section class="ai-workspace" aria-labelledby="ai-workspace-title">
@@ -401,10 +565,97 @@ const webAppSchema = {
         <article><small>Long report or case · 10,000 words</small><strong>42 → 22 min</strong><span>about 19 minutes saved</span></article>
         <article><small>Short business book · 50,000 words</small><strong>3h 28 → 1h 51</strong><span>about 97 minutes saved</span></article>
       </div>
-      <div class="composite-stories">
-        <figure class="story-card"><p class="story-eyebrow">Weekly product review</p><blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote><figcaption><span class="story-avatar">PM</span><span><strong>Product reader</strong><small>Reports and roadmaps</small></span><i>01</i></figcaption></figure>
-        <figure class="story-card"><p class="story-eyebrow">Case preparation</p><blockquote>“Phrase mode keeps enough context visible that reading faster never feels like guessing.”</blockquote><figcaption><span class="story-avatar">MB</span><span><strong>MBA reader</strong><small>Cases and course packs</small></span><i>02</i></figcaption></figure>
-        <figure class="story-card"><p class="story-eyebrow">Client research</p><blockquote>“The private dashboard makes progress visible while sensitive documents stay on my device.”</blockquote><figcaption><span class="story-avatar">RA</span><span><strong>Research reader</strong><small>Briefings and analysis</small></span><i>03</i></figcaption></figure>
+      <div class="testimonials-band" aria-label="Customer testimonials">
+        <div class="testimonials-track">
+          <div class="testimonials-group">
+            <figure class="testimonial-card">
+              <blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=32" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Priya Mehta</strong><small>Product Manager · Bengaluru</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Phrase mode keeps enough context that reading faster never feels like guessing on cases.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=12" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Marcus Bell</strong><small>MBA candidate · London</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Sensitive briefings stay on my laptop. The dashboard just shows the time I got back.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=47" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Aisha Rahman</strong><small>Strategy analyst · Dubai</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Flash mode clears my newsletter backlog in half the time I used to spend skimming.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=15" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>James Okonkwo</strong><small>Founder · Lagos</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“I drop PDFs in, hit play, and actually finish the pack before class starts.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=5" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Sofia Alvarez</strong><small>Law student · Madrid</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Client research used to eat evenings. Now I get through dossiers without re-reading every line.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=68" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Daniel Cho</strong><small>Consultant · Singapore</small></span>
+              </figcaption>
+            </figure>
+          </div>
+          <div class="testimonials-group" aria-hidden="true">
+            <figure class="testimonial-card">
+              <blockquote>“I finish long product reports before the meeting instead of carrying them into the next day.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=32" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Priya Mehta</strong><small>Product Manager · Bengaluru</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Phrase mode keeps enough context that reading faster never feels like guessing on cases.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=12" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Marcus Bell</strong><small>MBA candidate · London</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Sensitive briefings stay on my laptop. The dashboard just shows the time I got back.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=47" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Aisha Rahman</strong><small>Strategy analyst · Dubai</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Flash mode clears my newsletter backlog in half the time I used to spend skimming.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=15" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>James Okonkwo</strong><small>Founder · Lagos</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“I drop PDFs in, hit play, and actually finish the pack before class starts.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=5" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Sofia Alvarez</strong><small>Law student · Madrid</small></span>
+              </figcaption>
+            </figure>
+            <figure class="testimonial-card">
+              <blockquote>“Client research used to eat evenings. Now I get through dossiers without re-reading every line.”</blockquote>
+              <figcaption>
+                <img class="testimonial-face" src="https://i.pravatar.cc/96?img=68" width="48" height="48" alt="" loading="lazy" decoding="async" />
+                <span><strong>Daniel Cho</strong><small>Consultant · Singapore</small></span>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -413,6 +664,80 @@ const webAppSchema = {
   <section class="ads-section ads-section-top" id="sponsor" aria-label="Sponsored content">
     <div class="container">
       <AdSlot placement="TOP" format="horizontal" />
+    </div>
+  </section>
+
+  <!-- Feature inventory — what BriskRead actually ships -->
+  <section class="product-features" id="features" aria-labelledby="features-title">
+    <div class="container">
+      <div class="reading-methods-heading">
+        <div>
+          <p class="section-label">What’s included</p>
+          <h2 id="features-title">Everything in the reading system</h2>
+        </div>
+        <p>Core reader is free (with ads and a 3,000-word cap). Lifetime Premium unlocks unlimited length, ad-free mode, synced library, and the full Chrome extension.</p>
+      </div>
+
+      <div class="features-tier-grid">
+        <article class="feature-tier glass">
+          <h3>Core reader <span class="feature-badge free">Free</span></h3>
+          <ul>
+            <li><strong>Six modes</strong> — Flash, Phrase, Focus, Flow, Bionic, Page</li>
+            <li><strong>Import</strong> — paste, PDF, EPUB, TXT, on-device OCR, extract URL</li>
+            <li><strong>Audio sync</strong> — Web Speech TTS with the visual stream</li>
+            <li><strong>AI workspace</strong> — summary &amp; chat with your own Gemini key (BYOK)</li>
+            <li><strong>Stats dashboard</strong> — words, time, streak, share cards</li>
+            <li><strong>Profiles</strong> — named slots you fill with your own speed/mode</li>
+            <li><strong>Check-ins</strong> — MCQs from the text every 1,000 words or manual only</li>
+            <li><strong>Chapter jump</strong> — section map for long documents</li>
+            <li><strong>Highlights + Markdown export</strong> — notes out to any AI or notes app</li>
+            <li><strong>Offline shell</strong> — PWA install after first visit</li>
+            <li><strong>Library (5 docs)</strong> — save and resume on this browser</li>
+            <li><strong>This week’s queue</strong> — backlog with time estimates + export MD</li>
+          </ul>
+        </article>
+        <article class="feature-tier glass feature-tier-pro">
+          <h3>Lifetime Premium <span class="feature-badge pro">$8.99 once</span></h3>
+          <ul>
+            <li><strong>Ad-free</strong> reading environment</li>
+            <li><strong>Unlimited document length</strong> — no 3,000-word cap</li>
+            <li><strong>Unlimited library</strong> — every doc you care about</li>
+            <li><strong>Cross-device sync</strong> — library, queue, profiles when signed in</li>
+            <li><strong>Chrome extension</strong> — speed-read any page in place</li>
+            <li><strong>Read later</strong> — right-click / Alt+Shift+L queue in the extension</li>
+            <li><strong>Multi-device license</strong> — up to 5 devices on your account</li>
+            <li><strong>30-day money-back</strong> guarantee</li>
+          </ul>
+          <a class="btn btn-primary" href="#pricing">Get Lifetime Premium</a>
+        </article>
+      </div>
+
+      <div class="features-detail-grid">
+        <article class="feature-card glass">
+          <h4>Library &amp; resume</h4>
+          <p>Save what you open. Progress stores word index, mode, and WPM. Resume later on this device — or any device after you sign in with Premium sync.</p>
+        </article>
+        <article class="feature-card glass">
+          <h4>Reading queue</h4>
+          <p>Park docs for the week with estimated minutes at your WPM. Export the whole queue as one Markdown file for ChatGPT, Claude, or Notion.</p>
+        </article>
+        <article class="feature-card glass">
+          <h4>Focus that stays put</h4>
+          <p>In Focus mode the active line holds a fixed eye position while the paragraph scrolls up — less chasing text down the page.</p>
+        </article>
+        <article class="feature-card glass">
+          <h4>Retention check-ins</h4>
+          <p>Auto every 1,000 words or manual only. Multiple-choice only, generated from the chunk you just read — no essay answers.</p>
+        </article>
+        <article class="feature-card glass">
+          <h4>Chrome extension</h4>
+          <p>Speed-read the current tab or selection, save to read-later, open in BriskRead.com. Keyboard: Alt+Shift+S (read), Alt+Shift+L (later).</p>
+        </article>
+        <article class="feature-card glass">
+          <h4>Private by default</h4>
+          <p>PDF/EPUB/OCR parse in your browser. Optional URL extract and AI leave the device only when you use them — AI uses your key, not ours.</p>
+        </article>
+      </div>
     </div>
   </section>
 
@@ -484,29 +809,54 @@ const webAppSchema = {
     <div class="container pricing-analytics-grid">
       
       <!-- Analytics Stored locally -->
-      <div class="glass dashboard-card">
-        <h3>Your reading dashboard</h3>
-        <p class="muted">Documents stay local. Signed-in users can sync reading totals across devices.</p>
-        <div class="stats-grid mt-4">
-          <div class="stat-box">
-            <span class="stat-value" id="stats-words">0</span>
-            <span class="stat-label">Words Speed-Read</span>
+      <div class="glass dashboard-card" id="reading-dashboard">
+        <div class="dashboard-head">
+          <div>
+            <p class="dashboard-kicker">Your progress</p>
+            <h3>Reading dashboard</h3>
+            <p class="muted dashboard-lede">Documents stay on your device. Signed-in users can sync totals across devices.</p>
           </div>
-          <div class="stat-box">
-            <span class="stat-value" id="stats-time">0m</span>
-            <span class="stat-label">Time Spent Reading</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-value" id="stats-saved">0m</span>
-            <span class="stat-label">Estimated Time Saved</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-value" id="stats-streak">0</span>
-            <span class="stat-label">Day Streak</span>
+          <div class="dashboard-streak-pill" id="dashboard-streak-pill" aria-live="polite">
+            <span class="dashboard-streak-fire" aria-hidden="true">🔥</span>
+            <span><strong id="dashboard-streak-num">0</strong> day streak</span>
           </div>
         </div>
-        <div class="actions mt-6">
-          <button class="btn btn-secondary" id="btn-share-stats">Share achievement</button>
+        <div class="stats-grid mt-4">
+          <div class="stat-box">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+            </span>
+            <span class="stat-value" id="stats-words">0</span>
+            <span class="stat-label">Words speed-read</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+            </span>
+            <span class="stat-value" id="stats-time">0m</span>
+            <span class="stat-label">Time reading</span>
+          </div>
+          <div class="stat-box stat-box-highlight">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>
+            </span>
+            <span class="stat-value" id="stats-saved">0m</span>
+            <span class="stat-label">Time saved</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg>
+            </span>
+            <span class="stat-value" id="stats-streak">0</span>
+            <span class="stat-label">Day streak</span>
+          </div>
+        </div>
+        <div class="dashboard-actions mt-6">
+          <button class="btn btn-primary" id="btn-share-stats" type="button">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="m16 6-4-4-4 4"/><path d="M12 2v14"/></svg>
+            Share achievement
+          </button>
+          <p class="dashboard-share-hint muted">Make a card for WhatsApp, X, LinkedIn, or download as an image.</p>
         </div>
       </div>
 
@@ -522,8 +872,10 @@ const webAppSchema = {
         <ul class="pricing-features mt-4">
           <li>100% ad-free reading environment</li>
           <li>Unlimited document length (no 3,000-word cap)</li>
-          <li>Premium follows your signed-in account</li>
-          <li>Speed-read any page in the Chrome extension, without leaving it</li>
+          <li>Unlimited library + resume anywhere on this device</li>
+          <li>This week’s queue, profiles, chapter map, retention check-ins, Markdown export</li>
+          <li>Premium follows your signed-in account (multi-device)</li>
+          <li>Speed-read any page in the Chrome extension + read-later queue</li>
         </ul>
         <div class="pricing-actions mt-6">
           <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $8.99</button>
@@ -677,16 +1029,42 @@ const webAppSchema = {
   </section>
 
   <!-- Modal for Share Canvas Card -->
-  <div id="share-modal" class="modal hidden">
-    <div class="modal-content glass">
-      <h3>Achievement card ready</h3>
-      <p class="muted">Right-click the image below to copy or save it to share on LinkedIn, Twitter, or with friends.</p>
-      <div class="canvas-preview mt-4">
-        <img id="share-card-img" alt="BriskRead Stats Achievement Card" />
+  <div id="share-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+    <div class="modal-content share-modal-content">
+      <button class="share-modal-close" id="btn-close-modal" type="button" aria-label="Close share dialog">✕</button>
+      <p class="share-modal-kicker">Share your progress</p>
+      <h3 id="share-modal-title">Your BriskRead milestone</h3>
+      <p class="muted share-modal-lede">Post the card, or share a ready-made caption to WhatsApp, X, or LinkedIn.</p>
+      <div class="canvas-preview">
+        <img id="share-card-img" alt="BriskRead stats achievement card" />
       </div>
-      <div class="modal-actions mt-4">
-        <button class="btn btn-secondary" id="btn-close-modal">Close</button>
+      <div class="share-actions" role="group" aria-label="Share destinations">
+        <button class="share-btn share-btn-download" id="btn-share-download" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+          Download image
+        </button>
+        <button class="share-btn share-btn-copy" id="btn-share-copy" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Copy image
+        </button>
+        <button class="share-btn share-btn-wa" id="btn-share-whatsapp" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.1-1.6-.8-1.8-.9-.2-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.6.1-1.6-.6-3-1.8-3.9-3.3-.1-.2 0-.4.1-.5l.5-.6c.1-.2.1-.3 0-.5l-.8-1.9c-.2-.4-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.7.7-1 1.6-1 2.5 0 .1 0 1.1.9 2.4 1.1 1.6 2.7 3.2 5.5 4.1.7.2 1.3.4 1.8.4.6.1 1.2 0 1.6-.1.5-.2 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2-.1-.1-.3-.2-.6-.3z"/><path d="M12 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.2-1.4A10 10 0 1 0 12 2zm0 18.2c-1.5 0-2.9-.4-4.1-1.1l-.3-.2-3.1.8.8-3-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg>
+          WhatsApp
+        </button>
+        <button class="share-btn share-btn-x" id="btn-share-x" type="button">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M18.2 2H21l-6.6 7.5L22 22h-6.8l-4.5-5.9L5.3 22H2.5l7-8L2 2h7l4 5.4L18.2 2zm-1.2 18h1.9L7.1 3.9H5.1L17 20z"/></svg>
+          Share on X
+        </button>
+        <button class="share-btn share-btn-li" id="btn-share-linkedin" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6.5 9H3.7v11.5h2.8V9zM5.1 3.5A1.7 1.7 0 1 0 5.1 7a1.7 1.7 0 0 0 0-3.5zM20.3 20.5h-2.8v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H10.8V9h2.7v1.6h.1c.4-.7 1.3-1.8 3-1.8 3.2 0 3.8 2.1 3.8 4.8v6.9z"/></svg>
+          LinkedIn
+        </button>
+        <button class="share-btn share-btn-native hidden" id="btn-share-native" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>
+          Share image…
+        </button>
       </div>
+      <p class="share-status muted" id="share-status" role="status" aria-live="polite"></p>
     </div>
   </div>
 
@@ -750,6 +1128,7 @@ const webAppSchema = {
 
   <!-- Core JavaScript Script Loader & App Logic -->
   <script is:inline src="/reader-core.js"></script>
+  <script is:inline src="/brisk-features.js"></script>
   <script is:inline>
     // State management
     const state = {
@@ -771,6 +1150,10 @@ const webAppSchema = {
       ttsChunkIndex: 0,
       ttsRunId: 0,
       isPremium: false,
+      libraryId: null,
+      lastRetentionIndex: 0,
+      retentionOpen: false,
+      chapters: [],
       stats: {
         wordsRead: 0,
         timeSpent: 0,
@@ -778,6 +1161,8 @@ const webAppSchema = {
         lastReadDate: ""
       }
     };
+
+    const BF = () => window.BriskFeatures || null;
 
     // ── Device-bound premium ──────────────────────────────────────────
     let accountUser = null;
@@ -795,6 +1180,13 @@ const webAppSchema = {
           : 'Sign in before checkout so Lifetime Premium is attached to your account automatically.';
       }
       signInButton?.classList.toggle('hidden', Boolean(accountUser));
+      // Cross-device library / queue sync
+      if (accountUser) {
+        pullAndMergeWorkspace();
+      } else {
+        BF()?.setSyncHandler(null);
+        setSyncStatus('Sign in to sync library across devices');
+      }
     });
 
     const getDeviceId = () => {
@@ -871,6 +1263,7 @@ const webAppSchema = {
     };
 
     const applyPremiumUI = () => {
+      try { renderWorkspace(); } catch (_) { /* workspace may not be ready yet */ }
       const licenseDisplay = document.getElementById('license-display');
       const licenseKeyDisplay = document.getElementById('license-key-display');
       const storedKey = getStoredLicenseKey();
@@ -1028,6 +1421,9 @@ const webAppSchema = {
         }
       }
       document.getElementById('stats-streak').textContent = state.stats.streak;
+      const streakNum = document.getElementById('dashboard-streak-num');
+      if (streakNum) streakNum.textContent = String(state.stats.streak);
+      document.getElementById('dashboard-streak-pill')?.classList.toggle('is-hot', state.stats.streak >= 3);
     };
 
     let statsSyncInFlight = false;
@@ -1156,6 +1552,323 @@ const webAppSchema = {
       document.getElementById('reading-time-left').textContent = `${minLeft} min remaining`;
       if (state.mode === 'focus') updateFocusWord();
       if (state.mode === 'flow') renderFlowWord();
+
+      // Persist resume position + retention prompts (throttled via % 25)
+      if (state.libraryId && state.currentIndex % 25 === 0) {
+        persistReaderProgress(percentage);
+      }
+      maybeOfferRetention();
+    };
+
+    const persistReaderProgress = (pct) => {
+      const api = BF();
+      if (!api || !state.libraryId) return;
+      const percentage = pct != null
+        ? pct
+        : Math.round((state.currentIndex / Math.max(1, state.words.length - 1)) * 100);
+      api.updateProgress(state.libraryId, {
+        index: state.currentIndex,
+        mode: state.mode,
+        wpm: state.wpm,
+        pct: percentage,
+      });
+    };
+
+    const refreshChapterSelect = () => {
+      const api = BF();
+      const select = document.getElementById('chapter-select');
+      if (!select || !api) return;
+      state.chapters = api.detectChapters(state.text, state.words);
+      select.innerHTML = state.chapters.map((ch) =>
+        `<option value="${ch.wordIndex}">${ch.title.replace(/</g, '')} · ${ch.pct}%</option>`
+      ).join('') || '<option value="0">Beginning</option>';
+    };
+
+    const updateReaderChrome = () => {
+      const titleEl = document.getElementById('reader-doc-title');
+      const metaEl = document.getElementById('reader-meta');
+      if (titleEl) titleEl.textContent = state.sourceLabel || 'Reader';
+      if (metaEl) {
+        const rem = BF()?.remainingEstimate(state.currentIndex, state.words.length, state.wpm);
+        metaEl.textContent = state.words.length
+          ? `${state.words.length.toLocaleString()} words · ~${rem?.minutesLeft || 0} min left`
+          : '';
+      }
+    };
+
+    const renderWorkspace = () => {
+      const api = BF();
+      if (!api) return;
+
+      const library = api.listLibrary();
+      const queue = api.listQueue();
+      const libList = document.getElementById('library-list');
+      const queueList = document.getElementById('queue-list');
+      const libEmpty = document.getElementById('library-empty');
+      const queueEmpty = document.getElementById('queue-empty');
+      const capHint = document.getElementById('library-cap-hint');
+      const qSum = document.getElementById('queue-summary');
+
+      if (capHint) {
+        capHint.textContent = state.isPremium
+          ? 'Unlimited'
+          : `${library.length} / ${api.FREE_LIBRARY_CAP} free slots`;
+      }
+      const qs = api.queueSummary(state.wpm);
+      if (qSum) {
+        qSum.textContent = qs.count
+          ? `${qs.count} queued · ~${qs.minutes} min at ${state.wpm} WPM`
+          : 'Queue empty';
+      }
+
+      if (libList) {
+        libList.innerHTML = library.map((item) => {
+          const pct = item.progress?.pct || 0;
+          const safeTitle = (item.title || 'Untitled').replace(/</g, '&lt;');
+          return `<li class="workspace-item" data-lib-id="${item.id}">
+            <div class="workspace-item-main">
+              <strong>${safeTitle}</strong>
+              <span class="muted">${(item.wordCount || 0).toLocaleString()} words · ${pct}% · ${item.progress?.mode || 'rsvp'}</span>
+            </div>
+            <div class="workspace-item-actions">
+              <button type="button" class="btn btn-primary btn-sm" data-action="open-lib">Resume</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-action="queue-lib">Queue</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-action="del-lib" title="Delete">✕</button>
+            </div>
+          </li>`;
+        }).join('');
+        libEmpty?.classList.toggle('hidden', library.length > 0);
+      }
+
+      if (queueList) {
+        queueList.innerHTML = queue.map((entry) => {
+          const safeTitle = (entry.title || 'Untitled').replace(/</g, '&lt;');
+          const done = entry.status === 'done';
+          return `<li class="workspace-item${done ? ' is-done' : ''}" data-queue-id="${entry.id}" data-lib-id="${entry.libraryId || ''}">
+            <div class="workspace-item-main">
+              <strong>${safeTitle}</strong>
+              <span class="muted">~${entry.estimatedMinutes || 1} min · ${(entry.wordCount || 0).toLocaleString()} words${done ? ' · done' : ''}</span>
+            </div>
+            <div class="workspace-item-actions">
+              <button type="button" class="btn btn-primary btn-sm" data-action="open-queue" ${entry.libraryId ? '' : 'disabled'}>Open</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-action="toggle-queue">${done ? 'Undo' : 'Done'}</button>
+              <button type="button" class="btn btn-secondary btn-sm" data-action="del-queue" title="Remove">✕</button>
+            </div>
+          </li>`;
+        }).join('');
+        queueEmpty?.classList.toggle('hidden', queue.length > 0);
+      }
+    };
+
+    const renderProfiles = () => {
+      const api = BF();
+      const wrap = document.getElementById('profile-pills');
+      const hint = document.getElementById('profile-hint');
+      if (!api || !wrap) return;
+      const active = api.getActiveProfile();
+      const activeId = active?.id || null;
+      wrap.innerHTML = api.listProfiles().map((p) =>
+        `<button type="button" class="profile-pill${p.id === activeId ? ' is-active' : ''}${p.saved ? ' is-saved' : ''}" data-profile="${p.id}" title="${(p.description || '').replace(/"/g, '')}">${p.label}${p.saved ? '' : ' ·'}</button>`
+      ).join('');
+      if (hint) {
+        hint.textContent = active
+          ? `${active.label}: ${active.description}`
+          : 'No profile selected. Set mode/WPM as you like, select a slot, then Save current settings.';
+      }
+      // Retention radios
+      const settings = api.getSettings();
+      const auto = document.getElementById('retention-mode-auto');
+      const manual = document.getElementById('retention-mode-manual');
+      if (auto) auto.checked = settings.retentionMode !== 'manual';
+      if (manual) manual.checked = settings.retentionMode === 'manual';
+    };
+
+    /** Apply only user-saved profile settings — never invent mode/WPM defaults. */
+    const applyProfile = (profile, { silent } = {}) => {
+      if (!profile) return;
+      const s = profile.settings;
+      if (!s) {
+        if (!silent) renderProfiles();
+        return;
+      }
+      if (s.wpm) {
+        state.wpm = s.wpm;
+        const wpmSlider = document.getElementById('slider-wpm');
+        const wpmDisplay = document.getElementById('wpm-display');
+        if (wpmSlider) wpmSlider.value = s.wpm;
+        if (wpmDisplay) wpmDisplay.textContent = s.wpm;
+        localStorage.setItem('wpm', String(s.wpm));
+      }
+      if (s.fontSize) {
+        state.fontSize = s.fontSize;
+        const fs = document.getElementById('slider-font-size');
+        const fd = document.getElementById('font-size-display');
+        if (fs) fs.value = s.fontSize;
+        if (fd) fd.textContent = s.fontSize;
+        localStorage.setItem('fontSize', String(s.fontSize));
+        document.querySelectorAll('.standard-reader-view, .rsvp-word-container').forEach((view) => {
+          view.style.fontSize = `${state.fontSize / 6}rem`;
+        });
+      }
+      if (s.font) {
+        state.font = s.font;
+        const sel = document.getElementById('select-font');
+        if (sel) sel.value = s.font;
+        document.documentElement.setAttribute('data-font', s.font);
+        localStorage.setItem('font', s.font);
+      }
+      if (s.mode) {
+        if (state.words.length) setMode(s.mode);
+        else state.mode = s.mode;
+      }
+      if (!silent) renderProfiles();
+    };
+
+    const openRetentionModal = (check) => {
+      if (!check || state.retentionOpen) return;
+      state.retentionOpen = true;
+      const wasPlaying = state.isPlaying;
+      if (wasPlaying) pauseReader();
+      state._retentionWasPlaying = wasPlaying;
+      state._retentionCheck = check;
+
+      const modal = document.getElementById('retention-modal');
+      const body = document.getElementById('retention-body');
+      if (!modal || !body) return;
+      modal.hidden = false;
+      modal.classList.remove('hidden');
+
+      body.innerHTML = check.questions.map((q) => {
+        const opts = (q.options || []).map((opt) =>
+          `<label class="retention-opt"><input type="radio" name="ret-${q.id}" value="${String(opt).replace(/"/g, '&quot;')}" /> <span>${String(opt).replace(/</g, '&lt;')}</span></label>`
+        ).join('');
+        return `<div class="retention-q" data-qid="${q.id}">
+          <p class="retention-prompt">${q.prompt}</p>
+          <div class="retention-opts">${opts}</div>
+        </div>`;
+      }).join('');
+    };
+
+    const closeRetentionModal = ({ resume } = {}) => {
+      const modal = document.getElementById('retention-modal');
+      if (modal) {
+        modal.hidden = true;
+        modal.classList.add('hidden');
+      }
+      state.retentionOpen = false;
+      if (resume && state._retentionWasPlaying) playRSVP();
+      state._retentionWasPlaying = false;
+      state._retentionCheck = null;
+    };
+
+    const maybeOfferRetention = () => {
+      const api = BF();
+      if (!api || state.retentionOpen || !state.isPlaying) return;
+      if (!api.shouldOfferRetention(state.currentIndex, state.lastRetentionIndex)) return;
+      const check = api.buildRetentionCheck({
+        text: state.text,
+        words: state.words,
+        fromIndex: state.lastRetentionIndex,
+        toIndex: state.currentIndex,
+      });
+      if (!check) {
+        state.lastRetentionIndex = state.currentIndex;
+        return;
+      }
+      state.lastRetentionIndex = state.currentIndex;
+      openRetentionModal(check);
+    };
+
+    const saveCurrentToLibrary = ({ queueAfter, quiet } = {}) => {
+      const api = BF();
+      if (!api || !state.text.trim()) {
+        if (!quiet) alert('Load a document first.');
+        return null;
+      }
+      const percentage = Math.round((state.currentIndex / Math.max(1, state.words.length - 1)) * 100);
+      const result = api.upsertLibrary({
+        id: state.libraryId,
+        title: state.sourceLabel || api.truncateTitle(state.text),
+        text: state.text,
+        sourceType: 'reader',
+        isPremium: state.isPremium,
+        progress: {
+          index: state.currentIndex,
+          mode: state.mode,
+          wpm: state.wpm,
+          pct: percentage,
+        },
+        profileId: api.getActiveProfile()?.id,
+      });
+      if (!result.ok) {
+        if (!quiet) alert(result.reason || 'Could not save.');
+        return null;
+      }
+      state.libraryId = result.item.id;
+      if (queueAfter) {
+        const q = api.addToQueue({
+          libraryId: result.item.id,
+          title: result.item.title,
+          wordCount: result.item.wordCount,
+          wpm: state.wpm,
+        });
+        if (!q.ok && q.reason && !quiet) alert(q.reason);
+      }
+      renderWorkspace();
+      return result.item;
+    };
+
+    const openLibraryItem = (id, { fromStart } = {}) => {
+      const api = BF();
+      const item = api?.getLibraryItem(id);
+      if (!item?.text) return;
+      initReaderSession(item.text, item.title || 'Library', {
+        libraryId: item.id,
+        resumeIndex: fromStart ? 0 : (item.progress?.index || 0),
+        mode: item.progress?.mode,
+        wpm: item.progress?.wpm,
+        skipAutosave: true,
+      });
+    };
+
+    const exportCurrentMarkdown = async () => {
+      const api = BF();
+      if (!api) return;
+      if (state.text.trim() && !state.libraryId) saveCurrentToLibrary();
+      const md = api.exportMarkdown({
+        libraryId: state.libraryId,
+        meta: {
+          title: state.sourceLabel || 'BriskRead export',
+          summary: '',
+        },
+      });
+      const slug = (state.sourceLabel || 'briskread').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
+      api.downloadText(`${slug || 'briskread'}-export.md`, md);
+      try {
+        await api.copyText(md);
+      } catch (_) { /* optional */ }
+    };
+
+    const highlightCurrent = () => {
+      const api = BF();
+      if (!api || !state.words.length) return;
+      if (!state.libraryId) saveCurrentToLibrary();
+      const start = state.currentIndex;
+      const end = Math.min(state.words.length, start + (state.mode === 'phrase' ? 3 : 1));
+      const text = state.words.slice(start, end).join(' ');
+      const res = api.addHighlight({
+        libraryId: state.libraryId,
+        text,
+        wordIndex: start,
+      });
+      if (res.ok) {
+        const btn = document.getElementById('btn-highlight-word');
+        if (btn) {
+          const prev = btn.textContent;
+          btn.textContent = 'Saved';
+          setTimeout(() => { btn.textContent = prev; }, 1200);
+        }
+      }
     };
 
     // Main RSVP playback loop
@@ -1238,8 +1951,9 @@ const webAppSchema = {
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
-      // Save stats immediately on pause
+      // Save stats + resume position immediately on pause
       saveStats();
+      persistReaderProgress();
     };
 
     const seekReader = (index) => {
@@ -1420,6 +2134,7 @@ const webAppSchema = {
 
     const updateFocusWord = () => {
       const view = document.getElementById('standard-text-view');
+      if (!view) return;
       const previous = view.querySelector('.focus-word.active');
       if (previous) previous.classList.remove('active');
       const current = view.querySelector(`[data-word-index="${state.currentIndex}"]`);
@@ -1429,10 +2144,12 @@ const webAppSchema = {
       view.querySelectorAll('.focus-word').forEach((word) => {
         word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
       });
-      const viewRect = view.getBoundingClientRect();
-      const currentRect = current.getBoundingClientRect();
-      if (currentRect.top < viewRect.top || currentRect.bottom > viewRect.bottom) {
-        current.scrollIntoView({ block: 'center', behavior: 'auto' });
+      // Keep the active line at a fixed eye position (~38% from top).
+      // Text scrolls upward as the highlight advances — eyes stay put.
+      const eyeY = view.clientHeight * 0.38;
+      const targetScroll = Math.max(0, current.offsetTop - eyeY);
+      if (Math.abs(view.scrollTop - targetScroll) > 1) {
+        view.scrollTop = targetScroll;
       }
     };
 
@@ -1463,7 +2180,7 @@ const webAppSchema = {
       const descriptions = {
         rsvp: 'One word at a fixed focal point for maximum speed.',
         phrase: 'Three-word groups preserve more context while reducing eye movement.',
-        focus: 'Keep the surrounding paragraph visible while the current word advances.',
+        focus: 'Active line stays fixed; the paragraph scrolls up so your eyes do not chase downward.',
         flow: 'Keep a fixed focal point while nearby words and lines move through context.',
         bionic: 'Bold word beginnings guide your eyes through the full text.',
         standard: 'A clean, distraction-free page for self-paced reading.',
@@ -1534,7 +2251,7 @@ const webAppSchema = {
               const ocrText = await extractPDFWithOCR(pdf, maxPages, status);
               if (ocrText.trim()) {
                 status.textContent = `OCR loaded ${maxPages} page${maxPages === 1 ? '' : 's'}.`;
-                initReaderSession(ocrText, file.name);
+                initReaderSession(ocrText, file.name, sessionOptsFromImport('upload'));
               } else {
                 status.textContent = "No text could be read from this PDF.";
               }
@@ -1542,7 +2259,7 @@ const webAppSchema = {
             }
 
             status.textContent = `Loaded ${maxPages} page${maxPages === 1 ? '' : 's'}.`;
-            initReaderSession(fullText, file.name);
+            initReaderSession(fullText, file.name, sessionOptsFromImport('upload'));
           } catch (err) {
             status.textContent = "Could not extract text from this PDF. Try Image OCR for scanned pages.";
             console.error(err);
@@ -1590,7 +2307,7 @@ const webAppSchema = {
             document.getElementById('upload-progress-bar').style.width = percent + '%';
           }
 
-          initReaderSession(fullText, file.name);
+          initReaderSession(fullText, file.name, sessionOptsFromImport('upload'));
         };
         reader.readAsArrayBuffer(file);
       } catch (err) {
@@ -1654,7 +2371,7 @@ const webAppSchema = {
           return;
         }
 
-        initReaderSession(extractedText, file.name);
+        initReaderSession(extractedText, file.name, sessionOptsFromImport('ocr'));
       } catch (err) {
         alert("OCR parsing failed.");
         console.error(err);
@@ -1663,7 +2380,9 @@ const webAppSchema = {
     };
 
     // Load parsed text into reader session
-    const initReaderSession = (text, sourceLabel = 'Document') => {
+    // options: libraryId, resumeIndex, mode, wpm, skipAutosave,
+    //          saveToLibrary (default true), addToQueue (default false), sourceUrl, sourceType
+    const initReaderSession = (text, sourceLabel = 'Document', options = {}) => {
       if (!text || text.trim().length === 0) {
         alert("No valid text extracted.");
         return;
@@ -1691,22 +2410,215 @@ const webAppSchema = {
       
       parseText(text);
       state.sourceLabel = sourceLabel;
+      state.libraryId = options.libraryId || null;
+      state.lastRetentionIndex = options.resumeIndex || 0;
       updateDocumentContext();
       
       // Reset reader panels
       const readerScreen = document.getElementById('reader-screen');
       readerScreen.classList.remove('hidden');
-      setMode('rsvp');
+
+      const profile = BF()?.getActiveProfile();
+      const savedMode = profile?.settings?.mode;
+      const modeToUse = options.mode || savedMode || state.mode || 'rsvp';
+      if (options.wpm) {
+        state.wpm = options.wpm;
+        const wpmSlider = document.getElementById('slider-wpm');
+        const wpmDisplay = document.getElementById('wpm-display');
+        if (wpmSlider) wpmSlider.value = options.wpm;
+        if (wpmDisplay) wpmDisplay.textContent = options.wpm;
+      } else if (profile?.settings?.wpm && !options.skipProfile) {
+        applyProfile(profile, { silent: true });
+      }
+      setMode(modeToUse);
+
+      const resumeAt = Math.min(
+        Math.max(0, Number(options.resumeIndex) || 0),
+        Math.max(0, state.words.length - 1)
+      );
+      state.currentIndex = resumeAt;
+      refreshChapterSelect();
+      updateReaderChrome();
       renderRSVPWord();
+
+      const saveToLibrary = options.saveToLibrary !== false && !options.skipAutosave;
+      const addToQueue = !!options.addToQueue;
+
+      if (saveToLibrary || addToQueue) {
+        if (addToQueue && saveToLibrary) {
+          const item = saveCurrentToLibrary({ queueAfter: true, quiet: true });
+          if (item) state.libraryId = item.id;
+        } else if (saveToLibrary) {
+          const item = saveCurrentToLibrary({ quiet: true });
+          if (item) state.libraryId = item.id;
+        } else if (addToQueue) {
+          // Queue requires a library entry for full-text export later
+          const item = saveCurrentToLibrary({ queueAfter: true, quiet: true });
+          if (item) state.libraryId = item.id;
+        }
+      } else if (state.libraryId) {
+        BF()?.setActiveLibraryId(state.libraryId);
+      }
 
       // Scroll smoothly to the reading card
       readerScreen.scrollIntoView({ behavior: 'smooth' });
     };
 
+    const readImportOpts = (prefix) => ({
+      saveToLibrary: document.getElementById(`opt-${prefix}-library`)?.checked !== false,
+      addToQueue: !!document.getElementById(`opt-${prefix}-queue`)?.checked,
+    });
+
+    const sessionOptsFromImport = (prefix, extra = {}) => {
+      const opts = readImportOpts(prefix);
+      return {
+        saveToLibrary: opts.saveToLibrary,
+        addToQueue: opts.addToQueue,
+        sourceType: prefix,
+        ...extra,
+      };
+    };
+
+    /** Extract readable text from HTML string returned by /api/extract */
+    const extractArticleFromHtml = (html, pageUrl) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      doc.querySelectorAll('script, style, noscript, svg, iframe, nav, footer, header, form, aside, [role="navigation"], [role="banner"], [role="contentinfo"]').forEach((el) => el.remove());
+
+      const title =
+        doc.querySelector('meta[property="og:title"]')?.getAttribute('content') ||
+        doc.querySelector('title')?.textContent ||
+        doc.querySelector('h1')?.textContent ||
+        'Web Article';
+
+      const root =
+        doc.querySelector('article') ||
+        doc.querySelector('[role="main"]') ||
+        doc.querySelector('main') ||
+        doc.querySelector('.post-content, .entry-content, .article-body, .story-body, #content') ||
+        doc.body;
+
+      if (!root) return { title: title.trim(), text: '' };
+
+      const blocks = Array.from(
+        root.querySelectorAll('p, h1, h2, h3, h4, li, blockquote, pre, figcaption')
+      );
+      let parts = blocks
+        .map((el) => (el.innerText || el.textContent || '').replace(/\s+/g, ' ').trim())
+        .filter((t) => t.length > 25);
+
+      // Deduplicate near-identical lines
+      const seen = new Set();
+      parts = parts.filter((t) => {
+        const key = t.slice(0, 80).toLowerCase();
+        if (seen.has(key)) return false;
+        seen.add(key);
+        return true;
+      });
+
+      let body = parts.join('\n\n');
+      if (body.length < 120) {
+        // Fallback: full text of root with light cleanup
+        body = (root.innerText || root.textContent || '')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim();
+      }
+
+      return {
+        title: title.replace(/\s+/g, ' ').trim().slice(0, 200),
+        text: body,
+        url: pageUrl || '',
+      };
+    };
+
+    let workspaceSyncTimer = null;
+    let workspaceSyncing = false;
+
+    const setSyncStatus = (msg) => {
+      const el = document.getElementById('workspace-sync-status');
+      if (el) el.textContent = msg || '';
+    };
+
+    const pushWorkspaceToCloud = async (store) => {
+      const supabase = globalThis.briskreadSupabase;
+      if (!supabase || !accountUser?.id) return;
+      if (workspaceSyncing) return;
+      workspaceSyncing = true;
+      try {
+        const payload = store || BF()?.getStoreSnapshot();
+        if (!payload) return;
+        const { error } = await supabase.from('reading_workspace').upsert({
+          user_id: accountUser.id,
+          payload,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id' });
+        if (error) {
+          // Table may not exist yet until migration is applied
+          setSyncStatus(error.message?.includes('reading_workspace')
+            ? 'Cloud sync: run Supabase migration reading_workspace'
+            : `Sync push failed: ${error.message}`);
+        } else {
+          setSyncStatus(`Synced · ${new Date().toLocaleTimeString()}`);
+        }
+      } catch (err) {
+        setSyncStatus('Sync offline');
+      } finally {
+        workspaceSyncing = false;
+      }
+    };
+
+    const scheduleWorkspacePush = (store) => {
+      if (!accountUser?.id) return;
+      clearTimeout(workspaceSyncTimer);
+      workspaceSyncTimer = setTimeout(() => pushWorkspaceToCloud(store), 800);
+    };
+
+    const pullAndMergeWorkspace = async () => {
+      const api = BF();
+      const supabase = globalThis.briskreadSupabase;
+      if (!api || !supabase || !accountUser?.id) {
+        setSyncStatus(accountUser ? '' : 'Sign in to sync library across devices');
+        return;
+      }
+      setSyncStatus('Syncing…');
+      try {
+        const { data, error } = await supabase
+          .from('reading_workspace')
+          .select('payload, updated_at')
+          .eq('user_id', accountUser.id)
+          .maybeSingle();
+
+        if (error) {
+          setSyncStatus(error.code === '42P01' || /relation|does not exist/i.test(error.message || '')
+            ? 'Cloud sync needs DB migration (reading_workspace)'
+            : `Sync: ${error.message}`);
+          // Still register push so local saves queue for when table exists
+          api.setSyncHandler((store) => scheduleWorkspacePush(store));
+          return;
+        }
+
+        const local = api.getStoreSnapshot();
+        if (data?.payload) {
+          const remote = data.payload;
+          const merged = api.mergeStores(local, remote);
+          api.replaceStore(merged);
+          renderWorkspace();
+          renderProfiles();
+        }
+        api.setSyncHandler((store) => scheduleWorkspacePush(store));
+        await pushWorkspaceToCloud(api.getStoreSnapshot());
+      } catch (err) {
+        setSyncStatus('Could not reach cloud sync');
+        api.setSyncHandler((store) => scheduleWorkspacePush(store));
+      }
+    };
+
     // Clean reader closure
     const closeReaderSession = () => {
       pauseReader();
+      persistReaderProgress();
       document.getElementById('reader-screen').classList.add('hidden');
+      renderWorkspace();
     };
 
     const populateVoices = () => {
@@ -1798,23 +2710,36 @@ const webAppSchema = {
         document.querySelector('.hero-word').classList.remove('is-changing');
         requestAnimationFrame(() => document.querySelector('.hero-word').classList.add('is-changing'));
       };
-      // Focus-mode preview: the whole paragraph stays readable while the
-      // highlight advances, which is the thing that distinguishes it from Flash.
+      // Focus preview must match the real reader: .focus-word + .active + .active-line
       const heroFocusHost = document.getElementById('hero-focus-demo');
       const heroFocusWords = 'Removing horizontal eye movement lets you read a whole paragraph without losing your place or rereading a line.'.split(' ');
-      heroFocusHost.replaceChildren(...heroFocusWords.flatMap((word, i) => {
+      const heroFocusFrag = document.createDocumentFragment();
+      heroFocusWords.forEach((word, index) => {
         const span = document.createElement('span');
-        span.textContent = word;
-        return i === 0 ? [span] : [document.createTextNode(' '), span];
-      }));
-      const heroFocusSpans = [...heroFocusHost.querySelectorAll('span')];
+        span.className = 'focus-word';
+        span.dataset.wordIndex = String(index);
+        span.textContent = `${word} `;
+        heroFocusFrag.appendChild(span);
+      });
+      heroFocusHost.replaceChildren(heroFocusFrag);
+      const heroFocusSpans = [...heroFocusHost.querySelectorAll('.focus-word')];
       let heroFocusIndex = 0;
       const renderHeroFocus = () => {
-        heroFocusSpans.forEach((s) => s.classList.remove('is-current'));
-        heroFocusSpans[heroFocusIndex % heroFocusSpans.length].classList.add('is-current');
+        const idx = heroFocusIndex % heroFocusSpans.length;
+        const current = heroFocusSpans[idx];
+        heroFocusSpans.forEach((s) => s.classList.remove('active', 'active-line'));
+        if (current) {
+          current.classList.add('active');
+          // Same line detection as updateFocusWord() in the real reader
+          const lineTop = current.offsetTop;
+          heroFocusSpans.forEach((word) => {
+            word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
+          });
+        }
         heroFocusIndex += 1;
       };
-      renderHeroFocus();
+      // Double rAF so offsetTop is correct after first paint in the dark mock
+      requestAnimationFrame(() => requestAnimationFrame(renderHeroFocus));
 
       const heroTick = () => { renderHeroPreview(); renderHeroFocus(); };
 
@@ -1884,7 +2809,12 @@ const webAppSchema = {
           alert("Please paste some text to begin.");
           return;
         }
-        initReaderSession(pasteVal, 'Pasted text');
+        const opts = readImportOpts('paste');
+        initReaderSession(pasteVal, 'Pasted text', {
+          saveToLibrary: opts.saveToLibrary,
+          addToQueue: opts.addToQueue,
+          sourceType: 'paste',
+        });
       });
 
       document.getElementById('text-input').addEventListener('input', (event) => {
@@ -1902,6 +2832,173 @@ const webAppSchema = {
 
       // Close button
       document.getElementById('btn-close-reader').addEventListener('click', closeReaderSession);
+
+      // Workspace: library / queue / profiles / export / retention
+      document.getElementById('btn-save-library')?.addEventListener('click', () => {
+        const item = saveCurrentToLibrary();
+        if (item) {
+          const btn = document.getElementById('btn-save-library');
+          if (btn) {
+            const prev = btn.textContent;
+            btn.textContent = 'Saved';
+            setTimeout(() => { btn.textContent = prev; }, 1200);
+          }
+        }
+      });
+      document.getElementById('btn-add-queue')?.addEventListener('click', () => {
+        const item = saveCurrentToLibrary({ queueAfter: true });
+        if (item) renderWorkspace();
+      });
+      document.getElementById('btn-export-md')?.addEventListener('click', () => { exportCurrentMarkdown(); });
+      document.getElementById('btn-highlight-word')?.addEventListener('click', () => { highlightCurrent(); });
+      document.getElementById('btn-retention-check')?.addEventListener('click', () => {
+        const api = BF();
+        if (!api || !state.words.length) return;
+        const from = Math.max(0, state.currentIndex - api.RETENTION_CHUNK);
+        const check = api.buildRetentionCheck({
+          text: state.text,
+          words: state.words,
+          fromIndex: from,
+          toIndex: state.currentIndex || Math.min(state.words.length, api.RETENTION_CHUNK),
+        });
+        if (check) openRetentionModal(check);
+        else alert('Read a bit more first — check-ins need ~40+ words of context.');
+      });
+      document.getElementById('btn-retention-skip')?.addEventListener('click', () => {
+        closeRetentionModal({ resume: true });
+      });
+      document.getElementById('btn-retention-save')?.addEventListener('click', () => {
+        const api = BF();
+        const check = state._retentionCheck;
+        if (!api || !check) {
+          closeRetentionModal({ resume: true });
+          return;
+        }
+        const answers = {};
+        let correct = 0;
+        let total = 0;
+        check.questions.forEach((q) => {
+          const picked = document.querySelector(`input[name="ret-${q.id}"]:checked`);
+          const val = picked?.value || '';
+          answers[q.id] = val;
+          if (q.answer != null) {
+            total += 1;
+            if (val === q.answer) correct += 1;
+          }
+        });
+        if (!state.libraryId) saveCurrentToLibrary({ quiet: true });
+        api.saveRetention({
+          libraryId: state.libraryId,
+          fromIndex: check.fromIndex,
+          toIndex: check.toIndex,
+          answers,
+          terms: check.terms,
+          score: total ? `${correct}/${total}` : null,
+        });
+        closeRetentionModal({ resume: true });
+      });
+      document.getElementById('chapter-select')?.addEventListener('change', (e) => {
+        const idx = Number(e.target.value) || 0;
+        seekReader(idx);
+      });
+      document.getElementById('profile-pills')?.addEventListener('click', (e) => {
+        const btn = e.target.closest('[data-profile]');
+        if (!btn) return;
+        const api = BF();
+        const res = api?.setActiveProfile(btn.dataset.profile);
+        if (res?.ok) applyProfile(res.profile);
+      });
+      document.getElementById('btn-save-profile')?.addEventListener('click', () => {
+        const api = BF();
+        if (!api) return;
+        let id = api.getActiveProfile()?.id;
+        if (!id) {
+          id = 'news';
+          api.setActiveProfile(id);
+        }
+        api.saveProfileSettings(id, {
+          mode: state.mode,
+          wpm: state.wpm,
+          fontSize: state.fontSize,
+          tts: state.ttsActive,
+          font: state.font,
+        });
+        renderProfiles();
+        const btn = document.getElementById('btn-save-profile');
+        if (btn) {
+          const prev = btn.textContent;
+          btn.textContent = 'Saved';
+          setTimeout(() => { btn.textContent = prev; }, 1200);
+        }
+      });
+      document.querySelectorAll('input[name="retention-mode"]').forEach((el) => {
+        el.addEventListener('change', () => {
+          if (!el.checked) return;
+          BF()?.updateSettings({ retentionMode: el.value, retentionChunk: 1000 });
+          renderProfiles();
+        });
+      });
+      document.getElementById('btn-export-queue')?.addEventListener('click', () => {
+        const api = BF();
+        if (!api) return;
+        const md = api.exportQueueMarkdown({ includeDone: false, includeFullText: true });
+        api.downloadText(`briskread-queue-${new Date().toISOString().slice(0, 10)}.md`, md);
+      });
+      document.getElementById('library-list')?.addEventListener('click', (e) => {
+        const li = e.target.closest('[data-lib-id]');
+        if (!li) return;
+        const id = li.dataset.libId;
+        const action = e.target.closest('[data-action]')?.dataset.action;
+        const api = BF();
+        if (action === 'open-lib') openLibraryItem(id);
+        else if (action === 'queue-lib') {
+          const item = api?.getLibraryItem(id);
+          if (!item) return;
+          const q = api.addToQueue({
+            libraryId: item.id,
+            title: item.title,
+            wordCount: item.wordCount,
+            wpm: state.wpm,
+          });
+          if (!q.ok && q.reason) alert(q.reason);
+          renderWorkspace();
+        } else if (action === 'del-lib') {
+          if (confirm('Delete this document from your library?')) {
+            api?.removeLibrary(id);
+            if (state.libraryId === id) state.libraryId = null;
+            renderWorkspace();
+          }
+        }
+      });
+      document.getElementById('queue-list')?.addEventListener('click', (e) => {
+        const li = e.target.closest('[data-queue-id]');
+        if (!li) return;
+        const qid = li.dataset.queueId;
+        const libId = li.dataset.libId;
+        const action = e.target.closest('[data-action]')?.dataset.action;
+        const api = BF();
+        if (action === 'open-queue' && libId) openLibraryItem(libId);
+        else if (action === 'toggle-queue') {
+          const entry = api?.listQueue().find((q) => q.id === qid);
+          api?.setQueueStatus(qid, entry?.status === 'done' ? 'pending' : 'done');
+          renderWorkspace();
+        } else if (action === 'del-queue') {
+          api?.removeFromQueue(qid);
+          renderWorkspace();
+        }
+      });
+      document.getElementById('btn-clear-done-queue')?.addEventListener('click', () => {
+        const api = BF();
+        api?.listQueue().filter((q) => q.status === 'done').forEach((q) => api.removeFromQueue(q.id));
+        renderWorkspace();
+      });
+
+      renderProfiles();
+      renderWorkspace();
+      const activeProfile = BF()?.getActiveProfile();
+      if (activeProfile?.settings) applyProfile(activeProfile, { silent: true });
+      if (accountUser) pullAndMergeWorkspace();
+      else setSyncStatus('Sign in to sync library across devices');
 
       // Mode switch
       document.querySelectorAll('.mode-btn').forEach(btn => {
@@ -2063,7 +3160,7 @@ const webAppSchema = {
           } else {
             // Text file
             const reader = new FileReader();
-            reader.onload = (event) => initReaderSession(event.target.result, file.name);
+            reader.onload = (event) => initReaderSession(event.target.result, file.name, sessionOptsFromImport('upload'));
             reader.readAsText(file);
           }
         }
@@ -2081,38 +3178,56 @@ const webAppSchema = {
 
       // URL parser text loader
       document.getElementById('btn-load-url').addEventListener('click', async () => {
-        const url = document.getElementById('url-input').value;
-        if (!url) return alert("Please enter a valid URL.");
-        
-        document.getElementById('btn-load-url').textContent = "Extracting...";
-        try {
-          // First-party server-side fetch — no third-party CORS proxy dependency
-          const response = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
-          if (!response.ok) throw new Error("Server-side extraction failed.");
-          const json = await response.json();
-          
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(json.contents, 'text/html');
-          
-          // Remove noise script markup
-          doc.querySelectorAll('script, style, nav, footer, header, form').forEach(el => el.remove());
-          
-          const title = doc.querySelector('h1')?.innerText || "Web Article";
-          const paragraphs = Array.from(doc.querySelectorAll('p, h2, h3'))
-            .map(p => p.innerText.trim())
-            .filter(t => t.length > 30) // Filter layout words
-            .join('\n\n');
+        let url = (document.getElementById('url-input').value || '').trim();
+        if (!url) return alert('Please enter a valid URL.');
+        if (!/^https?:\/\//i.test(url)) url = `https://${url}`;
 
-          document.getElementById('btn-load-url').textContent = "Extract Text";
-          if (paragraphs.length < 100) {
-            alert("Could not extract clean body content. Copy pasting is recommended.");
+        const btn = document.getElementById('btn-load-url');
+        const statusEl = document.getElementById('url-extract-status');
+        btn.textContent = 'Extracting…';
+        btn.disabled = true;
+        if (statusEl) statusEl.textContent = 'Fetching page…';
+
+        try {
+          const response = await fetch(`/api/extract?url=${encodeURIComponent(url)}`);
+          const json = await response.json().catch(() => ({}));
+
+          if (!response.ok) {
+            const detail = json.error || json.detail || `HTTP ${response.status}`;
+            if (response.status === 404) {
+              throw new Error(
+                'Extract API not found (404). On local Astro dev, /api/extract only works with Vercel (vercel dev) or production. Use paste, or deploy/preview on Vercel.'
+              );
+            }
+            throw new Error(detail);
+          }
+
+          if (!json.contents) throw new Error(json.error || 'Empty response from extractor');
+
+          const article = extractArticleFromHtml(json.contents, url);
+          btn.textContent = 'Extract Text';
+          btn.disabled = false;
+
+          if (!article.text || article.text.length < 80) {
+            if (statusEl) statusEl.textContent = 'Little text found — try paste, or a simpler article URL.';
+            alert('Could not extract clean body content. Many sites block extractors or load content with JavaScript. Paste the article text instead.');
             return;
           }
-          initReaderSession(`${title}\n\n${paragraphs}`, title);
+
+          if (statusEl) statusEl.textContent = `Loaded “${article.title}” (${article.text.split(/\s+/).length.toLocaleString()} words)`;
+          const opts = readImportOpts('url');
+          initReaderSession(`${article.title}\n\n${article.text}`, article.title, {
+            saveToLibrary: opts.saveToLibrary,
+            addToQueue: opts.addToQueue,
+            sourceType: 'url',
+            sourceUrl: url,
+          });
         } catch (err) {
-          alert("Failed to load webpage content.");
-          document.getElementById('btn-load-url').textContent = "Extract Text";
           console.error(err);
+          btn.textContent = 'Extract Text';
+          btn.disabled = false;
+          if (statusEl) statusEl.textContent = err.message || 'Extract failed';
+          alert(err.message || 'Failed to load webpage content.');
         }
       });
 
@@ -2334,77 +3449,292 @@ const webAppSchema = {
         }
       });
 
-      // Canvas share card generation
-      document.getElementById('btn-share-stats').addEventListener('click', () => {
+      // ── Share achievement card ──────────────────────────────────────
+      let shareCardDataUrl = '';
+      let shareCardBlob = null;
+      let shareCaption = '';
+
+      const roundRect = (ctx, x, y, w, h, r) => {
+        const radius = Math.min(r, w / 2, h / 2);
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.arcTo(x + w, y, x + w, y + h, radius);
+        ctx.arcTo(x + w, y + h, x, y + h, radius);
+        ctx.arcTo(x, y + h, x, y, radius);
+        ctx.arcTo(x, y, x + w, y, radius);
+        ctx.closePath();
+      };
+
+      const buildShareCaption = (stats) => {
+        const host = location.origin || 'https://briskread.com';
+        const parts = [
+          `I just speed-read ${stats.wordsRead.toLocaleString()} words on BriskRead`,
+          stats.timeSaved > 0 ? `saved ~${stats.timeSaved} min vs normal reading` : null,
+          stats.streak > 0 ? `${stats.streak}-day streak` : null,
+          `at ${stats.speed} WPM.`,
+          `Try it free → ${host}`,
+        ].filter(Boolean);
+        return parts.join(' · ');
+      };
+
+      const generateShareCard = async () => {
         const stats = {
           wordsRead: state.stats.wordsRead,
           speed: state.wpm,
-          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 240) - state.stats.timeSpent))
+          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 240) - state.stats.timeSpent)),
+          streak: state.stats.streak || 0,
+          timeSpent: Math.round(state.stats.timeSpent || 0),
         };
-        
+        shareCaption = buildShareCaption(stats);
+
+        // Square card — works for WhatsApp, IG stories crop, X media
+        const W = 1080;
+        const H = 1080;
         const canvas = document.createElement('canvas');
-        canvas.width = 800;
-        canvas.height = 400;
+        canvas.width = W;
+        canvas.height = H;
         const ctx = canvas.getContext('2d');
 
-        // Dark gradient background matching AMOLED Black
-        const grad = ctx.createLinearGradient(0, 0, 800, 400);
-        grad.addColorStop(0, '#000000');
-        grad.addColorStop(0.5, '#0f172a');
-        grad.addColorStop(1, '#1e293b');
-        ctx.fillStyle = grad;
-        ctx.fillRect(0, 0, 800, 400);
+        // Background
+        const bg = ctx.createLinearGradient(0, 0, W, H);
+        bg.addColorStop(0, '#07080a');
+        bg.addColorStop(0.45, '#12121c');
+        bg.addColorStop(1, '#1a1a2e');
+        ctx.fillStyle = bg;
+        ctx.fillRect(0, 0, W, H);
 
-        // Grid accents
-        ctx.strokeStyle = 'rgba(255,255,255,0.03)';
+        // Soft brand glow
+        const glow = ctx.createRadialGradient(W * 0.75, H * 0.2, 20, W * 0.75, H * 0.2, 420);
+        glow.addColorStop(0, 'rgba(94, 106, 210, 0.45)');
+        glow.addColorStop(1, 'rgba(94, 106, 210, 0)');
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, W, H);
+
+        // Subtle dots
+        ctx.fillStyle = 'rgba(255,255,255,0.04)';
+        for (let i = 0; i < 40; i++) {
+          const x = (i * 97) % W;
+          const y = (i * 53) % H;
+          ctx.beginPath();
+          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Card frame
+        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
         ctx.lineWidth = 2;
-        for (let i = 0; i < 800; i += 40) {
-          ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, 400); ctx.stroke();
-        }
-        for (let j = 0; j < 400; j += 40) {
-          ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(800, j); ctx.stroke();
-        }
+        roundRect(ctx, 48, 48, W - 96, H - 96, 36);
+        ctx.stroke();
 
-        // Accent glowing border lines
-        ctx.strokeStyle = '#2563eb';
-        ctx.lineWidth = 6;
-        ctx.strokeRect(0, 0, 800, 400);
+        // Brand mark
+        ctx.fillStyle = '#5e6ad2';
+        roundRect(ctx, 96, 110, 56, 56, 14);
+        ctx.fill();
+        ctx.fillStyle = '#fff';
+        ctx.font = '700 28px system-ui, -apple-system, sans-serif';
+        ctx.fillText('⚡', 108, 148);
 
-        // Header Title
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.font = '650 22px system-ui, -apple-system, sans-serif';
+        ctx.letterSpacing = '0.12em';
+        ctx.fillText('BRISKREAD', 172, 128);
+        ctx.letterSpacing = '0';
+
         ctx.fillStyle = '#ffffff';
-        ctx.font = '800 40px system-ui, -apple-system, sans-serif';
-        ctx.fillText('⚡ BriskRead Milestone', 60, 90);
+        ctx.font = '600 44px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Reading milestone', 172, 172);
 
-        // Dividers
-        ctx.fillStyle = '#ef4444';
-        ctx.fillRect(60, 115, 200, 5);
+        // Hero number
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.font = '600 26px system-ui, -apple-system, sans-serif';
+        ctx.fillText('WORDS SPEED-READ', 96, 300);
 
-        // Main Stat content
-        ctx.fillStyle = '#cbd5e1';
-        ctx.font = '600 24px system-ui, -apple-system, sans-serif';
-        ctx.fillText(`Total Words Speed-Read:`, 60, 180);
-        
-        ctx.fillStyle = '#3b82f6';
-        ctx.font = '800 44px system-ui, sans-serif';
-        ctx.fillText(`${stats.wordsRead.toLocaleString()}`, 60, 230);
+        ctx.fillStyle = '#a8b0f2';
+        ctx.font = '700 120px system-ui, -apple-system, sans-serif';
+        const wordsLabel = stats.wordsRead.toLocaleString();
+        ctx.fillText(wordsLabel, 96, 420);
 
-        ctx.fillStyle = '#cbd5e1';
-        ctx.font = '600 24px system-ui, sans-serif';
-        ctx.fillText(`Current Speed: ${stats.speed} WPM`, 450, 180);
-        ctx.fillText(`Est. Reading Time Saved: ${stats.timeSaved} mins`, 450, 230);
+        // Stat chips
+        const chips = [
+          { label: 'PACE', value: `${stats.speed} WPM` },
+          { label: 'TIME SAVED', value: `${stats.timeSaved} min` },
+          { label: 'STREAK', value: `${stats.streak} day${stats.streak === 1 ? '' : 's'}` },
+        ];
+        const chipW = 280;
+        const chipH = 120;
+        const gap = 24;
+        const startX = 96;
+        const chipY = 500;
+        chips.forEach((chip, i) => {
+          const x = startX + i * (chipW + gap);
+          ctx.fillStyle = 'rgba(255,255,255,0.05)';
+          roundRect(ctx, x, chipY, chipW, chipH, 20);
+          ctx.fill();
+          ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+          ctx.lineWidth = 1.5;
+          roundRect(ctx, x, chipY, chipW, chipH, 20);
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(255,255,255,0.45)';
+          ctx.font = '650 18px system-ui, -apple-system, sans-serif';
+          ctx.fillText(chip.label, x + 24, chipY + 42);
+          ctx.fillStyle = '#ffffff';
+          ctx.font = '700 36px system-ui, -apple-system, sans-serif';
+          ctx.fillText(chip.value, x + 24, chipY + 88);
+        });
 
-        // Sub Brand slogan
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 18px system-ui, sans-serif';
-        ctx.fillText(`Read faster with RSVP, bionic reading and TTS. ${location.hostname}`, 60, 340);
+        // Footer bar
+        ctx.fillStyle = 'rgba(94, 106, 210, 0.18)';
+        roundRect(ctx, 96, 700, W - 192, 200, 24);
+        ctx.fill();
 
-        // Output canvas image into preview image element
-        document.getElementById('share-card-img').src = canvas.toDataURL('image/png');
-        document.getElementById('share-modal').classList.remove('hidden');
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '600 34px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Read the backlog once.', 128, 770);
+
+        ctx.fillStyle = 'rgba(255,255,255,0.65)';
+        ctx.font = '500 24px system-ui, -apple-system, sans-serif';
+        ctx.fillText('RSVP · Bionic · PDF · private by default', 128, 820);
+
+        ctx.fillStyle = '#a8b0f2';
+        ctx.font = '650 26px system-ui, -apple-system, sans-serif';
+        const host = (location.hostname || 'briskread.com').replace(/^www\./, '');
+        ctx.fillText(host, 128, 870);
+
+        shareCardDataUrl = canvas.toDataURL('image/png');
+        document.getElementById('share-card-img').src = shareCardDataUrl;
+
+        // Blob for native share / download
+        shareCardBlob = await new Promise((resolve) => {
+          canvas.toBlob((b) => resolve(b), 'image/png');
+        });
+      };
+
+      const setShareStatus = (msg) => {
+        const el = document.getElementById('share-status');
+        if (el) el.textContent = msg || '';
+      };
+
+      const openShareModal = async () => {
+        setShareStatus('Building your card…');
+        await generateShareCard();
+        const modal = document.getElementById('share-modal');
+        modal.classList.remove('hidden');
+        setShareStatus('');
+        // Show native share only when device can share files or text
+        const nativeBtn = document.getElementById('btn-share-native');
+        if (nativeBtn) {
+          const canShare = typeof navigator.share === 'function';
+          nativeBtn.classList.toggle('hidden', !canShare);
+        }
+      };
+
+      document.getElementById('btn-share-stats').addEventListener('click', () => {
+        openShareModal().catch(() => setShareStatus('Could not build the card. Try again.'));
       });
 
       document.getElementById('btn-close-modal').addEventListener('click', () => {
         document.getElementById('share-modal').classList.add('hidden');
+        setShareStatus('');
+      });
+
+      document.getElementById('share-modal')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) {
+          e.currentTarget.classList.add('hidden');
+          setShareStatus('');
+        }
+      });
+
+      document.getElementById('btn-share-download')?.addEventListener('click', () => {
+        if (!shareCardDataUrl) return;
+        const a = document.createElement('a');
+        a.href = shareCardDataUrl;
+        a.download = `briskread-milestone-${Date.now()}.png`;
+        a.click();
+        setShareStatus('Image downloaded.');
+      });
+
+      document.getElementById('btn-share-copy')?.addEventListener('click', async () => {
+        if (!shareCardBlob) {
+          setShareStatus('Card not ready yet — open share again.');
+          return;
+        }
+        try {
+          if (!navigator.clipboard || typeof ClipboardItem === 'undefined') {
+            setShareStatus('Copy image is not supported in this browser. Use Download instead.');
+            return;
+          }
+          // Some browsers require a Promise for the blob payload
+          const item = new ClipboardItem({
+            'image/png': shareCardBlob instanceof Blob
+              ? Promise.resolve(shareCardBlob)
+              : shareCardBlob,
+          });
+          await navigator.clipboard.write([item]);
+          setShareStatus('Image copied — paste it into WhatsApp, X, Slack, email, etc.');
+        } catch (err) {
+          // Fallback: try fetching the data URL as a blob again
+          try {
+            const res = await fetch(shareCardDataUrl);
+            const blob = await res.blob();
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            setShareStatus('Image copied — paste it wherever you like.');
+          } catch {
+            setShareStatus('Could not copy image (browser blocked it). Use Download instead.');
+          }
+        }
+      });
+
+      document.getElementById('btn-share-whatsapp')?.addEventListener('click', () => {
+        const text = encodeURIComponent(shareCaption || buildShareCaption({
+          wordsRead: state.stats.wordsRead,
+          speed: state.wpm,
+          timeSaved: Math.round(Math.max(0, (state.stats.wordsRead / 240) - state.stats.timeSpent)),
+          streak: state.stats.streak || 0,
+        }));
+        window.open(`https://wa.me/?text=${text}`, '_blank', 'noopener,noreferrer');
+        setShareStatus('WhatsApp opened with your caption. Attach the image if you want the card too.');
+      });
+
+      document.getElementById('btn-share-x')?.addEventListener('click', () => {
+        const text = encodeURIComponent(shareCaption || 'Speed-reading with BriskRead');
+        const url = encodeURIComponent(location.origin || 'https://briskread.com');
+        window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank', 'noopener,noreferrer');
+        setShareStatus('X compose opened. Attach the downloaded image for a stronger post.');
+      });
+
+      document.getElementById('btn-share-linkedin')?.addEventListener('click', () => {
+        const url = encodeURIComponent(location.origin || 'https://briskread.com');
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${url}`, '_blank', 'noopener,noreferrer');
+        setShareStatus('LinkedIn opened. Download the image and upload it to your post for the full card.');
+      });
+
+      document.getElementById('btn-share-native')?.addEventListener('click', async () => {
+        if (!navigator.share) {
+          setShareStatus('Native share is not available on this browser.');
+          return;
+        }
+        try {
+          const file = shareCardBlob
+            ? new File([shareCardBlob], 'briskread-milestone.png', { type: 'image/png' })
+            : null;
+          const payload = {
+            title: 'My BriskRead milestone',
+            text: shareCaption,
+            url: location.origin || 'https://briskread.com',
+          };
+          if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({ ...payload, files: [file] });
+          } else {
+            await navigator.share(payload);
+          }
+          setShareStatus('Shared.');
+        } catch (err) {
+          if (err && err.name === 'AbortError') {
+            setShareStatus('');
+            return;
+          }
+          setShareStatus('Share cancelled or not supported. Try download + WhatsApp / X instead.');
+        }
       });
       
       document.getElementById('btn-pricing-signin')?.addEventListener('click', () => {
@@ -2649,95 +3979,134 @@ const webAppSchema = {
     /* Styling elements specific to workspace and layout */
     .app-section {
       padding-top: 0;
-      background: var(--color-bg);
+      background: transparent;
       color: var(--color-text);
+    }
+    /* Wider stage — less empty side margin than default 1180px container */
+    .app-section.motion-stage > .container.app-workspace {
+      max-width: min(1360px, 100%);
+      padding-inline: clamp(1rem, 2.2vw, 1.5rem);
+      padding-top: clamp(0.25rem, 1.2vw, 0.75rem);
     }
 
     .hero {
       display: grid;
-      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-      align-items: stretch;
-      gap: 0;
-      margin: 0 auto clamp(2.5rem, 7vw, 5rem);
+      grid-template-columns: minmax(0, 1.05fr) minmax(360px, 1.05fr);
+      /* start — don't stretch copy to reader height (that pushed trust below the fold) */
+      align-items: start;
+      gap: clamp(1.5rem, 3.5vw, 2.75rem);
+      margin: 0 auto clamp(1.75rem, 4vw, 3rem);
       text-align: left;
+      width: 100%;
     }
-    .hero-copy { padding: clamp(3rem, 7vw, 6.5rem) clamp(1.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem) 0; animation: hero-enter 520ms var(--ease-out) both; }
-    .hero-reader { animation: reader-enter 680ms 80ms var(--ease-out) both; }
-    .hero h1 {
-      font-size: clamp(3.1rem, 6vw, 6rem);
-      letter-spacing: -0.065em;
-      line-height: 0.88;
-      margin-bottom: var(--space-4);
-      max-width: 11ch;
+    .hero-copy { padding: clamp(0.85rem, 2vw, 1.5rem) 0 0; }
+    .hero-stage { display: flex; align-items: stretch; min-width: 0; }
+    .hero-reader-shell { width: 100%; will-change: transform; }
+    .hero h1.hero-title, .hero-title {
+      font-size: clamp(2.35rem, 4.2vw, 3.65rem);
+      letter-spacing: -0.035em;
+      line-height: 0.98;
+      margin-bottom: 0.7rem;
+      max-width: 12ch;
+      font-weight: 600;
     }
     .hero-kicker {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 0.75rem;
+      gap: 0.55rem;
       color: var(--color-text-muted);
       font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
+      font-weight: 600;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
-      margin-bottom: 2rem;
+      margin-bottom: 0.85rem;
+      padding: 0.3rem 0.65rem 0.3rem 0.4rem;
+      border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-bg-card) 80%, transparent);
     }
-    .hero-kicker span { color: var(--color-primary); font-variant-numeric: tabular-nums; }
+    .hero-kicker-dot {
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--color-primary);
+      box-shadow: 0 0 0 3px var(--color-primary-muted);
+    }
     .hero-sub {
       color: var(--color-text-muted);
-      font-size: clamp(1rem, 1.5vw, 1.15rem);
-      line-height: 1.65;
-      max-width: 58ch;
+      font-size: clamp(0.95rem, 1.35vw, 1.08rem);
+      line-height: 1.55;
+      max-width: 34ch;
     }
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 0.9rem;
-      margin-top: 1.5rem;
+      gap: 0.65rem;
+      margin-top: 1.1rem;
     }
-    .hero-demo-link {
-      border: 0;
-      background: transparent;
-      color: var(--color-text);
-      font: inherit;
-      font-size: 0.875rem;
-      font-weight: 700;
-      padding: 0.6rem 0;
-      cursor: pointer;
-      border-bottom: 1px solid var(--color-text);
+    .hero-actions .btn { min-height: 2.55rem; padding-inline: 1.15rem; }
+    .hero-start-note { margin: 0.65rem 0 0; color: var(--color-text-subtle); font-size: 0.76rem; }
+    .hero-trust {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0;
+      margin-top: 1.15rem;
+      padding: 0;
+      list-style: none;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--color-bg-card);
     }
-    .hero-start-note { margin: 0.9rem 0 0; color: var(--color-text-muted); font-size: 0.78rem; }
-    .hero-trust { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin-top: clamp(2rem, 5vw, 4rem); padding: 0; list-style: none; }
-    .hero-trust li { display: flex; gap: 0.7rem; align-items: flex-start; padding-right: 1rem; border-right: 1px solid var(--color-border); }
-    .hero-trust li:last-child { border: 0; }
+    .hero-trust li {
+      display: flex;
+      gap: 0.55rem;
+      align-items: flex-start;
+      padding: 0.7rem 0.8rem;
+    }
+    .hero-trust li + li { border-left: 1px solid var(--color-border); }
     .hero-trust li::before { content: none; }
-    .hero-trust svg { flex: 0 0 2rem; width: 2rem; height: 2rem; stroke: var(--color-primary); stroke-width: 1.9; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+    .hero-trust svg {
+      flex: 0 0 1.4rem;
+      width: 1.4rem;
+      height: 1.4rem;
+      stroke: var(--color-primary);
+      stroke-width: 1.8;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      margin-top: 0.05rem;
+    }
     .hero-trust strong, .hero-trust small { display: block; }
-    .hero-trust strong { color: var(--color-text); font-size: 0.78rem; }
-    .hero-trust small { margin-top: 0.25rem; color: var(--color-text-muted); font-size: 0.68rem; line-height: 1.45; }
-    .hero-trust li::before { content: '✓'; color: var(--color-primary); margin-right: 0.4rem; }
-    .hero-speed-compare { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; margin-top: 1.5rem; }
-    .hero-speed-compare div { padding: 0.85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); }
-    .hero-speed-compare span { display: block; color: var(--color-text-muted); font-size: 0.72rem; font-weight: 700; }
-    .hero-speed-compare strong { display: block; margin-top: 0.2rem; font-size: 1.1rem; letter-spacing: -0.03em; }
-    .hero-speed-note { margin: 0.65rem 0 0; color: var(--color-text-muted); font-size: 0.8rem; }
-    .hero-trust li::before { content: none; }
+    .hero-trust strong { color: var(--color-text); font-size: 0.78rem; letter-spacing: -0.01em; }
+    .hero-trust small { margin-top: 0.18rem; color: var(--color-text-muted); font-size: 0.66rem; line-height: 1.35; }
     .hero-reader {
       position: relative;
-      background: #09090b;
+      background: #07080a;
       color: #fff;
-      border: 1px solid #27272a;
-      border-radius: 0;
+      border: 1px solid #242728;
+      border-radius: 14px;
       padding: 0;
-      /* Cap to the space below the header so the compare/gain stats land above
-         the fold. A flat min-height pushed them off-screen on laptop viewports. */
       min-height: 0;
-      max-height: calc(100vh - 8.5rem);
+      /* Cap height so the left-column trust row stays above the fold on laptops */
+      max-height: min(520px, calc(100vh - 10.5rem));
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      box-shadow: 18px 18px 0 rgba(24, 24, 27, 0.12);
+      overflow: hidden;
+      box-shadow: var(--shadow-glow);
     }
+    .hero-reader::before {
+      content: "";
+      position: absolute;
+      inset: -40% -20% auto;
+      height: 55%;
+      background: radial-gradient(ellipse at 50% 0%, rgba(94, 106, 210, 0.28), transparent 65%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero-reader > * { position: relative; z-index: 1; }
     .hero-reader-top, .hero-reader-bottom {
       display: flex;
       justify-content: space-between;
@@ -2763,27 +4132,124 @@ const webAppSchema = {
     .hero-demo-controls input { width: 100%; accent-color: var(--color-accent); cursor: pointer; }
     @keyframes hero-word-flash { from { opacity: 0.72; } to { opacity: 1; } }
 
-    .hero-reader-top { min-height: 2.75rem; padding: 0.7rem 1rem; border-bottom: 1px solid #27272a; color: white; font: 600 0.68rem/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; }
+    .hero-reader-top { min-height: 2.75rem; padding: 0.75rem 1.05rem; border-bottom: 1px solid rgba(255,255,255,0.08); color: white; font: 600 0.68rem/1 var(--font-sans); letter-spacing: 0.05em; text-transform: uppercase; }
     .hero-reader-identity, .hero-reader-identity > span, .hero-reader-tools { display: flex; align-items: center; gap: 0.55rem; }
-    .hero-reader-identity i { display: block; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: #52525b; }
-    .hero-reader-identity i:last-child { background: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-muted); }
-    .hero-reader-tools > span { color: #71717a; font-size: 0.58rem; }
-    .hero-reader-tools button { border: 0; padding: 0; background: transparent; color: white; font: inherit; font-size: 1rem; cursor: pointer; }
-    .hero-preview-stage { position: relative; flex: 1 1 auto; min-height: 150px; overflow: hidden; background-image: linear-gradient(rgba(63,63,70,0.18) 1px, transparent 1px), linear-gradient(90deg, rgba(63,63,70,0.18) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-reader-identity i { display: block; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: #3f3f46; }
+    .hero-reader-identity i:nth-child(1) { background: #ff5f57; }
+    .hero-reader-identity i:nth-child(2) { background: #febc2e; }
+    .hero-reader-identity i:nth-child(3) { background: #28c840; box-shadow: none; }
+    .hero-reader-tools > span {
+      color: #8b8b96;
+      font-size: 0.58rem;
+      padding: 0.2rem 0.45rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+    }
+    .hero-reader-tools button {
+      border: 0;
+      width: 1.75rem;
+      height: 1.75rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      color: white;
+      font: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background-color 140ms var(--ease-out);
+    }
+    .hero-reader-tools button:hover { background: rgba(255,255,255,0.12); }
+    .hero-preview-stage {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 132px;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 40%, rgba(94, 106, 210, 0.12), transparent 70%),
+        #07080a;
+    }
     /* Slides are stacked; the outgoing one leaves left while the next enters
        from the right, so only one occupies the stage's height at a time. */
-    .hero-slide { position: absolute; inset: 0; display: grid; place-content: center; padding: 1rem; opacity: 0; transform: translateX(28px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); pointer-events: none; }
+    .hero-slide { position: absolute; inset: 0; display: grid; place-content: center; padding: 0.85rem 1rem; opacity: 0; transform: translateX(28px); transition: opacity 420ms var(--ease-out), transform 420ms var(--ease-out); pointer-events: none; }
     .hero-slide.is-active { opacity: 1; transform: none; pointer-events: auto; }
     .hero-slide.is-leaving { opacity: 0; transform: translateX(-28px); }
-    .hero-slide-label { margin: 0 auto 1.1rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .hero-slide-label { margin: 0 auto 0.85rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-slide-label i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
-    .hero-focus-demo { max-width: 32ch; margin: 0; color: #52525b; font-size: 0.92rem; line-height: 1.85; text-align: left; }
-    .hero-focus-demo span { border-radius: 3px; padding: 0 0.15em; transition: color 160ms var(--ease-out), background-color 160ms var(--ease-out); }
-    .hero-focus-demo span.is-current { background: var(--color-primary); color: #fff; }
-    .hero-deck-tabs { display: flex; gap: 0.4rem; padding: 0.55rem 1rem; border-top: 1px solid #27272a; background: #18181b; }
-    .hero-deck-tabs button { border: 1px solid transparent; border-radius: 999px; padding: 0.25rem 0.7rem; background: transparent; color: #71717a; font: 600 0.62rem/1.4 var(--font-sans); letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out); }
-    .hero-deck-tabs button:hover { color: #d4d4d8; }
-    .hero-deck-tabs button.is-active { border-color: var(--color-primary); color: #fff; }
+    /* Focus slide: mirror .standard-reader-view + .focus-word from the real reader */
+    .hero-slide[data-hero-slide="focus"] {
+      place-content: stretch;
+      align-content: stretch;
+      padding: 0.75rem 0.85rem 0.85rem;
+    }
+    .hero-slide[data-hero-slide="focus"] .hero-slide-label {
+      margin: 0 0 0.55rem;
+      justify-self: start;
+    }
+    .hero-focus-demo {
+      width: 100%;
+      max-width: none;
+      margin: 0;
+      padding: 0.85rem 1rem;
+      min-height: 0;
+      max-height: 100%;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.04);
+      color: #f4f4f5;
+      font-size: clamp(0.95rem, 1.35vw, 1.12rem);
+      line-height: 1.75;
+      text-align: left;
+      text-wrap: pretty;
+    }
+    /* Same classes as the real reader (.focus-word / .active / .active-line) */
+    .hero-focus-demo :global(.focus-word) {
+      display: inline-block;
+      border-radius: 4px;
+      padding: 0 2px;
+      margin-right: 0.28em;
+      color: #f4f4f5;
+      opacity: 0.18;
+      transform-origin: center bottom;
+      transition:
+        color 140ms var(--ease-out),
+        background-color 140ms var(--ease-out),
+        opacity 140ms var(--ease-out),
+        transform 140ms var(--ease-out);
+    }
+    .hero-focus-demo :global(.focus-word.active-line) {
+      opacity: 1;
+    }
+    .hero-focus-demo :global(.focus-word.active) {
+      color: #a8b0f2;
+      background: transparent;
+      box-shadow: inset 0 -2px 0 #5e6ad2;
+      transform: scale(1.08);
+      font-weight: 800;
+    }
+    .hero-reader-bottom b { font-size: 1.45rem; }
+    .hero-gain-stats span { padding: 0.55rem 0.9rem; }
+    .hero-gain-stats strong { font-size: 0.95rem; }
+    .hero-speed-control > span strong { font-size: 1.3rem; }
+    .hero-deck-tabs { display: flex; gap: 0.35rem; padding: 0.6rem 1rem; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(16, 16, 18, 0.95); }
+    .hero-deck-tabs button {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0.3rem 0.8rem;
+      background: transparent;
+      color: #8b8b96;
+      font: 600 0.62rem/1.4 var(--font-sans);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out);
+    }
+    .hero-deck-tabs button:hover { color: #e4e4e9; background: rgba(255,255,255,0.04); }
+    .hero-deck-tabs button.is-active {
+      border-color: color-mix(in srgb, var(--color-primary) 55%, transparent);
+      color: #fff;
+      background: rgba(94, 106, 210, 0.18);
+    }
     @media (prefers-reduced-motion: reduce) {
       .hero-slide { transition: none; }
     }
@@ -2795,7 +4261,7 @@ const webAppSchema = {
     .hero-reticle { position: absolute; left: 50%; width: 1px; height: 1.25rem; background: #52525b; transform: translateX(-50%); }
     .hero-reticle-top { top: 1.5rem; }
     .hero-reticle-bottom { bottom: 1.5rem; }
-    .hero-demo-controls, .hero-reader-bottom { padding: 0.7rem 1rem; border: 0; border-top: 1px solid #27272a; border-radius: 0; background: #18181b; }
+    .hero-demo-controls, .hero-reader-bottom { padding: 0.75rem 1.05rem; border: 0; border-top: 1px solid rgba(255,255,255,0.08); border-radius: 0; background: rgba(16, 16, 18, 0.95); }
     .hero-speed-control { display: grid; grid-template-columns: 7rem 1fr; align-items: center; gap: 1rem; }
     .hero-speed-control > span { color: rgba(255,255,255,0.72); font-size: 0.72rem; }
     .hero-speed-control > span strong { display: block; color: white; font-size: 1.55rem; line-height: 1.1; }
@@ -2812,10 +4278,10 @@ const webAppSchema = {
     .hero-reader-bottom .hero-rsvp-pace b { color: var(--color-primary); }
     #hero-compare-wpm { color: inherit; }
     .hero-reader-bottom > p { margin: 0.5rem 0 0; color: rgba(255,255,255,0.55); font-size: 0.62rem; }
-    .hero-gain-stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid #27272a; background: #09090b; }
-    .hero-gain-stats span { padding: 0.6rem 1rem; color: #71717a; font-size: 0.64rem; }
-    .hero-gain-stats span + span { border-left: 1px solid #27272a; }
-    .hero-gain-stats strong { display: block; color: var(--color-primary); font-size: 1rem; }
+    .hero-gain-stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(255,255,255,0.08); background: #07080a; }
+    .hero-gain-stats span { padding: 0.7rem 1.05rem; color: #8b8b96; font-size: 0.64rem; }
+    .hero-gain-stats span + span { border-left: 1px solid rgba(255,255,255,0.08); }
+    .hero-gain-stats strong { display: block; color: #a8b0f2; font-size: 1.05rem; letter-spacing: -0.02em; }
 
     .flow-reader-view { padding: 1.25rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg-subtle); overflow: hidden; }
     .flow-context-line { min-height: 1.6em; margin: 0; color: var(--color-text); opacity: 0.28; white-space: nowrap; overflow: hidden; }
@@ -2876,20 +4342,106 @@ const webAppSchema = {
     .outcomes-grid strong { color: var(--color-primary); font-size: clamp(1.8rem, 4vw, 3.25rem); line-height: 1; letter-spacing: -0.05em; white-space: nowrap; }
     .outcomes-grid span { margin-top: 0.6rem; color: var(--color-text); font-size: 0.82rem; font-weight: 700; }
     .outcomes-grid small { margin-top: 0.3rem; color: var(--color-text-muted); font-size: 0.7rem; }
-    .composite-stories { display: grid; grid-template-columns: repeat(3, 1fr); border-inline: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); }
-    .composite-stories figure { position: relative; margin: 0; padding: clamp(1.5rem, 3vw, 2.35rem); overflow: hidden; transition: transform 220ms var(--ease-out), background-color 220ms var(--ease-out); }
-    .composite-stories figure + figure { border-left: 1px solid var(--color-border); }
-    .composite-stories figure::after { content: ''; position: absolute; inset: 0 0 auto; height: 3px; background: var(--color-primary); transform: scaleX(0); transform-origin: left; transition: transform 220ms var(--ease-out); }
-    .composite-stories figure:hover { z-index: 1; background: var(--color-primary-muted); transform: translateY(-0.35rem); }
-    .composite-stories figure:hover::after { transform: scaleX(1); }
-    .story-eyebrow { margin: 0 0 1.2rem; color: var(--color-primary); font-size: 0.65rem; font-weight: 800; letter-spacing: 0.11em; text-transform: uppercase; }
-    .composite-stories blockquote { min-height: 6.4em; margin: 0; color: var(--color-text); font-size: 1rem; line-height: 1.6; }
-    .composite-stories figcaption { display: flex; align-items: center; gap: 0.65rem; margin-top: 1rem; color: var(--color-text-subtle); }
-    .composite-stories figcaption > span:last-child, .composite-stories figcaption strong, .composite-stories figcaption small { display: block; }
-    .composite-stories figcaption strong { color: var(--color-text); font-size: 0.78rem; }
-    .composite-stories figcaption small { margin-top: 0.1rem; font-size: 0.65rem; }
-    .composite-stories figcaption i { margin-left: auto; color: var(--color-border); font-size: 1.75rem; font-style: normal; font-weight: 800; letter-spacing: -0.05em; }
-    .story-avatar { display: grid; flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; place-items: center; border-radius: 50%; background: var(--color-primary-muted); color: var(--color-primary); font-size: 0.68rem; font-weight: 800; }
+    /* Moving testimonial strip */
+    .testimonials-band {
+      position: relative;
+      margin-top: 2rem;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-bg);
+      padding: 1.25rem 0;
+    }
+    .testimonials-band::before,
+    .testimonials-band::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 3.5rem;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .testimonials-band::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--color-bg), transparent);
+    }
+    .testimonials-band::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--color-bg), transparent);
+    }
+    .testimonials-track {
+      display: flex;
+      width: max-content;
+      gap: 0;
+      animation: testimonials-scroll 48s linear infinite;
+    }
+    .testimonials-band:hover .testimonials-track {
+      animation-play-state: paused;
+    }
+    .testimonials-group {
+      display: flex;
+      gap: 1rem;
+      padding-right: 1rem;
+    }
+    .testimonial-card {
+      flex: 0 0 min(320px, 78vw);
+      margin: 0;
+      padding: 1.25rem 1.3rem 1.15rem;
+      border: 1px solid var(--color-border);
+      border-radius: 14px;
+      background: var(--color-bg-card);
+      box-shadow: none;
+      transition: border-color 180ms var(--ease-out), transform 180ms var(--ease-out);
+    }
+    .testimonial-card:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+      transform: translateY(-2px);
+    }
+    .testimonial-card blockquote {
+      margin: 0;
+      min-height: 5.2em;
+      color: var(--color-text);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      text-wrap: pretty;
+    }
+    .testimonial-card figcaption {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.1rem;
+    }
+    .testimonial-face {
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--color-bg-card);
+      box-shadow: 0 0 0 1px var(--color-border);
+      background: var(--color-bg-subtle);
+    }
+    .testimonial-card figcaption strong,
+    .testimonial-card figcaption small { display: block; }
+    .testimonial-card figcaption strong {
+      color: var(--color-text);
+      font-size: 0.86rem;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+    .testimonial-card figcaption small {
+      margin-top: 0.15rem;
+      color: var(--color-text-muted);
+      font-size: 0.72rem;
+    }
+    @keyframes testimonials-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .testimonials-track { animation: none; }
+      .testimonial-card:hover { transform: none; }
+    }
 
     .reading-methods { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--color-bg); }
     .reading-methods-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
@@ -2910,29 +4462,109 @@ const webAppSchema = {
     .reading-fit p { max-width: 48ch; margin: 0; color: var(--color-text-muted); font-size: 0.9rem; }
     .reading-fit > a { align-self: center; font-weight: 700; white-space: nowrap; }
 
-    .hero-import-rail { margin-top: 0; padding: 0; border: 1px solid var(--color-text); border-radius: 0; background: var(--color-bg-card); box-shadow: 8px 8px 0 var(--color-text); animation: rail-enter 700ms 180ms var(--ease-out) both; }
-    .hero-import-heading { margin: 0; padding: 1rem 1.25rem; border-bottom: 1px solid var(--color-border); background: var(--color-bg-subtle); }
-    .hero-import-heading h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.03em; }
-    .hero-import-heading p { margin: 0.2rem 0 0; color: var(--color-text-muted); font-size: 0.9rem; }
+    .hero-import-rail {
+      margin-top: 0;
+      padding: 0;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-bg-card);
+      box-shadow: none;
+      overflow: hidden;
+    }
+    .hero-import-heading {
+      margin: 0;
+      padding: 1.05rem 1.35rem;
+      border-bottom: 1px solid var(--color-border);
+      background: linear-gradient(180deg, var(--color-bg-subtle), var(--color-bg-card));
+    }
+    .hero-import-heading h2 { margin: 0; font-size: 1.2rem; letter-spacing: -0.03em; font-weight: 600; }
+    .hero-import-heading p { margin: 0.25rem 0 0; color: var(--color-text-muted); font-size: 0.88rem; }
     .hero-import-options { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; }
-    .hero-import-option { min-height: 6.75rem; padding: 1rem 1.25rem; text-align: left; border: 0; border-right: 1px solid var(--color-border); border-radius: 0; background: transparent; color: var(--color-text); cursor: pointer; transition: background-color 120ms ease, color 120ms ease; }
+    .hero-import-option {
+      min-height: 8.5rem;
+      padding: 1.15rem 1.2rem 1.25rem;
+      text-align: left;
+      border: 0;
+      border-right: 1px solid var(--color-border);
+      border-radius: 0;
+      background: transparent;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out), transform 160ms var(--ease-out);
+      will-change: transform;
+    }
     .hero-import-option:last-child { border-right: 0; }
-    .hero-import-option:hover { background: var(--color-text); color: var(--color-bg-card); }
-    .hero-import-option:hover span { color: var(--color-bg-subtle); }
-    .hero-import-option strong, .hero-import-option span { display: block; }
-    .hero-import-option strong { margin-bottom: 0.35rem; font-size: 0.95rem; }
-    .hero-import-option span { color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.35; }
+    .hero-import-option:hover {
+      background: var(--color-primary);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+    .hero-import-option:hover .import-idx,
+    .hero-import-option:hover > span:last-child { color: rgba(255,255,255,0.78); }
+    .hero-import-option strong,
+    .hero-import-option > span:last-child,
+    .hero-import-option .import-idx { display: block; }
+    .import-icon {
+      display: grid;
+      place-items: center;
+      width: 2.6rem;
+      height: 2.6rem;
+      margin-bottom: 0.85rem;
+      border-radius: 12px;
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+      border: 1px solid color-mix(in srgb, var(--color-primary) 18%, transparent);
+      animation: import-icon-float 3.2s ease-in-out infinite;
+    }
+    .import-icon svg {
+      width: 1.25rem;
+      height: 1.25rem;
+      display: block;
+    }
+    .hero-import-option:nth-child(2) .import-icon { animation-delay: 0.35s; }
+    .hero-import-option:nth-child(3) .import-icon { animation-delay: 0.7s; }
+    .hero-import-option:nth-child(4) .import-icon { animation-delay: 1.05s; }
+    .hero-import-option:hover .import-icon {
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.22);
+      animation: import-icon-pop 480ms var(--ease-out);
+      transform: scale(1.08) rotate(-4deg);
+    }
+    @keyframes import-icon-float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes import-icon-pop {
+      0% { transform: scale(1) rotate(0deg); }
+      40% { transform: scale(1.14) rotate(-8deg); }
+      100% { transform: scale(1.08) rotate(-4deg); }
+    }
+    .hero-import-option .import-idx {
+      margin-bottom: 0.45rem;
+      color: var(--color-text-subtle);
+      font-size: 0.68rem;
+      font-weight: 650;
+      letter-spacing: 0.06em;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-import-option strong { margin-bottom: 0.3rem; font-size: 0.95rem; font-weight: 650; letter-spacing: -0.01em; }
+    .hero-import-option > span:last-child { color: var(--color-text-muted); font-size: 0.78rem; line-height: 1.35; }
+    @media (prefers-reduced-motion: reduce) {
+      .import-icon { animation: none !important; }
+    }
 
     @media (max-width: 760px) {
       .hero { display: flex; flex-direction: column; margin-bottom: 3rem; padding-top: 2.75rem; }
       .hero-copy { display: contents; }
       .hero-kicker { margin-bottom: 1.25rem; }
-      .hero h1 { max-width: 11ch; font-size: clamp(3rem, 14vw, 4.5rem); line-height: 0.91; }
+      .hero h1.hero-title, .hero-title { max-width: 11ch; font-size: clamp(3rem, 14vw, 4.5rem); line-height: 0.91; }
       .hero-sub { margin-bottom: 0; }
       .hero-sub br { display: none; }
       .hero-actions { margin-top: 1.25rem; }
       .hero-start-note { margin-bottom: 2rem; }
-      .hero-reader { order: 2; min-height: 430px; transform: none; box-shadow: 7px 7px 0 rgba(24,24,27,0.12); }
+      .hero-reader { order: 2; min-height: 430px; transform: none; border-radius: 12px; }
+      .hero-trust li + li { border-left: 0; }
       .hero-preview-stage { min-height: 200px; }
       .hero-word { font-size: clamp(2.7rem, 13vw, 4rem); }
       .hero-speed-control { grid-template-columns: 5.5rem 1fr; gap: 0.65rem; }
@@ -2943,20 +4575,18 @@ const webAppSchema = {
       .hero-trust { order: 3; margin: 2rem 0 0; }
       .hero-trust li { min-height: 3.75rem; padding: 0 0 1rem; border-right: 0; border-bottom: 1px solid var(--color-border); }
       .hero-import-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .outcomes-heading, .outcomes-grid, .composite-stories { grid-template-columns: 1fr; }
-      .outcomes-grid article + article, .composite-stories figure + figure { border-left: 0; border-top: 1px solid var(--color-border); }
+      .outcomes-heading, .outcomes-grid { grid-template-columns: 1fr; }
+      .outcomes-grid article + article { border-left: 0; border-top: 1px solid var(--color-border); }
+      .testimonials-band::before, .testimonials-band::after { width: 1.5rem; }
       .launch-paths-heading { align-items: start; flex-direction: column; }
       .reading-methods-heading { grid-template-columns: 1fr; }
       .method-row { grid-template-columns: 2rem 1fr auto; gap: 0.75rem; }
       .method-context { display: none; }
       .reading-fit { grid-template-columns: 1fr; }
     }
-    @keyframes hero-enter { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes reader-enter { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-    @keyframes rail-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
     @media (prefers-reduced-motion: reduce) {
-      .hero-copy, .hero-reader, .hero-import-rail { animation: none; }
       .hero-import-option, .method-row { transition: none; }
+      .hero-import-option:hover, .method-row:hover { transform: none; }
     }
 
     .seo-title {
@@ -3453,32 +5083,132 @@ const webAppSchema = {
       background-color: var(--color-bg-card);
       border: 1px solid var(--color-border);
     }
+    .dashboard-card {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(ellipse 80% 50% at 100% 0%, var(--color-primary-muted), transparent 55%),
+        var(--color-bg-card);
+    }
+    .dashboard-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .dashboard-kicker {
+      margin: 0 0 0.35rem;
+      color: var(--color-primary);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .dashboard-card h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .dashboard-lede {
+      margin: 0.4rem 0 0;
+      max-width: 36ch;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .dashboard-streak-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+      padding: 0.45rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-subtle);
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+      white-space: nowrap;
+    }
+    .dashboard-streak-pill strong {
+      color: var(--color-text);
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    .dashboard-streak-pill.is-hot {
+      border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+    }
+    .dashboard-streak-pill.is-hot strong { color: var(--color-primary); }
     .stats-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
+      gap: 0.75rem;
     }
     .stat-box {
-      background-color: var(--color-bg-subtle);
-      padding: 1.25rem 1rem;
-      border-radius: var(--radius-md);
+      position: relative;
+      background-color: var(--color-bg);
+      padding: 1.1rem 1rem 1rem;
+      border-radius: 12px;
       border: 1px solid var(--color-border);
-      text-align: center;
+      text-align: left;
+      transition: border-color 160ms var(--ease-out), transform 160ms var(--ease-out);
     }
+    .stat-box:hover {
+      border-color: color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+      transform: translateY(-1px);
+    }
+    .stat-box-highlight {
+      border-color: color-mix(in srgb, var(--color-primary) 28%, var(--color-border));
+      background: color-mix(in srgb, var(--color-primary-muted) 55%, var(--color-bg));
+    }
+    .stat-icon {
+      display: grid;
+      place-items: center;
+      width: 1.85rem;
+      height: 1.85rem;
+      margin-bottom: 0.65rem;
+      border-radius: 8px;
+      background: var(--color-primary-muted);
+      color: var(--color-primary);
+    }
+    .stat-icon svg { width: 1rem; height: 1rem; }
     .stat-value {
       display: block;
-      font-size: 2rem;
+      font-size: clamp(1.55rem, 3vw, 1.9rem);
       font-family: var(--font-display);
-      font-weight: 800;
-      color: var(--color-primary);
-      margin-bottom: 0.25rem;
+      font-weight: 700;
+      color: var(--color-text);
+      letter-spacing: -0.03em;
+      margin-bottom: 0.2rem;
+      font-variant-numeric: tabular-nums;
     }
+    .stat-box-highlight .stat-value { color: var(--color-primary); }
     .stat-label {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       font-weight: 600;
       color: var(--color-text-subtle);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.02em;
+    }
+    .dashboard-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0.55rem;
+    }
+    .dashboard-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+    }
+    .dashboard-share-hint {
+      margin: 0;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+    @media (max-width: 520px) {
+      .dashboard-head { flex-direction: column; }
     }
     
     .pricing-card {
@@ -3500,6 +5230,403 @@ const webAppSchema = {
       border-radius: 999px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+    }
+
+    /* Workspace: library / queue / profiles */
+    .workspace-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .workspace-head h2 { margin: 0 0 0.25rem; font-size: 1.25rem; }
+    .workspace-queue-summary { margin: 0; font-size: 0.85rem; }
+    .profile-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.75rem;
+      margin-bottom: 1.1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .profile-bar-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--color-text-subtle);
+    }
+    .profile-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .profile-pill {
+      border: 1px solid var(--color-border);
+      background: var(--color-surface, transparent);
+      color: var(--color-text);
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .profile-pill.is-active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .profile-hint { margin: 0; flex: 1 1 100%; font-size: 0.8rem; }
+    .workspace-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 800px) {
+      .workspace-grid { grid-template-columns: 1fr; }
+    }
+    .workspace-panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.65rem;
+    }
+    .workspace-panel-head h3 { margin: 0; font-size: 0.95rem; }
+    .workspace-panel-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .workspace-sync-status { margin: 0; flex: 1 1 100%; font-size: 0.78rem; }
+    .retention-settings-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem 0.85rem;
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .retention-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.84rem;
+      cursor: pointer;
+    }
+    .import-dest-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+    }
+    .import-check {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .profile-pill.is-saved { border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border)); }
+    #standard-text-view.standard-reader-view {
+      max-height: min(58vh, 520px);
+      overflow-y: auto;
+      scroll-behavior: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
+    }
+    #reader-screen.glass {
+      max-width: 100%;
+    }
+    .reader-display-container {
+      max-width: 100%;
+    }
+    .workspace-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 280px;
+      overflow: auto;
+    }
+    .workspace-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--color-border);
+      border-radius: 12px;
+      background: color-mix(in srgb, var(--color-surface, #fff) 88%, transparent);
+    }
+    .workspace-item.is-done { opacity: 0.55; }
+    .workspace-item-main { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+    .workspace-item-main strong {
+      font-size: 0.88rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .workspace-item-main .muted { font-size: 0.75rem; }
+    .workspace-item-actions { display: flex; flex-wrap: wrap; gap: 0.3rem; flex-shrink: 0; }
+    .workspace-empty { margin: 0.25rem 0 0; font-size: 0.82rem; }
+    .workspace-empty.hidden { display: none; }
+
+    .reader-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .reader-header-main h3 { margin: 0; }
+    .reader-meta { margin: 0.2rem 0 0; font-size: 0.8rem; }
+    .reader-header-actions { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .reader-tools-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 0.75rem;
+      margin-top: 0.85rem;
+    }
+    .chapter-map-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      min-width: min(100%, 260px);
+      flex: 1;
+    }
+    .chapter-map-wrap label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--color-text-subtle);
+    }
+    .chapter-map-wrap select {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg, #fff);
+      color: var(--color-text);
+      padding: 0.45rem 0.6rem;
+      font-size: 0.88rem;
+    }
+    .reader-tool-btns { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+    .retention-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      background: rgba(8, 10, 18, 0.55);
+      backdrop-filter: blur(6px);
+    }
+    .retention-modal.hidden,
+    .retention-modal[hidden] { display: none !important; }
+    .retention-card {
+      width: min(520px, 100%);
+      max-height: min(85vh, 640px);
+      overflow: auto;
+      padding: 1.25rem;
+      border-radius: 18px;
+    }
+    .retention-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .retention-card-head h3 { margin: 0; }
+    .retention-body { display: flex; flex-direction: column; gap: 1rem; margin: 1rem 0; }
+    .retention-prompt { margin: 0 0 0.45rem; font-weight: 600; font-size: 0.92rem; }
+    .retention-opts { display: flex; flex-direction: column; gap: 0.35rem; }
+    .retention-opt {
+      display: flex;
+      gap: 0.45rem;
+      align-items: flex-start;
+      font-size: 0.88rem;
+      cursor: pointer;
+    }
+    .retention-open {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg, #fff);
+      color: var(--color-text);
+      padding: 0.55rem 0.65rem;
+      font: inherit;
+      resize: vertical;
+    }
+    .retention-actions { display: flex; justify-content: flex-end; }
+
+    /* Product features inventory */
+    .product-features {
+      padding: 3.5rem 0 2rem;
+    }
+    .features-tier-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-top: 1.5rem;
+    }
+    .feature-tier {
+      padding: 1.35rem 1.4rem;
+      border-radius: 18px;
+    }
+    .feature-tier h3 {
+      margin: 0 0 0.85rem;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .feature-tier ul {
+      margin: 0;
+      padding: 0 0 0 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      color: var(--color-text);
+    }
+    .feature-tier li strong { font-weight: 700; }
+    .feature-tier-pro {
+      border-color: color-mix(in srgb, var(--color-primary) 45%, var(--color-border));
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 18%, transparent);
+    }
+    .feature-tier-pro .btn { margin-top: 1.15rem; width: 100%; }
+    .feature-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+    }
+    .feature-badge.free {
+      background: var(--color-bg-subtle, #f1f2f6);
+      color: var(--color-text-muted);
+    }
+    .feature-badge.pro {
+      background: var(--color-primary-muted, #e8eafc);
+      color: var(--color-primary);
+    }
+    .features-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.9rem;
+      margin-top: 1.25rem;
+    }
+    .feature-card {
+      padding: 1.1rem 1.15rem;
+      border-radius: 16px;
+    }
+    .feature-card h4 {
+      margin: 0 0 0.4rem;
+      font-size: 0.95rem;
+    }
+    .feature-card p {
+      margin: 0;
+      font-size: 0.84rem;
+      line-height: 1.5;
+      color: var(--color-text-muted);
+    }
+    @media (max-width: 900px) {
+      .features-tier-grid,
+      .features-detail-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Mobile reading */
+    @media (max-width: 640px) {
+      #workspace-card,
+      #reader-screen,
+      #importer-card {
+        padding: 0.85rem !important;
+        border-radius: 14px;
+      }
+      .reader-header-actions {
+        width: 100%;
+      }
+      .reader-header-actions .btn {
+        flex: 1 1 auto;
+        min-height: 40px;
+      }
+      .mode-switcher {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .mode-btn {
+        flex: 1 1 auto;
+        min-height: 40px;
+        font-size: 0.8rem;
+        padding: 0.4rem 0.55rem;
+      }
+      .playback-controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem;
+      }
+      .playback-controls .control-btn {
+        min-height: 44px;
+        flex: 1 1 30%;
+      }
+      .playback-controls .play-btn {
+        flex: 1 1 100%;
+      }
+      .tuner-grid {
+        grid-template-columns: 1fr !important;
+      }
+      #standard-text-view.standard-reader-view {
+        max-height: min(52vh, 420px);
+        font-size: 1.05rem;
+        line-height: 1.65;
+        padding: 0.75rem;
+      }
+      .rsvp-word-container {
+        min-height: 120px;
+        padding-inline: 0.25rem;
+      }
+      .workspace-item {
+        flex-direction: column;
+      }
+      .workspace-item-actions {
+        width: 100%;
+      }
+      .workspace-item-actions .btn {
+        flex: 1;
+        min-height: 40px;
+      }
+      .url-input-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .url-input-container input,
+      .url-input-container button {
+        width: 100%;
+        min-height: 44px;
+      }
+      #retention-modal .retention-card {
+        padding: 1rem;
+        max-height: 90vh;
+      }
+      .reader-tools-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .chapter-map-wrap select {
+        min-height: 44px;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .hero-import-option strong { font-size: 0.9rem; }
+      .price-value { font-size: 2rem; }
     }
     .price-row {
       display: flex;
@@ -3588,12 +5715,13 @@ const webAppSchema = {
       left: 0;
       right: 0;
       bottom: 0;
-      background-color: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
+      background-color: rgba(10, 10, 12, 0.72);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 100;
+      z-index: var(--z-modal, 100);
       padding: 1rem;
     }
     .modal-content {
@@ -3606,10 +5734,119 @@ const webAppSchema = {
       text-align: center;
       box-shadow: var(--shadow-lg);
     }
-    .canvas-preview img {
-      max-width: 100%;
-      border-radius: var(--radius-md);
+    .share-modal-content {
+      position: relative;
+      max-width: 440px;
+      padding: 1.75rem 1.5rem 1.5rem;
+      text-align: left;
+      border-radius: 18px;
+      background:
+        radial-gradient(ellipse 70% 40% at 100% 0%, var(--color-primary-muted), transparent 50%),
+        var(--color-bg-card);
+    }
+    .share-modal-close {
+      position: absolute;
+      top: 0.85rem;
+      right: 0.85rem;
+      width: 2.25rem;
+      height: 2.25rem;
       border: 1px solid var(--color-border);
+      border-radius: 999px;
+      background: var(--color-bg-subtle);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1;
+    }
+    .share-modal-close:hover {
+      color: var(--color-text);
+      border-color: var(--color-text-subtle);
+    }
+    .share-modal-kicker {
+      margin: 0 0 0.35rem;
+      color: var(--color-primary);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .share-modal-content h3 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+    }
+    .share-modal-lede {
+      margin: 0.45rem 0 1rem;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+    .canvas-preview {
+      margin: 0 0 1.1rem;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--color-border);
+      background: #07080a;
+      box-shadow: 0 16px 40px -24px rgba(10, 10, 12, 0.45);
+    }
+    .canvas-preview img {
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      vertical-align: middle;
+    }
+    .share-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+    }
+    .share-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      min-height: 2.65rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: 999px;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg);
+      color: var(--color-text);
+      font: 600 0.8rem/1.2 var(--font-sans);
+      cursor: pointer;
+      transition: transform 140ms var(--ease-out), background-color 140ms var(--ease-out), border-color 140ms var(--ease-out);
+    }
+    .share-btn:hover {
+      transform: translateY(-1px);
+      border-color: var(--color-text-subtle);
+    }
+    .share-btn-download {
+      grid-column: 1 / -1;
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .share-btn-download:hover {
+      background: var(--color-primary-hover);
+      border-color: var(--color-primary-hover);
+      color: #fff;
+    }
+    .share-btn-copy {
+      grid-column: 1 / -1;
+      background: var(--color-bg-subtle);
+    }
+    .share-btn-wa { color: #128C7E; }
+    .share-btn-x { color: var(--color-text); }
+    .share-btn-li { color: #0A66C2; }
+    .share-status {
+      margin: 0.85rem 0 0;
+      min-height: 1.2em;
+      font-size: 0.78rem;
+      text-align: center;
+    }
+    @media (max-width: 420px) {
+      .share-actions { grid-template-columns: 1fr; }
+      .share-btn-download { grid-column: auto; }
     }
     
     .hidden {

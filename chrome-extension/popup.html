@@ -60,19 +60,27 @@
         <p class="hint" id="tab-hint">Read this page in a private popup without leaving the tab.</p>
         <div class="stack">
           <button type="button" class="btn btn-primary" id="btn-read">Speed read this page</button>
+          <button type="button" class="btn btn-secondary" id="btn-save-later">Save to read later</button>
           <button type="button" class="btn btn-secondary" id="btn-open-app">Open BriskRead app</button>
         </div>
         <p class="status" id="action-status" role="status"></p>
-        <p class="hint shortcut-hint">Tip: select text and right-click → Speed read, or press Alt+Shift+S.</p>
+        <p class="hint shortcut-hint">Tip: Alt+Shift+S speed-read · Alt+Shift+L save for later · right-click menus.</p>
+      </section>
+
+      <section class="panel" id="panel-read-later">
+        <h2>Read later <span class="queue-count" id="queue-count"></span></h2>
+        <p class="hint empty-queue" id="queue-empty">Nothing saved yet. Right-click a page or press Alt+Shift+L.</p>
+        <ul class="queue-list hidden" id="queue-list" aria-label="Read later queue"></ul>
       </section>
 
       <footer class="footer">
-        <span>v<span id="ext-version">1.2.0</span></span>
+        <span>v<span id="ext-version">1.6.0</span></span>
         <a href="#" id="link-options">Options</a>
         <a href="https://briskread.com/privacy" target="_blank" rel="noopener">Privacy</a>
       </footer>
     </div>
     <script src="config.js"></script>
+    <script src="lib/storage.js"></script>
     <script src="popup.js"></script>
   </body>
 </html>

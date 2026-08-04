@@ -1,15 +1,26 @@
-/* global importScripts, srGetAuth, srGetOrigins, srGetHandoff, srClearHandoff, extractArticleInPage */
+/* global importScripts, srGetAuth, srGetOrigins, srGetHandoff, srClearHandoff, srSetHandoff, srAddReadLater, extractArticleInPage */
 importScripts('config.js', 'lib/storage.js', 'lib/extract.js');
 
-const MENU_ID = 'briskread-page';
+const MENUS = [
+  { id: 'briskread-page', title: 'Speed read this page', contexts: ['page', 'frame'] },
+  { id: 'briskread-selection', title: 'Speed read selection', contexts: ['selection'] },
+  { id: 'briskread-link', title: 'Speed read linked page', contexts: ['link'] },
+  {
+    id: 'briskread-read-later',
+    title: 'Save to BriskRead queue (Read later)',
+    contexts: ['page', 'selection', 'link'],
+  },
+];
 
 function ensureContextMenu() {
   chrome.contextMenus.removeAll(() => {
-    chrome.contextMenus.create({
-      id: MENU_ID,
-      title: 'Speed read this page',
-      contexts: ['page', 'selection', 'link'],
-    });
+    for (const menu of MENUS) {
+      chrome.contextMenus.create({
+        id: menu.id,
+        title: menu.title,
+        contexts: menu.contexts,
+      });
+    }
   });
 }
 
@@ -57,8 +68,32 @@ async function articleForTab(tab, selectionText = '') {
   return article;
 }
 
-async function openBriskRead(tab, { selectionText = '' } = {}) {
-  const article = await articleForTab(tab, selectionText);
+async function articleForLink(tab, info) {
+  const selectionText = (info.selectionText || '').trim();
+  if (selectionText) {
+    return {
+      title: tab?.title || '',
+      text: selectionText,
+      url: info.linkUrl || tab?.url || '',
+      wordCount: selectionText.split(/\s+/).length,
+    };
+  }
+  const article = await articleForTab(tab);
+  if (info.linkUrl) {
+    const note = `Linked page: ${info.linkUrl}\n\n`;
+    const text = note + (article.text || '');
+    return {
+      ...article,
+      text,
+      url: info.linkUrl || article.url,
+      wordCount: text.trim() ? text.trim().split(/\s+/).length : 0,
+    };
+  }
+  return article;
+}
+
+async function openBriskRead(tab, { selectionText = '', article: forcedArticle = null } = {}) {
+  const article = forcedArticle || (await articleForTab(tab, selectionText));
   await chrome.storage.local.set({ sr_reader_article: article });
   await chrome.windows.create({
     url: chrome.runtime.getURL('reader.html'),
@@ -73,11 +108,11 @@ async function openBriskRead(tab, { selectionText = '' } = {}) {
  * reader window on pages where content scripts are not allowed (chrome://, the
  * Web Store, PDF viewer, …).
  */
-async function openOverlay(tab, { selectionText = '' } = {}) {
+async function openOverlay(tab, { selectionText = '', article: forcedArticle = null } = {}) {
   if (!tab?.id || !tab.url || RESTRICTED.test(tab.url)) {
-    return openBriskRead(tab, { selectionText });
+    return openBriskRead(tab, { selectionText, article: forcedArticle });
   }
-  const article = await articleForTab(tab, selectionText);
+  const article = forcedArticle || (await articleForTab(tab, selectionText));
   await chrome.storage.local.set({ [overlayKey(tab.id)]: article });
   try {
     await chrome.scripting.executeScript({
@@ -86,8 +121,53 @@ async function openOverlay(tab, { selectionText = '' } = {}) {
     });
   } catch (err) {
     console.warn('[BriskRead] overlay injection failed, falling back', err);
-    await openBriskRead(tab, { selectionText });
+    await openBriskRead(tab, { selectionText, article });
   }
+}
+
+let badgeClearTimer = null;
+
+async function flashReadLaterBadge(count) {
+  const text = count > 0 ? String(Math.min(count, 99)) : '';
+  try {
+    await chrome.action.setBadgeBackgroundColor({ color: '#5e6ad2' });
+    await chrome.action.setBadgeText({ text });
+  } catch (_) {
+    /* action badge unavailable */
+  }
+  if (badgeClearTimer) clearTimeout(badgeClearTimer);
+  badgeClearTimer = setTimeout(() => {
+    chrome.action.setBadgeText({ text: '' }).catch(() => {});
+    badgeClearTimer = null;
+  }, 2500);
+}
+
+async function saveReadLater(tab, { selectionText = '', linkUrl = '' } = {}) {
+  let article;
+  if (linkUrl && !selectionText.trim()) {
+    article = await articleForLink(tab, { linkUrl, selectionText });
+  } else {
+    article = await articleForTab(tab, selectionText);
+  }
+  if (linkUrl && selectionText.trim()) {
+    article = { ...article, url: linkUrl || article.url };
+  }
+
+  const { entry, list } = await srAddReadLater({
+    title: article.title || tab?.title || linkUrl || 'Untitled',
+    text: article.text || '',
+    url: article.url || linkUrl || tab?.url || '',
+    wordCount: article.wordCount || 0,
+  });
+
+  try {
+    await srSetHandoff({ article: entry });
+  } catch (_) {
+    /* handoff optional */
+  }
+
+  await flashReadLaterBadge(list.length);
+  return { entry, list };
 }
 
 chrome.tabs.onRemoved.addListener((tabId) => chrome.storage.local.remove(overlayKey(tabId)));
@@ -124,14 +204,38 @@ async function callGemini(prompt) {
 }
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId !== MENU_ID) return;
-  await openOverlay(tab, { selectionText: info.selectionText || '' });
+  const id = info.menuItemId;
+  if (id === 'briskread-page') {
+    await openOverlay(tab);
+    return;
+  }
+  if (id === 'briskread-selection') {
+    await openOverlay(tab, { selectionText: info.selectionText || '' });
+    return;
+  }
+  if (id === 'briskread-link') {
+    const article = await articleForLink(tab, info);
+    await openOverlay(tab, { article });
+    return;
+  }
+  if (id === 'briskread-read-later') {
+    await saveReadLater(tab, {
+      selectionText: info.selectionText || '',
+      linkUrl: info.linkUrl || '',
+    });
+  }
 });
 
 chrome.commands.onCommand.addListener(async (command) => {
-  if (command !== 'speed-read-tab') return;
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (tab) await openOverlay(tab);
+  if (!tab) return;
+  if (command === 'speed-read-tab') {
+    await openOverlay(tab);
+    return;
+  }
+  if (command === 'read-later-tab') {
+    await saveReadLater(tab);
+  }
 });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -194,6 +298,37 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
         await openOverlay(tab || null);
         sendResponse({ ok: true });
+      } catch (e) {
+        sendResponse({ ok: false, error: e.message });
+      }
+    })();
+    return true;
+  }
+
+  if (message?.type === 'SR_OPEN_ARTICLE') {
+    (async () => {
+      try {
+        const article = message.article || null;
+        if (!article?.text?.trim()) {
+          sendResponse({ ok: false, error: 'No article text to open.' });
+          return;
+        }
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        await openOverlay(tab || null, { article });
+        sendResponse({ ok: true });
+      } catch (e) {
+        sendResponse({ ok: false, error: e.message });
+      }
+    })();
+    return true;
+  }
+
+  if (message?.type === 'SR_SAVE_READ_LATER') {
+    (async () => {
+      try {
+        const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        const result = await saveReadLater(tab || null);
+        sendResponse({ ok: true, ...result });
       } catch (e) {
         sendResponse({ ok: false, error: e.message });
       }

@@ -66,8 +66,11 @@ export async function onRequestGet(context) {
   try {
     const res = await fetch(target, {
       headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; BriskReadBot/1.0)',
-        'Accept': 'text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8',
+        // Browser-like UA: many sites reject bot UAs or return challenge shells
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-US,en;q=0.9',
       },
       redirect: 'follow',
     });
@@ -80,9 +83,14 @@ export async function onRequestGet(context) {
     }
 
     const contentType = (res.headers.get('content-type') || '').toLowerCase();
-    const isAllowed = ALLOWED_CONTENT_TYPES.some(t => contentType.includes(t));
+    // Some CDNs omit content-type; still attempt parse if body looks like HTML
+    const isAllowed =
+      !contentType ||
+      ALLOWED_CONTENT_TYPES.some((t) => contentType.includes(t)) ||
+      contentType.includes('charset') ||
+      contentType === 'application/octet-stream';
     if (!isAllowed) {
-      return new Response(JSON.stringify({ error: 'Unsupported content type' }), {
+      return new Response(JSON.stringify({ error: `Unsupported content type: ${contentType || 'unknown'}` }), {
         status: 415,
         headers: { 'Content-Type': 'application/json' },
       });

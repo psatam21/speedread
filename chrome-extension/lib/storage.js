@@ -6,9 +6,12 @@ const SR_KEYS = {
   isPremium: 'is_premium',
   devices: 'premium_devices',
   handoff: 'sr_handoff',
+  readLater: 'sr_read_later',
   apiBase: 'api_base',
   appOrigin: 'app_origin',
 };
+
+const SR_READ_LATER_MAX = 50;
 
 async function srGetDeviceId() {
   const { device_id } = await chrome.storage.local.get(SR_KEYS.deviceId);
@@ -90,6 +93,40 @@ async function srClearHandoff() {
   await chrome.storage.local.remove(SR_KEYS.handoff);
 }
 
+async function srListReadLater() {
+  const data = await chrome.storage.local.get(SR_KEYS.readLater);
+  const list = data[SR_KEYS.readLater];
+  return Array.isArray(list) ? list : [];
+}
+
+async function srAddReadLater(item) {
+  const list = await srListReadLater();
+  const id =
+    item?.id ||
+    (typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `rl-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
+  const text = item?.text || '';
+  const entry = {
+    id,
+    title: item?.title || '',
+    text,
+    url: item?.url || '',
+    wordCount: item?.wordCount || (text.trim() ? text.trim().split(/\s+/).length : 0),
+    savedAt: item?.savedAt || Date.now(),
+  };
+  const next = [entry, ...list.filter((x) => x.id !== id)].slice(0, SR_READ_LATER_MAX);
+  await chrome.storage.local.set({ [SR_KEYS.readLater]: next });
+  return { entry, list: next };
+}
+
+async function srRemoveReadLater(id) {
+  const list = await srListReadLater();
+  const next = list.filter((x) => x.id !== id);
+  await chrome.storage.local.set({ [SR_KEYS.readLater]: next });
+  return next;
+}
+
 if (typeof globalThis !== 'undefined') {
   globalThis.SR_KEYS = SR_KEYS;
   globalThis.srGetDeviceId = srGetDeviceId;
@@ -99,4 +136,7 @@ if (typeof globalThis !== 'undefined') {
   globalThis.srSetHandoff = srSetHandoff;
   globalThis.srGetHandoff = srGetHandoff;
   globalThis.srClearHandoff = srClearHandoff;
+  globalThis.srListReadLater = srListReadLater;
+  globalThis.srAddReadLater = srAddReadLater;
+  globalThis.srRemoveReadLater = srRemoveReadLater;
 }
