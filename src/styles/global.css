@@ -180,10 +180,6 @@ html {
   hyphens: manual;
 }
 
-body {
-  text-wrap: pretty;
-}
-
 /* Prose should use the full available line — avoid mid-word breaks */
 p, li, dd, blockquote, .lede, .muted, td, th, label, summary {
   overflow-wrap: break-word;
@@ -191,7 +187,7 @@ p, li, dd, blockquote, .lede, .muted, td, th, label, summary {
   hyphens: manual;
 }
 
-/* Headings can wrap between words; don't force awkward 10–12 character columns on laptops */
+/* Headings wrap between words; avoid awkward ultra-narrow columns on laptops */
 h1, h2, h3, h4 {
   overflow-wrap: break-word;
   word-break: normal;
@@ -203,6 +199,7 @@ body {
   background-color: var(--color-bg);
   color: var(--color-text);
   line-height: 1.65;
+  text-wrap: pretty;
   transition: background-color var(--duration) var(--ease-out), color var(--duration) var(--ease-out);
   min-height: 100vh;
   display: flex;
