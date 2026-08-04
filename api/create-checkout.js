@@ -31,18 +31,31 @@ export default async function handler(request, response) {
   const base = process.env.DODO_MODE === 'live'
     ? 'https://live.dodopayments.com'
     : 'https://test.dodopayments.com';
-  const origin = `https://${request.headers['x-forwarded-host'] || request.headers.host}`;
+  // Prefer the real host (briskread.com) over deployment-url hosts when present
+  const host = request.headers['x-forwarded-host'] || request.headers.host;
+  const proto = (request.headers['x-forwarded-proto'] || 'https').split(',')[0].trim();
+  const origin = `${proto}://${host}`;
+
+  const payload = {
+    product_cart: [{ product_id: process.env.DODO_PRODUCT_ID, quantity: 1 }],
+    return_url: `${origin}/?checkout=return`,
+    // Critical: webhook + verify-payment attach Premium using this id
+    metadata: { briskread_user_id: user.id },
+  };
+  if (user.email) {
+    payload.customer = {
+      email: user.email,
+      name: user.user_metadata?.display_name || user.email.split('@')[0] || 'BriskRead customer',
+    };
+  }
+
   const checkout = await fetch(`${base}/checkouts`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${process.env.DODO_API_KEY}`,
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      product_cart: [{ product_id: process.env.DODO_PRODUCT_ID, quantity: 1 }],
-      return_url: `${origin}/?checkout=return`,
-      metadata: { briskread_user_id: user.id },
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!checkout.ok) {
