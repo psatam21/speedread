@@ -1,5 +1,17 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/bookmarklet",
+      "destination": "/extension",
+      "permanent": true
+    },
+    {
+      "source": "/bookmarklet/",
+      "destination": "/extension",
+      "permanent": true
+    }
+  ],
   "crons": [
     {
       "path": "/api/refresh-metrics",

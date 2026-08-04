@@ -17,7 +17,7 @@ Infrastructure goal: **$0/month**. Domain: **speedread-web.com**.
 - [x] AdSense script hooks + `AdSlot` units + `ads.txt` template
 - [x] Multi-device premium via signed **license key** (paste on any device)
 - [x] Pages Functions: extract, checkout, verify-payment, activate-license, gemini, webhook
-- [x] `?url=` auto-extract for bookmarklet / Chrome extension
+- [x] `?url=` auto-extract for Chrome extension / handoff
 - [x] Custom 404
 - [x] `.env.example` + deploy script
 
@@ -68,7 +68,7 @@ Infrastructure goal: **$0/month**. Domain: **speedread-web.com**.
 
 1. Chrome extension: `npm run ext:pack` → upload zip to Web Store; sideload via Load unpacked for QA.
 2. Install docs: https://speedread-web.com/extension
-3. Share bookmarklet + homepage on Reddit/LinkedIn for first index signals.
+3. Share homepage + Chrome extension on Reddit/LinkedIn for first index signals.
 4. Internal links: satellite pages ↔ home (already wired).
 
 ---
