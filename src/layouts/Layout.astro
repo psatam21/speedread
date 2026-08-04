@@ -129,13 +129,14 @@ const websiteSchema = {
     
     {gaId && (
       <>
+        {/* Standard Google tag shape so GA “test your website” can detect it */}
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}></script>
-        <script is:inline define:vars={{ gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
+        <script is:inline set:html={`
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${gaId}');
+`} />
       </>
     )}
 
