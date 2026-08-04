@@ -4035,10 +4035,11 @@ const marqueeFeatures = [
     .hero h1.hero-title, .hero-title {
       font-size: clamp(2.35rem, 4.2vw, 3.65rem);
       letter-spacing: -0.035em;
-      line-height: 0.98;
+      line-height: 1.05;
       margin-bottom: 0.7rem;
-      max-width: 12ch;
+      max-width: min(18ch, 100%);
       font-weight: 600;
+      text-wrap: balance;
     }
     .hero-kicker {
       display: inline-flex;
@@ -4401,13 +4402,13 @@ const marqueeFeatures = [
 
     .outcomes-section { padding: clamp(4rem, 8vw, 6rem) 0; border-bottom: 1px solid var(--color-border); background: var(--color-bg-card); }
     .outcomes-heading { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; }
-    .outcomes-heading h2 { max-width: 13ch; margin: 0; font-size: clamp(2.4rem, 6vw, 4.5rem); line-height: 0.98; letter-spacing: -0.05em; }
+    .outcomes-heading h2 { max-width: min(18ch, 100%); margin: 0; font-size: clamp(2.2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.04em; text-wrap: balance; }
     .outcomes-heading > p { color: var(--color-text-muted); font-size: 0.85rem; }
     .outcomes-grid { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 2.5rem; border: 1px solid var(--color-border); }
     .outcomes-grid article { padding: clamp(1.25rem, 3vw, 2rem); }
     .outcomes-grid article + article { border-left: 1px solid var(--color-border); }
     .outcomes-grid strong, .outcomes-grid span, .outcomes-grid small { display: block; }
-    .outcomes-grid strong { color: var(--color-primary); font-size: clamp(1.8rem, 4vw, 3.25rem); line-height: 1; letter-spacing: -0.05em; white-space: nowrap; }
+    .outcomes-grid strong { color: var(--color-primary); font-size: clamp(1.5rem, 3.2vw, 2.75rem); line-height: 1.1; letter-spacing: -0.04em; white-space: normal; overflow-wrap: break-word; }
     .outcomes-grid span { margin-top: 0.6rem; color: var(--color-text); font-size: 0.82rem; font-weight: 700; }
     .outcomes-grid small { margin-top: 0.3rem; color: var(--color-text-muted); font-size: 0.7rem; }
     /* Moving testimonial strip */
@@ -4528,14 +4529,14 @@ const marqueeFeatures = [
     .reading-methods { padding: clamp(4rem, 9vw, 7rem) 0; background: var(--color-bg); }
     .reading-methods-heading { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.7fr); gap: clamp(2rem, 6vw, 5rem); align-items: end; margin-bottom: clamp(2rem, 5vw, 3.5rem); }
     .section-label { margin: 0 0 0.75rem; color: var(--color-primary); font-weight: 700; }
-    .reading-methods-heading h2 { max-width: 14ch; margin: 0; font-size: clamp(2.4rem, 6vw, 5rem); line-height: 0.98; letter-spacing: -0.04em; }
-    .reading-methods-heading > p { max-width: 48ch; margin: 0; color: var(--color-text-muted); }
+    .reading-methods-heading h2 { max-width: min(18ch, 100%); margin: 0; font-size: clamp(2.2rem, 5vw, 4.25rem); line-height: 1.05; letter-spacing: -0.04em; text-wrap: balance; }
+    .reading-methods-heading > p { max-width: min(52rem, 100%); margin: 0; color: var(--color-text-muted); }
     .method-ladder { border-top: 1px solid var(--color-border); }
-    .method-row { display: grid; grid-template-columns: 2.5rem minmax(190px, 1fr) minmax(230px, 1fr) auto; gap: 1.25rem; align-items: center; min-height: 6.25rem; padding: 1rem 0; border-bottom: 1px solid var(--color-border); color: var(--color-text); transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
+    .method-row { display: grid; grid-template-columns: 2.5rem minmax(0, 1.1fr) minmax(0, 1fr) auto; gap: 1rem 1.25rem; align-items: center; min-height: 5.5rem; padding: 1rem 0; border-bottom: 1px solid var(--color-border); color: var(--color-text); transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
     .method-row:hover { color: var(--color-text); background: var(--color-primary-muted); transform: translateX(0.5rem); }
     .method-row strong, .method-row small, .method-context b { display: block; }
     .method-row strong { font-size: 1.25rem; letter-spacing: -0.02em; }
-    .method-row small { margin-top: 0.2rem; color: var(--color-text-muted); line-height: 1.4; }
+    .method-row small { margin-top: 0.2rem; color: var(--color-text-muted); line-height: 1.45; overflow-wrap: break-word; word-break: normal; }
     .method-index { color: var(--color-text-subtle); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
     .method-context b { color: var(--color-text); font-size: 0.85rem; }
     .method-pace { color: var(--color-primary); font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
@@ -4640,7 +4641,7 @@ const marqueeFeatures = [
       .hero { display: flex; flex-direction: column; margin-bottom: 3rem; padding-top: 2.75rem; }
       .hero-copy { display: contents; }
       .hero-kicker { margin-bottom: 1.25rem; }
-      .hero h1.hero-title, .hero-title { max-width: 12ch; font-size: clamp(2.75rem, 12vw, 4.25rem); line-height: 0.92; }
+      .hero h1.hero-title, .hero-title { max-width: min(16ch, 100%); font-size: clamp(2.5rem, 11vw, 3.75rem); line-height: 1.05; }
       .hero-sub { margin-bottom: 0.85rem; max-width: none; }
       .hero-sub br { display: none; }
       .hero-pitch { order: 1; margin: 0 0 0.5rem; }

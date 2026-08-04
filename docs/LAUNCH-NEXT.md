@@ -31,11 +31,25 @@ Webhook URL for Dodo: `https://briskread.com/api/webhook`
 
 ## Google Search Console
 
+**DNS is on Vercel** (Namecheap NS → Vercel). TXT verification must be added in Vercel, not Namecheap.
+
 1. Go to [Google Search Console](https://search.google.com/search-console)
 2. Add property → **URL prefix** → `https://briskread.com`
-3. Verify (HTML meta tag, DNS TXT, or file — pick one)
-4. Sitemaps → submit `https://briskread.com/sitemap-index.xml`
-5. Request indexing for `/`, `/blog`, `/rsvp-reader`, `/bionic-reading`, `/pdf-to-speech`, `/extension`
+3. Choose **Domain** property or URL-prefix; for Domain use DNS TXT
+4. Copy the full string Google shows, e.g. `google-site-verification=AbCdEf…`
+5. Add TXT at apex via CLI (already logged in as your Vercel user):
+
+```bash
+npx vercel dns add briskread.com '@' TXT "google-site-verification=PASTE_THE_FULL_VALUE_HERE"
+```
+
+Or Vercel Dashboard → Project/Team **Domains** → briskread.com → DNS → Add TXT, Name `@`, Value = full verification string.
+
+6. Wait 1–5 minutes, click **Verify** in Search Console  
+7. Sitemaps → submit `https://briskread.com/sitemap-index.xml`  
+8. Request indexing for `/`, `/blog`, `/rsvp-reader`, `/bionic-reading`, `/pdf-to-speech`, `/extension`
+
+**Note:** Do not paste the verification string into chat if you prefer privacy — run the `vercel dns add` command yourself with the value from Google.
 
 ## Google Analytics 4
 
