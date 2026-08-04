@@ -5,11 +5,38 @@ import '../../styles/blog-article.css';
 const pageTitle = 'Best Online Speed Readers in 2026 — What Actually Matters | BriskRead';
 const pageDescription =
   'A practical guide to the best online speed reading websites: RSVP vs full-page tools, privacy, PDF support, Audio Sync, and how to choose without hype.';
+const pageUrl = new URL('/blog/best-online-speed-readers/', Astro.site || Astro.url).href;
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Best online speed readers in 2026',
+  description: pageDescription,
+  mainEntityOfPage: pageUrl,
+  author: { '@type': 'Organization', name: 'BriskRead' },
+  publisher: { '@type': 'Organization', name: 'BriskRead', url: 'https://briskread.com' },
+  dateModified: '2026-08-04',
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://briskread.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://briskread.com/blog/' },
+    { '@type': 'ListItem', position: 3, name: 'Best online speed readers', item: pageUrl },
+  ],
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
   <article class="blog-article mt-8">
     <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>Best online speed readers</span>
+      </nav>
       <div class="glass glass-article">
         <p class="section-label">Comparisons</p>
         <h1>Best online speed readers in 2026</h1>

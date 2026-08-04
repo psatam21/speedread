@@ -2,6 +2,23 @@
 .blog-article {
   padding-bottom: 3rem;
 }
+.blog-article .breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  align-items: center;
+  margin: 0 0 1rem;
+  font-size: 0.8rem;
+  color: var(--color-text-subtle);
+}
+.blog-article .breadcrumbs a {
+  color: var(--color-text-muted);
+  font-weight: 600;
+  text-decoration: none;
+}
+.blog-article .breadcrumbs a:hover {
+  color: var(--color-primary);
+}
 .blog-article .max-w-3xl {
   max-width: 720px;
   margin: 0 auto;

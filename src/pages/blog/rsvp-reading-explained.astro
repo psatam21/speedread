@@ -5,11 +5,23 @@ import '../../styles/blog-article.css';
 const pageTitle = 'What Is RSVP Reading? Rapid Serial Visual Presentation Explained | BriskRead';
 const pageDescription =
   'RSVP reading explained: how flashing words at a fixed point works, ORP highlights, when RSVP helps, and when full-page Focus is better.';
+const pageUrl = new URL('/blog/rsvp-reading-explained/', Astro.site || Astro.url).href;
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article', headline: 'What is RSVP reading?',
+    description: pageDescription, mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'BriskRead' },
+    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
+  })} />
   <article class="blog-article mt-8">
     <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>RSVP reading explained</span>
+      </nav>
       <div class="glass glass-article">
         <p class="section-label">Concepts</p>
         <h1>What is RSVP reading?</h1>

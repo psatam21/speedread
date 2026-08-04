@@ -46,8 +46,12 @@ npx vercel dns add briskread.com '@' TXT "google-site-verification=PASTE_THE_FUL
 Or Vercel Dashboard → Project/Team **Domains** → briskread.com → DNS → Add TXT, Name `@`, Value = full verification string.
 
 6. Wait 1–5 minutes, click **Verify** in Search Console  
-7. Sitemaps → submit `https://briskread.com/sitemap-index.xml`  
-8. Request indexing for `/`, `/blog`, `/rsvp-reader`, `/bionic-reading`, `/pdf-to-speech`, `/extension`
+7. Sitemaps → submit **both** (if one fails, try the other):
+   - `https://briskread.com/sitemap-0.xml`  ← submit this first if index fails
+   - `https://briskread.com/sitemap-index.xml`
+   - also works: `https://briskread.com/sitemap.xml` (redirects to the index)
+8. “**Couldn't fetch**” is often temporary right after verification. Confirm the URL opens in an incognito browser (should download/show XML). Wait a few hours and **Resubmit**. Also use **URL Inspection** on `https://briskread.com/` → Request indexing.
+9. Request indexing for `/`, `/blog`, `/rsvp-reader`, `/bionic-reading`, `/pdf-to-speech`, `/extension`
 
 **Note:** Do not paste the verification string into chat if you prefer privacy — run the `vercel dns add` command yourself with the value from Google.
 

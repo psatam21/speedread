@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Prefer crawling public product + guides (account is private tooling)
+Disallow: /account
+Disallow: /account/
+
 Sitemap: https://briskread.com/sitemap-index.xml
+Sitemap: https://briskread.com/sitemap-0.xml

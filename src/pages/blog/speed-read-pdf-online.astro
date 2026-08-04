@@ -5,11 +5,23 @@ import '../../styles/blog-article.css';
 const pageTitle = 'How to Speed Read a PDF Online (Private Browser Workflow) | BriskRead';
 const pageDescription =
   'Speed read PDFs and EPUBs in the browser: upload locally, use RSVP or Focus, OCR for scans, and keep files private. Free PDF speed reading with BriskRead.';
+const pageUrl = new URL('/blog/speed-read-pdf-online/', Astro.site || Astro.url).href;
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article', headline: 'How to speed read a PDF online',
+    description: pageDescription, mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'BriskRead' },
+    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
+  })} />
   <article class="blog-article mt-8">
     <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>Speed read a PDF online</span>
+      </nav>
       <div class="glass glass-article">
         <p class="section-label">Workflows</p>
         <h1>How to speed read a PDF online</h1>

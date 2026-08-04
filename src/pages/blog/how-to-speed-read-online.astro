@@ -5,11 +5,23 @@ import '../../styles/blog-article.css';
 const pageTitle = 'How to Speed Read Online Without Losing Comprehension | BriskRead';
 const pageDescription =
   'Step-by-step online speed reading: import text or PDF, choose Flash or Focus, use Audio Sync, set a realistic WPM, and protect comprehension.';
+const pageUrl = new URL('/blog/how-to-speed-read-online/', Astro.site || Astro.url).href;
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article', headline: 'How to speed read online',
+    description: pageDescription, mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'BriskRead' },
+    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
+  })} />
   <article class="blog-article mt-8">
     <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>How to speed read online</span>
+      </nav>
       <div class="glass glass-article">
         <p class="section-label">Practice</p>
         <h1>How to speed read online (a setup that holds up)</h1>

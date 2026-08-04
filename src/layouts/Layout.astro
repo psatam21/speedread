@@ -30,6 +30,30 @@ const isHome = pathname === '/';
 const allowAds = pathname !== '/account';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
+const siteOrigin = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://briskread.com';
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'BriskRead',
+  url: siteOrigin,
+  logo: `${siteOrigin}/favicon.svg`,
+  description:
+    'Free dual-channel online speed reader with RSVP, Audio Sync, Focus, Bionic, PDF/EPUB import, and a Chrome extension.',
+  sameAs: [] as string[],
+};
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'BriskRead',
+  url: siteOrigin,
+  description:
+    'Online speed reader with Audio Sync, six reading modes, and local PDF/EPUB processing.',
+  publisher: { '@type': 'Organization', name: 'BriskRead', url: siteOrigin },
+  potentialAction: {
+    '@type': 'ReadAction',
+    target: `${siteOrigin}/#importer-card`,
+  },
+};
 ---
 
 <!doctype html>
@@ -56,6 +80,7 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
     <link rel="canonical" href={canonicalUrl} />
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#5e6ad2" />
+    <meta name="author" content="BriskRead" />
     
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -124,6 +149,10 @@ const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | und
         data-ad-frequency-hint={adsenseAutoAds ? '30s' : undefined}
       ></script>
     )}
+
+    {/* Site-wide identity for search engines (SEO starter: help Google understand the site) */}
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </head>
   <body data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey}>
     <div class="scroll-progress" aria-hidden="true"></div>

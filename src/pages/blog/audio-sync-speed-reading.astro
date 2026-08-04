@@ -5,11 +5,23 @@ import '../../styles/blog-article.css';
 const pageTitle = 'Audio Sync Speed Reading: Eyes and Ears on One Stream | BriskRead';
 const pageDescription =
   'Why dual-channel Audio Sync beats flash-only RSVP tools: speech locked to the visual word stream for stronger focus and fewer missed sentences.';
+const pageUrl = new URL('/blog/audio-sync-speed-reading/', Astro.site || Astro.url).href;
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org', '@type': 'Article', headline: 'Why Audio Sync beats flash-only speed readers',
+    description: pageDescription, mainEntityOfPage: pageUrl,
+    author: { '@type': 'Organization', name: 'BriskRead' },
+    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
+  })} />
   <article class="blog-article mt-8">
     <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>Audio Sync speed reading</span>
+      </nav>
       <div class="glass glass-article">
         <p class="section-label">Differentiation</p>
         <h1>Why Audio Sync beats flash-only speed readers</h1>
