@@ -349,8 +349,7 @@ html.is-ready .hero-reader-shell.is-tilting {
   display: flex;
   width: max-content;
   gap: 0;
-  /* Longer list of features — slower so each label is readable */
-  animation: marquee-scroll 96s linear infinite;
+  animation: marquee-scroll 40s linear infinite;
 }
 
 .marquee-track:hover {
