@@ -6568,6 +6568,11 @@ const marqueeFeatures = [
       width: 100%;
       text-align: center;
       box-shadow: var(--shadow-lg);
+      /* On short viewports the card can be taller than the screen; scroll
+         it instead of letting flex-centering clip both ends with no way
+         to reach the rest. */
+      max-height: calc(100dvh - 2rem);
+      overflow-y: auto;
     }
     .share-modal-content {
       position: relative;
