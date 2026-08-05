@@ -16,7 +16,7 @@ const webAppSchema = {
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0',
-    highPrice: '8.99',
+    highPrice: '9',
     priceCurrency: 'USD',
     offerCount: '2',
   },
@@ -51,26 +51,26 @@ const marqueeFeatures = [
       <!-- Hero: polished two-column (no long-scroll theater) -->
       <header class="hero">
         <div class="hero-copy">
-          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Dual-channel speed reader</p>
+          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Read faster without re-reading</p>
           <h1 class="hero-title">
             <span class="hero-line"><span class="hero-line-inner">See it. Hear it.</span></span>
-            <span class="hero-line"><span class="hero-line-inner">Finish it.</span></span>
+            <span class="hero-line"><span class="hero-line-inner"> Finish it.</span></span>
           </h1>
           <p class="hero-sub">
-            Most speed readers only flash words. BriskRead locks <strong>RSVP to audio</strong> so your eyes and ears track the same stream — then switch to Focus, Bionic, or full page when the material needs more context.
+            Paste a document and BriskRead plays it one word at a time, right where your eyes already are — so you stop scanning back and forth. It's called <strong>RSVP</strong>, and BriskRead is the one that reads it aloud in sync as it flashes.
           </p>
           <ul class="hero-pitch" aria-label="Why BriskRead">
             <li>
-              <span class="hero-pitch-tag">Audio Sync</span>
-              <span>Speech and flash move together — the feature almost every RSVP tool skips.</span>
+              <span class="hero-pitch-tag">Step 1</span>
+              <span>Drop in a PDF, EPUB, article link, or pasted text. Everything is parsed in your browser.</span>
             </li>
             <li>
-              <span class="hero-pitch-tag">Six modes</span>
-              <span>Flash, Phrase, Focus, Flow, Bionic, Page on one document.</span>
+              <span class="hero-pitch-tag">Step 2</span>
+              <span>Pick a pace. Words flash one by one while the voice reads the same word — eyes and ears together.</span>
             </li>
             <li>
-              <span class="hero-pitch-tag">Your files</span>
-              <span>PDF, EPUB, paste, OCR — parsed in your browser, not uploaded for storage.</span>
+              <span class="hero-pitch-tag">Step 3</span>
+              <span>Hit dense material? Switch to Focus, Bionic, or normal page view mid-document.</span>
             </li>
           </ul>
           <div class="hero-actions">
@@ -100,8 +100,11 @@ const marqueeFeatures = [
                   <div class="hero-word" aria-live="off"><span id="hero-word-left">cre</span><strong id="hero-word-orp">a</strong><span id="hero-word-right">te</span></div>
                 </div>
                 <div class="hero-slide" data-hero-slide="focus">
-                  <p class="hero-slide-label"><i></i>Focus · context stays visible</p>
-                  <p class="hero-focus-demo" id="hero-focus-demo"></p>
+                  <p class="hero-slide-label"><i></i>Focus · fixed centre line</p>
+                  <div class="hero-focus-demo" id="hero-focus-demo" aria-live="off">
+                    <div class="hero-focus-eye" aria-hidden="true"></div>
+                    <div class="hero-focus-track" id="hero-focus-track"></div>
+                  </div>
                 </div>
               </div>
               <div class="hero-deck-tabs" role="tablist" aria-label="Preview reading mode">
@@ -324,15 +327,15 @@ const marqueeFeatures = [
 
           <!-- Bionic Reader Pane -->
           <div id="bionic-pane" class="reader-pane hidden">
-            <div class="standard-reader-view" id="bionic-text-view">
+            <div class="standard-reader-view reader-text-surface" id="bionic-text-view">
               <!-- Highlighted bionic text gets loaded here -->
             </div>
           </div>
 
-          <!-- Standard Mode Pane -->
+          <!-- Focus + Page Mode Pane -->
           <div id="standard-pane" class="reader-pane hidden">
-            <div class="standard-reader-view" id="standard-text-view">
-              <!-- Sentences loaded here with click-to-jump -->
+            <div class="standard-reader-view reader-text-surface" id="standard-text-view">
+              <!-- Focus: .focus-track + eye line. Page: sentences with click-to-jump -->
             </div>
           </div>
 
@@ -675,75 +678,44 @@ const marqueeFeatures = [
     </div>
   </section>
 
-  <!-- Feature inventory — what BriskRead actually ships -->
+  <!-- Product surface — capabilities only (plans live in #pricing) -->
   <section class="product-features" id="features" aria-labelledby="features-title">
     <div class="container">
       <div class="reading-methods-heading">
         <div>
-          <p class="section-label">What’s included</p>
-          <h2 id="features-title">Everything in the reading system</h2>
+          <p class="section-label">Why people use it</p>
+          <h2 id="features-title">Built for finishing long material, not renting a voice app</h2>
         </div>
-        <p>Core reader is free (with ads and a 3,000-word cap). Lifetime Premium unlocks unlimited length, ad-free mode, synced library, and the full Chrome extension.</p>
-      </div>
-
-      <div class="features-tier-grid">
-        <article class="feature-tier glass">
-          <h3>Core reader <span class="feature-badge free">Free</span></h3>
-          <ul>
-            <li><strong>Six modes</strong> — Flash, Phrase, Focus, Flow, Bionic, Page</li>
-            <li><strong>Import</strong> — paste, PDF, EPUB, TXT, on-device OCR, extract URL</li>
-            <li><strong>Audio Sync (differentiators)</strong> — TTS locked to the visual flash so eyes and ears share one stream</li>
-            <li><strong>AI workspace</strong> — summary &amp; chat with your own Gemini key (BYOK)</li>
-            <li><strong>Stats dashboard</strong> — words, time, streak, share cards</li>
-            <li><strong>Profiles</strong> — named slots you fill with your own speed/mode</li>
-            <li><strong>Check-ins</strong> — MCQs from the text every 1,000 words or manual only</li>
-            <li><strong>Chapter jump</strong> — section map for long documents</li>
-            <li><strong>Highlights + Markdown export</strong> — notes out to any AI or notes app</li>
-            <li><strong>Offline shell</strong> — PWA install after first visit</li>
-            <li><strong>Library (5 docs)</strong> — save and resume on this browser</li>
-            <li><strong>This week’s queue</strong> — backlog with time estimates + export MD</li>
-          </ul>
-        </article>
-        <article class="feature-tier glass feature-tier-pro">
-          <h3>Lifetime Premium <span class="feature-badge pro">$8.99 once</span></h3>
-          <ul>
-            <li><strong>Ad-free</strong> reading environment</li>
-            <li><strong>Unlimited document length</strong> — no 3,000-word cap</li>
-            <li><strong>Unlimited library</strong> — every doc you care about</li>
-            <li><strong>Cross-device sync</strong> — library, queue, profiles when signed in</li>
-            <li><strong>Chrome extension</strong> — speed-read any page in place</li>
-            <li><strong>Read later</strong> — right-click / Alt+Shift+L queue in the extension</li>
-            <li><strong>Multi-device license</strong> — up to 5 devices on your account</li>
-            <li><strong>30-day money-back</strong> guarantee</li>
-          </ul>
-          <a class="btn btn-primary" href="#pricing">Get Lifetime Premium</a>
-        </article>
+        <p>
+          Six visual modes, Audio Sync, local PDF/EPUB, and a Chrome extension path.
+          The core reader works free in the browser. <a href="#pricing">Lifetime</a> is for ad-free unlimited use and multi-device account Premium.
+        </p>
       </div>
 
       <div class="features-detail-grid">
         <article class="feature-card glass">
-          <h4>Library &amp; resume</h4>
-          <p>Save what you open. Progress stores word index, mode, and WPM. Resume later on this device — or any device after you sign in with Premium sync.</p>
+          <h4>Audio Sync</h4>
+          <p>Speech tracks the same flash/focus stream as your eyes — dual-channel, not listen-only TTS.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Reading queue</h4>
-          <p>Park docs for the week with estimated minutes at your WPM. Export the whole queue as one Markdown file for ChatGPT, Claude, or Notion.</p>
+          <h4>Six reading modes</h4>
+          <p>Flash, Phrase, Focus, Flow, Bionic, and Page on one document. Dial speed up, then slow down when context matters.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Focus that stays put</h4>
-          <p>In Focus mode the active line holds a fixed eye position while the paragraph scrolls up — less chasing text down the page.</p>
+          <h4>Local files</h4>
+          <p>PDF, EPUB, paste, and OCR parse in your browser. Optional URL extract and BYOK AI only leave the device when you use them.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Retention check-ins</h4>
-          <p>Auto every 1,000 words or manual only. Multiple-choice only, generated from the chunk you just read — no essay answers.</p>
+          <h4>Library, queue, resume</h4>
+          <p>Save docs, park a weekly queue with time estimates, resume word index + mode + WPM later.</p>
         </article>
         <article class="feature-card glass">
           <h4>Chrome extension</h4>
-          <p>Speed-read the current tab or selection, save to read-later, open in BriskRead.com. Keyboard: Alt+Shift+S (read), Alt+Shift+L (later).</p>
+          <p>Speed-read the tab or selection, read-later queue, open in BriskRead. Alt+Shift+S / Alt+Shift+L.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Private by default</h4>
-          <p>PDF/EPUB/OCR parse in your browser. Optional URL extract and AI leave the device only when you use them — AI uses your key, not ours.</p>
+          <h4>Retention check-ins</h4>
+          <p>Optional MCQs from the chunk you just read — every 1,000 words or manual only.</p>
         </article>
       </div>
     </div>
@@ -762,37 +734,37 @@ const marqueeFeatures = [
       <div class="method-ladder" role="list" aria-label="BriskRead reading modes">
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">01</span>
-          <span><strong>Flash</strong><small>One word at an anchored focal point</small></span>
+          <span class="method-name"><strong>Flash</strong><small>One word at an anchored focal point</small></span>
           <span class="method-context"><b>Least visual context</b><small>Fast triage and familiar material</small></span>
-          <span class="method-pace">300-600 WPM</span>
+          <span class="method-pace">300–600 WPM</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">02</span>
-          <span><strong>Phrase</strong><small>Three-word groups preserve local meaning</small></span>
+          <span class="method-name"><strong>Phrase</strong><small>Three-word groups preserve local meaning</small></span>
           <span class="method-context"><b>More sentence context</b><small>Reports, newsletters and articles</small></span>
-          <span class="method-pace">280-500 WPM</span>
+          <span class="method-pace">280–500 WPM</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">03</span>
-          <span><strong>Focus</strong><small>A moving highlight inside the full paragraph</small></span>
+          <span class="method-name"><strong>Focus</strong><small>A moving highlight inside the full paragraph</small></span>
           <span class="method-context"><b>Full paragraph visible</b><small>Dense ideas and first-pass research</small></span>
-          <span class="method-pace">220-400 WPM</span>
+          <span class="method-pace">220–400 WPM</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">04</span>
-          <span><strong>Flow</strong><small>A fixed focal point with moving paragraph context</small></span>
+          <span class="method-name"><strong>Flow</strong><small>A fixed focal point with moving paragraph context</small></span>
           <span class="method-context"><b>Three context lines</b><small>Fast reading without losing the surrounding thread</small></span>
-          <span class="method-pace">240-450 WPM</span>
+          <span class="method-pace">240–450 WPM</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">05</span>
-          <span><strong>Bionic</strong><small>Word prefixes create scanning anchors</small></span>
+          <span class="method-name"><strong>Bionic</strong><small>Word prefixes create scanning anchors</small></span>
           <span class="method-context"><b>Self-paced full page</b><small>Reference reading and review</small></span>
           <span class="method-pace">Your pace</span>
         </a>
         <a href="#importer-card" class="method-row" role="listitem">
           <span class="method-index">06</span>
-          <span><strong>Page</strong><small>Clean, distraction-reduced document view</small></span>
+          <span class="method-name"><strong>Page</strong><small>Clean, distraction-reduced document view</small></span>
           <span class="method-context"><b>Maximum context</b><small>Study, comparison and careful rereading</small></span>
           <span class="method-pace">Your pace</span>
         </a>
@@ -812,118 +784,199 @@ const marqueeFeatures = [
     </div>
   </section>
 
-  <!-- Monetization & Analytics Section -->
-  <section class="pricing-analytics-section mt-8" id="pricing">
-    <div class="container pricing-analytics-grid">
-      
-      <!-- Analytics Stored locally -->
-      <div class="glass dashboard-card" id="reading-dashboard">
-        <div class="dashboard-head">
-          <div>
-            <p class="dashboard-kicker">Your progress</p>
-            <h3>Reading dashboard</h3>
-            <p class="muted dashboard-lede">Documents stay on your device. Signed-in users can sync totals across devices.</p>
-          </div>
-          <div class="dashboard-streak-pill" id="dashboard-streak-pill" aria-live="polite">
-            <span class="dashboard-streak-fire" aria-hidden="true">🔥</span>
-            <span><strong id="dashboard-streak-num">0</strong> day streak</span>
-          </div>
-        </div>
-        <div class="stats-grid mt-4">
-          <div class="stat-box">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
-            </span>
-            <span class="stat-value" id="stats-words">0</span>
-            <span class="stat-label">Words speed-read</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
-            </span>
-            <span class="stat-value" id="stats-time">0m</span>
-            <span class="stat-label">Time reading</span>
-          </div>
-          <div class="stat-box stat-box-highlight">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>
-            </span>
-            <span class="stat-value" id="stats-saved">0m</span>
-            <span class="stat-label">Time saved</span>
-          </div>
-          <div class="stat-box">
-            <span class="stat-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg>
-            </span>
-            <span class="stat-value" id="stats-streak">0</span>
-            <span class="stat-label">Day streak</span>
-          </div>
-        </div>
-        <div class="dashboard-actions mt-6">
-          <button class="btn btn-primary" id="btn-share-stats" type="button">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="m16 6-4-4-4 4"/><path d="M12 2v14"/></svg>
-            Share achievement
-          </button>
-          <p class="dashboard-share-hint muted">Make a card for WhatsApp, X, LinkedIn, or download as an image.</p>
-        </div>
+  <!-- Compare (Lifetime only) + claim seats — one plan section -->
+  <section class="pricing-analytics-section mt-8" id="pricing" aria-labelledby="pricing-title">
+    <div class="container">
+      <div class="pricing-section-intro" id="compare">
+        <p class="section-label">Lifetime</p>
+        <h2 class="pricing-section-title" id="pricing-title">How Lifetime stacks up — free for a limited time</h2>
+        <p class="muted pricing-section-lede">
+          Use the reader free in the browser anytime. <strong>Lifetime Premium</strong> is the full system: ad-free, unlimited length, account restore, full Chrome extension.
+          The first <strong>50 accounts</strong> get Lifetime free automatically; after that it’s <strong>$9 once</strong>. Prices for other tools are approximate as of 2026.
+        </p>
       </div>
 
-      <!-- Lifetime Premium Block -->
-      <div class="glass pricing-card premium-badge">
-        <div class="pricing-tag">Lifetime</div>
-        <h3>Lifetime Premium</h3>
-        <div class="price-row mt-2">
-          <span class="price-strike">$29.99</span>
-          <span class="price-value">$8.99</span>
-          <span class="price-term">one-time / forever</span>
-        </div>
-        <ul class="pricing-features mt-4">
-          <li>100% ad-free reading environment</li>
-          <li>Unlimited document length (no 3,000-word cap)</li>
-          <li>Unlimited library + resume anywhere on this device</li>
-          <li>This week’s queue, profiles, chapter map, retention check-ins, Markdown export</li>
-          <li>Premium follows your signed-in account (multi-device)</li>
-          <li>Speed-read any page in the Chrome extension + read-later queue</li>
-        </ul>
-        <div class="pricing-actions mt-6">
-          <button class="btn btn-primary w-full" id="btn-buy-premium">Get Lifetime Pro — $8.99</button>
-          <p class="pricing-guarantee mt-3"><strong>30-day money-back guarantee.</strong> Email us within 30 days for a full refund, no reason required.</p>
-          <p class="muted text-center mt-2">One-time payment. Sign in once, then use Premium across your devices.</p>
-        </div>
+      <div class="compare-scroll" role="region" aria-label="Lifetime comparison" tabindex="0">
+        <table class="compare-table compare-table-lifetime">
+          <thead>
+            <tr>
+              <th scope="col">What matters</th>
+              <th scope="col">Browser TTS</th>
+              <th scope="col">Speechify-class</th>
+              <th scope="col">Classic RSVP / bionic tools</th>
+              <th scope="col" class="compare-you">BriskRead Lifetime</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Price</th>
+              <td>Free in browser</td>
+              <td>Usually $10–30/mo</td>
+              <td>Free or paid apps</td>
+              <td class="compare-you"><strong>Free for first 50</strong>, then $9 once</td>
+            </tr>
+            <tr>
+              <th scope="row">Job</th>
+              <td>Listen while multitasking</td>
+              <td>Premium voices / listen-first</td>
+              <td>Flash or scan faster</td>
+              <td class="compare-you">Eyes + ears on one stream, ad-free</td>
+            </tr>
+            <tr>
+              <th scope="row">Visual modes</th>
+              <td>No</td>
+              <td>Limited / secondary</td>
+              <td>Usually one mode family</td>
+              <td class="compare-you">Flash, Phrase, Focus, Flow, Bionic, Page</td>
+            </tr>
+            <tr>
+              <th scope="row">Audio locked to visual</th>
+              <td>Audio only</td>
+              <td>Audio-first</td>
+              <td>Rare</td>
+              <td class="compare-you">Audio Sync dual-channel</td>
+            </tr>
+            <tr>
+              <th scope="row">PDF / privacy</th>
+              <td>Depends</td>
+              <td>Often cloud / app</td>
+              <td>Varies</td>
+              <td class="compare-you">Local PDF/EPUB/OCR in browser</td>
+            </tr>
+            <tr>
+              <th scope="row">Chrome in-page</th>
+              <td>No</td>
+              <td>Often paid</td>
+              <td>Sometimes</td>
+              <td class="compare-you">Full in-page + read-later</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        <div class="account-purchase-panel mt-6" id="account-purchase-panel">
-          <strong>Account-linked purchase</strong>
-          <p id="account-purchase-copy">Sign in before checkout so Lifetime Premium is attached to your account automatically.</p>
-          <button class="btn btn-secondary" id="btn-pricing-signin" type="button">Sign in or create account</button>
-        </div>
+      <p class="compare-honest-inline muted">
+        Pick Speechify-class tools for celebrity voices and polished mobile listen apps.
+        Pick BriskRead Lifetime when you want dual-channel speed reading without a subscription.
+        <a href="/blog/free-speechify-alternatives">Longer alternative guide</a>
+      </p>
 
-        <!-- Multi-device license: activate key + device slots (max 5) -->
-        <div class="license-panel mt-6 hidden" id="license-panel" aria-hidden="true">
-          <h4 class="license-heading">Already purchased?</h4>
-          <p class="muted license-hint">Paste your lifetime license key. Premium binds to this device (max 5 devices). Sharing past the limit is blocked.</p>
-          <div class="license-row">
-            <input type="text" id="license-key-input" placeholder="Paste license key…" autocomplete="off" spellcheck="false" aria-label="License key" />
-            <button class="btn btn-secondary" id="btn-activate-license" type="button">Activate device</button>
+      <div class="pricing-claim-grid">
+        <div class="glass pricing-card premium-badge" id="lifetime-pricing-card">
+          <div class="pricing-tag" id="lifetime-pricing-tag">Lifetime · free limited time</div>
+          <h3>Lifetime Premium</h3>
+          <div class="price-row mt-2">
+            <span class="price-strike" id="lifetime-price-strike" title="Price after free seats">$9</span>
+            <span class="price-value" id="lifetime-price-value">Free</span>
+            <span class="price-term" id="lifetime-price-term">for the first 50 accounts · forever</span>
           </div>
-          <p id="license-status" class="license-status muted" role="status" aria-live="polite"></p>
-          <div id="license-display" class="license-display hidden">
-            <label for="license-key-display">License key (keep private — save offline)</label>
+
+          <div class="seat-meter" id="lifetime-seat-meter" aria-live="polite">
+            <div class="seat-meter-head">
+              <span class="seat-meter-label">Free Lifetime seats</span>
+              <span class="seat-meter-count" id="lifetime-seat-count">Loading seats…</span>
+            </div>
+            <div class="seat-meter-track" aria-hidden="true">
+              <div class="seat-meter-fill" id="lifetime-seat-fill" style="width: 0%"></div>
+            </div>
+            <p class="seat-meter-detail muted" id="lifetime-seat-detail">First 50 accounts get Lifetime free. Claimed count updates live.</p>
+          </div>
+
+          <ul class="pricing-features mt-4">
+            <li>Everything in the free core reader</li>
+            <li>Ad-free + unlimited document length</li>
+            <li>Unlimited library + multi-device account Premium</li>
+            <li>Full Chrome extension (in-page + read-later)</li>
+          </ul>
+          <div class="pricing-actions mt-6">
+            <a class="btn btn-primary w-full" id="btn-claim-lifetime" href="/account?mode=signup">Create free account — unlock Lifetime</a>
+            <button class="btn btn-primary w-full hidden" id="btn-buy-premium" type="button">Get Lifetime — $9</button>
+            <p class="pricing-guarantee mt-3" id="lifetime-guarantee"><strong>Limited free seats.</strong> Create an account while seats remain — Lifetime unlocks automatically. After 50, Lifetime is $9 one-time with a 30-day money-back guarantee.</p>
+            <p class="muted text-center mt-2" id="lifetime-footnote">No card for free seats. Core reader stays free forever with ads and a 3,000-word cap.</p>
+          </div>
+
+          <div class="account-purchase-panel mt-6" id="account-purchase-panel">
+            <strong>Account-linked Premium</strong>
+            <p id="account-purchase-copy">Sign in or create an account. Free seats grant Lifetime automatically. After the cap, checkout attaches the $9 purchase to this account.</p>
+            <button class="btn btn-secondary" id="btn-pricing-signin" type="button">Sign in or create account</button>
+          </div>
+
+          <div class="license-panel mt-6 hidden" id="license-panel" aria-hidden="true">
+            <h4 class="license-heading">Already purchased?</h4>
+            <p class="muted license-hint">Paste your lifetime license key. Premium binds to this device (max 5 devices).</p>
             <div class="license-row">
-              <input type="text" id="license-key-display" readonly aria-label="Saved license key" />
-              <button class="btn btn-secondary btn-sm" id="btn-copy-license" type="button">Copy</button>
+              <input type="text" id="license-key-input" placeholder="Paste license key…" autocomplete="off" spellcheck="false" aria-label="License key" />
+              <button class="btn btn-secondary" id="btn-activate-license" type="button">Activate device</button>
+            </div>
+            <p id="license-status" class="license-status muted" role="status" aria-live="polite"></p>
+            <div id="license-display" class="license-display hidden">
+              <label for="license-key-display">License key (keep private — save offline)</label>
+              <div class="license-row">
+                <input type="text" id="license-key-display" readonly aria-label="Saved license key" />
+                <button class="btn btn-secondary btn-sm" id="btn-copy-license" type="button">Copy</button>
+              </div>
+            </div>
+            <div id="device-list-wrap" class="device-list-wrap hidden">
+              <div class="device-list-header">
+                <span>Activated devices</span>
+                <span id="device-count" class="device-count"></span>
+              </div>
+              <ul id="device-list" class="device-list"></ul>
+              <p class="muted device-help">Revoke a device you no longer use to free a slot. Max 5 personal devices.</p>
             </div>
           </div>
-          <div id="device-list-wrap" class="device-list-wrap hidden">
-            <div class="device-list-header">
-              <span>Activated devices</span>
-              <span id="device-count" class="device-count"></span>
+        </div>
+
+        <div class="glass dashboard-card" id="reading-dashboard">
+          <div class="dashboard-head">
+            <div>
+              <p class="dashboard-kicker">Your progress</p>
+              <h3>Reading dashboard</h3>
+              <p class="muted dashboard-lede">Documents stay on your device. Signed-in users can sync totals across devices.</p>
             </div>
-            <ul id="device-list" class="device-list"></ul>
-            <p class="muted device-help">Revoke a device you no longer use to free a slot. Max 5 personal devices.</p>
+            <div class="dashboard-streak-pill" id="dashboard-streak-pill" aria-live="polite">
+              <span class="dashboard-streak-fire" aria-hidden="true">🔥</span>
+              <span><strong id="dashboard-streak-num">0</strong> day streak</span>
+            </div>
+          </div>
+          <div class="stats-grid mt-4">
+            <div class="stat-box">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8M8 11h6"/></svg>
+              </span>
+              <span class="stat-value" id="stats-words">0</span>
+              <span class="stat-label">Words speed-read</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+              </span>
+              <span class="stat-value" id="stats-time">0m</span>
+              <span class="stat-label">Time reading</span>
+            </div>
+            <div class="stat-box stat-box-highlight">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z"/></svg>
+              </span>
+              <span class="stat-value" id="stats-saved">0m</span>
+              <span class="stat-label">Time saved</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 14s1.5 2 4 2 4-2 4-2"/><circle cx="9" cy="9" r="1.2" fill="currentColor"/><circle cx="15" cy="9" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="9"/></svg>
+              </span>
+              <span class="stat-value" id="stats-streak">0</span>
+              <span class="stat-label">Day streak</span>
+            </div>
+          </div>
+          <div class="dashboard-actions mt-6">
+            <button class="btn btn-primary" id="btn-share-stats" type="button">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="m16 6-4-4-4 4"/><path d="M12 2v14"/></svg>
+              Share achievement
+            </button>
+            <p class="dashboard-share-hint muted">Make a card for WhatsApp, X, LinkedIn, or download as an image.</p>
           </div>
         </div>
       </div>
-
     </div>
   </section>
 
@@ -1021,7 +1074,7 @@ const marqueeFeatures = [
           <details class="faq-item">
             <summary>Is BriskRead really free?</summary>
             <div class="faq-answer">
-              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($8.99) removes ads, lifts the 3,000-word cap, and unlocks in-page reading in the Chrome extension.</p>
+              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9 one-time) removes ads, lifts the 3,000-word cap, and unlocks in-page reading in the Chrome extension.</p>
             </div>
           </details>
         </div>
@@ -1044,7 +1097,14 @@ const marqueeFeatures = [
       <h3 id="share-modal-title">Your BriskRead milestone</h3>
       <p class="muted share-modal-lede">Post the card, or share a ready-made caption to WhatsApp, X, or LinkedIn.</p>
       <div class="canvas-preview">
-        <img id="share-card-img" alt="BriskRead stats achievement card" />
+        <img
+          id="share-card-img"
+          alt="BriskRead stats achievement card"
+          width="600"
+          height="315"
+          hidden
+          src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        />
       </div>
       <div class="share-actions" role="group" aria-label="Share destinations">
         <button class="share-btn share-btn-download" id="btn-share-download" type="button">
@@ -1127,7 +1187,7 @@ const marqueeFeatures = [
           "name": "Is BriskRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $8.99 one-time for ad-free unlimited reading and in-page reading in the Chrome extension."
+            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and in-page reading in the Chrome extension."
           }
         }
       ]
@@ -1288,29 +1348,146 @@ const marqueeFeatures = [
 
       if (state.isPremium) {
         document.querySelectorAll('.ads-section').forEach(el => el.classList.add('hidden'));
-        
+
         const buyBtn = document.getElementById('btn-buy-premium');
+        const claimBtn = document.getElementById('btn-claim-lifetime');
         if (buyBtn) {
-          buyBtn.textContent = accountUser ? "Lifetime Premium active" : "Premium active on this device";
+          buyBtn.textContent = accountUser ? 'Lifetime Premium active' : 'Premium active on this device';
           buyBtn.disabled = true;
+          buyBtn.classList.remove('hidden');
           buyBtn.classList.add('btn-premium-active');
         }
-        
-        const pricingCard = document.querySelector('.pricing-card');
-        if (pricingCard) {
-          const tag = pricingCard.querySelector('.pricing-tag');
-          if (tag) {
-            tag.textContent = "Active on this device";
-            tag.classList.add('tag-success');
-          }
+        if (claimBtn) claimBtn.classList.add('hidden');
+
+        const tag = document.getElementById('lifetime-pricing-tag');
+        if (tag) {
+          tag.textContent = 'Active';
+          tag.classList.add('tag-success');
         }
 
         const heading = document.querySelector('.license-heading');
-        if (heading) heading.textContent = "Your license & devices";
+        if (heading) heading.textContent = 'Your license & devices';
         const hint = document.querySelector('.license-hint');
-        if (hint) hint.textContent = "Keep the key private. Activate on up to 5 devices. Revoke unused devices to free slots.";
+        if (hint) hint.textContent = 'Keep the key private. Activate on up to 5 devices. Revoke unused devices to free slots.';
       }
     };
+
+    /** Live founding seat counter on Lifetime card (cap 50). */
+    const FOUNDING_CAP = 50;
+    let foundingSeats = { cap: FOUNDING_CAP, claimed: null, remaining: null, open: true };
+
+    const applyFoundingSeatUI = (stats) => {
+      if (!stats || stats.claimed == null) return;
+      foundingSeats = {
+        cap: stats.cap || FOUNDING_CAP,
+        claimed: stats.claimed,
+        remaining: stats.remaining ?? Math.max(0, (stats.cap || FOUNDING_CAP) - stats.claimed),
+        open: stats.open !== false && (stats.remaining ?? 0) > 0,
+      };
+
+      const countEl = document.getElementById('lifetime-seat-count');
+      const detailEl = document.getElementById('lifetime-seat-detail');
+      const fillEl = document.getElementById('lifetime-seat-fill');
+      const tagEl = document.getElementById('lifetime-pricing-tag');
+      const priceVal = document.getElementById('lifetime-price-value');
+      const priceTerm = document.getElementById('lifetime-price-term');
+      const priceStrike = document.getElementById('lifetime-price-strike');
+      const claimBtn = document.getElementById('btn-claim-lifetime');
+      const buyBtn = document.getElementById('btn-buy-premium');
+      const guarantee = document.getElementById('lifetime-guarantee');
+      const footnote = document.getElementById('lifetime-footnote');
+      const meter = document.getElementById('lifetime-seat-meter');
+
+      const { cap, claimed, remaining, open } = foundingSeats;
+      const pct = Math.min(100, Math.round((claimed / cap) * 100));
+
+      if (countEl) countEl.textContent = `${claimed} / ${cap} claimed · ${remaining} left`;
+      if (fillEl) fillEl.style.width = `${pct}%`;
+      if (detailEl) {
+        detailEl.textContent = open
+          ? `Lifetime is free for a limited time — ${remaining} free seat${remaining === 1 ? '' : 's'} left. Create an account to unlock automatically.`
+          : 'Free seats are full. Lifetime is $9 one-time forever.';
+      }
+      if (meter) meter.classList.toggle('seat-meter-full', !open);
+
+      if (state.isPremium) return;
+
+      if (open) {
+        if (tagEl) {
+          tagEl.textContent = 'Lifetime · free limited time';
+          tagEl.classList.remove('tag-success');
+        }
+        if (priceVal) priceVal.textContent = 'Free';
+        if (priceTerm) priceTerm.textContent = 'for the first 50 accounts · forever';
+        if (priceStrike) {
+          priceStrike.textContent = '$9';
+          priceStrike.classList.remove('hidden');
+        }
+        if (claimBtn) {
+          claimBtn.classList.remove('hidden');
+          claimBtn.textContent = remaining <= 10
+            ? `Claim free Lifetime — ${remaining} left`
+            : 'Create free account — unlock Lifetime';
+        }
+        if (buyBtn) buyBtn.classList.add('hidden');
+        if (guarantee) {
+          guarantee.innerHTML = `<strong>Limited free seats.</strong> Create an account while seats remain — Lifetime unlocks automatically. After ${cap}, Lifetime is $9 one-time with a 30-day money-back guarantee.`;
+        }
+        if (footnote) footnote.textContent = 'No card required for free seats. Same account restores Premium on your other devices.';
+      } else {
+        if (tagEl) {
+          tagEl.textContent = 'Lifetime · $9';
+          tagEl.classList.remove('tag-success');
+        }
+        if (priceVal) priceVal.textContent = '$9';
+        if (priceTerm) priceTerm.textContent = 'one-time · forever';
+        if (priceStrike) {
+          priceStrike.textContent = '~$15/mo apps';
+          priceStrike.classList.remove('hidden');
+        }
+        if (claimBtn) claimBtn.classList.add('hidden');
+        if (buyBtn) {
+          buyBtn.classList.remove('hidden');
+          buyBtn.disabled = false;
+          buyBtn.classList.remove('btn-premium-active');
+          buyBtn.textContent = 'Get Lifetime — $9';
+        }
+        if (guarantee) {
+          guarantee.innerHTML = '<strong>30-day money-back guarantee.</strong> Email us within 30 days for a full refund, no reason required.';
+        }
+        if (footnote) footnote.textContent = 'Sign in once at checkout. Premium restores on your other devices with the same account.';
+      }
+    };
+
+    const loadFoundingSeats = async () => {
+      try {
+        const supabase = globalThis.briskreadSupabase;
+        if (supabase) {
+          const { data, error } = await supabase.rpc('founding_seat_stats');
+          if (!error && data) {
+            applyFoundingSeatUI(data);
+            return;
+          }
+        }
+      } catch (_) { /* fall through */ }
+
+      try {
+        const res = await fetch('/api/founding-seats');
+        if (res.ok) applyFoundingSeatUI(await res.json());
+        else if (document.getElementById('lifetime-seat-count')) {
+          document.getElementById('lifetime-seat-count').textContent = 'Seat count unavailable';
+        }
+      } catch (_) {
+        const countEl = document.getElementById('lifetime-seat-count');
+        if (countEl) countEl.textContent = 'Seat count unavailable';
+      }
+    };
+
+    loadFoundingSeats();
+    window.addEventListener('briskread:account', () => {
+      // Refresh count after a grant may have consumed a seat
+      window.setTimeout(loadFoundingSeats, 400);
+    });
 
     /**
      * Validate premium without burning an extra device slot.
@@ -2090,7 +2267,10 @@ const marqueeFeatures = [
         return `<strong class="bionic-fixation">${fixPart}</strong><span class="bionic-saccade">${sacPart}</span>`;
       }).join(' ');
 
-      document.getElementById('bionic-text-view').innerHTML = formatted;
+      const bionicView = document.getElementById('bionic-text-view');
+      if (!bionicView) return;
+      bionicView.classList.remove('focus-reader-viewport');
+      bionicView.innerHTML = formatted;
     };
 
     // Render Standard Reader highlighted sentences
@@ -2102,6 +2282,9 @@ const marqueeFeatures = [
       }).join('');
       
       const view = document.getElementById('standard-text-view');
+      view.classList.remove('focus-reader-viewport');
+      view.classList.add('is-page-mode');
+      view.style.transform = '';
       view.innerHTML = html;
 
       // Click to jump logic
@@ -2121,44 +2304,74 @@ const marqueeFeatures = [
       });
     };
 
+    const FOCUS_EYE_RATIO = 0.42;
+
     const renderFocusText = () => {
       const view = document.getElementById('standard-text-view');
-      const fragment = document.createDocumentFragment();
+      if (!view) return;
+      view.classList.add('focus-reader-viewport');
+      view.classList.remove('is-page-mode');
+      const track = document.createElement('div');
+      track.className = 'focus-track';
+      track.id = 'focus-track';
       state.words.forEach((word, index) => {
         const span = document.createElement('span');
         span.className = 'focus-word';
         span.dataset.wordIndex = index.toString();
         span.textContent = `${word} `;
-        fragment.appendChild(span);
+        track.appendChild(span);
       });
-      view.replaceChildren(fragment);
+      const eye = document.createElement('div');
+      eye.className = 'focus-eye-line';
+      eye.setAttribute('aria-hidden', 'true');
+      view.replaceChildren(eye, track);
       view.onclick = (event) => {
         const word = event.target.closest('.focus-word');
         if (!word) return;
         state.currentIndex = Number(word.dataset.wordIndex);
         renderRSVPWord();
       };
+      // After layout, size vertical padding so first/last lines can sit on the eye line
+      requestAnimationFrame(() => {
+        const eyeY = view.clientHeight * FOCUS_EYE_RATIO;
+        track.style.paddingTop = `${Math.max(0, eyeY - 12)}px`;
+        track.style.paddingBottom = `${Math.max(0, view.clientHeight - eyeY - 12)}px`;
+        updateFocusWord();
+      });
+    };
+
+    const readTranslateY = (el) => {
+      if (!el) return 0;
+      const raw = el.style.transform || '';
+      const m = raw.match(/translate3d\(\s*[^,]+,\s*([-\d.]+)px/);
+      if (m) return Number(m[1]) || 0;
+      const m2 = raw.match(/translateY\(\s*([-\d.]+)px/);
+      return m2 ? Number(m2[1]) || 0 : 0;
     };
 
     const updateFocusWord = () => {
       const view = document.getElementById('standard-text-view');
       if (!view) return;
+      const track = view.querySelector('.focus-track') || view;
       const previous = view.querySelector('.focus-word.active');
       if (previous) previous.classList.remove('active');
       const current = view.querySelector(`[data-word-index="${state.currentIndex}"]`);
       if (!current) return;
       current.classList.add('active');
+      // Line detection using layout geometry (stable with transforms)
       const lineTop = current.offsetTop;
       view.querySelectorAll('.focus-word').forEach((word) => {
-        word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
+        word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 3);
       });
-      // Keep the active line at a fixed eye position (~38% from top).
-      // Text scrolls upward as the highlight advances — eyes stay put.
-      const eyeY = view.clientHeight * 0.38;
-      const targetScroll = Math.max(0, current.offsetTop - eyeY);
-      if (Math.abs(view.scrollTop - targetScroll) > 1) {
-        view.scrollTop = targetScroll;
-      }
+      // Fixed eye line: nudge transform so the active word sits at ~42% of the viewport.
+      // As the highlight advances, the next line slides into that same place.
+      const viewRect = view.getBoundingClientRect();
+      const wordRect = current.getBoundingClientRect();
+      const eyeAbs = viewRect.top + view.clientHeight * FOCUS_EYE_RATIO;
+      const wordMid = wordRect.top + wordRect.height / 2;
+      const nextY = readTranslateY(track) + (eyeAbs - wordMid);
+      track.style.transform = `translate3d(0, ${nextY}px, 0)`;
+      if (view.scrollTop !== 0) view.scrollTop = 0;
     };
 
     const renderFlowWord = () => {
@@ -2191,7 +2404,7 @@ const marqueeFeatures = [
       const descriptions = {
         rsvp: 'One word at a fixed focal point for maximum speed.',
         phrase: 'Three-word groups preserve more context while reducing eye movement.',
-        focus: 'Active line stays fixed; the paragraph scrolls up so your eyes do not chase downward.',
+        focus: 'One line stays locked to the centre mark; the next line slides into that same place.',
         flow: 'Keep a fixed focal point while nearby words and lines move through context.',
         bionic: 'Bold word beginnings guide your eyes through the full text.',
         standard: 'A clean, distraction-free page for self-paced reading.',
@@ -2402,7 +2615,7 @@ const marqueeFeatures = [
       // Enforce free tier limits: 3000 words limit on uploads
       const tempWords = text.trim().split(/\s+/);
       if (tempWords.length > 3000 && !state.isPremium) {
-        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Premium Lifetime ($8.99 one-time) to read unlimited length books and unlock a completely ad-free workspace!`);
+        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Lifetime Premium ($9 one-time) for unlimited length and an ad-free workspace.`);
         if (upgrade) {
           setTimeout(() => {
             const pricing = document.querySelector('.pricing-card');
@@ -2730,9 +2943,14 @@ const marqueeFeatures = [
         document.querySelector('.hero-word').classList.remove('is-changing');
         requestAnimationFrame(() => document.querySelector('.hero-word').classList.add('is-changing'));
       };
-      // Focus preview must match the real reader: .focus-word + .active + .active-line
+      // Focus preview: same fixed-eye-line behaviour as the real reader
       const heroFocusHost = document.getElementById('hero-focus-demo');
-      const heroFocusWords = 'Removing horizontal eye movement lets you read a whole paragraph without losing your place or rereading a line.'.split(' ');
+      const heroFocusTrack = document.getElementById('hero-focus-track');
+      const heroFocusWords = (
+        'Removing horizontal eye movement lets you read a whole paragraph without losing your place. ' +
+        'The active line stays locked to the centre mark while the next line slides into that same place. ' +
+        'Your eyes rest; the text does the work so focus mode feels like a teleprompter for reading.'
+      ).split(/\s+/).filter(Boolean);
       const heroFocusFrag = document.createDocumentFragment();
       heroFocusWords.forEach((word, index) => {
         const span = document.createElement('span');
@@ -2741,25 +2959,54 @@ const marqueeFeatures = [
         span.textContent = `${word} `;
         heroFocusFrag.appendChild(span);
       });
-      heroFocusHost.replaceChildren(heroFocusFrag);
-      const heroFocusSpans = [...heroFocusHost.querySelectorAll('.focus-word')];
+      if (heroFocusTrack) heroFocusTrack.replaceChildren(heroFocusFrag);
+      const heroFocusSpans = heroFocusTrack
+        ? [...heroFocusTrack.querySelectorAll('.focus-word')]
+        : [];
       let heroFocusIndex = 0;
+      const HERO_FOCUS_EYE = 0.42;
+      const layoutHeroFocusPadding = () => {
+        if (!heroFocusHost || !heroFocusTrack) return;
+        const eyeY = heroFocusHost.clientHeight * HERO_FOCUS_EYE;
+        heroFocusTrack.style.paddingTop = `${Math.max(0, eyeY - 10)}px`;
+        heroFocusTrack.style.paddingBottom = `${Math.max(0, heroFocusHost.clientHeight - eyeY - 10)}px`;
+      };
+      const readHeroTY = (el) => {
+        const raw = el?.style?.transform || '';
+        const m = raw.match(/translate3d\(\s*[^,]+,\s*([-\d.]+)px/);
+        return m ? Number(m[1]) || 0 : 0;
+      };
       const renderHeroFocus = () => {
+        if (!heroFocusHost || !heroFocusTrack || !heroFocusSpans.length) return;
+        // Only drive focus animation while that slide is visible
+        const focusSlide = document.querySelector('[data-hero-slide="focus"]');
+        if (focusSlide && !focusSlide.classList.contains('is-active')) {
+          heroFocusIndex += 1;
+          return;
+        }
         const idx = heroFocusIndex % heroFocusSpans.length;
         const current = heroFocusSpans[idx];
         heroFocusSpans.forEach((s) => s.classList.remove('active', 'active-line'));
         if (current) {
           current.classList.add('active');
-          // Same line detection as updateFocusWord() in the real reader
           const lineTop = current.offsetTop;
           heroFocusSpans.forEach((word) => {
-            word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 2);
+            word.classList.toggle('active-line', Math.abs(word.offsetTop - lineTop) < 3);
           });
+          const viewRect = heroFocusHost.getBoundingClientRect();
+          const wordRect = current.getBoundingClientRect();
+          const eyeAbs = viewRect.top + heroFocusHost.clientHeight * HERO_FOCUS_EYE;
+          const wordMid = wordRect.top + wordRect.height / 2;
+          const nextY = readHeroTY(heroFocusTrack) + (eyeAbs - wordMid);
+          heroFocusTrack.style.transform = `translate3d(0, ${nextY}px, 0)`;
         }
         heroFocusIndex += 1;
       };
       // Double rAF so offsetTop is correct after first paint in the dark mock
-      requestAnimationFrame(() => requestAnimationFrame(renderHeroFocus));
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        layoutHeroFocusPadding();
+        renderHeroFocus();
+      }));
 
       const heroTick = () => { renderHeroPreview(); renderHeroFocus(); };
 
@@ -3631,7 +3878,11 @@ const marqueeFeatures = [
         ctx.fillText(host, 128, 870);
 
         shareCardDataUrl = canvas.toDataURL('image/png');
-        document.getElementById('share-card-img').src = shareCardDataUrl;
+        const shareImg = document.getElementById('share-card-img');
+        if (shareImg) {
+          shareImg.src = shareCardDataUrl;
+          shareImg.hidden = false;
+        }
 
         // Blob for native share / download
         shareCardBlob = await new Promise((resolve) => {
@@ -3794,7 +4045,7 @@ const marqueeFeatures = [
           alert('Could not start checkout. Please try again shortly.');
           console.error(err);
           btn.disabled = false;
-          btn.textContent = 'Get Lifetime Pro — $8.99';
+          btn.textContent = 'Get Lifetime — $9';
         }
       });
 
@@ -4244,35 +4495,73 @@ const marqueeFeatures = [
     .hero-slide.is-leaving { opacity: 0; transform: translateX(-28px); }
     .hero-slide-label { margin: 0 auto 0.85rem; color: #a1a1aa; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .hero-slide-label i { display: inline-block; width: 0.55rem; height: 0.55rem; margin-right: 0.3rem; border-radius: 50%; background: var(--color-primary); }
-    /* Focus slide: mirror .standard-reader-view + .focus-word from the real reader */
+    /* Focus slide: full-bleed demo + fixed eye line (mirrors real Focus mode) */
     .hero-slide[data-hero-slide="focus"] {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
       place-content: stretch;
-      align-content: stretch;
       padding: 0.75rem 0.85rem 0.85rem;
     }
     .hero-slide[data-hero-slide="focus"] .hero-slide-label {
       margin: 0 0 0.55rem;
       justify-self: start;
+      flex: 0 0 auto;
     }
     .hero-focus-demo {
+      position: relative;
       width: 100%;
       max-width: none;
       margin: 0;
-      padding: 0.85rem 1rem;
+      padding: 0.55rem 0.75rem;
+      flex: 1 1 auto;
       min-height: 0;
+      height: 100%;
       max-height: 100%;
       overflow: hidden;
       border-radius: 10px;
       border: 1px solid rgba(255, 255, 255, 0.08);
       background: rgba(255, 255, 255, 0.04);
       color: #f4f4f5;
-      font-size: clamp(0.95rem, 1.35vw, 1.12rem);
-      line-height: 1.75;
+      font-size: clamp(0.92rem, 1.3vw, 1.08rem);
+      line-height: 1.7;
       text-align: left;
       text-wrap: pretty;
     }
+    .hero-focus-eye {
+      position: absolute;
+      left: 0.55rem;
+      right: 0.55rem;
+      top: 42%;
+      height: 0;
+      border-top: 1px dashed rgba(168, 176, 242, 0.55);
+      pointer-events: none;
+      z-index: 2;
+    }
+    .hero-focus-eye::before,
+    .hero-focus-eye::after {
+      content: '';
+      position: absolute;
+      top: -3px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #5e6ad2;
+    }
+    .hero-focus-eye::before { left: 0; }
+    .hero-focus-eye::after { right: 0; }
+    .hero-focus-track {
+      position: relative;
+      will-change: transform;
+      transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-focus-track { transition: none; }
+    }
     /* Same classes as the real reader (.focus-word / .active / .active-line) */
-    .hero-focus-demo :global(.focus-word) {
+    .hero-focus-demo :global(.focus-word),
+    .hero-focus-demo .focus-word {
       display: inline-block;
       border-radius: 4px;
       padding: 0 2px;
@@ -4286,10 +4575,12 @@ const marqueeFeatures = [
         opacity 140ms var(--ease-out),
         transform 140ms var(--ease-out);
     }
-    .hero-focus-demo :global(.focus-word.active-line) {
+    .hero-focus-demo :global(.focus-word.active-line),
+    .hero-focus-demo .focus-word.active-line {
       opacity: 1;
     }
-    .hero-focus-demo :global(.focus-word.active) {
+    .hero-focus-demo :global(.focus-word.active),
+    .hero-focus-demo .focus-word.active {
       color: #a8b0f2;
       background: transparent;
       box-shadow: inset 0 -2px 0 #5e6ad2;
@@ -4532,14 +4823,37 @@ const marqueeFeatures = [
     .reading-methods-heading h2 { max-width: min(18ch, 100%); margin: 0; font-size: clamp(2.2rem, 5vw, 4.25rem); line-height: 1.05; letter-spacing: -0.04em; text-wrap: balance; }
     .reading-methods-heading > p { max-width: min(52rem, 100%); margin: 0; color: var(--color-text-muted); }
     .method-ladder { border-top: 1px solid var(--color-border); }
-    .method-row { display: grid; grid-template-columns: 2.5rem minmax(0, 1.1fr) minmax(0, 1fr) auto; gap: 1rem 1.25rem; align-items: center; min-height: 5.5rem; padding: 1rem 0; border-bottom: 1px solid var(--color-border); color: var(--color-text); transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out); }
+    /* Fixed pace column so “Your pace” rows don’t shift the context column right */
+    .method-row {
+      display: grid;
+      grid-template-columns: 2.5rem minmax(0, 1.15fr) minmax(0, 1fr) 7.25rem;
+      gap: 1rem 1.25rem;
+      align-items: center;
+      min-height: 5.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--color-border);
+      color: var(--color-text);
+      transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-fast) var(--ease-out);
+    }
     .method-row:hover { color: var(--color-text); background: var(--color-primary-muted); transform: translateX(0.5rem); }
+    .method-name,
+    .method-context {
+      min-width: 0;
+    }
     .method-row strong, .method-row small, .method-context b { display: block; }
     .method-row strong { font-size: 1.25rem; letter-spacing: -0.02em; }
     .method-row small { margin-top: 0.2rem; color: var(--color-text-muted); line-height: 1.45; overflow-wrap: break-word; word-break: normal; }
     .method-index { color: var(--color-text-subtle); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
     .method-context b { color: var(--color-text); font-size: 0.85rem; }
-    .method-pace { color: var(--color-primary); font-size: 0.8rem; font-weight: 700; white-space: nowrap; }
+    .method-pace {
+      color: var(--color-primary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      white-space: nowrap;
+      text-align: right;
+      justify-self: end;
+      font-variant-numeric: tabular-nums;
+    }
     .reading-fit { display: grid; grid-template-columns: 1fr 1fr auto; gap: clamp(1.5rem, 4vw, 3rem); align-items: start; margin-top: 2.25rem; }
     .reading-fit h3 { margin: 0 0 0.5rem; font-size: 1rem; }
     .reading-fit p { max-width: 48ch; margin: 0; color: var(--color-text-muted); font-size: 0.9rem; }
@@ -4664,8 +4978,9 @@ const marqueeFeatures = [
       .testimonials-band::before, .testimonials-band::after { width: 1.5rem; }
       .launch-paths-heading { align-items: start; flex-direction: column; }
       .reading-methods-heading { grid-template-columns: 1fr; }
-      .method-row { grid-template-columns: 2rem 1fr auto; gap: 0.75rem; }
+      .method-row { grid-template-columns: 2rem minmax(0, 1fr) 6.5rem; gap: 0.75rem; }
       .method-context { display: none; }
+      .method-pace { justify-self: end; text-align: right; }
       .reading-fit { grid-template-columns: 1fr; }
     }
     @media (prefers-reduced-motion: reduce) {
@@ -5170,6 +5485,197 @@ const marqueeFeatures = [
       font-size: 0.85em;
     }
     
+    /* Compare section */
+    .compare-section {
+      padding: 0.5rem 0 0.25rem;
+    }
+    .compare-scroll {
+      margin-top: 1.25rem;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-bg-card);
+    }
+    .compare-table {
+      width: 100%;
+      min-width: 52rem;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .compare-table th,
+    .compare-table td {
+      padding: 0.75rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+      color: var(--color-text-muted);
+    }
+    .compare-table thead th {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text);
+      background: var(--color-bg-subtle);
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+    .compare-table tbody th {
+      font-weight: 650;
+      color: var(--color-text);
+      background: var(--color-bg-card);
+      min-width: 8.5rem;
+    }
+    .compare-table tr:last-child th,
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+    .compare-table .compare-you {
+      background: color-mix(in srgb, var(--color-primary-muted) 55%, var(--color-bg-card));
+      color: var(--color-text);
+      font-weight: 550;
+    }
+    .compare-table thead .compare-you {
+      color: var(--color-primary);
+    }
+    .compare-honest {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    @media (min-width: 768px) {
+      .compare-honest {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .compare-honest > div {
+      padding: 1.1rem 1.2rem;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-bg-card);
+    }
+    .compare-honest h3 {
+      margin: 0 0 0.65rem;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+    .compare-honest ul {
+      margin: 0;
+      padding-left: 1.1rem;
+      color: var(--color-text-muted);
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+    .compare-cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      margin-top: 1.15rem;
+    }
+
+    /* Pricing intro + free/lifetime grid */
+    .pricing-section-intro {
+      margin-bottom: 1.25rem;
+      max-width: 44rem;
+    }
+    .pricing-section-title {
+      margin: 0.25rem 0 0.5rem;
+      font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+      letter-spacing: -0.03em;
+    }
+    .pricing-section-lede {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    .pricing-claim-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      align-items: stretch;
+      margin-top: 1.35rem;
+    }
+    @media (min-width: 900px) {
+      .pricing-claim-grid {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      }
+    }
+    .compare-table-lifetime {
+      min-width: 40rem;
+    }
+    .compare-honest-inline {
+      margin: 0.85rem 0 0;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      max-width: 52rem;
+    }
+    .compare-honest-inline a {
+      color: var(--color-primary);
+      font-weight: 550;
+    }
+    .seat-meter {
+      margin-top: 1rem;
+      padding: 0.85rem 0.95rem;
+      border-radius: var(--radius-md);
+      border: 1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
+      background: color-mix(in srgb, var(--color-primary-muted) 45%, var(--color-bg-card));
+    }
+    .seat-meter-full {
+      border-color: var(--color-border);
+      background: var(--color-bg-subtle);
+    }
+    .seat-meter-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .seat-meter-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--color-primary);
+    }
+    .seat-meter-full .seat-meter-label {
+      color: var(--color-text-muted);
+    }
+    .seat-meter-count {
+      font-size: 0.88rem;
+      font-weight: 650;
+      color: var(--color-text);
+      font-variant-numeric: tabular-nums;
+    }
+    .seat-meter-track {
+      margin-top: 0.55rem;
+      height: 0.45rem;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--color-border) 80%, transparent);
+      overflow: hidden;
+    }
+    .seat-meter-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 70%, #fff));
+      transition: width 0.45s var(--ease-out, ease);
+    }
+    .seat-meter-full .seat-meter-fill {
+      background: var(--color-text-muted);
+    }
+    .seat-meter-detail {
+      margin: 0.55rem 0 0;
+      font-size: 0.78rem;
+      line-height: 1.45;
+    }
+
     /* Pricing & Analytics layout */
     .pricing-analytics-grid {
       display: grid;
@@ -5178,7 +5684,7 @@ const marqueeFeatures = [
     }
     @media (min-width: 768px) {
       .pricing-analytics-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
       }
     }
     .dashboard-card, .pricing-card {
@@ -5634,9 +6140,13 @@ const marqueeFeatures = [
       font-weight: 600;
       cursor: pointer;
     }
-    /* Focus / Page pane: size to the device viewport, not a fixed desktop box */
+    /* Focus / Page / Bionic: fill the full reader stage width + height */
     #standard-text-view.standard-reader-view,
-    #bionic-text-view.standard-reader-view {
+    #bionic-text-view.standard-reader-view,
+    .reader-text-surface {
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
       max-height: min(58vh, 520px);
       overflow-y: auto;
       scroll-behavior: auto;
@@ -5647,23 +6157,39 @@ const marqueeFeatures = [
     #reader-screen[data-reader-mode="standard"] #standard-text-view.standard-reader-view,
     #reader-screen[data-reader-mode="bionic"] #bionic-text-view.standard-reader-view {
       /* Fill remaining viewport under chrome (header + modes + controls) */
-      height: clamp(14rem, calc(100dvh - 22rem), 42rem);
+      width: 100%;
+      max-width: none;
+      height: clamp(16rem, calc(100dvh - 20rem), 48rem);
       max-height: none;
-      min-height: clamp(12rem, 36dvh, 20rem);
-      font-size: clamp(1rem, 0.9rem + 0.45vw, 1.2rem);
-      line-height: 1.7;
-      padding: clamp(0.75rem, 2.5vw, 1.25rem);
+      min-height: clamp(14rem, 40dvh, 22rem);
+      font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.28rem);
+      line-height: 1.75;
+      padding: clamp(0.9rem, 2.5vw, 1.4rem);
+    }
+    /* Focus: no native scrollbar — transform steers the track to the eye line */
+    #reader-screen[data-reader-mode="focus"] #standard-text-view.standard-reader-view {
+      overflow: hidden;
     }
     #reader-screen[data-reader-mode="focus"] .reader-display-container,
     #reader-screen[data-reader-mode="standard"] .reader-display-container,
     #reader-screen[data-reader-mode="bionic"] .reader-display-container {
       min-height: 0;
+      width: 100%;
+    }
+    #reader-screen[data-reader-mode="focus"] #standard-pane,
+    #reader-screen[data-reader-mode="standard"] #standard-pane,
+    #reader-screen[data-reader-mode="bionic"] #bionic-pane {
+      width: 100%;
     }
     #reader-screen.glass {
       max-width: 100%;
     }
     .reader-display-container {
       max-width: 100%;
+      width: 100%;
+    }
+    .reader-pane {
+      width: 100%;
     }
     @media (max-width: 760px) {
       #reader-screen[data-reader-mode="focus"] #standard-text-view.standard-reader-view,
