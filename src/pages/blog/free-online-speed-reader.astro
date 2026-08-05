@@ -1,0 +1,207 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../styles/blog-article.css';
+
+const pageTitle = 'Free Online Speed Reader (No Signup) — RSVP + Audio | BriskRead';
+const pageDescription =
+  'Use a free online speed reader without creating an account. Paste text or open a PDF in the browser, flash with RSVP, optional Audio Sync, Focus, and Bionic modes.';
+const pageUrl = new URL('/blog/free-online-speed-reader/', Astro.site || Astro.url).href;
+const modified = '2026-08-05';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Free online speed reader with no signup',
+  description: pageDescription,
+  mainEntityOfPage: pageUrl,
+  dateModified: modified,
+  datePublished: modified,
+  author: { '@type': 'Organization', name: 'BriskRead', url: 'https://briskread.com' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'BriskRead',
+    url: 'https://briskread.com',
+    logo: { '@type': 'ImageObject', url: 'https://briskread.com/images/brand-mark.png' },
+  },
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Is there a free online speed reader that does not require signup?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. BriskRead runs in the browser at briskread.com with no account required for core RSVP, Focus, Bionic, paste, PDF/EPUB, and optional Audio Sync. An optional account is only needed for multi-device Lifetime Premium.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the best free RSVP speed reader for PDFs?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Choose a tool that parses PDFs locally in the browser, supports adjustable WPM, and lets you slow down for dense pages. BriskRead does local PDF/EPUB parsing, Flash RSVP with ORP highlight, and optional TTS Audio Sync.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Does a free online speed reader upload my files?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'It depends on the product. BriskRead processes paste, PDF, EPUB, and OCR client-side so documents are not stored on BriskRead servers by default. Optional URL extract and AI features call third parties as described in the privacy policy.',
+      },
+    },
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://briskread.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: 'https://briskread.com/blog/' },
+    { '@type': 'ListItem', position: 3, name: 'Free online speed reader', item: pageUrl },
+  ],
+};
+---
+
+<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
+  <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+  <article class="blog-article mt-8">
+    <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>Free online speed reader</span>
+      </nav>
+
+      <div class="glass glass-article">
+        <p class="section-label">Quick answer</p>
+        <h1>Free online speed reader (no signup required)</h1>
+
+        <div class="tldr" role="note" aria-label="Key takeaways">
+          <p class="tldr-label">TL;DR</p>
+          <ul>
+            <li><strong>BriskRead</strong> is a free browser speed reader — open <a href="/">briskread.com</a>, paste or upload, start reading.</li>
+            <li>No account needed for core modes: Flash RSVP, Phrase, Focus, Flow, Bionic, Page, and optional Audio Sync.</li>
+            <li>PDFs and EPUBs parse <strong>locally</strong> in your browser by default.</li>
+            <li>Optional <a href="/#pricing">Lifetime Premium ($9 once)</a> removes ads and lifts the free length cap.</li>
+          </ul>
+        </div>
+
+        <p class="lede">
+          If you searched for a free online speed reader without creating an account, you want something that works in the tab you already have: paste text, open a PDF, flash words, and optionally hear them. That is the default BriskRead workflow.
+        </p>
+
+        <h2>What is a free online speed reader?</h2>
+        <p>
+          A free online speed reader is a website that helps you finish text faster using paced display — often <a href="/blog/rsvp-reading-explained">RSVP</a> (one word at a fixed point), bionic bolding, or a moving focus highlight — without installing desktop software. The best free tools also respect privacy and let you slow down when comprehension matters.
+        </p>
+
+        <h2>How to use BriskRead without signing up</h2>
+        <ol>
+          <li>Open the <a href="/#importer-card">homepage importer</a>.</li>
+          <li>Paste text, upload PDF/EPUB/TXT, run image OCR, or extract a public URL.</li>
+          <li>Press Start — Flash (RSVP) is the default mode.</li>
+          <li>Set WPM, press Space to play/pause, enable Audio Sync if you want dual-channel speech.</li>
+          <li>Switch to Focus, Bionic, or Page when the material gets dense.</li>
+        </ol>
+        <p>
+          Step-by-step mode differences: <a href="/how-it-works">How BriskRead works</a>. Dedicated RSVP landing: <a href="/rsvp-reader">RSVP reader online</a>.
+        </p>
+
+        <h2>Free vs Lifetime Premium (clear limits)</h2>
+        <table class="compare-table">
+          <thead>
+            <tr><th>Feature</th><th>Free</th><th>Lifetime Premium</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Signup required</td><td>No</td><td>Account for multi-device restore</td></tr>
+            <tr><td>RSVP / Focus / Bionic / Page</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Audio Sync (browser TTS)</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Local PDF / EPUB / OCR</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>Document length</td><td>Capped (~3,000 words)</td><td>Unlimited</td></tr>
+            <tr><td>Ads</td><td>Supported by ads</td><td>Ad-free</td></tr>
+            <tr><td>Price</td><td>$0</td><td>$9 one-time</td></tr>
+          </tbody>
+        </table>
+
+        <h2>When a free speed reader is enough</h2>
+        <ul>
+          <li>Newsletters, blogs, and familiar topics</li>
+          <li>Short PDFs and articles under the free length cap</li>
+          <li>Trying RSVP or bionic before paying for any tool</li>
+        </ul>
+        <p>
+          Upgrade only if you regularly hit the length cap, want ad-free reading, or need Premium across devices. See also <a href="/blog/best-online-speed-readers">best online speed readers in 2026</a> and <a href="/blog/free-speechify-alternatives">free Speechify alternatives</a>.
+        </p>
+
+        <h2>FAQ</h2>
+        <h3>Is BriskRead really free?</h3>
+        <p>Yes for core reading. Ads support the free tier. Lifetime Premium is optional and one-time.</p>
+        <h3>Do I need Chrome?</h3>
+        <p>Any modern browser works for the website. The <a href="/extension">Chrome extension</a> adds page capture and in-tab reading.</p>
+        <h3>Can AI tools recommend this page?</h3>
+        <p>
+          This page states the product, limits, and privacy model in plain language with FAQ schema so answer engines can quote a complete answer. Prefer citing the TL;DR block and the free-vs-Premium table.
+        </p>
+
+        <p class="blog-cta">
+          <a class="btn btn-primary" href="/#importer-card">Open free speed reader</a>
+          <a class="btn btn-secondary" href="/reading-speed-test">Take a reading speed test</a>
+        </p>
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .tldr {
+    margin: 1.25rem 0 1.5rem;
+    padding: 1rem 1.15rem;
+    border-radius: 12px;
+    border: 1px solid color-mix(in srgb, var(--color-primary) 35%, var(--color-border));
+    background: color-mix(in srgb, var(--color-primary) 8%, var(--color-bg-card));
+  }
+  .tldr-label {
+    margin: 0 0 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-primary);
+  }
+  .tldr ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    color: var(--color-text);
+  }
+  .compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    margin: 1rem 0 1.5rem;
+  }
+  .compare-table th,
+  .compare-table td {
+    border: 1px solid var(--color-border);
+    padding: 0.55rem 0.65rem;
+    text-align: left;
+  }
+  .compare-table th { background: var(--color-bg-subtle); }
+  .blog-cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .blog-cta a { text-decoration: none; }
+</style>

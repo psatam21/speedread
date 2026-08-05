@@ -4,13 +4,39 @@ import AdSlot from '../components/AdSlot.astro';
 
 const pageTitle = "RSVP Reader Online — Free Speed Reading Tool | BriskRead";
 const pageDescription = "Free online RSVP speed reader. Flash words at a fixed focus point with ORP alignment. Paste text, PDFs, EPUBs, or web articles. Adjust WPM up to 1000+.";
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is an RSVP reader?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'An RSVP reader flashes one word (or a short phrase) at a fixed screen position so you stop scanning horizontally. BriskRead is a free online RSVP reader with ORP letter highlight and optional Audio Sync TTS.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is BriskRead’s RSVP reader free?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes. You can paste text or open PDFs in the browser without signup. Lifetime Premium is optional for unlimited length and ad-free use.',
+      },
+    },
+  ],
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
         <h1>RSVP Reader Online — Free Rapid Serial Visual Presentation</h1>
+        <div class="tldr">
+          <strong>Quick answer:</strong> BriskRead is a free online RSVP speed reader. Words flash at a fixed point with ORP alignment; optional Audio Sync pairs browser TTS to the same stream. <a href="/#importer-card">Start reading</a> — no signup for core use.
+        </div>
         <p class="lede">
           RSVP (Rapid Serial Visual Presentation) flashes one word at a time on a fixed point so you stop horizontal eye scanning. BriskRead adds Optimal Recognition Point (ORP) alignment, punctuation-aware pacing, and optional synced TTS.
         </p>
@@ -75,6 +101,15 @@ const pageDescription = "Free online RSVP speed reader. Flash words at a fixed f
     border: 1px solid var(--color-border);
   }
   .lede { font-size: 1.1rem; color: var(--color-text-muted); }
+  .tldr {
+    margin: 0.75rem 0 1rem;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-subtle);
+    font-size: 0.98rem;
+    line-height: 1.55;
+  }
   h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }

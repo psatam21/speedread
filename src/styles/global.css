@@ -573,8 +573,55 @@ textarea:focus-visible {
   border-radius: var(--radius-md);
   background-color: var(--color-bg-subtle);
   border: 1px solid var(--color-border);
-  max-width: 72ch;
+  /* Fill the reader stage — measure was left-aligning a narrow 72ch column */
+  width: 100%;
+  max-width: none;
   min-height: 20rem;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+/* Focus mode: fixed eye line; text track translates so the active line parks there */
+.focus-reader-viewport {
+  position: relative;
+  overflow: hidden;
+  scroll-behavior: auto;
+}
+.focus-reader-viewport .focus-eye-line {
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  top: 42%;
+  height: 0;
+  border-top: 1px dashed color-mix(in srgb, var(--color-primary) 45%, transparent);
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.85;
+}
+.focus-reader-viewport .focus-eye-line::before,
+.focus-reader-viewport .focus-eye-line::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+  opacity: 0.7;
+}
+.focus-reader-viewport .focus-eye-line::before { left: 0; }
+.focus-reader-viewport .focus-eye-line::after { right: 0; }
+.focus-reader-viewport .focus-track {
+  position: relative;
+  will-change: transform;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* Symmetric vertical padding so first/last lines can sit on the eye line */
+  padding-block: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .focus-reader-viewport .focus-track {
+    transition: none;
+  }
 }
 
 .reader-sentence {

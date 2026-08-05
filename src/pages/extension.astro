@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 
 const pageTitle = "Chrome Extension — BriskRead Premium Login & Speed Reader";
-const pageDescription = "Install the BriskRead Chrome extension. Speed-read any tab with RSVP and sign in with your Lifetime Premium license (up to 5 devices).";
+const pageDescription = "Install the BriskRead Chrome extension. Speed-read any tab with RSVP and sign in with the same BriskRead account used for Lifetime Premium.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -11,20 +11,21 @@ const pageDescription = "Install the BriskRead Chrome extension. Speed-read any 
       <div class="glass content-card">
         <h1>BriskRead for Chrome</h1>
         <p class="lede">
-          Extract any article into the BriskRead workspace in one click. Sign in with your Lifetime Premium license — same multi-device subscription as the website (max 5 devices).
+          Extract any article into the BriskRead workspace in one click. Sign in with the same account you use on the website so Lifetime Premium unlocks the extension on that device.
         </p>
 
         <div class="actions">
           <a class="btn btn-primary" href="#install">Install (developer mode)</a>
           <a class="btn btn-secondary" href="/">Open web app</a>
+          <a class="btn btn-secondary" href="/account">Account</a>
         </div>
 
         <h2>How the extension behaves</h2>
         <ul>
           <li><strong>Right-click selected text or a page:</strong> opens a private RSVP popup immediately. You stay on the current tab.</li>
           <li><strong>Speed read this page:</strong> extracts the page and opens the same local reader.</li>
-          <li><strong>Open BriskRead app:</strong> intentionally opens the full website for files, OCR, bionic reading, speech and AI.</li>
-          <li><strong>Options:</strong> contains developer endpoint settings. Normal users can leave the defaults unchanged.</li>
+          <li><strong>Open BriskRead app:</strong> opens the full website for files, OCR, bionic reading, speech and AI.</li>
+          <li><strong>Options:</strong> developer endpoint settings. Normal users can leave the defaults unchanged.</li>
         </ul>
 
         <h2 id="install">Install in Developer mode</h2>
@@ -42,19 +43,20 @@ const pageDescription = "Install the BriskRead Chrome extension. Speed-read any 
         </ol>
         <p class="muted">The Store button will appear here after Chrome approves the listing. Until then, use Developer mode above.</p>
 
-        <h2>Premium sign-in (coming soon)</h2>
+        <h2>Premium sign-in</h2>
         <ol class="steps">
-          <li>Purchase Lifetime Premium on the <a href="/">homepage</a> and copy your license key.</li>
-          <li>Open the extension popup → paste the key → <strong>Sign in</strong>.</li>
-          <li>The extension uses one of your five device slots (shown as “Chrome Extension”).</li>
-          <li><strong>Sign out</strong> releases that slot when you are online.</li>
+          <li>Create or sign in to your BriskRead account on the <a href="/account">Account</a> page (same email you will use at checkout).</li>
+          <li>Purchase <a href="/#pricing">Lifetime Premium</a> while signed in so Premium attaches to that account.</li>
+          <li>Open the extension popup → sign in with the same email and password.</li>
+          <li>Premium status syncs from your account. Sign out of the extension when you want to free the device session.</li>
         </ol>
+        <p class="muted">You do not need a separate license key for the website purchase path. Account email is the link between checkout and devices.</p>
 
         <h2>What we access</h2>
         <ul>
           <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
-          <li><strong>BriskRead</strong> — license activation API and opening the reader with your session.</li>
-          <li><strong>Storage</strong> — license key and device session stay on your machine in extension storage.</li>
+          <li><strong>BriskRead</strong> — account session / Premium status and opening the reader with your session.</li>
+          <li><strong>Storage</strong> — session tokens stay on your machine in extension storage.</li>
         </ul>
         <p class="muted">
           Full policy: <a href="/privacy">Privacy Policy</a>. We do not sell browsing history.

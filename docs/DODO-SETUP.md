@@ -2,6 +2,32 @@
 
 BriskRead already implements checkout in code. You only configure the **Dodo dashboard** and paste secrets into **Vercel**.
 
+## Status (test mode) — configured 2026-08-04
+
+| Item | Value / status |
+|------|----------------|
+| Product | `BriskRead Lifetime Premium` — `$9` USD one-time |
+| Product ID | `pdt_0NkgMQc4flFN3rPgAFkEn` |
+| Webhook URL | `https://briskread.com/api/webhook` (`payment.succeeded`) |
+| Webhook ID | `ep_3HSovbulAArSbPh07Vm9vx8GuRX` |
+| Vercel Production | `DODO_API_KEY`, `DODO_PRODUCT_ID`, `DODO_MODE=test`, `DODO_WEBHOOK_SECRET` set + redeployed |
+
+**Still on you before real money:** switch Dodo + Vercel to **live** keys/product/webhook when ready. Rotate the API key if it was shared in chat.
+
+### Test-mode payment notes (India)
+
+Billing country **IN** converts the $9 product to **INR + GST** and shows Card + UPI.
+
+| Method | What to enter | Notes |
+|--------|----------------|-------|
+| Card (India) | `4576 2389 1277 1450`, exp `06/32`, CVC `123` | Or MC `5409 1626 6938 1034` |
+| Card (US path) | `4242 4242 4242 4242`, exp `06/32`, CVC `123` | Set billing country US / Pay in USD |
+| UPI | VPA `success@upi` (fail: `failure@upi`) | Prefer **UPI collect** with VPA, not a real UPI app |
+
+**Pay now stays grey** until card number + expiry + CVC + cardholder name are all filled.
+
+If Pay now runs but the payment stays `processing` with `error_message: "api Request Failed"`, that is a **Dodo/processor** failure (account or sandbox), not missing Vercel env. Check Dodo dashboard → Payments, complete business verification, or email support@dodopayments.com with the `pay_…` id.
+
 ## How money flows (already built)
 
 ```
@@ -45,7 +71,7 @@ Official guide: https://docs.dodopayments.com/developer-resources/integration-gu
 1. Go to **Products** → **Create product**.
 2. Type: **One-time** (not subscription).
 3. Name: `BriskRead Lifetime Premium` (or similar).
-4. Price: **$8.99** USD (or your currency).
+4. Price: **$9** USD (or your currency).
 5. Description: one-time access, ad-free, unlimited length, multi-device account Premium.
 6. Save and **copy Product ID** (`pdt_…` or similar).
 
@@ -165,7 +191,7 @@ Homepage still has a “paste license key / activate device” UI that calls `/a
 ## Checklist
 
 - [ ] Dodo account + Test mode
-- [ ] One-time product $8.99 → Product ID
+- [ ] One-time product $9 → Product ID
 - [ ] Test API key
 - [ ] Webhook `https://briskread.com/api/webhook` + `payment.succeeded` + secret
 - [ ] Four env vars on Vercel Production

@@ -34,3 +34,11 @@ release/
 .claude/
 .aidesigner/*
 !.aidesigner/.gitkeep
+
+# agent scratch output and dev screenshots (not app code)
+.codex/
+.playwright-mcp/
+audit-output/
+videos/
+/*.png
+ref-*.png
