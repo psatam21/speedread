@@ -3756,6 +3756,25 @@ const marqueeFeatures = [
         return parts.join(' · ');
       };
 
+      const loadImage = (src) => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        img.src = src;
+      });
+
+      // Shrink a font size until the string fits maxWidth (large word counts
+      // shouldn't overflow the card).
+      const fitFontSize = (ctx, text, weight, startPx, maxWidth, minPx = 56) => {
+        let size = startPx;
+        while (size > minPx) {
+          ctx.font = `${weight} ${size}px system-ui, -apple-system, sans-serif`;
+          if (ctx.measureText(text).width <= maxWidth) break;
+          size -= 4;
+        }
+        return size;
+      };
+
       const generateShareCard = async () => {
         const stats = {
           wordsRead: state.stats.wordsRead,
@@ -3773,111 +3792,143 @@ const marqueeFeatures = [
         canvas.width = W;
         canvas.height = H;
         const ctx = canvas.getContext('2d');
+        const brandIcon = await loadImage('/images/brand-mark.png').catch(() => null);
 
-        // Background
+        // Background — deep base + two soft color blobs (mesh-gradient look)
         const bg = ctx.createLinearGradient(0, 0, W, H);
-        bg.addColorStop(0, '#07080a');
-        bg.addColorStop(0.45, '#12121c');
-        bg.addColorStop(1, '#1a1a2e');
+        bg.addColorStop(0, '#0a0a10');
+        bg.addColorStop(1, '#15141f');
         ctx.fillStyle = bg;
         ctx.fillRect(0, 0, W, H);
 
-        // Soft brand glow
-        const glow = ctx.createRadialGradient(W * 0.75, H * 0.2, 20, W * 0.75, H * 0.2, 420);
-        glow.addColorStop(0, 'rgba(94, 106, 210, 0.45)');
-        glow.addColorStop(1, 'rgba(94, 106, 210, 0)');
-        ctx.fillStyle = glow;
+        const blob1 = ctx.createRadialGradient(W * 0.82, H * 0.08, 20, W * 0.82, H * 0.08, 620);
+        blob1.addColorStop(0, 'rgba(94, 106, 210, 0.55)');
+        blob1.addColorStop(1, 'rgba(94, 106, 210, 0)');
+        ctx.fillStyle = blob1;
         ctx.fillRect(0, 0, W, H);
 
-        // Subtle dots
-        ctx.fillStyle = 'rgba(255,255,255,0.04)';
-        for (let i = 0; i < 40; i++) {
-          const x = (i * 97) % W;
-          const y = (i * 53) % H;
-          ctx.beginPath();
-          ctx.arc(x, y, 1.5, 0, Math.PI * 2);
-          ctx.fill();
+        const blob2 = ctx.createRadialGradient(W * 0.05, H * 1.02, 20, W * 0.05, H * 1.02, 560);
+        blob2.addColorStop(0, 'rgba(167, 139, 250, 0.28)');
+        blob2.addColorStop(1, 'rgba(167, 139, 250, 0)');
+        ctx.fillStyle = blob2;
+        ctx.fillRect(0, 0, W, H);
+
+        // Fine grain so the gradient doesn't band on export
+        for (let i = 0; i < 900; i++) {
+          const x = (i * 197) % W;
+          const y = (i * 331 + Math.floor(i / 7) * 53) % H;
+          ctx.fillStyle = `rgba(255,255,255,${(i % 5 === 0 ? 0.05 : 0.025)})`;
+          ctx.fillRect(x, y, 1, 1);
         }
 
         // Card frame
-        ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+        ctx.strokeStyle = 'rgba(255,255,255,0.09)';
         ctx.lineWidth = 2;
-        roundRect(ctx, 48, 48, W - 96, H - 96, 36);
+        roundRect(ctx, 48, 48, W - 96, H - 96, 40);
         ctx.stroke();
 
-        // Brand mark
-        ctx.fillStyle = '#5e6ad2';
-        roundRect(ctx, 96, 110, 56, 56, 14);
-        ctx.fill();
-        ctx.fillStyle = '#fff';
-        ctx.font = '700 28px system-ui, -apple-system, sans-serif';
-        ctx.fillText('⚡', 108, 148);
-
-        ctx.fillStyle = 'rgba(255,255,255,0.55)';
-        ctx.font = '650 22px system-ui, -apple-system, sans-serif';
-        ctx.letterSpacing = '0.12em';
-        ctx.fillText('BRISKREAD', 172, 128);
+        // Header row: brand mark + wordmark, milestone pill on the right
+        if (brandIcon) {
+          ctx.save();
+          roundRect(ctx, 96, 100, 64, 64, 16);
+          ctx.clip();
+          ctx.drawImage(brandIcon, 96, 100, 64, 64);
+          ctx.restore();
+        }
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '700 24px system-ui, -apple-system, sans-serif';
+        ctx.letterSpacing = '0.14em';
+        ctx.fillText('BRISKREAD', 176, 138);
         ctx.letterSpacing = '0';
 
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '600 44px system-ui, -apple-system, sans-serif';
-        ctx.fillText('Reading milestone', 172, 172);
+        const pillText = 'MILESTONE';
+        ctx.font = '700 20px system-ui, -apple-system, sans-serif';
+        ctx.letterSpacing = '0.1em';
+        const pillTextW = ctx.measureText(pillText).width;
+        ctx.letterSpacing = '0';
+        const pillW = pillTextW + 48;
+        const pillX = W - 96 - pillW;
+        ctx.fillStyle = 'rgba(94, 106, 210, 0.22)';
+        roundRect(ctx, pillX, 108, pillW, 48, 24);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(168, 176, 242, 0.4)';
+        ctx.lineWidth = 1.5;
+        roundRect(ctx, pillX, 108, pillW, 48, 24);
+        ctx.stroke();
+        ctx.fillStyle = '#c7cdf7';
+        ctx.font = '700 20px system-ui, -apple-system, sans-serif';
+        ctx.letterSpacing = '0.1em';
+        ctx.fillText(pillText, pillX + 24, 138);
+        ctx.letterSpacing = '0';
 
-        // Hero number
+        // Hero number — the emotional payoff, big and gradient-filled
         ctx.fillStyle = 'rgba(255,255,255,0.5)';
-        ctx.font = '600 26px system-ui, -apple-system, sans-serif';
-        ctx.fillText('WORDS SPEED-READ', 96, 300);
+        ctx.font = '650 26px system-ui, -apple-system, sans-serif';
+        ctx.letterSpacing = '0.08em';
+        ctx.fillText('WORDS SPEED-READ', 96, 320);
+        ctx.letterSpacing = '0';
 
-        ctx.fillStyle = '#a8b0f2';
-        ctx.font = '700 120px system-ui, -apple-system, sans-serif';
         const wordsLabel = stats.wordsRead.toLocaleString();
-        ctx.fillText(wordsLabel, 96, 420);
+        const heroSize = fitFontSize(ctx, wordsLabel, 800, 160, W - 192, 90);
+        const heroGrad = ctx.createLinearGradient(96, 340, 96, 480);
+        heroGrad.addColorStop(0, '#ffffff');
+        heroGrad.addColorStop(1, '#b9c0f5');
+        ctx.fillStyle = heroGrad;
+        ctx.font = `800 ${heroSize}px system-ui, -apple-system, sans-serif`;
+        ctx.fillText(wordsLabel, 96, 460);
 
-        // Stat chips
-        const chips = [
+        // Stat row — slim glass pills, single line
+        const stats3 = [
           { label: 'PACE', value: `${stats.speed} WPM` },
           { label: 'TIME SAVED', value: `${stats.timeSaved} min` },
           { label: 'STREAK', value: `${stats.streak} day${stats.streak === 1 ? '' : 's'}` },
         ];
-        const chipW = 280;
-        const chipH = 120;
-        const gap = 24;
-        const startX = 96;
-        const chipY = 500;
-        chips.forEach((chip, i) => {
-          const x = startX + i * (chipW + gap);
+        const rowY = 540;
+        const rowH = 126;
+        const rowGap = 20;
+        const rowW = (W - 192 - rowGap * 2) / 3;
+        stats3.forEach((s, i) => {
+          const x = 96 + i * (rowW + rowGap);
           ctx.fillStyle = 'rgba(255,255,255,0.05)';
-          roundRect(ctx, x, chipY, chipW, chipH, 20);
+          roundRect(ctx, x, rowY, rowW, rowH, 22);
           ctx.fill();
-          ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+          ctx.strokeStyle = 'rgba(255,255,255,0.09)';
           ctx.lineWidth = 1.5;
-          roundRect(ctx, x, chipY, chipW, chipH, 20);
+          roundRect(ctx, x, rowY, rowW, rowH, 22);
           ctx.stroke();
           ctx.fillStyle = 'rgba(255,255,255,0.45)';
-          ctx.font = '650 18px system-ui, -apple-system, sans-serif';
-          ctx.fillText(chip.label, x + 24, chipY + 42);
+          ctx.font = '650 17px system-ui, -apple-system, sans-serif';
+          ctx.letterSpacing = '0.06em';
+          ctx.fillText(s.label, x + 22, rowY + 42);
+          ctx.letterSpacing = '0';
           ctx.fillStyle = '#ffffff';
-          ctx.font = '700 36px system-ui, -apple-system, sans-serif';
-          ctx.fillText(chip.value, x + 24, chipY + 88);
+          const valSize = fitFontSize(ctx, s.value, 700, 34, rowW - 44, 22);
+          ctx.font = `700 ${valSize}px system-ui, -apple-system, sans-serif`;
+          ctx.fillText(s.value, x + 22, rowY + 90);
         });
 
-        // Footer bar
-        ctx.fillStyle = 'rgba(94, 106, 210, 0.18)';
-        roundRect(ctx, 96, 700, W - 192, 200, 24);
+        // CTA bar — solid brand color, tagline + domain + arrow
+        const ctaY = 726;
+        const ctaH = 210;
+        const ctaGrad = ctx.createLinearGradient(96, ctaY, W - 96, ctaY + ctaH);
+        ctaGrad.addColorStop(0, '#5e6ad2');
+        ctaGrad.addColorStop(1, '#7c6fd6');
+        ctx.fillStyle = ctaGrad;
+        roundRect(ctx, 96, ctaY, W - 192, ctaH, 28);
         ctx.fill();
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = '600 34px system-ui, -apple-system, sans-serif';
-        ctx.fillText('Read the backlog once.', 128, 770);
+        ctx.font = '700 38px system-ui, -apple-system, sans-serif';
+        ctx.fillText('Read the backlog once.', 136, ctaY + 66);
 
-        ctx.fillStyle = 'rgba(255,255,255,0.65)';
-        ctx.font = '500 24px system-ui, -apple-system, sans-serif';
-        ctx.fillText('RSVP · Bionic · PDF · private by default', 128, 820);
+        ctx.fillStyle = 'rgba(255,255,255,0.82)';
+        ctx.font = '500 25px system-ui, -apple-system, sans-serif';
+        ctx.fillText('RSVP · Bionic · PDF · private by default', 136, ctaY + 108);
 
-        ctx.fillStyle = '#a8b0f2';
-        ctx.font = '650 26px system-ui, -apple-system, sans-serif';
         const host = (location.hostname || 'briskread.com').replace(/^www\./, '');
-        ctx.fillText(host, 128, 870);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = '700 30px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`${host}  →`, 136, ctaY + 164);
 
         shareCardDataUrl = canvas.toDataURL('image/png');
         const shareImg = document.getElementById('share-card-img');
