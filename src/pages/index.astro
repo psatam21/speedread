@@ -1089,8 +1089,10 @@ const marqueeFeatures = [
     </div>
   </section>
 
-  <!-- Modal for Share Canvas Card -->
-  <div id="share-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
+  <!-- Modal for Share Canvas Card — rendered outside <main> via the
+       modal-portal slot (see Layout.astro) so it isn't capped below the
+       header's z-index by <main>'s flex-item stacking context. -->
+  <div id="share-modal" class="modal hidden" slot="modal-portal" role="dialog" aria-modal="true" aria-labelledby="share-modal-title">
     <div class="modal-content share-modal-content">
       <button class="share-modal-close" id="btn-close-modal" type="button" aria-label="Close share dialog">✕</button>
       <p class="share-modal-kicker">Share your progress</p>

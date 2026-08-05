@@ -273,6 +273,12 @@ const softwareSchema = {
       <slot />
     </main>
 
+    <!-- Modals render here, outside <main>, so their fixed-position z-index
+         is compared directly against the header instead of getting capped
+         by <main>'s stacking context (a flex-item z-index quirk: even
+         position:static flex children still establish one). -->
+    <slot name="modal-portal" />
+
     <footer class="site-footer">
       <div class="container footer-container">
         <div class="footer-brand">
