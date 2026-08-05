@@ -17,7 +17,7 @@ const {
   title, 
   description, 
   canonicalUrl = Astro.url.href, 
-  ogImage = '/images/og-default.svg',
+  ogImage = '/images/og-default.png',
   noindex = false,
 } = Astro.props;
 
@@ -35,10 +35,19 @@ const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'BriskRead',
+  alternateName: ['Brisk Read', 'BriskRead speed reader'],
   url: siteOrigin,
-  logo: `${siteOrigin}/favicon.svg`,
+  logo: `${siteOrigin}/images/brand-mark.png`,
   description:
     'Free dual-channel online speed reader with RSVP, Audio Sync, Focus, Bionic, PDF/EPUB import, and a Chrome extension.',
+  email: 'support@briskread.com',
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'customer support',
+    email: 'support@briskread.com',
+    url: `${siteOrigin}/contact`,
+  },
+  // Add social profile URLs here when public handles exist (helps entity matching in AI search).
   sameAs: [] as string[],
 };
 const websiteSchema = {
@@ -49,10 +58,44 @@ const websiteSchema = {
   description:
     'Online speed reader with Audio Sync, six reading modes, and local PDF/EPUB processing.',
   publisher: { '@type': 'Organization', name: 'BriskRead', url: siteOrigin },
+  inLanguage: 'en',
   potentialAction: {
     '@type': 'ReadAction',
     target: `${siteOrigin}/#importer-card`,
   },
+};
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'BriskRead',
+  applicationCategory: 'EducationalApplication',
+  applicationSubCategory: 'Speed reading',
+  operatingSystem: 'Web browser',
+  url: siteOrigin,
+  description:
+    'Free dual-channel online speed reader: RSVP flash, Audio Sync TTS, Focus, Flow, Bionic, and Page modes with local PDF/EPUB processing.',
+  offers: [
+    {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+      description: 'Free tier with ads and document length cap',
+    },
+    {
+      '@type': 'Offer',
+      price: '9',
+      priceCurrency: 'USD',
+      description: 'Lifetime Premium — one-time ad-free unlimited reading',
+    },
+  ],
+  featureList: [
+    'RSVP Flash with Optimal Recognition Point',
+    'Audio Sync dual-channel TTS',
+    'Focus, Phrase, Flow, Bionic, and Page modes',
+    'Local PDF, EPUB, paste, and OCR',
+    'Chrome extension for page capture',
+  ],
+  screenshot: `${siteOrigin}/images/og-default.png`,
 };
 ---
 
@@ -70,8 +113,15 @@ const websiteSchema = {
       <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
     </noscript>
     
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <!-- Brand tab icon: prefer PNG/ICO (most browsers); SVG as progressive enhancement.
+         ?v= busts aggressive favicon caches after brand updates. -->
+    <link rel="icon" href="/favicon.ico?v=2" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=2" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16.png?v=2" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/images/favicon-48.png?v=2" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png?v=2" />
+    <link rel="shortcut icon" href="/favicon.ico?v=2" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="generator" content={Astro.generator} />
     
@@ -154,6 +204,8 @@ const websiteSchema = {
     {/* Site-wide identity for search engines (SEO starter: help Google understand the site) */}
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+    <link rel="alternate" type="text/plain" title="LLM site summary" href="/llms.txt" />
   </head>
   <body data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey}>
     <div class="scroll-progress" aria-hidden="true"></div>
@@ -173,11 +225,14 @@ const websiteSchema = {
       <div class="container header-container">
         <a href="/" class="logo-link" aria-label="BriskRead home">
           <div class="logo-container">
-            <span class="logo-mark" aria-hidden="true">
-              <svg class="logo-icon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M13 2 4.5 13.5H11L9.5 22 19 10h-6.5L13 2z" />
-              </svg>
-            </span>
+            <img
+              class="logo-mark-img"
+              src="/images/brand-mark.png"
+              width="28"
+              height="28"
+              alt=""
+              decoding="async"
+            />
             <span class="logo-text">BriskRead</span>
           </div>
         </a>
@@ -194,7 +249,7 @@ const websiteSchema = {
           <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">
             <span class="theme-toggle-icon" aria-hidden="true">◐</span>
           </button>
-          <a href="/#pricing" class="nav-cta">Lifetime · $8.99</a>
+          <a href="/#pricing" class="nav-cta">Lifetime · $9</a>
         </nav>
         <details class="mobile-nav">
           <summary aria-label="Open navigation">Menu</summary>
@@ -207,7 +262,7 @@ const websiteSchema = {
             <a href="/extension">Chrome extension</a>
             <a href="/blog">Blog</a>
             <a href="/account">Account</a>
-            <a href="/#pricing" class="mobile-nav-cta">Lifetime · $8.99</a>
+            <a href="/#pricing" class="mobile-nav-cta">Lifetime · $9</a>
             <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark mode" aria-pressed="false">◐ Theme</button>
           </div>
         </details>
@@ -221,7 +276,10 @@ const websiteSchema = {
     <footer class="site-footer">
       <div class="container footer-container">
         <div class="footer-brand">
-          <a href="/" class="footer-logo">BriskRead<span>.</span></a>
+          <a href="/" class="footer-logo">
+            <img src="/images/brand-mark.png" width="22" height="22" alt="" decoding="async" class="footer-logo-mark" />
+            BriskRead<span>.</span>
+          </a>
           <p>Read the backlog, not the interface. RSVP, bionic reading, OCR and synced speech in one private browser tool.</p>
           <p class="footer-note">© {new Date().getFullYear()} BriskRead</p>
         </div>
@@ -294,6 +352,27 @@ const websiteSchema = {
 
       (globalThis as any).briskreadSupabase = supabase;
 
+      /** First 50 accounts get Lifetime automatically (source=founding). Idempotent. */
+      const ensureFoundingPremium = async (session) => {
+        if (!session?.access_token || !supabase) return null;
+        try {
+          const { data: rpcData, error: rpcError } = await supabase.rpc('claim_founding_seat');
+          if (!rpcError && rpcData) return rpcData;
+        } catch {
+          /* RPC may be missing until migration is applied */
+        }
+        try {
+          const res = await fetch('/api/ensure-founding', {
+            method: 'POST',
+            headers: { Authorization: `Bearer ${session.access_token}` },
+          });
+          if (res.ok) return await res.json();
+        } catch {
+          /* offline / API not available in pure static local */
+        }
+        return null;
+      };
+
       const renderAccount = async (session) => {
         const user = session?.user;
         if (!user) {
@@ -301,13 +380,22 @@ const websiteSchema = {
           return;
         }
 
+        const founding = await ensureFoundingPremium(session);
+
         const { data } = await supabase
           .from('entitlements')
-          .select('status, product_key')
+          .select('status, product_key, source')
           .eq('user_id', user.id)
           .maybeSingle();
-        const premium = data?.status === 'active';
-        globalThis.dispatchEvent(new CustomEvent('briskread:account', { detail: { user, premium } }));
+        const premium = data?.status === 'active' || Boolean(founding?.premium);
+        globalThis.dispatchEvent(new CustomEvent('briskread:account', {
+          detail: {
+            user,
+            premium,
+            source: data?.source || founding?.source || null,
+            foundingGranted: Boolean(founding?.granted),
+          },
+        }));
       };
 
       if (supabase) {
@@ -401,19 +489,14 @@ const websiteSchema = {
         font-size: 1.05rem;
         letter-spacing: -0.03em;
       }
-      .logo-mark {
-        display: grid;
-        place-items: center;
-        width: 1.7rem;
-        height: 1.7rem;
+      .logo-mark-img {
+        display: block;
+        width: 1.75rem;
+        height: 1.75rem;
         border-radius: 7px;
-        background: var(--color-primary);
-        color: #fff;
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.15) inset;
-      }
-      .logo-icon {
-        color: inherit;
+        object-fit: cover;
         flex-shrink: 0;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.14);
       }
       .logo-text {
         color: var(--color-text);
@@ -533,12 +616,25 @@ const websiteSchema = {
       }
       .footer-container {
         display: grid;
-        grid-template-columns: minmax(0, 1.8fr) repeat(3, minmax(110px, 1fr));
+        grid-template-columns: minmax(0, 1.5fr) repeat(4, minmax(100px, 1fr));
         align-items: start;
-        gap: clamp(2rem, 5vw, 4rem);
+        gap: clamp(1.5rem, 4vw, 3rem);
         text-align: left;
       }
-      .footer-logo { color: var(--color-text); font-size: 1.2rem; font-weight: 650; letter-spacing: -0.03em; }
+      .footer-logo {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        color: var(--color-text);
+        font-size: 1.2rem;
+        font-weight: 650;
+        letter-spacing: -0.03em;
+      }
+      .footer-logo-mark {
+        border-radius: 6px;
+        object-fit: cover;
+        flex-shrink: 0;
+      }
       .footer-logo span { color: var(--color-primary); }
       .footer-brand > p { max-width: 40ch; margin-top: 0.75rem; line-height: 1.6; }
       .footer-note { font-size: 0.75rem; opacity: 0.8; }
@@ -556,13 +652,16 @@ const websiteSchema = {
         transition: color 140ms var(--ease-out), transform 140ms var(--ease-out);
       }
       .footer-group a:hover { color: var(--color-primary); transform: translateX(2px); }
+      /* Dense nav collapses earlier so logo + CTA never crush mid-width */
+      @media (max-width: 1080px) {
+        .nav-links { display: none; }
+        .mobile-nav { display: block; }
+      }
       @media (max-width: 840px) {
         .header-container {
           min-height: 3.5rem;
           padding-block: 0.4rem;
         }
-        .nav-links { display: none; }
-        .mobile-nav { display: block; }
         .launch-strip-inner { justify-content: space-between; }
         .launch-strip-inner > span:not(.launch-pill) { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         .launch-pill { display: none; }
