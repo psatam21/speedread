@@ -1,5 +1,5 @@
 /* BriskRead offline service worker — cache-first static, network-first HTML */
-const CACHE_NAME = 'briskread-v1';
+const CACHE_NAME = 'briskread-v2-free';
 
 const PRECACHE_URLS = [
   '/',

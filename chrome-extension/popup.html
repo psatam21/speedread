@@ -18,41 +18,20 @@
         <span class="badge free" id="status-badge">Free</span>
       </header>
 
-      <section class="panel" id="panel-login">
-        <h2>Premium sign-in</h2>
+      <section class="panel">
+        <h2>Everything is free</h2>
         <p class="hint">
-          Paste your lifetime license key. Uses 1 of 5 device slots.
+          All features are unlocked — in-page reading, Flash/Focus modes, AI summaries and read-later.
+          No account or license needed.
         </p>
-        <label for="license-input">License key</label>
-        <input
-          type="password"
-          id="license-input"
-          placeholder="Paste license key…"
-          autocomplete="off"
-          spellcheck="false"
-          aria-describedby="login-status"
-        />
         <div class="row">
-          <button type="button" class="btn btn-primary" id="btn-login">Sign in</button>
-        </div>
-        <p class="status" id="login-status" role="status"></p>
-        <div class="row" style="margin-top: 10px">
-          <a class="btn btn-ghost btn-sm" id="link-buy" href="https://briskread.com/" target="_blank" rel="noopener"
-            >Buy Premium</a
+          <a class="btn btn-secondary btn-sm" href="https://briskread.com/account" target="_blank" rel="noopener"
+            >Account &amp; sync</a
           >
-          <button type="button" class="btn btn-secondary btn-sm" id="btn-toggle-key-vis">Show key</button>
+          <a class="btn btn-ghost btn-sm" href="https://briskread.com/" target="_blank" rel="noopener"
+            >Open web app</a
+          >
         </div>
-      </section>
-
-      <section class="panel hidden" id="panel-account">
-        <h2>Subscription</h2>
-        <p class="meta"><strong>Premium</strong> · <span id="device-count-label">—</span></p>
-        <ul class="device-list hidden" id="device-list" aria-label="Activated devices"></ul>
-        <div class="row">
-          <button type="button" class="btn btn-ghost btn-sm" id="btn-refresh">Refresh</button>
-          <button type="button" class="btn btn-danger btn-sm" id="btn-logout">Sign out</button>
-        </div>
-        <p class="status" id="account-status" role="status"></p>
       </section>
 
       <section class="panel">

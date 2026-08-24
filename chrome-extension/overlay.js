@@ -114,7 +114,6 @@ input[type=range] { accent-color: #3a5cf0; }
     timer: null,
     textRenderedFor: null,
     article: null,
-    premium: false,
   };
 
   let host = document.getElementById(HOST_ID);
@@ -128,24 +127,6 @@ input[type=range] { accent-color: #3a5cf0; }
     root = host.attachShadow({ mode: 'open' });
     document.documentElement.appendChild(host);
     root.innerHTML = `<style>${CSS}</style><div class="wrap"></div>`;
-  }
-
-  function renderGate() {
-    $('.wrap').innerHTML = `
-      <header>
-        <span class="brand">BriskRead</span>
-        <span class="doc-title"></span>
-        <button id="close">Esc ✕</button>
-      </header>
-      <main>
-        <div class="gate">
-          <h2>In-page reading is Premium</h2>
-          <p>Lifetime Premium unlocks the on-page reader, Focus and Flash modes, AI summaries and document chat with your own Gemini key — on every site, without leaving the tab.</p>
-          <p><a href="${PRICING_URL}" target="_blank" rel="noopener">Get Lifetime Premium</a></p>
-          <p style="font-size:13px">Already bought it? Open the BriskRead extension popup and paste your license key.</p>
-        </div>
-      </main>`;
-    $('#close').addEventListener('click', close);
   }
 
   function renderReader() {
@@ -392,7 +373,7 @@ input[type=range] { accent-color: #3a5cf0; }
       close();
       return;
     }
-    if (typing || !state.premium) return;
+    if (typing) return;
     const keys = { ' ': 1, ArrowLeft: 1, ArrowRight: 1, ArrowUp: 1, ArrowDown: 1 };
     if (!keys[event.key]) return;
     event.preventDefault();
@@ -424,7 +405,6 @@ input[type=range] { accent-color: #3a5cf0; }
     }
     if (!init?.ok) return;
 
-    state.premium = !!init.premium;
     state.article = init.article || { title: '', text: '' };
     state.words = String(state.article.text || '').trim().split(/\s+/).filter(Boolean);
     state.index = 0;
@@ -437,10 +417,6 @@ input[type=range] { accent-color: #3a5cf0; }
     document.documentElement.style.overflow = 'hidden';
     window.addEventListener('keydown', onKey, true);
 
-    if (!state.premium) {
-      renderGate();
-      return;
-    }
     renderReader();
     if (!state.words.length) {
       $('#view-word .o').textContent = '—';

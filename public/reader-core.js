@@ -45,8 +45,10 @@
   // Chrome kills a single long utterance after ~15s, and remote voices fail sooner,
   // so speech has to be queued in short pieces. Splits on sentence ends where possible,
   // else on a space. Each chunk carries its absolute offset in the source string so
-  // onboundary charIndex can still be mapped back to a word.
-  const chunkForTTS = (text, baseOffset = 0, maxLen = 180) => {
+  // onboundary charIndex can still be mapped back to a word. 220 chars ≈ 9-10s at
+  // normal rate — long enough to keep inter-chunk gaps rare, short enough to dodge
+  // Chrome's long-utterance cutoff.
+  const chunkForTTS = (text, baseOffset = 0, maxLen = 220) => {
     const chunks = [];
     let pos = 0;
     while (pos < text.length) {

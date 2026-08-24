@@ -11,17 +11,6 @@
     if (!payload || !payload.ok || applied) return false;
     let wrote = false;
     try {
-      if (payload.license_key) {
-        localStorage.setItem('license_key', payload.license_key);
-        wrote = true;
-      }
-      if (payload.premium_token) {
-        localStorage.setItem('premium_token', payload.premium_token);
-        localStorage.setItem('is_premium', 'true');
-        // Mark session as extension-sourced so the web app does not re-bind a 2nd device slot
-        localStorage.setItem('premium_source', 'extension');
-        wrote = true;
-      }
       if (payload.article && (payload.article.text || payload.article.url)) {
         sessionStorage.setItem(
           'sr_extension_article',
@@ -57,8 +46,6 @@
         }
         if (response && response.ok) {
           apply(response);
-          // If only premium came through, still clear after first success
-          if (!applied) setTimeout(() => attempt(n + 1), DELAY_MS * (n + 1));
         } else {
           setTimeout(() => attempt(n + 1), DELAY_MS * (n + 1));
         }

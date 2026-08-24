@@ -4,7 +4,7 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout
   title="Your Account | BriskRead"
-  description="Sign in to manage your BriskRead account, reading totals, and Lifetime Premium access."
+  description="Sign in to manage your BriskRead account and keep reading totals synced across devices."
   noindex={true}
 >
   <section class="account-page" aria-labelledby="account-page-title">
@@ -12,7 +12,7 @@ import Layout from '../layouts/Layout.astro';
       <div class="account-intro">
         <p class="account-kicker">Your BriskRead account</p>
         <h1 id="account-page-title">Your reading progress, wherever you open it.</h1>
-        <p class="account-lede">Sign in to keep Lifetime Premium and your reading totals connected across devices. The documents you import stay in your browser.</p>
+        <p class="account-lede">BriskRead is free — an account only adds cross-device sync for your library, queue, and reading totals. The documents you import stay in your browser.</p>
 
         <div class="account-promises" aria-label="Account benefits">
           <article>
@@ -21,11 +21,11 @@ import Layout from '../layouts/Layout.astro';
           </article>
           <article>
             <span>02</span>
-            <div><strong>One permanent purchase</strong><p>Lifetime Premium ($9) attaches to the account used at checkout.</p></div>
+            <div><strong>Everything is free</strong><p>No plans, no paywalls. Every feature is unlocked for everyone.</p></div>
           </article>
           <article>
             <span>03</span>
-            <div><strong>Progress that travels</strong><p>Words read and time saved can follow you between signed-in devices.</p></div>
+            <div><strong>Progress that travels</strong><p>Library, queue, and stats can follow you between signed-in devices.</p></div>
           </article>
         </div>
       </div>
@@ -39,7 +39,7 @@ import Layout from '../layouts/Layout.astro';
         <form id="account-page-form" class="account-form" data-auth-mode="signin">
           <div id="account-signed-out">
             <h2 id="account-form-title">Sign in</h2>
-            <p id="account-form-lede">Use the same email you use for your Premium purchase.</p>
+            <p id="account-form-lede">Sign in to sync your reading across devices.</p>
 
             <label for="account-email">Email address</label>
             <input id="account-email" type="email" autocomplete="email" placeholder="you@example.com" required />
@@ -56,12 +56,11 @@ import Layout from '../layouts/Layout.astro';
             <p class="account-session-label">Signed in</p>
             <h2 id="account-identity">BriskRead member</h2>
             <div class="account-plan-row">
-              <span>Current plan</span>
-              <strong id="account-plan">Free</strong>
+              <span>Plan</span>
+              <strong id="account-plan">Free — everything included</strong>
             </div>
-            <p id="account-session-copy">Your account is ready. Premium will attach here after purchase.</p>
-            <a class="btn btn-primary" id="account-upgrade" href="/#pricing">View Lifetime Premium</a>
-            <a class="btn btn-secondary" href="/">Open the reader</a>
+            <p id="account-session-copy">Your library, queue, and reading totals now sync across your signed-in devices.</p>
+            <a class="btn btn-primary" href="/">Open the reader</a>
             <button class="account-create" id="account-signout" type="button">Sign out</button>
           </div>
         </form>
@@ -79,9 +78,6 @@ import Layout from '../layouts/Layout.astro';
     const password = document.getElementById('account-password') as HTMLInputElement | null;
     const status = document.getElementById('account-status');
     const identity = document.getElementById('account-identity');
-    const plan = document.getElementById('account-plan');
-    const sessionCopy = document.getElementById('account-session-copy');
-    const upgrade = document.getElementById('account-upgrade');
     const formTitle = document.getElementById('account-form-title');
     const formLede = document.getElementById('account-form-lede');
     const submitBtn = document.getElementById('account-submit') as HTMLButtonElement | null;
@@ -103,8 +99,8 @@ import Layout from '../layouts/Layout.astro';
       if (formTitle) formTitle.textContent = isSignup ? 'Sign up' : 'Sign in';
       if (formLede) {
         formLede.textContent = isSignup
-          ? 'Create an account to claim free Lifetime seats (while available) and restore Premium on any device.'
-          : 'Use the same email you use for your Premium purchase.';
+          ? 'Create a free account to sync your library and reading totals across devices.'
+          : 'Sign in to sync your reading across devices.';
       }
       if (submitBtn) submitBtn.textContent = isSignup ? 'Sign up' : 'Sign in';
       if (modeToggle) {
@@ -118,24 +114,12 @@ import Layout from '../layouts/Layout.astro';
       setStatus('');
     };
 
-    const renderAccount = ({ user, premium, source, foundingGranted }) => {
+    const renderAccount = ({ user }) => {
       signedOut?.classList.toggle('hidden', Boolean(user));
       signedIn?.classList.toggle('hidden', !user);
       if (!user) return;
 
       if (identity) identity.textContent = user.email || 'BriskRead member';
-      if (plan) plan.textContent = premium ? 'Lifetime Premium' : 'Free';
-      if (sessionCopy) {
-        if (premium && (source === 'founding' || foundingGranted)) {
-          sessionCopy.textContent = 'Lifetime Premium is active on this account (early access grant).';
-        } else if (premium) {
-          sessionCopy.textContent = 'Lifetime Premium is active on this account.';
-        } else {
-          sessionCopy.textContent = 'Your account is ready. Lifetime Premium is $9 one-time after checkout.';
-        }
-      }
-      upgrade?.classList.toggle('hidden', Boolean(premium));
-      if (upgrade && !premium) upgrade.textContent = 'View Lifetime · $9';
 
       const next = new URLSearchParams(window.location.search).get('next');
       if (!redirectHandled && next?.startsWith('/') && !next.startsWith('//')) {
@@ -148,7 +132,7 @@ import Layout from '../layouts/Layout.astro';
       renderAccount((event as CustomEvent).detail);
     });
 
-    // Deep-link: /account?mode=signup (e.g. from Lifetime CTA)
+    // Deep-link: /account?mode=signup (e.g. from a sync CTA)
     const params = new URLSearchParams(window.location.search);
     if (params.get('mode') === 'signup' || params.get('signup') === '1') {
       setAuthMode('signup');

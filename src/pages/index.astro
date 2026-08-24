@@ -688,7 +688,7 @@ const marqueeFeatures = [
         </div>
         <p>
           Six visual modes, Audio Sync, local PDF/EPUB, and a Chrome extension path.
-          The core reader works free in the browser. <a href="#pricing">Lifetime</a> is for ad-free unlimited use and multi-device account Premium.
+          The core reader works free in the browser — no account, no limits. <a href="#pricing">See pricing</a>.
         </p>
       </div>
 
@@ -784,19 +784,19 @@ const marqueeFeatures = [
     </div>
   </section>
 
-  <!-- Compare (Lifetime only) + claim seats — one plan section -->
+  <!-- Compare + free plan — one section -->
   <section class="pricing-analytics-section mt-8" id="pricing" aria-labelledby="pricing-title">
     <div class="container">
       <div class="pricing-section-intro" id="compare">
-        <p class="section-label">Lifetime</p>
-        <h2 class="pricing-section-title" id="pricing-title">How Lifetime stacks up — free for a limited time</h2>
+        <p class="section-label">Pricing</p>
+        <h2 class="pricing-section-title" id="pricing-title">Everything is free. Here’s how it stacks up.</h2>
         <p class="muted pricing-section-lede">
-          Use the reader free in the browser anytime. <strong>Lifetime Premium</strong> is the full system: ad-free, unlimited length, account restore, full Chrome extension.
-          The first <strong>50 accounts</strong> get Lifetime free automatically; after that it’s <strong>$9 once</strong>. Prices for other tools are approximate as of 2026.
+          BriskRead is the full system — unlimited length, every mode, account sync, and the complete Chrome extension — at <strong>$0</strong>, supported by ads.
+          Prices for other tools are approximate as of 2026.
         </p>
       </div>
 
-      <div class="compare-scroll" role="region" aria-label="Lifetime comparison" tabindex="0">
+      <div class="compare-scroll" role="region" aria-label="BriskRead comparison" tabindex="0">
         <table class="compare-table compare-table-lifetime">
           <thead>
             <tr>
@@ -804,7 +804,7 @@ const marqueeFeatures = [
               <th scope="col">Browser TTS</th>
               <th scope="col">Speechify-class</th>
               <th scope="col">Classic RSVP / bionic tools</th>
-              <th scope="col" class="compare-you">BriskRead Lifetime</th>
+              <th scope="col" class="compare-you">BriskRead</th>
             </tr>
           </thead>
           <tbody>
@@ -813,14 +813,14 @@ const marqueeFeatures = [
               <td>Free in browser</td>
               <td>Usually $10–30/mo</td>
               <td>Free or paid apps</td>
-              <td class="compare-you"><strong>Free for first 50</strong>, then $9 once</td>
+              <td class="compare-you"><strong>Free</strong> — every feature, no account required</td>
             </tr>
             <tr>
               <th scope="row">Job</th>
               <td>Listen while multitasking</td>
               <td>Premium voices / listen-first</td>
               <td>Flash or scan faster</td>
-              <td class="compare-you">Eyes + ears on one stream, ad-free</td>
+              <td class="compare-you">Eyes + ears on one stream</td>
             </tr>
             <tr>
               <th scope="row">Visual modes</th>
@@ -856,73 +856,28 @@ const marqueeFeatures = [
 
       <p class="compare-honest-inline muted">
         Pick Speechify-class tools for celebrity voices and polished mobile listen apps.
-        Pick BriskRead Lifetime when you want dual-channel speed reading without a subscription.
+        Pick BriskRead when you want dual-channel speed reading that is completely free.
         <a href="/blog/free-speechify-alternatives">Longer alternative guide</a>
       </p>
 
       <div class="pricing-claim-grid">
-        <div class="glass pricing-card premium-badge" id="lifetime-pricing-card">
-          <div class="pricing-tag" id="lifetime-pricing-tag">Lifetime · free limited time</div>
-          <h3>Lifetime Premium</h3>
+        <div class="glass pricing-card" id="free-pricing-card">
+          <div class="pricing-tag">100% free</div>
+          <h3>Free forever</h3>
           <div class="price-row mt-2">
-            <span class="price-strike" id="lifetime-price-strike" title="Price after free seats">$9</span>
-            <span class="price-value" id="lifetime-price-value">Free</span>
-            <span class="price-term" id="lifetime-price-term">for the first 50 accounts · forever</span>
-          </div>
-
-          <div class="seat-meter" id="lifetime-seat-meter" aria-live="polite">
-            <div class="seat-meter-head">
-              <span class="seat-meter-label">Free Lifetime seats</span>
-              <span class="seat-meter-count" id="lifetime-seat-count">Loading seats…</span>
-            </div>
-            <div class="seat-meter-track" aria-hidden="true">
-              <div class="seat-meter-fill" id="lifetime-seat-fill" style="width: 0%"></div>
-            </div>
-            <p class="seat-meter-detail muted" id="lifetime-seat-detail">First 50 accounts get Lifetime free. Claimed count updates live.</p>
+            <span class="price-value">$0</span>
+            <span class="price-term">every feature · no account needed</span>
           </div>
 
           <ul class="pricing-features mt-4">
-            <li>Everything in the free core reader</li>
-            <li>Ad-free + unlimited document length</li>
-            <li>Unlimited library + multi-device account Premium</li>
-            <li>Full Chrome extension (in-page + read-later)</li>
+            <li>Unlimited document length &amp; library</li>
+            <li>All reading modes + Audio Sync TTS</li>
+            <li>Full Chrome extension (in-page reader)</li>
+            <li>Supported by ads — never by paywalls</li>
           </ul>
           <div class="pricing-actions mt-6">
-            <a class="btn btn-primary w-full" id="btn-claim-lifetime" href="/account?mode=signup">Create free account — unlock Lifetime</a>
-            <button class="btn btn-primary w-full hidden" id="btn-buy-premium" type="button">Get Lifetime — $9</button>
-            <p class="pricing-guarantee mt-3" id="lifetime-guarantee"><strong>Limited free seats.</strong> Create an account while seats remain — Lifetime unlocks automatically. After 50, Lifetime is $9 one-time with a 30-day money-back guarantee.</p>
-            <p class="muted text-center mt-2" id="lifetime-footnote">No card for free seats. Core reader stays free forever with ads and a 3,000-word cap.</p>
-          </div>
-
-          <div class="account-purchase-panel mt-6" id="account-purchase-panel">
-            <strong>Account-linked Premium</strong>
-            <p id="account-purchase-copy">Sign in or create an account. Free seats grant Lifetime automatically. After the cap, checkout attaches the $9 purchase to this account.</p>
-            <button class="btn btn-secondary" id="btn-pricing-signin" type="button">Sign in or create account</button>
-          </div>
-
-          <div class="license-panel mt-6 hidden" id="license-panel" aria-hidden="true">
-            <h4 class="license-heading">Already purchased?</h4>
-            <p class="muted license-hint">Paste your lifetime license key. Premium binds to this device (max 5 devices).</p>
-            <div class="license-row">
-              <input type="text" id="license-key-input" placeholder="Paste license key…" autocomplete="off" spellcheck="false" aria-label="License key" />
-              <button class="btn btn-secondary" id="btn-activate-license" type="button">Activate device</button>
-            </div>
-            <p id="license-status" class="license-status muted" role="status" aria-live="polite"></p>
-            <div id="license-display" class="license-display hidden">
-              <label for="license-key-display">License key (keep private — save offline)</label>
-              <div class="license-row">
-                <input type="text" id="license-key-display" readonly aria-label="Saved license key" />
-                <button class="btn btn-secondary btn-sm" id="btn-copy-license" type="button">Copy</button>
-              </div>
-            </div>
-            <div id="device-list-wrap" class="device-list-wrap hidden">
-              <div class="device-list-header">
-                <span>Activated devices</span>
-                <span id="device-count" class="device-count"></span>
-              </div>
-              <ul id="device-list" class="device-list"></ul>
-              <p class="muted device-help">Revoke a device you no longer use to free a slot. Max 5 personal devices.</p>
-            </div>
+            <a class="btn btn-primary w-full" href="/#importer-card">Start reading free</a>
+            <p class="pricing-guarantee mt-3"><strong>Optional account.</strong> Sign in only if you want your library and stats synced across devices. Documents stay on your device either way.</p>
           </div>
         </div>
 
@@ -1065,16 +1020,16 @@ const marqueeFeatures = [
           </details>
 
           <details class="faq-item">
-            <summary>How does multi-device Premium work?</summary>
+            <summary>How does multi-device sync work?</summary>
             <div class="faq-answer">
-              <p>Sign in before checkout and the one-time purchase is attached to your BriskRead account. Sign into the same account on another device to restore Premium without copying a license key.</p>
+              <p>Create a free account and sign in on each device. Your library, queue, and reading totals sync automatically. Without an account everything still works — it just stays on that device.</p>
             </div>
           </details>
 
           <details class="faq-item">
             <summary>Is BriskRead really free?</summary>
             <div class="faq-answer">
-              <p>Yes. Core RSVP, bionic reading, TTS, paste, and limited-length documents are free, supported by display ads. Optional Lifetime Premium ($9 one-time) removes ads, lifts the 3,000-word cap, and unlocks in-page reading in the Chrome extension.</p>
+              <p>Yes. Every feature is free: unlimited document length, the full library, all reading modes, TTS audio sync, OCR, and in-page reading in the Chrome extension. The site is supported by display ads.</p>
             </div>
           </details>
         </div>
@@ -1178,10 +1133,10 @@ const marqueeFeatures = [
         },
         {
           "@type": "Question",
-          "name": "How does multi-device Premium work?",
+          "name": "How does multi-device sync work?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Sign in before checkout and Lifetime Premium is attached to your BriskRead account. Sign into that account on another device to restore Premium."
+            "text": "Sign in with a free BriskRead account and your library, queue, and reading totals follow you between devices. Without an account everything still works — it just stays on that device."
           }
         },
         {
@@ -1189,7 +1144,7 @@ const marqueeFeatures = [
           "name": "Is BriskRead really free?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Yes. Core RSVP, bionic reading, TTS, and limited-length documents are free, supported by ads. Optional Lifetime Premium is $9 one-time for ad-free unlimited reading and in-page reading in the Chrome extension."
+            "text": "Yes. Every feature is free: unlimited documents, the full library, all reading modes, TTS audio sync, OCR, and the Chrome extension in-page reader. The site is supported by ads."
           }
         }
       ]
@@ -1219,7 +1174,9 @@ const marqueeFeatures = [
       ttsChunks: [],
       ttsChunkIndex: 0,
       ttsRunId: 0,
-      isPremium: false,
+      ttsBestVoice: null,
+      ttsForcedVoice: null,
+      ttsRetryCount: 0,
       libraryId: null,
       lastRetentionIndex: 0,
       retentionOpen: false,
@@ -1234,22 +1191,10 @@ const marqueeFeatures = [
 
     const BF = () => window.BriskFeatures || null;
 
-    // ── Device-bound premium ──────────────────────────────────────────
+    // ── Account (sign-in exists only for cross-device sync) ───────────
     let accountUser = null;
     window.addEventListener('briskread:account', (event) => {
       accountUser = event.detail?.user || null;
-      if (event.detail?.premium) {
-        state.isPremium = true;
-        applyPremiumUI();
-      }
-      const copy = document.getElementById('account-purchase-copy');
-      const signInButton = document.getElementById('btn-pricing-signin');
-      if (copy) {
-        copy.textContent = accountUser
-          ? `Signed in as ${accountUser.email}. Your purchase will attach to this account.`
-          : 'Sign in before checkout so Lifetime Premium is attached to your account automatically.';
-      }
-      signInButton?.classList.toggle('hidden', Boolean(accountUser));
       // Cross-device library / queue sync
       if (accountUser) {
         pullAndMergeWorkspace();
@@ -1259,309 +1204,12 @@ const marqueeFeatures = [
       }
     });
 
-    const getDeviceId = () => {
-      let id = localStorage.getItem('device_id');
-      if (!id) {
-        id = (typeof crypto !== 'undefined' && crypto.randomUUID)
-          ? crypto.randomUUID()
-          : `d-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
-        localStorage.setItem('device_id', id);
-      }
-      return id;
-    };
-
-    const getDeviceLabel = () => {
-      const ua = navigator.userAgent || '';
-      let browser = 'Browser';
-      if (/Edg\//.test(ua)) browser = 'Edge';
-      else if (/Chrome\//.test(ua)) browser = 'Chrome';
-      else if (/Firefox\//.test(ua)) browser = 'Firefox';
-      else if (/Safari\//.test(ua)) browser = 'Safari';
-      let os = 'Device';
-      if (/Windows/.test(ua)) os = 'Windows';
-      else if (/Mac OS|Macintosh/.test(ua)) os = 'Mac';
-      else if (/Android/.test(ua)) os = 'Android';
-      else if (/iPhone|iPad/.test(ua)) os = 'iOS';
-      return `${browser} on ${os}`;
-    };
-
-    const getStoredLicenseKey = () => localStorage.getItem('license_key') || '';
-    /** Device session only — never fall back to raw license key for APIs */
-    const getDeviceSession = () => localStorage.getItem('premium_token') || '';
-
-    const clearPremiumLocal = () => {
-      localStorage.removeItem('is_premium');
-      localStorage.removeItem('premium_token');
-      state.isPremium = false;
-    };
-
-    const renderDeviceList = (devices = [], maxDevices = 5) => {
-      const wrap = document.getElementById('device-list-wrap');
-      const list = document.getElementById('device-list');
-      const count = document.getElementById('device-count');
-      if (!wrap || !list) return;
-      if (!devices.length) {
-        wrap.classList.add('hidden');
-        return;
-      }
-      wrap.classList.remove('hidden');
-      if (count) count.textContent = `${devices.length} / ${maxDevices}`;
-      const currentId = getDeviceId();
-      list.innerHTML = devices.map((d) => {
-        const label = (d.label || 'Device').replace(/</g, '&lt;');
-        const current = d.id === currentId || d.is_current;
-        const idAttr = String(d.id).replace(/"/g, '');
-        return `<li class="device-item${current ? ' is-current' : ''}">
-          <span class="device-item-label">${label}${current ? ' <em>(this device)</em>' : ''}</span>
-          ${current ? '' : `<button type="button" class="btn btn-secondary btn-sm btn-revoke-device" data-device-id="${idAttr}">Revoke</button>`}
-        </li>`;
-      }).join('');
-    };
-
-    const unlockPremium = ({ licenseKey, sessionToken, devices, maxDevices }) => {
-      if (licenseKey) localStorage.setItem('license_key', licenseKey);
-      if (sessionToken) {
-        localStorage.setItem('premium_token', sessionToken);
-        localStorage.setItem('is_premium', 'true');
-        state.isPremium = true;
-      }
-      if (devices) {
-        try { localStorage.setItem('premium_devices', JSON.stringify({ devices, maxDevices: maxDevices || 5 })); } catch (_) {}
-        renderDeviceList(devices, maxDevices || 5);
-      }
-      applyPremiumUI();
-    };
-
-    const applyPremiumUI = () => {
-      try { renderWorkspace(); } catch (_) { /* workspace may not be ready yet */ }
-      const licenseDisplay = document.getElementById('license-display');
-      const licenseKeyDisplay = document.getElementById('license-key-display');
-      const storedKey = getStoredLicenseKey();
-
-      if (storedKey && licenseKeyDisplay) {
-        licenseKeyDisplay.value = storedKey;
-        if (licenseDisplay) licenseDisplay.classList.remove('hidden');
-      }
-
-      try {
-        const cached = JSON.parse(localStorage.getItem('premium_devices') || 'null');
-        if (cached?.devices) renderDeviceList(cached.devices, cached.maxDevices || 5);
-      } catch (_) {}
-
-      if (state.isPremium) {
-        document.querySelectorAll('.ads-section').forEach(el => el.classList.add('hidden'));
-
-        const buyBtn = document.getElementById('btn-buy-premium');
-        const claimBtn = document.getElementById('btn-claim-lifetime');
-        if (buyBtn) {
-          buyBtn.textContent = accountUser ? 'Lifetime Premium active' : 'Premium active on this device';
-          buyBtn.disabled = true;
-          buyBtn.classList.remove('hidden');
-          buyBtn.classList.add('btn-premium-active');
-        }
-        if (claimBtn) claimBtn.classList.add('hidden');
-
-        const tag = document.getElementById('lifetime-pricing-tag');
-        if (tag) {
-          tag.textContent = 'Active';
-          tag.classList.add('tag-success');
-        }
-
-        const heading = document.querySelector('.license-heading');
-        if (heading) heading.textContent = 'Your license & devices';
-        const hint = document.querySelector('.license-hint');
-        if (hint) hint.textContent = 'Keep the key private. Activate on up to 5 devices. Revoke unused devices to free slots.';
-      }
-    };
-
-    /** Live founding seat counter on Lifetime card (cap 50). */
-    const FOUNDING_CAP = 50;
-    let foundingSeats = { cap: FOUNDING_CAP, claimed: null, remaining: null, open: true };
-
-    const applyFoundingSeatUI = (stats) => {
-      if (!stats || stats.claimed == null) return;
-      foundingSeats = {
-        cap: stats.cap || FOUNDING_CAP,
-        claimed: stats.claimed,
-        remaining: stats.remaining ?? Math.max(0, (stats.cap || FOUNDING_CAP) - stats.claimed),
-        open: stats.open !== false && (stats.remaining ?? 0) > 0,
-      };
-
-      const countEl = document.getElementById('lifetime-seat-count');
-      const detailEl = document.getElementById('lifetime-seat-detail');
-      const fillEl = document.getElementById('lifetime-seat-fill');
-      const tagEl = document.getElementById('lifetime-pricing-tag');
-      const priceVal = document.getElementById('lifetime-price-value');
-      const priceTerm = document.getElementById('lifetime-price-term');
-      const priceStrike = document.getElementById('lifetime-price-strike');
-      const claimBtn = document.getElementById('btn-claim-lifetime');
-      const buyBtn = document.getElementById('btn-buy-premium');
-      const guarantee = document.getElementById('lifetime-guarantee');
-      const footnote = document.getElementById('lifetime-footnote');
-      const meter = document.getElementById('lifetime-seat-meter');
-
-      const { cap, claimed, remaining, open } = foundingSeats;
-      const pct = Math.min(100, Math.round((claimed / cap) * 100));
-
-      if (countEl) countEl.textContent = `${claimed} / ${cap} claimed · ${remaining} left`;
-      if (fillEl) fillEl.style.width = `${pct}%`;
-      if (detailEl) {
-        detailEl.textContent = open
-          ? `Lifetime is free for a limited time — ${remaining} free seat${remaining === 1 ? '' : 's'} left. Create an account to unlock automatically.`
-          : 'Free seats are full. Lifetime is $9 one-time forever.';
-      }
-      if (meter) meter.classList.toggle('seat-meter-full', !open);
-
-      if (state.isPremium) return;
-
-      if (open) {
-        if (tagEl) {
-          tagEl.textContent = 'Lifetime · free limited time';
-          tagEl.classList.remove('tag-success');
-        }
-        if (priceVal) priceVal.textContent = 'Free';
-        if (priceTerm) priceTerm.textContent = 'for the first 50 accounts · forever';
-        if (priceStrike) {
-          priceStrike.textContent = '$9';
-          priceStrike.classList.remove('hidden');
-        }
-        if (claimBtn) {
-          claimBtn.classList.remove('hidden');
-          claimBtn.textContent = remaining <= 10
-            ? `Claim free Lifetime — ${remaining} left`
-            : 'Create free account — unlock Lifetime';
-        }
-        if (buyBtn) buyBtn.classList.add('hidden');
-        if (guarantee) {
-          guarantee.innerHTML = `<strong>Limited free seats.</strong> Create an account while seats remain — Lifetime unlocks automatically. After ${cap}, Lifetime is $9 one-time with a 30-day money-back guarantee.`;
-        }
-        if (footnote) footnote.textContent = 'No card required for free seats. Same account restores Premium on your other devices.';
-      } else {
-        if (tagEl) {
-          tagEl.textContent = 'Lifetime · $9';
-          tagEl.classList.remove('tag-success');
-        }
-        if (priceVal) priceVal.textContent = '$9';
-        if (priceTerm) priceTerm.textContent = 'one-time · forever';
-        if (priceStrike) {
-          priceStrike.textContent = '~$15/mo apps';
-          priceStrike.classList.remove('hidden');
-        }
-        if (claimBtn) claimBtn.classList.add('hidden');
-        if (buyBtn) {
-          buyBtn.classList.remove('hidden');
-          buyBtn.disabled = false;
-          buyBtn.classList.remove('btn-premium-active');
-          buyBtn.textContent = 'Get Lifetime — $9';
-        }
-        if (guarantee) {
-          guarantee.innerHTML = '<strong>30-day money-back guarantee.</strong> Email us within 30 days for a full refund, no reason required.';
-        }
-        if (footnote) footnote.textContent = 'Sign in once at checkout. Premium restores on your other devices with the same account.';
-      }
-    };
-
-    const loadFoundingSeats = async () => {
-      try {
-        const supabase = globalThis.briskreadSupabase;
-        if (supabase) {
-          const { data, error } = await supabase.rpc('founding_seat_stats');
-          if (!error && data) {
-            applyFoundingSeatUI(data);
-            return;
-          }
-        }
-      } catch (_) { /* fall through */ }
-
-      try {
-        const res = await fetch('/api/founding-seats');
-        if (res.ok) applyFoundingSeatUI(await res.json());
-        else if (document.getElementById('lifetime-seat-count')) {
-          document.getElementById('lifetime-seat-count').textContent = 'Seat count unavailable';
-        }
-      } catch (_) {
-        const countEl = document.getElementById('lifetime-seat-count');
-        if (countEl) countEl.textContent = 'Seat count unavailable';
-      }
-    };
-
-    loadFoundingSeats();
-    window.addEventListener('briskread:account', () => {
-      // Refresh count after a grant may have consumed a seat
-      window.setTimeout(loadFoundingSeats, 400);
-    });
-
-    /**
-     * Validate premium without burning an extra device slot.
-     * - Extension handoff already provides a device session → trust it (no re-bind).
-     * - Web-native session present → keep offline-capable; re-bind only if missing session.
-     * - Forged is_premium without license → strip.
-     */
-    const revalidatePremium = async () => {
-      const license = getStoredLicenseKey();
-      const session = getDeviceSession();
-      const forgedFlag = localStorage.getItem('is_premium') === 'true' && !license && !session;
-      if (forgedFlag) {
-        clearPremiumLocal();
-        applyPremiumUI();
-        return;
-      }
-
-      // Session from extension or prior activate: do not re-POST activate (would double-bind)
-      if (session) {
-        state.isPremium = true;
-        localStorage.setItem('is_premium', 'true');
-        applyPremiumUI();
-        return;
-      }
-
-      if (!license) return;
-
-      try {
-        const res = await fetch('/api/activate-license', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            license_key: license,
-            device_id: getDeviceId(),
-            device_label: getDeviceLabel(),
-          }),
-        });
-        const data = await res.json();
-        if (res.ok && data.ok && data.token) {
-          unlockPremium({
-            licenseKey: data.license_key || license,
-            sessionToken: data.token,
-            devices: data.devices,
-            maxDevices: data.max_devices,
-          });
-        } else if (data.code === 'DEVICE_LIMIT') {
-          localStorage.removeItem('premium_token');
-          localStorage.setItem('is_premium', 'false');
-          state.isPremium = false;
-          if (data.devices) renderDeviceList(data.devices, data.max_devices || 5);
-          applyPremiumUI();
-          const status = document.getElementById('license-status');
-          if (status) status.textContent = data.error || 'Device limit reached. Revoke another device.';
-        } else if (data.code === 'INVALID_KEY' || res.status === 401) {
-          localStorage.removeItem('license_key');
-          clearPremiumLocal();
-          applyPremiumUI();
-        }
-      } catch (_) {
-        state.isPremium = localStorage.getItem('is_premium') === 'true' && !!getDeviceSession();
-        applyPremiumUI();
-      }
-    };
-
     const loadState = () => {
       state.wpm = parseInt(localStorage.getItem('wpm') || '350');
       state.theme = localStorage.getItem('theme') || 'light';
       state.font = localStorage.getItem('font') || 'sans';
       state.fontSize = parseInt(localStorage.getItem('fontSize') || '24');
-      // Require device session — bare license key or forged flag is not enough
-      state.isPremium = localStorage.getItem('is_premium') === 'true' && !!getDeviceSession();
-      
+
       const statsJson = localStorage.getItem('stats');
       if (statsJson) {
         state.stats = JSON.parse(statsJson);
@@ -1579,8 +1227,6 @@ const marqueeFeatures = [
       document.documentElement.setAttribute('data-font', state.font);
       
       updateStatsUI();
-      applyPremiumUI();
-      revalidatePremium();
     };
 
     const updateStatsUI = () => {
@@ -1797,9 +1443,7 @@ const marqueeFeatures = [
       const qSum = document.getElementById('queue-summary');
 
       if (capHint) {
-        capHint.textContent = state.isPremium
-          ? 'Unlimited'
-          : `${library.length} / ${api.FREE_LIBRARY_CAP} free slots`;
+        capHint.textContent = `${library.length} saved · unlimited`;
       }
       const qs = api.queueSummary(state.wpm);
       if (qSum) {
@@ -1978,7 +1622,6 @@ const marqueeFeatures = [
         title: state.sourceLabel || api.truncateTitle(state.text),
         text: state.text,
         sourceType: 'reader',
-        isPremium: state.isPremium,
         progress: {
           index: state.currentIndex,
           mode: state.mode,
@@ -2164,12 +1807,37 @@ const marqueeFeatures = [
       setTimeout(() => doSpeak(), wasBusy ? 150 : 0);
     };
 
-    // Pick the voice to speak with. Remote voices (localService === false) stream from
-    // Google's servers and routinely die mid-sentence with 'interrupted'; local system
-    // voices are far more reliable, so they win unless the user picked one explicitly.
+    // Rank every available voice so neural/natural cloud voices win by default.
+    // In Edge these are the exact "Online (Natural)" voices behind Read Aloud;
+    // in Chrome the Google network voices beat the robotic SAPI defaults;
+    // on macOS "Enhanced/Premium" Apple voices rank above plain ones.
+    const TTS_VOICE_SCORE = (voice) => {
+      const name = voice.name || '';
+      const lang = voice.lang || '';
+      let score = 0;
+      if (/^en([-_]|$)/i.test(lang)) score += 100;
+      if (/natural/i.test(name)) score += 60;
+      if (/online\s*\(/i.test(name)) score += 20;
+      if (/neural/i.test(name)) score += 45;
+      if (/enhanced|premium|siri/i.test(name)) score += 35;
+      if (/google/i.test(name)) score += 30;
+      // Remote voices generally sound better than built-in defaults; reliability
+      // issues are handled by the retry/fallback chain in speakChunk().
+      if (voice.localService === false) score += 12;
+      // Known robotic legacy Windows voices sink to the bottom.
+      if (/microsoft (david|zira|mark)\b/i.test(name)) score -= 40;
+      return score;
+    };
+
     const pickTTSVoice = () => {
       const voices = window.speechSynthesis.getVoices();
       if (!voices.length) return null;
+
+      // A stuck fallback from a previous error outranks even an explicit pick,
+      // because the explicit pick just failed repeatedly this session.
+      if (state.ttsForcedVoice && voices.some(v => v.voiceURI === state.ttsForcedVoice.voiceURI)) {
+        return state.ttsForcedVoice;
+      }
 
       const chosenName = document.getElementById('select-voice').value;
       if (chosenName) {
@@ -2177,11 +1845,22 @@ const marqueeFeatures = [
         if (exact) return exact;
         // Fall through rather than assigning undefined, which breaks playback outright.
       }
+      if (state.ttsBestVoice && voices.some(v => v.voiceURI === state.ttsBestVoice.voiceURI)) {
+        return state.ttsBestVoice;
+      }
 
-      const english = voices.filter(v => v.lang.startsWith('en'));
-      const pool = english.length ? english : voices;
-      const local = pool.filter(v => v.localService !== false);
-      return local.find(v => /Natural|Neural/i.test(v.name)) || local[0] || pool[0];
+      const ranked = [...voices].sort((a, b) => TTS_VOICE_SCORE(b) - TTS_VOICE_SCORE(a));
+      state.ttsBestVoice = ranked[0];
+      return ranked[0];
+    };
+
+    /** Last-resort voice after repeated failures: most reliable local option. */
+    const pickFallbackVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices.length) return null;
+      const local = voices.filter(v => v.localService !== false);
+      const pool = local.length ? local : voices;
+      return [...pool].sort((a, b) => TTS_VOICE_SCORE(b) - TTS_VOICE_SCORE(a))[0] || null;
     };
 
     const doSpeak = () => {
@@ -2192,12 +1871,13 @@ const marqueeFeatures = [
       // Offsets stay relative to the ORIGINAL text so boundary events map back to words.
       state.ttsChunks = chunkForTTS(state.text.slice(startIndexOffset), startIndexOffset);
       state.ttsChunkIndex = 0;
+      state.ttsRetryCount = 0;
       // Bumped on every fresh playback; stale callbacks compare against it and bail.
       state.ttsRunId = (state.ttsRunId || 0) + 1;
       speakChunk(state.ttsRunId);
     };
 
-    const speakChunk = (runId) => {
+    const speakChunk = (runId, isRetry = false) => {
       if (runId !== state.ttsRunId || !state.isPlaying || !state.ttsActive) return;
 
       const chunk = state.ttsChunks[state.ttsChunkIndex];
@@ -2240,6 +1920,7 @@ const marqueeFeatures = [
 
       utterance.onend = () => {
         if (runId !== state.ttsRunId) return;
+        state.ttsRetryCount = 0; // chunk completed cleanly — reset the failure budget
         state.ttsChunkIndex += 1;
         speakChunk(runId);
       };
@@ -2248,8 +1929,30 @@ const marqueeFeatures = [
         if (runId !== state.ttsRunId) return;
         // We cancel deliberately on pause/seek/restart; those aren't real failures.
         if (e.error === 'interrupted' || e.error === 'canceled') return;
+
+        // Transient network/engine hiccups (mostly with cloud neural voices): retry
+        // the same chunk instead of killing the whole session.
+        const retries = state.ttsRetryCount || 0;
+        if (retries < 2 && !isRetry) {
+          state.ttsRetryCount = retries + 1;
+          console.warn('TTS chunk failed, retrying:', e.error);
+          setTimeout(() => { if (runId === state.ttsRunId) speakChunk(runId, true); }, 300);
+          return;
+        }
+        // Voice keeps failing: pin a reliable local fallback for the rest of the doc.
+        const fallback = pickFallbackVoice();
+        if (fallback && (!voice || fallback.voiceURI !== voice.voiceURI)) {
+          state.ttsForcedVoice = fallback;
+          state.ttsRetryCount = 0;
+          console.warn('TTS falling back to', fallback.name);
+          setTimeout(() => { if (runId === state.ttsRunId) speakChunk(runId, true); }, 250);
+          return;
+        }
+        // Nothing worked for this chunk: skip it and keep reading rather than stopping.
         console.error('TTS speech error', e.error, e);
-        pauseReader();
+        state.ttsRetryCount = 0;
+        state.ttsChunkIndex += 1;
+        speakChunk(runId);
       };
 
       window.speechSynthesis.speak(utterance);
@@ -2613,27 +2316,7 @@ const marqueeFeatures = [
         alert("No valid text extracted.");
         return;
       }
-      
-      // Enforce free tier limits: 3000 words limit on uploads
-      const tempWords = text.trim().split(/\s+/);
-      if (tempWords.length > 3000 && !state.isPremium) {
-        const upgrade = confirm(`Your document has ${tempWords.length.toLocaleString()} words. The free tier limits reading to 3,000 words to cover AdSense/hosting costs. Upgrade to Lifetime Premium ($9 one-time) for unlimited length and an ad-free workspace.`);
-        if (upgrade) {
-          setTimeout(() => {
-            const pricing = document.querySelector('.pricing-card');
-            if (pricing) {
-              pricing.scrollIntoView({ behavior: 'smooth' });
-              pricing.style.outline = "3px solid var(--color-primary)";
-              pricing.style.outlineOffset = "4px";
-              setTimeout(() => {
-                pricing.style.outline = "none";
-              }, 4000);
-            }
-          }, 200);
-        }
-        return;
-      }
-      
+
       parseText(text);
       state.sourceLabel = sourceLabel;
       state.libraryId = options.libraryId || null;
@@ -2849,36 +2532,41 @@ const marqueeFeatures = [
 
     const populateVoices = () => {
       if (!window.speechSynthesis) return;
-      
+
       const voiceSelect = document.getElementById('select-voice');
       if (!voiceSelect) return;
-      
+
       const previous = voiceSelect.value;
-      voiceSelect.innerHTML = '<option value="">Default System Voice</option>';
+      voiceSelect.innerHTML = '<option value="">Best available (auto)</option>';
 
-      // Remote voices (localService === false — Chrome's "Google ..." set) stream from
-      // Google's servers and abort mid-sentence, so they are not offered at all.
-      const isNatural = (voice) => /Natural|Neural/i.test(voice.name);
-      const voices = window.speechSynthesis.getVoices().filter(v => v.localService !== false);
+      const voices = [...window.speechSynthesis.getVoices()].sort(
+        (a, b) => TTS_VOICE_SCORE(b) - TTS_VOICE_SCORE(a)
+      );
 
-      // Higher-quality local voices (e.g. "Microsoft Aria Natural") first.
-      voices.sort((a, b) => {
-        if (isNatural(a) !== isNatural(b)) return isNatural(a) ? -1 : 1;
-        return a.name.localeCompare(b.name);
-      });
-
+      const isPremiumVoice = (voice) => /natural|neural|enhanced|premium/i.test(voice.name || '');
       voices.forEach(voice => {
         const option = document.createElement('option');
         option.value = voice.name;
-        option.textContent = isNatural(voice)
-          ? `✨ [Natural] ${voice.name} (${voice.lang})`
-          : `${voice.name} (${voice.lang})`;
+        const remote = voice.localService === false ? ' · online' : '';
+        option.textContent = isPremiumVoice(voice)
+          ? `✨ ${voice.name} (${voice.lang})${remote}`
+          : `${voice.name} (${voice.lang})${remote}`;
         voiceSelect.appendChild(option);
       });
 
       // Keep the current pick across rebuilds instead of silently resetting it.
       voiceSelect.value = voices.some(v => v.name === previous) ? previous : '';
+
+      // A fresh voice list may contain something better than a stuck fallback.
+      state.ttsBestVoice = null;
+      state.ttsForcedVoice = null;
     };
+
+    // Manual voice change clears any error fallback so the user's choice wins again.
+    document.getElementById('select-voice')?.addEventListener('change', () => {
+      state.ttsForcedVoice = null;
+      state.ttsRetryCount = 0;
+    });
 
     if (window.speechSynthesis) {
       // Chrome can carry a wedged "speaking" queue over from a previous session on the
@@ -3594,7 +3282,7 @@ const marqueeFeatures = [
           document.getElementById('ai-response-text').innerText = summaryText;
           summaryBtn.textContent = "Generate summary";
         } catch (err) {
-          if (err.message === 'NO_KEY') return alert("Please enter and save your Gemini API Key first, or upgrade to Premium.");
+          if (err.message === 'NO_KEY') return alert("Please enter and save your Gemini API Key first. AI features use your own free Gemini key.");
           alert(`AI Summarization failed: ${err.message}`);
           summaryBtn.textContent = "Generate summary";
           console.error(err);
@@ -4071,178 +3759,7 @@ const marqueeFeatures = [
         }
       });
       
-      document.getElementById('btn-pricing-signin')?.addEventListener('click', () => {
-        window.location.href = '/account?next=%2F%23pricing';
-      });
-
-      // Dodo Payments checkout
-      document.getElementById('btn-buy-premium').addEventListener('click', async (e) => {
-        const btn = e.currentTarget;
-        btn.disabled = true;
-        btn.textContent = 'Redirecting to checkout...';
-        try {
-          const supabase = globalThis.briskreadSupabase;
-          const { data: { session } } = supabase ? await supabase.auth.getSession() : { data: { session: null } };
-          if (!session) {
-            window.location.href = '/account?next=%2F%23pricing';
-            return;
-          }
-          const res = await fetch('/api/create-checkout', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${session.access_token}` },
-          });
-          const data = await res.json();
-          if (!data.checkout_url) throw new Error(data.error || 'No checkout URL returned');
-          window.location.href = data.checkout_url;
-        } catch (err) {
-          alert('Could not start checkout. Please try again shortly.');
-          console.error(err);
-          btn.disabled = false;
-          btn.textContent = 'Get Lifetime — $9';
-        }
-      });
-
-      const activateOnThisDevice = async (licenseKey, revokeDeviceId) => {
-        const status = document.getElementById('license-status');
-        const body = {
-          license_key: licenseKey,
-          device_id: getDeviceId(),
-          device_label: getDeviceLabel(),
-        };
-        if (revokeDeviceId) body.revoke_device_id = revokeDeviceId;
-
-        const res = await fetch('/api/activate-license', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
-        });
-        const data = await res.json();
-
-        if (data.code === 'DEVICE_LIMIT' && data.devices) {
-          renderDeviceList(data.devices, data.max_devices || 5);
-          status.textContent = data.error + ' Click Revoke on a device below, then Activate again.';
-          localStorage.setItem('license_key', licenseKey);
-          if (document.getElementById('license-key-display')) {
-            document.getElementById('license-key-display').value = licenseKey;
-            document.getElementById('license-display').classList.remove('hidden');
-          }
-          return data;
-        }
-
-        if (!res.ok || !data.ok) {
-          status.textContent = data.error || 'Invalid license key.';
-          return data;
-        }
-
-        unlockPremium({
-          licenseKey: data.license_key || licenseKey,
-          sessionToken: data.token,
-          devices: data.devices,
-          maxDevices: data.max_devices,
-        });
-        status.textContent = 'Premium unlocked on this device (slot secured).';
-        return data;
-      };
-
-      document.getElementById('btn-activate-license').addEventListener('click', async () => {
-        const input = document.getElementById('license-key-input');
-        const status = document.getElementById('license-status');
-        const licenseKey = (input.value || getStoredLicenseKey() || '').trim();
-        if (!licenseKey) {
-          status.textContent = 'Paste your license key first.';
-          return;
-        }
-        status.textContent = 'Binding this device…';
-        try {
-          await activateOnThisDevice(licenseKey);
-          input.value = '';
-        } catch (err) {
-          console.error(err);
-          status.textContent = 'Activation failed. Check your connection and try again.';
-        }
-      });
-
-      document.getElementById('device-list').addEventListener('click', async (e) => {
-        const btn = e.target.closest('.btn-revoke-device');
-        if (!btn) return;
-        const revokeId = btn.getAttribute('data-device-id');
-        const license = getStoredLicenseKey() || document.getElementById('license-key-input').value.trim();
-        if (!license || !revokeId) return;
-        const status = document.getElementById('license-status');
-        status.textContent = 'Revoking device…';
-        try {
-          await activateOnThisDevice(license, revokeId);
-          status.textContent = 'Device revoked. This device is now activated.';
-        } catch (err) {
-          console.error(err);
-          status.textContent = 'Could not revoke device.';
-        }
-      });
-
-      document.getElementById('btn-copy-license').addEventListener('click', async () => {
-        const val = document.getElementById('license-key-display').value;
-        if (!val) return;
-        try {
-          await navigator.clipboard.writeText(val);
-          document.getElementById('license-status').textContent = 'License key copied — store it offline, do not share publicly.';
-        } catch {
-          document.getElementById('license-key-display').select();
-          document.execCommand('copy');
-          document.getElementById('license-status').textContent = 'License key selected — copy manually if needed.';
-        }
-      });
-
-      // Return from Dodo checkout → license + bind this device
-      const returnParams = new URLSearchParams(window.location.search);
-      if (returnParams.get('checkout') === 'return' && returnParams.get('payment_id')) {
-        const paymentId = returnParams.get('payment_id');
-        const qs = new URLSearchParams({
-          payment_id: paymentId,
-          device_id: getDeviceId(),
-          device_label: getDeviceLabel(),
-        });
-        fetch(`/api/verify-payment?${qs}`)
-          .then(r => r.json())
-          .then((data) => {
-            history.replaceState(null, '', window.location.pathname);
-            if (data.ok) {
-              if (data.account_linked) {
-                state.isPremium = true;
-                applyPremiumUI();
-                alert('Payment confirmed. Lifetime Premium is now attached to your BriskRead account.');
-                return;
-              }
-              unlockPremium({
-                licenseKey: data.license_key,
-                sessionToken: data.token,
-                devices: data.devices,
-                maxDevices: data.max_devices,
-              });
-              if (!data.token) {
-                alert(data.warning || 'Payment confirmed. Save your license key, then click Activate device if Premium is not active yet.');
-              } else {
-                alert('Payment confirmed! Premium is active on this device. Save your license key offline for other devices (max 5).');
-              }
-              const panel = document.getElementById('license-panel');
-              if (panel) panel.scrollIntoView({ behavior: 'smooth' });
-            } else {
-              alert('We could not confirm this payment. If you were charged, contact support with your receipt.');
-            }
-          })
-          .catch(() => history.replaceState(null, '', window.location.pathname));
-      }
-
       // Chrome extension handoff (content-handoff.js + retries / custom event)
-      const applyExtensionPremium = () => {
-        if (localStorage.getItem('premium_token')) {
-          localStorage.setItem('is_premium', 'true');
-          state.isPremium = true;
-          applyPremiumUI();
-          return true;
-        }
-        return false;
-      };
-
       const loadExtensionHandoff = () => {
         try {
           const raw = sessionStorage.getItem('sr_extension_article');
@@ -4251,7 +3768,6 @@ const marqueeFeatures = [
           const data = JSON.parse(raw);
           const title = (data.title || '').trim();
           const text = (data.text || '').trim();
-          applyExtensionPremium();
           if (!text || text.length < 40) {
             // URL-only handoff: fall through to ?url=
             if (data.url) {
@@ -4293,16 +3809,11 @@ const marqueeFeatures = [
             document.getElementById('btn-load-url')?.click();
           }
         }
-        if (returnParams.get('source') === 'extension' || sessionStorage.getItem('sr_from_extension')) {
-          sessionStorage.removeItem('sr_from_extension');
-          applyExtensionPremium();
-        }
       };
 
       runExtensionBoot();
       // Late handoff if content script wins the race after DOMContentLoaded
       window.addEventListener('sr-extension-handoff', () => {
-        applyExtensionPremium();
         loadExtensionHandoff();
       });
       setTimeout(runExtensionBoot, 250);
@@ -5410,118 +4921,7 @@ const marqueeFeatures = [
       border-block: 1px solid var(--color-border);
       background: var(--color-bg-subtle);
     }
-    .ads-section.hidden {
-      display: none !important;
-    }
 
-    .license-panel {
-      border-top: 1px solid var(--color-border);
-      padding-top: 1.25rem;
-    }
-    .account-purchase-panel {
-      padding: 1rem;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-bg-subtle);
-    }
-    .account-purchase-panel strong { display: block; color: var(--color-text); font-size: 0.82rem; }
-    .account-purchase-panel p { margin: 0.35rem 0 0.8rem; color: var(--color-text-muted); font-size: 0.75rem; line-height: 1.5; }
-    .license-heading {
-      font-size: 0.95rem;
-      margin-bottom: 0.35rem;
-    }
-    .license-hint {
-      font-size: 0.85rem;
-      margin-bottom: 0.75rem;
-    }
-    .license-row {
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .license-row input {
-      flex: 1;
-      min-width: 160px;
-      padding: 0.65rem 0.85rem;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
-      background: var(--color-bg-subtle);
-      color: var(--color-text);
-      font-family: ui-monospace, monospace;
-      font-size: 0.8rem;
-    }
-    .license-status {
-      font-size: 0.8rem;
-      margin-top: 0.5rem;
-      min-height: 1.2em;
-    }
-    .license-display {
-      margin-top: 1rem;
-    }
-    .license-display label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--color-text-muted);
-      margin-bottom: 0.35rem;
-    }
-    .device-list-wrap {
-      margin-top: 1rem;
-      padding-top: 1rem;
-      border-top: 1px solid var(--color-border);
-    }
-    .device-list-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--color-text-muted);
-      margin-bottom: 0.5rem;
-    }
-    .device-count {
-      font-variant-numeric: tabular-nums;
-      color: var(--color-primary);
-    }
-    .device-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      margin: 0;
-      padding: 0;
-    }
-    .device-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 0.5rem;
-      padding: 0.55rem 0.75rem;
-      background: var(--color-bg-subtle);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      font-size: 0.85rem;
-    }
-    .device-item.is-current {
-      border-color: var(--color-success);
-      background: var(--color-success-muted);
-    }
-    .device-item-label em {
-      font-style: normal;
-      color: var(--color-success);
-      font-weight: 600;
-      font-size: 0.75rem;
-    }
-    .device-help {
-      font-size: 0.75rem;
-      margin-top: 0.5rem;
-    }
-    .btn-premium-active {
-      background: var(--color-success) !important;
-      box-shadow: none !important;
-    }
-    .pricing-tag.tag-success {
-      background-color: var(--color-success) !important;
-    }
     .seo-steps, .seo-usecases {
       margin: 0.75rem 0 1.25rem 1.25rem;
       color: var(--color-text-muted);
@@ -5673,61 +5073,6 @@ const marqueeFeatures = [
       color: var(--color-primary);
       font-weight: 550;
     }
-    .seat-meter {
-      margin-top: 1rem;
-      padding: 0.85rem 0.95rem;
-      border-radius: var(--radius-md);
-      border: 1px solid color-mix(in srgb, var(--color-primary) 30%, var(--color-border));
-      background: color-mix(in srgb, var(--color-primary-muted) 45%, var(--color-bg-card));
-    }
-    .seat-meter-full {
-      border-color: var(--color-border);
-      background: var(--color-bg-subtle);
-    }
-    .seat-meter-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .seat-meter-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--color-primary);
-    }
-    .seat-meter-full .seat-meter-label {
-      color: var(--color-text-muted);
-    }
-    .seat-meter-count {
-      font-size: 0.88rem;
-      font-weight: 650;
-      color: var(--color-text);
-      font-variant-numeric: tabular-nums;
-    }
-    .seat-meter-track {
-      margin-top: 0.55rem;
-      height: 0.45rem;
-      border-radius: 999px;
-      background: color-mix(in srgb, var(--color-border) 80%, transparent);
-      overflow: hidden;
-    }
-    .seat-meter-fill {
-      height: 100%;
-      border-radius: inherit;
-      background: linear-gradient(90deg, var(--color-primary), color-mix(in srgb, var(--color-primary) 70%, #fff));
-      transition: width 0.45s var(--ease-out, ease);
-    }
-    .seat-meter-full .seat-meter-fill {
-      background: var(--color-text-muted);
-    }
-    .seat-meter-detail {
-      margin: 0.55rem 0 0;
-      font-size: 0.78rem;
-      line-height: 1.45;
-    }
 
     /* Pricing & Analytics layout */
     .pricing-analytics-grid {
@@ -5877,9 +5222,6 @@ const marqueeFeatures = [
     .pricing-card {
       position: relative;
       overflow: hidden;
-    }
-    .premium-badge {
-      border-color: var(--color-primary);
     }
     .pricing-tag {
       position: absolute;
@@ -6519,11 +5861,6 @@ const marqueeFeatures = [
       align-items: baseline;
       gap: 0.5rem;
       flex-wrap: wrap;
-    }
-    .price-strike {
-      text-decoration: line-through;
-      color: var(--color-text-subtle);
-      font-size: 1.25rem;
     }
     .price-value {
       font-size: 2.25rem;

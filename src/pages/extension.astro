@@ -1,8 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-const pageTitle = "Chrome Extension — BriskRead Premium Login & Speed Reader";
-const pageDescription = "Install the BriskRead Chrome extension. Speed-read any tab with RSVP and sign in with the same BriskRead account used for Lifetime Premium.";
+const pageTitle = "Chrome Extension — BriskRead Speed Reader";
+const pageDescription = "Install the BriskRead Chrome extension. Speed-read any tab with RSVP — completely free, no account required. Sign in only if you want cross-device sync.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -11,7 +11,7 @@ const pageDescription = "Install the BriskRead Chrome extension. Speed-read any 
       <div class="glass content-card">
         <h1>BriskRead for Chrome</h1>
         <p class="lede">
-          Extract any article into the BriskRead workspace in one click. Sign in with the same account you use on the website so Lifetime Premium unlocks the extension on that device.
+          Extract any article into the BriskRead workspace in one click, free. Sign in with a BriskRead account only if you want your library and progress synced across devices.
         </p>
 
         <div class="actions">
@@ -43,20 +43,18 @@ const pageDescription = "Install the BriskRead Chrome extension. Speed-read any 
         </ol>
         <p class="muted">The Store button will appear here after Chrome approves the listing. Until then, use Developer mode above.</p>
 
-        <h2>Premium sign-in</h2>
+        <h2>Optional sign-in for sync</h2>
         <ol class="steps">
-          <li>Create or sign in to your BriskRead account on the <a href="/account">Account</a> page (same email you will use at checkout).</li>
-          <li>Purchase <a href="/#pricing">Lifetime Premium</a> while signed in so Premium attaches to that account.</li>
-          <li>Open the extension popup → sign in with the same email and password.</li>
-          <li>Premium status syncs from your account. Sign out of the extension when you want to free the device session.</li>
+          <li>Create or sign in to your free BriskRead account on the <a href="/account">Account</a> page.</li>
+          <li>Open the extension popup and use the same email to keep reading progress connected.</li>
+          <li>No account? Everything still works — it just stays on that device.</li>
         </ol>
-        <p class="muted">You do not need a separate license key for the website purchase path. Account email is the link between checkout and devices.</p>
 
         <h2>What we access</h2>
         <ul>
           <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
-          <li><strong>BriskRead</strong> — account session / Premium status and opening the reader with your session.</li>
-          <li><strong>Storage</strong> — session tokens stay on your machine in extension storage.</li>
+          <li><strong>BriskRead</strong> — only if you sign in, to sync your library and totals across devices.</li>
+          <li><strong>Storage</strong> — your settings stay on your machine in extension storage.</li>
         </ul>
         <p class="muted">
           Full policy: <a href="/privacy">Privacy Policy</a>. We do not sell browsing history.

@@ -6,7 +6,6 @@
   'use strict';
 
   const STORAGE_KEY = 'brisk_features_v1';
-  const FREE_LIBRARY_CAP = 5;
   const MAX_TEXT_CHARS = 1_500_000;
   const RETENTION_CHUNK = 1000;
 
@@ -219,15 +218,7 @@
     return loadStore().library.find((item) => item.id === id) || null;
   }
 
-  function canAddLibrary(isPremium) {
-    if (isPremium) return { ok: true };
-    const count = loadStore().library.length;
-    if (count >= FREE_LIBRARY_CAP) {
-      return {
-        ok: false,
-        reason: `Free plan keeps ${FREE_LIBRARY_CAP} saved docs. Upgrade for unlimited library, or delete one.`,
-      };
-    }
+  function canAddLibrary() {
     return { ok: true };
   }
 
@@ -237,7 +228,6 @@
     text,
     sourceType,
     sourceUrl,
-    isPremium,
     progress,
     profileId,
   }) {
@@ -248,8 +238,6 @@
     let item = id ? store.library.find((x) => x.id === id) : null;
 
     if (!item) {
-      const gate = canAddLibrary(!!isPremium);
-      if (!gate.ok) return gate;
       item = {
         id: uid(),
         title: title || truncateTitle(cleanText, 'Untitled'),
@@ -346,13 +334,12 @@
     return { ok: true, entry };
   }
 
-  function addTextToQueue({ title, text, sourceType, sourceUrl, isPremium, wpm }) {
+  function addTextToQueue({ title, text, sourceType, sourceUrl, wpm }) {
     const saved = upsertLibrary({
       title,
       text,
       sourceType,
       sourceUrl,
-      isPremium,
     });
     if (!saved.ok) return saved;
     return {
@@ -883,7 +870,6 @@
   }
 
   const api = {
-    FREE_LIBRARY_CAP,
     RETENTION_CHUNK,
     estimateMinutes,
     wordCount,

@@ -242,11 +242,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === 'SR_OVERLAY_INIT') {
     (async () => {
       const tabId = sender?.tab?.id;
-      const auth = await srGetAuth();
       const store = await chrome.storage.local.get([overlayKey(tabId), 'reader_wpm', 'overlay_mode']);
       sendResponse({
         ok: true,
-        premium: auth.is_premium && !!auth.premium_token,
         article: store[overlayKey(tabId)] || null,
         wpm: store.reader_wpm || 350,
         mode: store.overlay_mode || 'rsvp',
@@ -265,18 +263,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type === 'SR_GET_HANDOFF') {
     (async () => {
       const handoff = await srGetHandoff();
-      const auth = await srGetAuth();
-      if (!handoff && !auth.is_premium && !auth.premium_token) {
+      if (!handoff) {
         sendResponse({ ok: false });
         return;
       }
       sendResponse({
         ok: true,
-        license_key: auth.license_key,
-        premium_token: auth.premium_token,
-        is_premium: auth.is_premium && !!auth.premium_token,
-        article: handoff?.article || null,
-        opened_at: handoff?.opened_at || null,
+        article: handoff.article || null,
+        opened_at: handoff.opened_at || null,
       });
     })();
     return true;

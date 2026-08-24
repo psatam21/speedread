@@ -25,20 +25,19 @@ npm run deploy   # wrangler pages deploy dist
 
 Copy `.env.example` for public vars. Set Cloudflare secrets for Dodo / JWT / Gemini. Full go-live steps: **[LAUNCH.md](./LAUNCH.md)**.
 
-## Premium (multi-device, anti-share)
+## Monetization (current)
 
-1. Buy Lifetime Pro ($9) → signed **license key** + Cloudflare **KV** device roster.
-2. Each browser gets a **device session** (max **5** devices). APIs require the session, not the raw key.
-3. At limit: revoke a device from the Premium panel, then activate again.
-4. Bind KV `LICENSES` on Cloudflare Pages (required). See `LAUNCH.md`.
+All features are free; the site is supported by AdSense. The old $9 Lifetime Premium /
+license-key / device-session system was removed (checkout APIs, license activation, and
+founding-seat grants deleted). Sign-in (Supabase) now exists only for cross-device sync
+of library/queue/stats.
 
 ## Chrome extension
 
 Load `chrome-extension/` unpacked (see `chrome-extension/README.md`).
 
-- **Premium sign-in** with the same lifetime license key (1 of 5 device slots)
+- **Everything unlocked** — in-page reading, Flash/Focus modes, AI summaries, read-later
 - **Speed read this page** extracts article text and opens the web app with session handoff
-- Sign out revokes the extension device slot
 
 ## Project map
 
