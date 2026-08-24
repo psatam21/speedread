@@ -1177,6 +1177,9 @@ const marqueeFeatures = [
       ttsBestVoice: null,
       ttsForcedVoice: null,
       ttsRetryCount: 0,
+      ttsStallCount: 0,
+      ttsChunkGotSignal: false,
+      ttsWatchdogTimer: null,
       libraryId: null,
       lastRetentionIndex: 0,
       retentionOpen: false,
@@ -1778,6 +1781,7 @@ const marqueeFeatures = [
       state.ttsRunId = (state.ttsRunId || 0) + 1;
       ttsVisualTimer = null;
       ttsVisualQueue = [];
+      clearTTSWatchdog();
       if (window.speechSynthesis) {
         window.speechSynthesis.cancel();
       }
@@ -1863,6 +1867,69 @@ const marqueeFeatures = [
       return [...pool].sort((a, b) => TTS_VOICE_SCORE(b) - TTS_VOICE_SCORE(a))[0] || null;
     };
 
+    // ── TTS watchdog ─────────────────────────────────────────────────
+    // Chromium/Edge can drop an utterance SILENTLY (network neural voices do this
+    // most): no onstart, no boundary, no onend, no onerror — the chunk chain just
+    // hangs and, because visuals are boundary-driven in Audio Sync mode, the words
+    // freeze too. Every chunk therefore gets a deadline; missing it triggers
+    // recovery instead of an infinite stall.
+    const clearTTSWatchdog = () => {
+      if (state.ttsWatchdogTimer) {
+        clearTimeout(state.ttsWatchdogTimer);
+        state.ttsWatchdogTimer = null;
+      }
+    };
+
+    const armTTSWatchdog = (runId, chunk) => {
+      clearTTSWatchdog();
+      const rate = Math.min(3.0, Math.max(0.5, state.wpm / 150));
+      // Generous estimate of how long this chunk should take (~14 chars/sec at rate 1),
+      // padded 2x for slow starts. If we're past it with zero life signs, something died.
+      const expectedMs = (chunk.text.length / (14 * rate)) * 1000;
+      const limit = Math.max(3500, Math.min(expectedMs * 2, 30000));
+      state.ttsWatchdogTimer = setTimeout(() => {
+        if (runId !== state.ttsRunId || !state.isPlaying || !state.ttsActive) return;
+        if (state.ttsChunkGotSignal) return;
+        console.warn('TTS watchdog: chunk produced no events, recovering');
+        recoverTTSStall(runId);
+      }, limit);
+    };
+
+    /** Chunk hung: respeak once with a proven-local voice, else keep reading without audio. */
+    const recoverTTSStall = (runId) => {
+      if (runId !== state.ttsRunId || !state.isPlaying || !state.ttsActive) return;
+      clearTTSWatchdog();
+      window.speechSynthesis.cancel();
+
+      state.ttsStallCount = (state.ttsStallCount || 0) + 1;
+      if (state.ttsStallCount <= 2) {
+        // One stall is often voice-specific (cloud voice dropped): pin a reliable
+        // local voice and respeak this exact chunk.
+        const fallback = pickFallbackVoice();
+        if (fallback) state.ttsForcedVoice = fallback;
+        state.ttsRetryCount = 0;
+        setTimeout(() => { if (runId === state.ttsRunId) speakChunk(runId, true); }, 250);
+        return;
+      }
+
+      // Speech engine is unusable in this browser right now. Degrade gracefully:
+      // keep the reader running on the timer clock so the user never loses their place.
+      state.ttsStallCount = 0;
+      state.ttsActive = false;
+      state.ttsRunId = (state.ttsRunId || 0) + 1;
+      clearTTSWatchdog();
+      const ttsBtn = document.getElementById('btn-rsvp-tts');
+      if (ttsBtn) {
+        ttsBtn.textContent = 'Audio Sync: Off';
+        ttsBtn.classList.remove('active');
+        const prevTitle = ttsBtn.title || '';
+        ttsBtn.title = 'Audio was unavailable here — switched off automatically.';
+        setTimeout(() => { ttsBtn.title = prevTitle; }, 6000);
+      }
+      console.warn('TTS unusable after repeated stalls — continuing in visual mode');
+      runRSVPTimer();
+    };
+
     const doSpeak = () => {
       // Play/pause may have been toggled during the cancel() settle delay.
       if (!state.isPlaying || !state.ttsActive) return;
@@ -1872,6 +1939,7 @@ const marqueeFeatures = [
       state.ttsChunks = chunkForTTS(state.text.slice(startIndexOffset), startIndexOffset);
       state.ttsChunkIndex = 0;
       state.ttsRetryCount = 0;
+      state.ttsStallCount = 0;
       // Bumped on every fresh playback; stale callbacks compare against it and bail.
       state.ttsRunId = (state.ttsRunId || 0) + 1;
       speakChunk(state.ttsRunId);
@@ -1896,8 +1964,16 @@ const marqueeFeatures = [
       const voice = pickTTSVoice();
       if (voice) utterance.voice = voice;
 
+      // Liveness tracking for the watchdog (see recoverTTSStall).
+      state.ttsChunkGotSignal = false;
+      utterance.onstart = () => {
+        if (runId === state.ttsRunId) state.ttsChunkGotSignal = true;
+      };
+
       utterance.onboundary = (event) => {
-        if (runId !== state.ttsRunId || event.name !== 'word' || !state.isPlaying) return;
+        if (runId !== state.ttsRunId || !state.isPlaying) return;
+        state.ttsChunkGotSignal = true;
+        if (event.name !== 'word') return;
         const charIndex = event.charIndex + chunk.offset;
 
         // Find matching word based on character coordinates
@@ -1920,6 +1996,8 @@ const marqueeFeatures = [
 
       utterance.onend = () => {
         if (runId !== state.ttsRunId) return;
+        clearTTSWatchdog();
+        state.ttsChunkGotSignal = true;
         state.ttsRetryCount = 0; // chunk completed cleanly — reset the failure budget
         state.ttsChunkIndex += 1;
         speakChunk(runId);
@@ -1927,6 +2005,7 @@ const marqueeFeatures = [
 
       utterance.onerror = (e) => {
         if (runId !== state.ttsRunId) return;
+        clearTTSWatchdog();
         // We cancel deliberately on pause/seek/restart; those aren't real failures.
         if (e.error === 'interrupted' || e.error === 'canceled') return;
 
@@ -1955,6 +2034,10 @@ const marqueeFeatures = [
         speakChunk(runId);
       };
 
+      // A synth left in "paused" state (tab switch, OS quirk) swallows speak() calls.
+      if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+
+      armTTSWatchdog(runId, chunk);
       window.speechSynthesis.speak(utterance);
     };
 
@@ -2998,6 +3081,11 @@ const marqueeFeatures = [
         state.ttsActive = !state.ttsActive;
         ttsBtn.textContent = state.ttsActive ? "Audio Sync: On" : "Audio Sync: Off";
         ttsBtn.classList.toggle('active', state.ttsActive);
+        if (state.ttsActive) {
+          // Fresh audio attempt: forget any error-pinned fallback or stall history.
+          state.ttsForcedVoice = null;
+          state.ttsStallCount = 0;
+        }
         if (state.isPlaying) {
           pauseReader();
           playRSVP();
