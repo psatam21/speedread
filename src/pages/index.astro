@@ -3884,6 +3884,7 @@ const marqueeFeatures = [
 
       const runExtensionBoot = () => {
         if (loadExtensionHandoff()) return;
+        const returnParams = new URLSearchParams(window.location.search);
         const autoUrl = returnParams.get('url');
         if (autoUrl) {
           const urlInput = document.getElementById('url-input');

@@ -22,7 +22,7 @@ const {
 } = Astro.props;
 
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID as string | undefined;
-const adsenseAutoAds = import.meta.env.PUBLIC_ADSENSE_AUTO_ADS !== 'false';
+const adsenseAutoAds = import.meta.env.PUBLIC_ADSENSE_AUTO_ADS === 'true';
 const adsenseVerification = import.meta.env.PUBLIC_ADSENSE_VERIFICATION as string | undefined;
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
 const pathname = Astro.url.pathname;
