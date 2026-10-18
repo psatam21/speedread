@@ -1,69 +1,43 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import '../../styles/blog-article.css';
-
-const pageTitle = 'What Is RSVP Reading? Rapid Serial Visual Presentation Explained | BriskRead';
-const pageDescription =
-  'RSVP reading explained: how flashing words at a fixed point works, ORP highlights, when RSVP helps, and when full-page Focus is better.';
-const pageUrl = new URL('/blog/rsvp-reading-explained/', Astro.site || Astro.url).href;
+import BlogPost from '../../layouts/BlogPost.astro';
 ---
 
-<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
-  <script type="application/ld+json" set:html={JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Article', headline: 'What is RSVP reading?',
-    description: pageDescription, mainEntityOfPage: pageUrl,
-    author: { '@type': 'Organization', name: 'BriskRead' },
-    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
-  })} />
-  <article class="blog-article mt-8">
-    <div class="container max-w-3xl">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a><span aria-hidden="true">/</span>
-        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
-        <span>RSVP reading explained</span>
-      </nav>
-      <div class="glass glass-article">
-        <p class="section-label">Concepts</p>
-        <h1>What is RSVP reading?</h1>
-        <p class="lede">
-          RSVP means <strong>Rapid Serial Visual Presentation</strong>: words appear one after another at a fixed place on the screen so your eyes stop hunting along a line. It is the core of many online flash readers, including Flash mode in <a href="/rsvp-reader">BriskRead’s RSVP reader</a>.
-        </p>
+<BlogPost slug="rsvp-reading-explained" related={['best-online-speed-readers', 'audio-sync-speed-reading', 'how-to-speed-read-online']}>
+  <p class="lede">
+    RSVP means <strong>Rapid Serial Visual Presentation</strong>: words appear one after another at a fixed place on the screen so your eyes stop hunting along a line. It is the core of many online flash readers, including Flash mode in <a href="/rsvp-reader">BriskRead’s RSVP reader</a>.
+  </p>
 
-        <h2>How RSVP works</h2>
-        <ol>
-          <li>Text is split into words (or short phrases)</li>
-          <li>Each unit is shown for a duration based on your WPM</li>
-          <li>A focal letter (often the Optimal Recognition Point) is emphasized</li>
-          <li>Punctuation can add a brief pause so meaning can land</li>
-        </ol>
+  <h2>How RSVP works</h2>
+  <ol>
+    <li>Text is split into words (or short phrases)</li>
+    <li>Each unit is shown for a duration based on your WPM</li>
+    <li>A focal letter (often the Optimal Recognition Point) is emphasized</li>
+    <li>Punctuation can add a brief pause so meaning can land</li>
+  </ol>
 
-        <h2>Why people use it</h2>
-        <ul>
-          <li>Less horizontal eye movement (saccades)</li>
-          <li>Harder to re-read the same line by habit</li>
-          <li>Clearer sense of pace than free scrolling</li>
-        </ul>
+  <h2>Why people use it</h2>
+  <ul>
+    <li>Less horizontal eye movement (saccades)</li>
+    <li>Harder to re-read the same line by habit</li>
+    <li>Clearer sense of pace than free scrolling</li>
+  </ul>
 
-        <h2>Limits of RSVP</h2>
-        <p>
-          RSVP is not magic. On unfamiliar, formula-heavy, or legal text, forced flash speed can destroy comprehension. That is why serious tools also offer <a href="/how-it-works">Focus, Flow, Bionic, and Page modes</a>.
-        </p>
+  <h2>Limits of RSVP</h2>
+  <p>
+    RSVP is not magic. On unfamiliar, formula-heavy, or legal text, forced flash speed can destroy comprehension. That is why serious tools also offer <a href="/how-it-works">Focus, Flow, Bionic, and Page modes</a>.
+  </p>
+  <p>
+    The research agrees. A 2016 review of reading science found a firm trade-off between speed and accuracy, and noted that RSVP removes the quick glances back that readers use to repair understanding (<a href="https://doi.org/10.1177/1529100615623267" rel="noopener" target="_blank">Rayner et al., 2016</a>). A 2017 study of speed-reading apps found they did not improve comprehension (<a href="https://doi.org/10.5406/amerjpsyc.130.2.0183" rel="noopener" target="_blank">Acklin &amp; Papesh, 2017</a>). If single words feel too sparse, <a href="/bionic-reading">bionic reading</a> keeps the whole page in view.
+  </p>
 
-        <h2>RSVP + audio</h2>
-        <p>
-          Pairing RSVP with speech (Audio Sync) is dual-channel presentation: vision and hearing track the same token stream. See <a href="/blog/audio-sync-speed-reading">why that matters</a>.
-        </p>
+  <h2>RSVP + audio</h2>
+  <p>
+    Pairing RSVP with speech (Audio Sync) is dual-channel presentation: vision and hearing track the same token stream. See <a href="/blog/audio-sync-speed-reading">why that matters</a>.
+  </p>
 
-        <div class="callout">
-          <p>
-            Demo RSVP free on the <a href="/">BriskRead homepage</a> — start around 350 WPM and lower the slider until words stay meaningful.
-          </p>
-        </div>
-
-        <div class="article-footer">
-          <p>Related: <a href="/blog/best-online-speed-readers">Best online speed readers</a> · <a href="/bionic-reading">Bionic reading</a></p>
-        </div>
-      </div>
-    </div>
-  </article>
-</Layout>
+  <div class="callout">
+    <p>
+      Demo RSVP free on the <a href="/">BriskRead homepage</a> — start around 350 WPM and lower the slider until words stay meaningful.
+    </p>
+  </div>
+</BlogPost>

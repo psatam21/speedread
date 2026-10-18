@@ -2,6 +2,8 @@
 import '@fontsource/inter/400.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
+import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
+import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
 import '../styles/global.css';
 import '../styles/motion.css';
 
@@ -11,21 +13,34 @@ interface Props {
   canonicalUrl?: string;
   ogImage?: string;
   noindex?: boolean;
+  /** 'article' for blog posts; adds article:* Open Graph tags. */
+  ogType?: 'website' | 'article';
+  /** Byline name for <meta name="author"> (blog posts pass the writer). */
+  author?: string;
+  /** ISO dates (YYYY-MM-DD), used when ogType is 'article'. */
+  publishedTime?: string;
+  modifiedTime?: string;
 }
 
-const { 
-  title, 
-  description, 
-  canonicalUrl = Astro.url.href, 
+// Static builds report "/rsvp-reader/"; the site's one URL form is "/rsvp-reader"
+// (vercel.json trailingSlash:false 308s the slash variant here).
+const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const {
+  title,
+  description,
+  canonicalUrl = new URL(pathname, Astro.site || Astro.url).href,
   ogImage = '/images/og-default.png',
   noindex = false,
+  ogType = 'website',
+  author = 'BriskRead',
+  publishedTime,
+  modifiedTime,
 } = Astro.props;
 
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID as string | undefined;
 const adsenseAutoAds = import.meta.env.PUBLIC_ADSENSE_AUTO_ADS === 'true';
 const adsenseVerification = import.meta.env.PUBLIC_ADSENSE_VERIFICATION as string | undefined;
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
-const pathname = Astro.url.pathname;
 const isHome = pathname === '/';
 const allowAds = pathname !== '/account';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
@@ -59,10 +74,6 @@ const websiteSchema = {
     'Online speed reader with Audio Sync, six reading modes, and local PDF/EPUB processing.',
   publisher: { '@type': 'Organization', name: 'BriskRead', url: siteOrigin },
   inLanguage: 'en',
-  potentialAction: {
-    '@type': 'ReadAction',
-    target: `${siteOrigin}/#importer-card`,
-  },
 };
 const softwareSchema = {
   '@context': 'https://schema.org',
@@ -99,13 +110,8 @@ const softwareSchema = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <!-- Merriweather only when serif theme selected later; Inter is self-hosted -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript>
-      <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
-    </noscript>
+    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={inter600} as="font" type="font/woff2" crossorigin />
     
     <!-- Brand tab icon: prefer PNG/ICO (most browsers); SVG as progressive enhancement.
          ?v= busts aggressive favicon caches after brand updates. -->
@@ -121,14 +127,17 @@ const softwareSchema = {
     
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalUrl} />
+    {/* noindex + canonical is a mixed signal, so noindex pages get no canonical */}
+    {!noindex && <link rel="canonical" href={canonicalUrl} />}
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
     <meta name="theme-color" content="#5e6ad2" />
-    <meta name="author" content="BriskRead" />
+    <meta name="author" content={author} />
     
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:type" content={ogType} />
+    {ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={new URL(ogImage, Astro.site || Astro.url).href} />
@@ -137,7 +146,7 @@ const softwareSchema = {
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content={Astro.url.href} />
+    <meta name="twitter:url" content={canonicalUrl} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site || Astro.url).href} />
@@ -169,6 +178,19 @@ const softwareSchema = {
       const font = getStoredFont();
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.setAttribute('data-font', font);
+
+      // Merriweather is only for the reader's optional serif font, so fetch it on demand
+      // (initial load or whenever the reader switches data-font) instead of on every page.
+      const loadSerif = () => {
+        if (document.documentElement.dataset.font !== 'serif' || document.getElementById('font-serif')) return;
+        const link = document.createElement('link');
+        link.id = 'font-serif';
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap';
+        document.head.appendChild(link);
+      };
+      loadSerif();
+      new MutationObserver(loadSerif).observe(document.documentElement, { attributes: true, attributeFilter: ['data-font'] });
     </script>
     
     {gaId && (
@@ -196,9 +218,15 @@ const softwareSchema = {
     )}
 
     {/* Site-wide identity for search engines (SEO starter: help Google understand the site) */}
-    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+    {/* Site identity belongs on the homepage (Google's guidance); other pages add their own via slot="head" */}
+    {isHome && (
+      <>
+        <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+        <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+        <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
+      </>
+    )}
+    <slot name="head" />
     <link rel="alternate" type="text/plain" title="LLM site summary" href="/llms.txt" />
   </head>
   <body data-supabase-url={supabaseUrl} data-supabase-anon-key={supabaseAnonKey}>
@@ -221,7 +249,7 @@ const softwareSchema = {
           <div class="logo-container">
             <img
               class="logo-mark-img"
-              src="/images/brand-mark.png"
+              src="/images/brand-mark-96.png"
               width="28"
               height="28"
               alt=""
@@ -246,7 +274,7 @@ const softwareSchema = {
           <a href="/#importer-card" class="nav-cta">Read free</a>
         </nav>
         <details class="mobile-nav">
-          <summary aria-label="Open navigation">Menu</summary>
+          <summary>Menu</summary>
           <div class="mobile-nav-panel">
             <a href="/">Reader</a>
             <a href="/#features">Features</a>
@@ -277,7 +305,7 @@ const softwareSchema = {
       <div class="container footer-container">
         <div class="footer-brand">
           <a href="/" class="footer-logo">
-            <img src="/images/brand-mark.png" width="22" height="22" alt="" decoding="async" class="footer-logo-mark" />
+            <img src="/images/brand-mark-96.png" width="22" height="22" alt="" decoding="async" class="footer-logo-mark" />
             BriskRead<span>.</span>
           </a>
           <p>Read the backlog, not the interface. RSVP, bionic reading, OCR and synced speech in one private browser tool.</p>
@@ -291,7 +319,7 @@ const softwareSchema = {
           <a href="/bionic-reading">Bionic reading</a>
           <a href="/pdf-to-speech">PDF to speech</a>
           <a href="/reading-speed-test">Reading speed test</a>
-          <a href="/bionic-reading-converter">Bionic converter</a>
+          <a href="/bionic-reading#converter">Bionic converter</a>
         </div>
         <div class="footer-group">
           <p>Capture</p>
@@ -333,6 +361,13 @@ const softwareSchema = {
         });
       });
       syncThemeToggle();
+
+      // The <details> menu stays open after in-page links (/#features) and ignores Esc; close it for both.
+      const mobileNav = document.querySelector('.mobile-nav');
+      mobileNav?.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => { mobileNav.open = false; }));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && mobileNav?.open) { mobileNav.open = false; mobileNav.querySelector('summary')?.focus(); }
+      });
     </script>
     <script src="/site-motion.js" defer></script>
     <script is:inline>

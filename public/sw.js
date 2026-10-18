@@ -1,5 +1,5 @@
 /* BriskRead offline service worker — cache-first static, network-first HTML */
-const CACHE_NAME = 'briskread-v2-free';
+const CACHE_NAME = 'briskread-v3';
 
 const PRECACHE_URLS = [
   '/',
@@ -117,7 +117,8 @@ self.addEventListener('fetch', (event) => {
   // Only handle same-origin requests for caching strategies
   if (!isSameOrigin(url)) return;
 
-  if (isNavigationRequest(request)) {
+  // Unhashed root scripts (/reader-core.js etc.) must track the deployed HTML, so network-first too.
+  if (isNavigationRequest(request) || /^\/[^/]+\.js$/.test(url.pathname)) {
     event.respondWith(networkFirstHtml(request));
     return;
   }

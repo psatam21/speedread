@@ -15,7 +15,6 @@ const paths = [
   '/about',
   '/account',
   '/bionic-reading',
-  '/bionic-reading-converter',
   '/blog',
   '/blog/audio-sync-speed-reading',
   '/blog/best-online-speed-readers',

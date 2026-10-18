@@ -1,13 +1,20 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
+  "trailingSlash": false,
   "redirects": [
     {
-      "source": "/bookmarklet",
-      "destination": "/extension",
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.briskread.com" }],
+      "destination": "https://briskread.com/:path*",
       "permanent": true
     },
     {
-      "source": "/bookmarklet/",
+      "source": "/bionic-reading-converter",
+      "destination": "/bionic-reading",
+      "permanent": true
+    },
+    {
+      "source": "/bookmarklet",
       "destination": "/extension",
       "permanent": true
     },
@@ -18,6 +25,20 @@
     }
   ],
   "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    },
+    {
+      "source": "/images/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=604800, stale-while-revalidate=86400" }
+      ]
+    },
     {
       "source": "/sitemap-(.*).xml",
       "headers": [

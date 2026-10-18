@@ -125,54 +125,6 @@ html[data-theme="amoled"] .aurora-blob {
   display: block;
 }
 
-/* Only hide/animate after JS boots — never blank without motion JS */
-html.is-ready .hero-line-inner {
-  transform: translateY(110%);
-  opacity: 0;
-  animation: line-rise var(--motion-hero) var(--motion-ease-expo) forwards;
-}
-
-html.is-ready .hero-line:nth-child(1) .hero-line-inner { animation-delay: 80ms; }
-html.is-ready .hero-line:nth-child(2) .hero-line-inner { animation-delay: 200ms; }
-
-@keyframes line-rise {
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-html.is-ready .hero-copy .hero-kicker,
-html.is-ready .hero-copy .hero-sub,
-html.is-ready .hero-copy .hero-actions,
-html.is-ready .hero-copy .hero-start-note,
-html.is-ready .hero-copy .hero-trust {
-  opacity: 0;
-  transform: translateY(18px);
-}
-
-html.is-ready .hero-copy .hero-kicker {
-  animation: fade-up 700ms 60ms var(--motion-ease-expo) forwards;
-}
-html.is-ready .hero-copy .hero-sub {
-  animation: fade-up 700ms 340ms var(--motion-ease-expo) forwards;
-}
-html.is-ready .hero-copy .hero-actions {
-  animation: fade-up 700ms 460ms var(--motion-ease-expo) forwards;
-}
-html.is-ready .hero-copy .hero-start-note {
-  animation: fade-up 700ms 540ms var(--motion-ease-expo) forwards;
-}
-html.is-ready .hero-copy .hero-trust {
-  animation: fade-up 800ms 640ms var(--motion-ease-expo) forwards;
-}
-
-@keyframes fade-up {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
 /* Product frame: scale-in + continuous float + rotating border */
 .hero-stage {

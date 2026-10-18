@@ -1,0 +1,116 @@
+---
+import Layout from './Layout.astro';
+import '../styles/blog-article.css';
+import { getPost } from '../data/posts';
+
+interface Props {
+  slug: string;
+  /** Rendered visibly AND emitted as FAQPage JSON-LD, so the two can never drift. `a` may contain simple inline HTML (links). */
+  faqs?: { q: string; a: string }[];
+  /** Slugs of three related posts. */
+  related: string[];
+}
+
+const { slug, faqs, related } = Astro.props;
+const post = getPost(slug);
+const relatedPosts = related.map(getPost);
+
+const ORIGIN = 'https://briskread.com';
+const AUTHOR = 'Prathamesh Satam';
+const canonicalUrl = `${ORIGIN}/blog/${slug}`;
+const fmt = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+const org = { '@type': 'Organization', name: 'BriskRead', url: ORIGIN };
+const blogPosting = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.title,
+  description: post.description,
+  datePublished: post.datePublished,
+  dateModified: post.dateModified,
+  inLanguage: 'en',
+  mainEntityOfPage: canonicalUrl,
+  image: `${ORIGIN}/images/og-default.png`,
+  author: { '@type': 'Person', name: AUTHOR, url: `${ORIGIN}/about#author` },
+  publisher: { ...org, logo: { '@type': 'ImageObject', url: `${ORIGIN}/images/brand-mark.png` } },
+};
+const breadcrumbs = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: `${ORIGIN}/` },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${ORIGIN}/blog` },
+    { '@type': 'ListItem', position: 3, name: post.crumb, item: canonicalUrl },
+  ],
+};
+const stripTags = (html: string) => html.replace(/<[^>]+>/g, '');
+const faqPage = faqs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqs.map(({ q, a }) => ({
+        '@type': 'Question',
+        name: q,
+        acceptedAnswer: { '@type': 'Answer', text: stripTags(a) },
+      })),
+    }
+  : null;
+// "<" escaped so no string can close the script tag early.
+const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<Layout
+  title={`${post.title} | BriskRead`}
+  description={post.description}
+  canonicalUrl={canonicalUrl}
+  ogType="article"
+  author={AUTHOR}
+  publishedTime={post.datePublished}
+  modifiedTime={post.dateModified}
+>
+  <script type="application/ld+json" slot="head" set:html={ld(blogPosting)} />
+  <script type="application/ld+json" slot="head" set:html={ld(breadcrumbs)} />
+  {faqPage && <script type="application/ld+json" slot="head" set:html={ld(faqPage)} />}
+
+  <article class="blog-article mt-8">
+    <div class="container max-w-3xl">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span>
+        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
+        <span>{post.crumb}</span>
+      </nav>
+      <div class="glass glass-article">
+        <p class="section-label">{post.label}</p>
+        <h1>{post.h1}</h1>
+        <p class="byline">By <a href="/about#author" rel="author">{AUTHOR}</a> · Published <time datetime={post.datePublished}>{fmt(post.datePublished)}</time> · Updated <time datetime={post.dateModified}>{fmt(post.dateModified)}</time></p>
+
+        <slot />
+
+        {faqPage && faqs && (
+          <section class="faq">
+            <h2>FAQ</h2>
+            {faqs.map(({ q, a }) => (
+              <>
+                <h3>{q}</h3>
+                <p set:html={a} />
+              </>
+            ))}
+          </section>
+        )}
+
+        <div class="article-footer">
+          <nav class="related" aria-label="Related posts">
+            <span>Related:</span>
+            {relatedPosts.map((p) => <a href={`/blog/${p.slug}`}>{p.title}</a>)}
+          </nav>
+        </div>
+      </div>
+    </div>
+  </article>
+</Layout>

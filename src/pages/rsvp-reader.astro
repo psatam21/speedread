@@ -2,38 +2,44 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "RSVP Reader Online — Free Speed Reading Tool | BriskRead";
-const pageDescription = "Free online RSVP speed reader. Flash words at a fixed focus point with ORP alignment. Paste text, PDFs, EPUBs, or web articles. Adjust WPM up to 1000+.";
+const pageTitle = "RSVP Reader Online: Free Speed Reading Tool | BriskRead";
+const pageDescription = "Free RSVP reader online: flash one word at a time with an ORP highlight at 100-1000 WPM, plus optional synced voice. Paste text, PDF or EPUB. No signup.";
+/** One source for the visible FAQ and its FAQPage schema. */
+const faqs = [
+  {
+    q: 'What is an RSVP reader?',
+    a: 'An RSVP reader flashes one word (or a short phrase) at a fixed screen position so you stop scanning horizontally. BriskRead is a free online RSVP reader with ORP letter highlight and optional Audio Sync TTS.',
+  },
+  {
+    q: 'Is BriskRead’s RSVP reader free?',
+    a: 'Yes. You can paste text or open PDFs in the browser without signup. Every feature is free, with no document length limits.',
+  },
+  {
+    q: 'What speed should I start at?',
+    a: 'Start near your normal reading pace, usually 250 to 350 WPM, then raise it in steps of about 50 once a passage feels easy. Take your baseline with the free reading speed test.',
+  },
+  {
+    q: 'Does RSVP reading hurt comprehension?',
+    a: 'It can at high speeds. RSVP removes the option to glance back, so dense or unfamiliar text suffers first. Use it for lighter material, and switch to Focus or Page mode when precision matters.',
+  },
+];
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: [
-    {
-      '@type': 'Question',
-      name: 'What is an RSVP reader?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'An RSVP reader flashes one word (or a short phrase) at a fixed screen position so you stop scanning horizontally. BriskRead is a free online RSVP reader with ORP letter highlight and optional Audio Sync TTS.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Is BriskRead’s RSVP reader free?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes. You can paste text or open PDFs in the browser without signup. Every feature is free, with no document length limits.',
-      },
-    },
-  ],
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
 };
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
-  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
-        <h1>RSVP Reader Online — Free Rapid Serial Visual Presentation</h1>
+        <h1>RSVP Reader Online: Free Speed Reading Tool</h1>
         <div class="tldr">
           <strong>Quick answer:</strong> BriskRead is a free online RSVP speed reader. Words flash at a fixed point with ORP alignment; optional Audio Sync pairs browser TTS to the same stream. <a href="/#importer-card">Start reading</a> — no signup for core use.
         </div>
@@ -71,6 +77,14 @@ const faqSchema = {
           <li><kbd>D</kbd> — Cycle themes · <kbd>Esc</kbd> — Close reader</li>
         </ul>
 
+        <h2 class="mt-8">RSVP reader FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
+
         <div class="related mt-8">
           <h2>Related free tools</h2>
           <p>
@@ -79,6 +93,10 @@ const faqSchema = {
             <a href="/bionic-reading">Bionic reading</a> ·
             <a href="/pdf-to-speech">PDF to speech</a> ·
             <a href="/extension">Chrome extension</a>
+          </p>
+          <p>
+            Guides: <a href="/blog/rsvp-reading-explained">What is RSVP reading?</a> ·
+            <a href="/blog/how-to-speed-read-online">How to speed read online</a>
           </p>
         </div>
       </div>
@@ -112,6 +130,7 @@ const faqSchema = {
   }
   h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .faq-q { font-size: 1rem; margin: 1rem 0 0.35rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
   kbd {

@@ -2,49 +2,92 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Bionic Reading Online — Free Bionic Text Converter | BriskRead";
-const pageDescription = "Free online bionic reading tool. Bold word prefixes for faster scanning, less fatigue. Paste text, open PDFs, or extract articles — no install, no signup.";
+// Owns both "bionic reading online" and "bionic text converter":
+// /bionic-reading-converter 308s here (vercel.json).
+const pageTitle = "Bionic Reading Online: Free Converter & Reader | BriskRead";
+const pageDescription = "Free bionic reading tool: paste text to bold word beginnings and copy it anywhere, or read in bionic mode in the speed reader. Runs in your browser.";
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
-        <h1>Bionic Reading Online — Free Bionic Text Converter</h1>
+        <h1>Bionic Reading Online: Free Converter &amp; Reader</h1>
         <p class="lede">
-          Bionic reading highlights the first part of each word so your eyes lock fixation points faster and your brain fills in the rest. Use it free in BriskRead — paste text, upload a file, or pull any public URL.
+          Paste text below and it converts instantly. Each word gets its opening letters bolded, which gives your eye an anchor to land on. Copy the result into a doc, or read it in BriskRead's bionic mode. Everything runs in your browser; nothing is uploaded.
         </p>
-        <a href="/#importer-card" class="btn btn-primary mt-4">Open bionic mode</a>
 
-        <h2 class="mt-8">How to use bionic reading on BriskRead</h2>
+        <div class="converter mt-6" id="converter">
+          <label for="bionic-input">Your text</label>
+          <textarea id="bionic-input" rows="7" placeholder="Paste an article, an email, a chapter…"></textarea>
+
+          <div class="converter-controls mt-4">
+            <label for="bionic-strength">Fixation strength: <output id="bionic-strength-out">Medium</output></label>
+            <input type="range" id="bionic-strength" min="1" max="3" step="1" value="2" />
+            <button class="btn btn-secondary" id="bionic-copy" type="button">Copy result</button>
+          </div>
+
+          <h2 class="mt-6">Converted text</h2>
+          <div id="bionic-output" class="bionic-output" aria-live="polite"></div>
+          <p class="muted mt-2" id="bionic-count">0 words</p>
+
+          <a href="/#importer-card" class="btn btn-primary mt-4">Read it in bionic mode instead</a>
+        </div>
+
+        <h2 class="mt-8">How to read in bionic mode on BriskRead</h2>
         <ol class="steps">
-          <li>Open the <a href="/">BriskRead home tool</a> and paste text, upload PDF/EPUB/TXT, or extract a URL.</li>
+          <li>Open the <a href="/">BriskRead speed reader</a> and paste text, upload a PDF/EPUB/TXT, or extract a URL.</li>
           <li>Start reading, then switch to <strong>Bionic Mode</strong> in the reader toolbar.</li>
           <li>Optional: turn on Audio Sync for dual-channel focus, or use RSVP mode for single-word flashing.</li>
           <li>Adjust theme (light, sepia, dark, AMOLED) and font size for long sessions.</li>
         </ol>
 
+        <h2 class="mt-8">Does bionic reading work?</h2>
+        <p>
+          Bionic-style formatting bolds the first part of each word: short words get one bolded letter, longer words get more. The claim is that your brain completes the word from the bolded prefix. Studies have not shown a reliable speed gain, but many readers say the page is easier to keep their place on, which matters more for a long backlog than raw WPM. Treat it as a comfort option and test it on your own reading.
+        </p>
+
         <h2 class="mt-8">When bionic reading helps</h2>
         <ul>
-          <li><strong>Long articles</strong> — scan research blogs and news without losing the thread.</li>
-          <li><strong>Study notes</strong> — review dense paragraphs with lower cognitive load.</li>
-          <li><strong>Accessibility preference</strong> — some readers prefer bold fixations over pure RSVP flashes.</li>
-          <li><strong>Mixed sessions</strong> — switch between bionic page view and RSVP without re-uploading.</li>
+          <li><strong>Long articles</strong>: scan research blogs and news without losing the thread.</li>
+          <li><strong>Study notes</strong>: review dense paragraphs you will re-read.</li>
+          <li><strong>Accessibility preference</strong>: some readers prefer bold anchors over pure RSVP flashes.</li>
+          <li><strong>Mixed sessions</strong>: switch between bionic page view and RSVP without re-uploading.</li>
         </ul>
+
+        <h2 class="mt-8">Fixation strength</h2>
+        <ul>
+          <li><strong>Light</strong>: roughly a third of each word. Least visually noisy, good for long sessions.</li>
+          <li><strong>Medium</strong>: about half. The default, and closest to what most bionic tools produce.</li>
+          <li><strong>Heavy</strong>: around two thirds. Strongest anchor, but the contrast between bold and plain drops.</li>
+        </ul>
+
+        <h2 class="mt-8">Convert, or just read?</h2>
+        <p>
+          Convert when the text is going somewhere else: a document you'll print, a passage you're studying, notes you want to re-read. If you just want to get through the text now, open it in the <a href="/">reader</a>, where Bionic is one of six modes and you can pair it with pacing.
+        </p>
 
         <h2 class="mt-8">Bionic reading vs RSVP</h2>
         <p>
-          <strong>Bionic reading</strong> keeps a full paragraph layout and boldens word prefixes. <strong>RSVP</strong> flashes one word at a fixed point with an Optimal Recognition Point (ORP) highlight. BriskRead includes both plus standard sentence mode and Web Speech TTS — all processed in your browser for PDF, EPUB, and paste workflows.
+          <strong>Bionic reading</strong> keeps a full paragraph layout and bolds word prefixes. <strong>RSVP</strong> flashes one word at a fixed point with an Optimal Recognition Point (ORP) highlight. BriskRead includes both, plus Focus, Flow and Page modes and synced text-to-speech, all processed in your browser.
+        </p>
+
+        <h2 class="mt-8">Privacy</h2>
+        <p>
+          The converter is plain JavaScript running on this page. Your text never leaves the browser, there is no upload, and closing the tab discards it. See the <a href="/privacy">privacy policy</a>.
         </p>
 
         <div class="related mt-8">
           <h2>Related free tools</h2>
           <p>
             <a href="/">Online speed reader</a> ·
-            <a href="/bionic-reading-converter">Bionic reading converter</a> ·
             <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
             <a href="/pdf-to-speech">PDF to speech</a> ·
             <a href="/extension">Chrome extension</a>
+          </p>
+          <p>
+            Guide: <a href="/blog/how-to-speed-read-online">How to speed read online</a>
           </p>
         </div>
       </div>
@@ -58,21 +101,100 @@ const pageDescription = "Free online bionic reading tool. Bold word prefixes for
   </section>
 </Layout>
 
+<script is:inline>
+  (() => {
+    const input = document.getElementById('bionic-input');
+    const output = document.getElementById('bionic-output');
+    const count = document.getElementById('bionic-count');
+    const strength = document.getElementById('bionic-strength');
+    const strengthOut = document.getElementById('bionic-strength-out');
+    const copyBtn = document.getElementById('bionic-copy');
+    const LABELS = { 1: 'Light', 2: 'Medium', 3: 'Heavy' };
+    const RATIOS = { 1: 0.34, 2: 0.5, 3: 0.66 };
+
+    const SAMPLE =
+      'Reading a long article is mostly a problem of attention, not of eyesight. ' +
+      'Bolding the opening letters of each word gives your eye a fixed place to land, ' +
+      'so it stops drifting back over text it has already covered.';
+
+    const WORD = "A-Za-zÀ-ɏ'";
+    const esc = (s) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c]);
+
+    // Walk words and the gaps between them in one pass. Words are letters only,
+    // so they need no escaping; everything else does. Escaping the whole string
+    // up front instead would turn "&lt;" into text the word regex then bolds.
+    const convert = (text, ratio) =>
+      text.replace(new RegExp(`([${WORD}]+)|([^${WORD}]+)`, 'g'), (_, word, gap) => {
+        if (!word) return esc(gap);
+        const cut = Math.max(1, Math.round(word.length * ratio));
+        return `<strong>${word.slice(0, cut)}</strong>${word.slice(cut)}`;
+      });
+
+    const wordCount = (text) => (text.trim() ? text.trim().split(/\s+/).length : 0);
+
+    const render = () => {
+      const ratio = RATIOS[strength.value];
+      strengthOut.textContent = LABELS[strength.value];
+      const text = input.value || SAMPLE;
+      output.innerHTML = convert(text, ratio).replace(/\n/g, '<br />');
+      count.textContent = `${wordCount(text)} words${input.value ? '' : ' (sample text)'}`;
+    };
+
+    input.addEventListener('input', render);
+    strength.addEventListener('input', render);
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        // Copy rich text so the bolding survives a paste into a doc; plain text
+        // is the fallback item so terminals and code editors still get something.
+        const html = new Blob([output.innerHTML], { type: 'text/html' });
+        const plain = new Blob([output.innerText], { type: 'text/plain' });
+        await navigator.clipboard.write([new ClipboardItem({ 'text/html': html, 'text/plain': plain })]);
+        copyBtn.textContent = 'Copied';
+      } catch {
+        await navigator.clipboard.writeText(output.innerText).catch(() => {});
+        copyBtn.textContent = 'Copied as plain text';
+      }
+      setTimeout(() => { copyBtn.textContent = 'Copy result'; }, 1800);
+    });
+
+    render();
+  })();
+</script>
+
 <style>
-  .max-w-3xl { max-width: 800px; margin: 0 auto; }
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
   .content-card {
     padding: 2.5rem;
     border-radius: var(--radius-lg);
     background: var(--color-bg-card);
     border: 1px solid var(--color-border);
   }
-  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; line-height: 1.65; }
   h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  .mt-2 { margin-top: 0.5rem; }
   .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
   .mt-8 { margin-top: 2rem; }
   .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .related p { line-height: 2; }
   .btn { text-decoration: none; }
+  .converter label { display: block; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+  .converter textarea {
+    width: 100%; padding: 0.9rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); font: inherit; resize: vertical;
+  }
+  .converter-controls { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+  .converter-controls label { margin-bottom: 0; }
+  .converter-controls input[type="range"] { flex: 1; min-width: 160px; }
+  .bionic-output {
+    padding: 1.25rem; border-radius: 0.6rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); line-height: 1.85; font-size: 1.05rem;
+    color: var(--color-text-muted); min-height: 6rem;
+  }
+  .bionic-output strong { color: var(--color-text); font-weight: 700; }
 </style>

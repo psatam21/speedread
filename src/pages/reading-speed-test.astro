@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Reading Speed Test — Free WPM Test with Comprehension | BriskRead";
+const pageTitle = "Reading Speed Test: Free WPM Check with Quiz | BriskRead";
 const pageDescription = "Free reading speed test. Read a passage, answer comprehension questions, and get your words-per-minute score plus how you compare to average adult readers.";
 
 const passages = [
@@ -24,7 +24,7 @@ The practical consequence is uncomfortable for anyone who studies late. Material
     words: 205,
     text: `Before the shipping container, loading a cargo ship was slow, dangerous, manual work. Dockworkers moved barrels, sacks and crates by hand and winch, item by item. A ship could spend longer sitting in port being loaded than it spent at sea. The cost of moving goods across an ocean was high enough that most manufacturing stayed close to its customers.
 
-Malcom McLean, an American trucking operator, was not a shipping man. He was frustrated by watching his trucks wait at docks while their contents were unpacked and reloaded piece by piece. His idea was blunt: stop unpacking. Move the whole truck body, sealed, from the road onto the ship and off again at the other end. In 1956 he converted a tanker and ran the first container voyage from Newark to Houston.
+Malcolm McLean, an American trucking operator, was not a shipping man. He was frustrated by watching his trucks wait at docks while their contents were unpacked and reloaded piece by piece. His idea was blunt: stop unpacking. Move the whole truck body, sealed, from the road onto the ship and off again at the other end. In 1956 he converted a tanker and ran the first container voyage from Newark to Houston.
 
 The saving was not marginal. Loading costs fell by well over ninety percent. But the container's real effect was not on any single ship. Because the boxes were standardised, ports, cranes, trucks and rail wagons could all be rebuilt around the same dimensions, and the whole chain became one system rather than a series of handovers.
 
@@ -107,6 +107,11 @@ That is what made distant manufacturing viable. Once distance stopped being expe
           Your raw score is the passage word count divided by the minutes you spent reading. Comprehension is the share of the three questions you answered correctly. Effective WPM multiplies the two, which is the number worth tracking: reading at 900 WPM while understanding a third of it is slower than reading at 300 and understanding all of it.
         </p>
 
+        <h2 class="mt-8">What is the average reading speed?</h2>
+        <p>
+          The average adult reads English silently at about <strong>238 WPM for non-fiction</strong> and <strong>260 WPM for fiction</strong>, and aloud at about 183 WPM. Those figures come from a 2019 review of 190 studies covering 18,573 readers (<a href="https://doi.org/10.1016/j.jml.2019.104047" rel="noopener" target="_blank">Brysbaert, Journal of Memory and Language</a>).
+        </p>
+
         <h2 class="mt-8">What the numbers mean</h2>
         <ul>
           <li><strong>Under 200 WPM</strong> — below typical adult pace. Often subvocalisation, or reading on a screen with a lot of visual noise.</li>
@@ -137,7 +142,7 @@ That is what made distant manufacturing viable. Once distance stopped being expe
           <p>
             <a href="/">Online speed reader</a> ·
             <a href="/rsvp-reader">RSVP reader</a> ·
-            <a href="/bionic-reading-converter">Bionic reading converter</a> ·
+            <a href="/bionic-reading#converter">Bionic text converter</a> ·
             <a href="/how-it-works">How speed reading works</a>
           </p>
         </div>
@@ -172,7 +177,7 @@ That is what made distant manufacturing viable. Once distance stopped being expe
       ],
       containers: [
         {
-          q: 'What was Malcom McLean’s background?',
+          q: 'What was Malcolm McLean’s background?',
           options: ['Shipping', 'Trucking', 'Port construction'],
           answer: 1,
         },

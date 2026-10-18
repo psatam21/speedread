@@ -1,54 +1,10 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { posts } from '../../data/posts';
 
-const pageTitle = 'Speed Reading Blog — Guides & Comparisons | BriskRead';
+const pageTitle = 'Speed Reading Blog: Guides and Comparisons | BriskRead';
 const pageDescription =
-  'Practical guides on online speed reading, RSVP, PDF reading, Audio Sync, and how to pick tools that actually help you finish more text.';
-
-const posts = [
-  {
-    href: '/blog/free-online-speed-reader',
-    title: 'Free online speed reader (no signup)',
-    blurb: 'Paste or open a PDF in the browser, RSVP + Audio Sync — every feature free, no signup.',
-    intent: 'free online speed reader',
-  },
-  {
-    href: '/blog/free-speechify-alternatives',
-    title: 'Free Speechify alternatives (2026)',
-    blurb: 'Listen-first apps vs dual-channel speed readers — when BriskRead is the better free fit.',
-    intent: 'Speechify alternative free',
-  },
-  {
-    href: '/blog/best-online-speed-readers',
-    title: 'Best online speed readers in 2026',
-    blurb: 'What to look for, common trade-offs, and where BriskRead fits if you want Audio Sync plus local files.',
-    intent: 'best websites for speed reading',
-  },
-  {
-    href: '/blog/how-to-speed-read-online',
-    title: 'How to speed read online (without losing comprehension)',
-    blurb: 'A practical setup: import, pick a mode, pair audio, and check retention on hard material.',
-    intent: 'how to speed read',
-  },
-  {
-    href: '/blog/rsvp-reading-explained',
-    title: 'What is RSVP reading?',
-    blurb: 'Rapid Serial Visual Presentation explained in plain language — when it helps and when to slow down.',
-    intent: 'RSVP reader',
-  },
-  {
-    href: '/blog/speed-read-pdf-online',
-    title: 'How to speed read a PDF online',
-    blurb: 'PDF and EPUB workflows that stay private in the browser, plus when OCR is required.',
-    intent: 'PDF speed reader',
-  },
-  {
-    href: '/blog/audio-sync-speed-reading',
-    title: 'Why Audio Sync beats flash-only speed readers',
-    blurb: 'Dual-channel reading: eyes and ears on the same stream — the feature most RSVP tools skip.',
-    intent: 'speed reading with audio',
-  },
-];
+  'Practical guides to online speed reading: RSVP, speed reading PDFs, listening while you read, and honest comparisons of the free tools worth using.';
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
@@ -56,17 +12,16 @@ const posts = [
     <div class="container max-w-3xl">
       <header class="blog-hero">
         <p class="section-label">BriskRead journal</p>
-        <h1>Guides for people who have more to read than time</h1>
+        <h1>Speed reading guides for people with more to read than time</h1>
         <p class="lede">
-          Straight answers on speed reading tools, RSVP, PDFs, and dual-channel Audio Sync — written so humans and search systems can cite them.
+          Straight answers on speed reading tools, RSVP, PDFs, and listening while you read.
         </p>
       </header>
 
       <ul class="post-list">
         {posts.map((post) => (
           <li>
-            <a href={post.href} class="post-card glass">
-              <span class="post-intent">{post.intent}</span>
+            <a href={`/blog/${post.slug}`} class="post-card glass">
               <strong>{post.title}</strong>
               <span class="post-blurb">{post.blurb}</span>
             </a>
@@ -125,13 +80,6 @@ const posts = [
   .post-card:hover {
     border-color: color-mix(in srgb, var(--color-primary) 40%, var(--color-border));
     transform: translateY(-1px);
-  }
-  .post-intent {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--color-primary);
   }
   .post-card strong {
     font-size: 1.05rem;

@@ -2,25 +2,48 @@
 import Layout from '../layouts/Layout.astro';
 import AdSlot from '../components/AdSlot.astro';
 
-const pageTitle = "Speed Reader with Audio Sync — RSVP + TTS | BriskRead";
-const pageDescription = "Free dual-channel speed reader: RSVP flash reading locked to speech, plus Focus, Bionic, PDF/EPUB import, and OCR. Eyes and ears on the same stream — no account required.";
-const siteUrl = new URL('/', Astro.site || Astro.url).href;
-const webAppSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'BriskRead',
-  url: siteUrl,
-  applicationCategory: 'EducationalApplication',
-  operatingSystem: 'Any',
-  browserRequirements: 'Requires JavaScript',
-  offers: {
-    '@type': 'AggregateOffer',
-    lowPrice: '0',
-    highPrice: '9',
-    priceCurrency: 'USD',
-    offerCount: '2',
+const pageTitle = "Free Online Speed Reader: RSVP, Bionic & Audio | BriskRead";
+const pageDescription = "Free online speed reader with RSVP flash, Focus and Bionic modes, plus optional voice synced to every word. Read PDFs, EPUBs and articles faster. No signup.";
+
+/** One source for the visible FAQ and its FAQPage schema, so they can't drift apart. */
+const faqs = [
+  {
+    q: 'What is RSVP speed reading?',
+    a: 'RSVP stands for Rapid Serial Visual Presentation. Words flash one at a time at a fixed point on screen, so your eyes stop jumping across lines. It works well for lighter material; comprehension drops at very high speeds, so slow down for dense text.',
   },
-  description: 'Dual-channel speed reader with RSVP flash, synced text-to-speech, bionic reading, and local PDF/EPUB import.',
+  {
+    q: 'How does Bionic Reading work?',
+    a: 'Bionic Reading bolds the first few letters of each word to give your eyes an anchor. Some readers find it easier to keep their place. Controlled studies have not found a reliable speed gain, so treat it as a comfort option, not a shortcut.',
+  },
+  {
+    q: 'Are my PDF and EPUB files kept private?',
+    a: 'Yes. Files and pasted text are parsed, read aloud and OCR-scanned inside your browser and are never uploaded to BriskRead. Only two optional features leave your device: Extract URL fetches a public page through our server, and AI tools send text to Google using your own key.',
+  },
+  {
+    q: 'How do I speed-read pages from Chrome?',
+    a: 'Install the <a href="/extension">Chrome extension</a> for in-page Flash/Focus, selection reading, and read-later. You can also paste a public URL into Extract URL on the homepage.',
+  },
+  {
+    q: 'Is there an API key required for AI features?',
+    a: "Yes. AI summary and document chat use your own free Gemini API key, stored only in your browser and sent straight to Google, never to our servers. Google's free tier covers normal use.",
+  },
+  {
+    q: 'How does multi-device sync work?',
+    a: 'Create a free account and sign in on each device. Your library, queue, and reading totals sync automatically. Without an account everything still works; it just stays on that device.',
+  },
+  {
+    q: 'Is BriskRead really free?',
+    a: 'Yes. Every feature is free: unlimited document length, the full library, all reading modes, TTS audio sync, OCR, and in-page reading in the Chrome extension. The site is supported by display ads.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a.replace(/<[^>]+>/g, '') },
+  })),
 };
 
 /** Hero ticker — only labels a new visitor can grasp mid-scroll */
@@ -51,8 +74,8 @@ const marqueeFeatures = [
       <!-- Hero: polished two-column (no long-scroll theater) -->
       <header class="hero">
         <div class="hero-copy">
-          <p class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Read faster without re-reading</p>
           <h1 class="hero-title">
+            <small class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Free online speed reader </small>
             <span class="hero-line"><span class="hero-line-inner">See it. Hear it.</span></span>
             <span class="hero-line"><span class="hero-line-inner"> Finish it.</span></span>
           </h1>
@@ -77,7 +100,7 @@ const marqueeFeatures = [
             <a class="btn btn-primary" href="#importer-card">Start with your text</a>
             <button class="btn btn-secondary" id="btn-hero-demo" type="button">Hear a sample</button>
           </div>
-          <p class="hero-start-note">Free to try · No account required · Turn on <strong>Audio Sync</strong> in the reader to pair speech with Flash mode</p>
+          <p class="hero-start-note">Free · No account required · Turn on <strong>Audio Sync</strong> in the reader to pair speech with Flash mode</p>
           <ul class="hero-trust" aria-label="Product benefits">
             <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><span><strong>Audio Sync TTS</strong><small>Eyes + ears on the<br />same word stream.</small></span></li>
             <li><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 10-13h-7l0-7Z" /></svg><span><strong>Up to 3× pace</strong><small>Clear the pile faster<br />without a second pass.</small></span></li>
@@ -450,14 +473,14 @@ const marqueeFeatures = [
           
           <!-- Paste Panel -->
           <div class="tab-content active" id="tab-paste">
-            <textarea id="text-input" placeholder="Paste your article, book chapter, or text here to start speed reading..."></textarea>
+            <textarea id="text-input" aria-label="Text to speed read" placeholder="Paste your article, book chapter, or text here to start speed reading..."></textarea>
             
             <!-- Find & Replace Accordion -->
             <details class="text-clean-details mt-2">
               <summary>Text cleaning tools (Find &amp; Replace)</summary>
               <div class="find-replace-grid mt-2">
-                <input type="text" id="input-find" placeholder="Find text..." />
-                <input type="text" id="input-replace" placeholder="Replace with..." />
+                <input type="text" id="input-find" aria-label="Find text" placeholder="Find text..." />
+                <input type="text" id="input-replace" aria-label="Replace with" placeholder="Replace with..." />
                 <button class="btn btn-secondary btn-sm" id="btn-run-replace">Replace All</button>
               </div>
             </details>
@@ -477,7 +500,7 @@ const marqueeFeatures = [
             <div class="dropzone" id="file-dropzone">
               <p>Drag and drop a file here, or <span class="browse-link">browse files</span></p>
               <span class="dropzone-formats">Supports PDF, EPUB, TXT</span>
-              <input type="file" id="file-input" accept=".pdf,.epub,.txt" class="hidden" />
+              <input type="file" id="file-input" aria-label="Upload a PDF, EPUB or text file" accept=".pdf,.epub,.txt" class="hidden" />
             </div>
             <div class="import-dest-options mt-3" role="group" aria-label="Where to save uploaded files">
               <label class="import-check"><input type="checkbox" id="opt-upload-library" checked /> Save to library</label>
@@ -494,7 +517,7 @@ const marqueeFeatures = [
             <div class="dropzone" id="ocr-dropzone">
               <p>Drag and drop an image / screenshot of text, or <span class="browse-link">browse files</span></p>
               <span class="dropzone-formats">Extracts text client-side using On-Device OCR</span>
-              <input type="file" id="ocr-input" accept="image/*" class="hidden" />
+              <input type="file" id="ocr-input" aria-label="Upload an image for OCR" accept="image/*" class="hidden" />
             </div>
             <div class="import-dest-options mt-3" role="group" aria-label="Where to save OCR text">
               <label class="import-check"><input type="checkbox" id="opt-ocr-library" checked /> Save to library</label>
@@ -513,7 +536,7 @@ const marqueeFeatures = [
               <p>Public URL extract is best-effort. Many news sites, Medium, LinkedIn, and paywalled pages block automated fetchers or only load text with JavaScript. If extract fails or looks empty, copy the article text and use <strong>Paste</strong>, or install the <a href="/extension">Chrome extension</a> to read the tab in place.</p>
             </div>
             <div class="url-input-container">
-              <input type="url" id="url-input" placeholder="https://… public article URL" />
+              <input type="url" id="url-input" aria-label="Public article URL" placeholder="https://… public article URL" />
               <button class="btn btn-primary" id="btn-load-url">Try extract</button>
             </div>
             <div class="import-dest-options mt-3" role="group" aria-label="Where to save extracted article">
@@ -563,7 +586,7 @@ const marqueeFeatures = [
               <div id="ai-chat-view" class="hidden">
                 <div class="chat-history" id="chat-history"></div>
                 <div class="chat-input-row">
-                  <input type="text" id="chat-user-input" placeholder="Ask a question about your document..." />
+                  <input type="text" id="chat-user-input" aria-label="Ask a question about your document" placeholder="Ask a question about your document..." />
                   <button class="btn btn-primary" id="btn-send-chat">Send</button>
                 </div>
               </div>
@@ -688,33 +711,33 @@ const marqueeFeatures = [
         </div>
         <p>
           Six visual modes, Audio Sync, local PDF/EPUB, and a Chrome extension path.
-          The core reader works free in the browser — no account, no limits. <a href="#pricing">See pricing</a>.
+          The core reader works free in the browser — no account, no limits. <a href="#pricing">See how it compares</a>.
         </p>
       </div>
 
       <div class="features-detail-grid">
         <article class="feature-card glass">
-          <h4>Audio Sync</h4>
+          <h3>Audio Sync</h3>
           <p>Speech tracks the same flash/focus stream as your eyes — dual-channel, not listen-only TTS.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Six reading modes</h4>
+          <h3>Six reading modes</h3>
           <p>Flash, Phrase, Focus, Flow, Bionic, and Page on one document. Dial speed up, then slow down when context matters.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Local files</h4>
+          <h3>Local files</h3>
           <p>PDF, EPUB, paste, and OCR parse in your browser. Optional URL extract and BYOK AI only leave the device when you use them.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Library, queue, resume</h4>
+          <h3>Library, queue, resume</h3>
           <p>Save docs, park a weekly queue with time estimates, resume word index + mode + WPM later.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Chrome extension</h4>
+          <h3>Chrome extension</h3>
           <p>Speed-read the tab or selection, read-later queue, open in BriskRead. Alt+Shift+S / Alt+Shift+L.</p>
         </article>
         <article class="feature-card glass">
-          <h4>Retention check-ins</h4>
+          <h3>Retention check-ins</h3>
           <p>Optional MCQs from the chunk you just read — every 1,000 words or manual only.</p>
         </article>
       </div>
@@ -788,7 +811,7 @@ const marqueeFeatures = [
   <section class="pricing-analytics-section mt-8" id="pricing" aria-labelledby="pricing-title">
     <div class="container">
       <div class="pricing-section-intro" id="compare">
-        <p class="section-label">Pricing</p>
+        <p class="section-label">Compare</p>
         <h2 class="pricing-section-title" id="pricing-title">Everything is free. Here’s how it stacks up.</h2>
         <p class="muted pricing-section-lede">
           BriskRead is the full system — unlimited length, every mode, account sync, and the complete Chrome extension — at <strong>$0</strong>, supported by ads.
@@ -943,7 +966,7 @@ const marqueeFeatures = [
         <div class="seo-text">
           <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
-            BriskRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at up to 1000+ words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
+            BriskRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at 100 to 1,000 words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
           </p>
 
           <h2>How to use this online speed reader</h2>
@@ -983,55 +1006,12 @@ const marqueeFeatures = [
         <!-- FAQs Section for Structured Schema -->
         <div class="faq-container mt-12">
           <h2>Frequently Asked Questions</h2>
-          
-          <details class="faq-item" open>
-            <summary>What is RSVP Speed Reading?</summary>
-            <div class="faq-answer">
-              <p>RSVP stands for Rapid Serial Visual Presentation. It is a visual reading technology that flashes single words sequentially on a static point on the screen. This allows you to read without moving your eyes horizontally, eliminating eye muscle fatigue and significantly increasing reading speeds.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How does Bionic Reading work?</summary>
-            <div class="faq-answer">
-              <p>Bionic Reading highlights the first few characters of each word in bold, creating an anchor point for your eyes. Your brain instantly identifies the word based on these letters and automatically completes the rest, speeding up sentence transition and scanning speeds.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Are my PDF and EPUB files kept private?</summary>
-            <div class="faq-answer">
-              <p>Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How do I speed-read pages from Chrome?</summary>
-            <div class="faq-answer">
-              <p>Install the <a href="/extension">Chrome extension</a> for in-page Flash/Focus, selection reading, and read-later. You can also paste a public URL into Extract URL on the homepage.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Is there an API key required for AI features?</summary>
-            <div class="faq-answer">
-              <p>Yes. AI summary and document chat use your own free Gemini API key, stored only in your browser and sent straight to Google — never to our servers. Google's free tier covers normal use.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>How does multi-device sync work?</summary>
-            <div class="faq-answer">
-              <p>Create a free account and sign in on each device. Your library, queue, and reading totals sync automatically. Without an account everything still works — it just stays on that device.</p>
-            </div>
-          </details>
-
-          <details class="faq-item">
-            <summary>Is BriskRead really free?</summary>
-            <div class="faq-answer">
-              <p>Yes. Every feature is free: unlimited document length, the full library, all reading modes, TTS audio sync, OCR, and in-page reading in the Chrome extension. The site is supported by display ads.</p>
-            </div>
-          </details>
+          {faqs.map(({ q, a }, i) => (
+            <details class="faq-item" open={i === 0}>
+              <summary>{q}</summary>
+              <div class="faq-answer"><p set:html={a} /></div>
+            </details>
+          ))}
         </div>
 
       </div>
@@ -1093,63 +1073,7 @@ const marqueeFeatures = [
     </div>
   </div>
 
-  <script type="application/ld+json" set:html={JSON.stringify(webAppSchema)} />
-  <script type="application/ld+json" is:inline>
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "What is RSVP Speed Reading?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "RSVP stands for Rapid Serial Visual Presentation. It is a visual reading technology that flashes single words sequentially on a static point on the screen. This allows you to read without moving your eyes horizontally, eliminating eye muscle fatigue and significantly increasing reading speeds."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does Bionic Reading work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Bionic Reading highlights the first few characters of each word in bold, creating an anchor point for your eyes. Your brain instantly identifies the word based on these letters and automatically completes the rest, speeding up sentence transition and scanning speeds."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Are my PDF and EPUB files kept private?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. All parsing, document unzipping, Text-to-Speech conversions, and Image OCR happen entirely client-side inside your browser sandbox. None of your books, files, or pasted texts are uploaded to any external server for storage."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is there an API key required for AI features?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "AI summary and document chat use your own free Gemini API key, stored only in your browser and sent straight to Google, never to BriskRead servers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How does multi-device sync work?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Sign in with a free BriskRead account and your library, queue, and reading totals follow you between devices. Without an account everything still works — it just stays on that device."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is BriskRead really free?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Every feature is free: unlimited documents, the full library, all reading modes, TTS audio sync, OCR, and the Chrome extension in-page reader. The site is supported by ads."
-          }
-        }
-      ]
-    }
-  </script>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
 
   <!-- Core JavaScript Script Loader & App Logic -->
   <script is:inline src="/reader-core.js"></script>
@@ -3960,6 +3884,9 @@ const marqueeFeatures = [
       border-radius: 999px;
       background: color-mix(in srgb, var(--color-bg-card) 80%, transparent);
     }
+    /* Kicker lives inside the H1 (keyword in the heading); block-level so the H1's
+       large line-height doesn't add a strut gap around the pill. */
+    .hero-title .hero-kicker { display: flex; width: fit-content; line-height: 1.4; }
     .hero-kicker-dot {
       width: 0.45rem;
       height: 0.45rem;
@@ -5846,7 +5773,7 @@ const marqueeFeatures = [
       padding: 1.1rem 1.15rem;
       border-radius: 16px;
     }
-    .feature-card h4 {
+    .feature-card h3 {
       margin: 0 0 0.4rem;
       font-size: 0.95rem;
     }

@@ -1,95 +1,66 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import '../../styles/blog-article.css';
-
-const pageTitle = 'Audio Sync Speed Reading: Eyes and Ears on One Stream | BriskRead';
-const pageDescription =
-  'Why dual-channel Audio Sync beats flash-only RSVP tools: speech locked to the visual word stream for stronger focus and fewer missed sentences.';
-const pageUrl = new URL('/blog/audio-sync-speed-reading/', Astro.site || Astro.url).href;
+import BlogPost from '../../layouts/BlogPost.astro';
 ---
 
-<Layout title={pageTitle} description={pageDescription} canonicalUrl={pageUrl}>
-  <script type="application/ld+json" set:html={JSON.stringify({
-    '@context': 'https://schema.org', '@type': 'Article', headline: 'Why Audio Sync beats flash-only speed readers',
-    description: pageDescription, mainEntityOfPage: pageUrl,
-    author: { '@type': 'Organization', name: 'BriskRead' },
-    publisher: { '@type': 'Organization', name: 'BriskRead' }, dateModified: '2026-08-04',
-  })} />
-  <article class="blog-article mt-8">
-    <div class="container max-w-3xl">
-      <nav class="breadcrumbs" aria-label="Breadcrumb">
-        <a href="/">Home</a><span aria-hidden="true">/</span>
-        <a href="/blog">Blog</a><span aria-hidden="true">/</span>
-        <span>Audio Sync speed reading</span>
-      </nav>
-      <div class="glass glass-article">
-        <p class="section-label">Differentiation</p>
-        <h1>Why Audio Sync beats flash-only speed readers</h1>
-        <p class="lede">
-          Most free online RSVP tools only move pixels. <strong>Audio Sync</strong> on <a href="/">BriskRead</a> pairs text-to-speech with the same flash stream so vision and hearing reinforce each other.
-        </p>
+<BlogPost slug="audio-sync-speed-reading" related={['best-online-speed-readers', 'rsvp-reading-explained', 'how-to-speed-read-online']}>
+  <p class="lede">
+    Short answer: sometimes, and mostly as a focus aid. Pairing speech with an RSVP stream (<strong>Audio Sync</strong> on <a href="/">BriskRead</a>) gives your eyes and ears the same words at the same pace. The evidence for it is suggestive, not settled.
+  </p>
 
-        <h2>The problem with visual-only flash</h2>
-        <p>
-          At high WPM, it is easy to “see” words without encoding them. You finish the article and cannot restate the argument. That is a focus problem, not a moral failing — and research on pure RSVP is clear that cranking speed alone does not magically raise comprehension.
-        </p>
-        <p>
-          Acklin and Papesh (2017) found modern flash-style speed-reading apps did <em>not</em> foster better comprehension versus normal reading when speed was pushed hard; static text still won on comprehension, and faster RSVP hurt verbatim memory.
-          <a href="https://doi.org/10.5406/amerjpsyc.130.2.0183" rel="noopener noreferrer" target="_blank">American Journal of Psychology · DOI</a>
-        </p>
-        <p>
-          Rayner and colleagues’ review of speed reading likewise stresses that extreme speed claims conflict with how reading and comprehension actually work.
-          <a href="https://doi.org/10.1177/1529100615623267" rel="noopener noreferrer" target="_blank">Psychological Science in the Public Interest · DOI</a>
-        </p>
+  <h2>The problem with visual-only flash</h2>
+  <p>
+    At high WPM, it is easy to “see” words without encoding them. You finish the article and cannot restate the argument. That is a focus problem, not a moral failing — and research on pure RSVP is clear that cranking speed alone does not magically raise comprehension.
+  </p>
+  <p>
+    Acklin and Papesh (2017) found modern flash-style speed-reading apps did <em>not</em> foster better comprehension versus normal reading when speed was pushed hard; static text still won on comprehension, and faster RSVP hurt verbatim memory.
+    <a href="https://doi.org/10.5406/amerjpsyc.130.2.0183" rel="noopener noreferrer" target="_blank">American Journal of Psychology · DOI</a>
+  </p>
+  <p>
+    Rayner and colleagues’ review of speed reading likewise stresses that extreme speed claims conflict with how reading and comprehension actually work.
+    <a href="https://doi.org/10.1177/1529100615623267" rel="noopener noreferrer" target="_blank">Psychological Science in the Public Interest · DOI</a>
+  </p>
 
-        <h2>Why add audio: dual-channel learning</h2>
-        <p>
-          Cognitive load and multimedia learning research treats people as having partly separate <strong>visual/pictorial</strong> and <strong>auditory/verbal</strong> channels (Mayer’s dual-channel assumption). Presenting the <em>same verbal stream</em> through vision and hearing — at a controlled pace — is different from stacking unrelated video + narration.
-        </p>
-        <p>
-          Experimental work comparing visual-only, audio-only, and dual-channel presentation of reading material has reported stronger comprehension when both channels carry the content, rather than either channel alone.
-          <a href="https://www.researchgate.net/publication/336656341_An_experimental_comparison_on_reading_comprehension_effect_of_visual_audio_and_dual_channels" rel="noopener noreferrer" target="_blank">Visual vs audio vs dual-channel comparison</a>
-        </p>
-        <p>
-          That is the design idea behind Audio Sync: not “read 1000 WPM forever,” but give the brain two aligned signals so attention drops less often — while you still keep Focus/Page modes for dense text.
-        </p>
+  <h2>Why audio might help: dual-channel learning</h2>
+  <p>
+    Cognitive load and multimedia learning research treats people as having partly separate <strong>visual/pictorial</strong> and <strong>auditory/verbal</strong> channels (Mayer’s dual-channel assumption). Presenting the <em>same verbal stream</em> through vision and hearing — at a controlled pace — is different from stacking unrelated video + narration.
+  </p>
+  <p>
+    One experimental comparison of visual-only, audio-only, and dual-channel presentation of reading material reported stronger comprehension when both channels carried the content, rather than either channel alone.
+    <a href="https://www.researchgate.net/publication/336656341_An_experimental_comparison_on_reading_comprehension_effect_of_visual_audio_and_dual_channels" rel="noopener noreferrer" target="_blank">Visual vs audio vs dual-channel comparison</a>
+  </p>
+  <p>
+    That is the design idea behind Audio Sync: not “read 1000 WPM forever,” but two aligned signals so attention may drop less often — while you still keep Focus/Page modes for dense text. None of the sources above tests Audio Sync itself, so treat it as something to try on your own text, not a proven boost.
+  </p>
 
-        <h2>What dual-channel means in BriskRead</h2>
-        <ul>
-          <li>Eyes track the RSVP (or related) visual presentation</li>
-          <li>Ears hear the same stretch of text at a matched pace</li>
-          <li>When one channel drifts, the other pulls attention back</li>
-          <li>You stay near a sustainable WPM (we default around 350), not extreme demo speeds</li>
-        </ul>
+  <h2>What dual-channel means in BriskRead</h2>
+  <ul>
+    <li>Eyes track the <a href="/rsvp-reader">RSVP</a> (or related) visual presentation</li>
+    <li>Ears hear the same stretch of text at a matched pace</li>
+    <li>When one channel drifts, the other may pull attention back</li>
+    <li>You stay near a sustainable WPM (we default around 350), not extreme demo speeds</li>
+  </ul>
 
-        <h2>When to use Audio Sync</h2>
-        <ul>
-          <li>Medium difficulty nonfiction</li>
-          <li>Long sessions where pure visual flash fatigues you</li>
-          <li>Commuting-style focus while still looking at the screen</li>
-        </ul>
-        <p>
-          Turn it off for quiet libraries, or when the device voice is poor — quality depends on system voices in Chrome/Edge.
-        </p>
+  <h2>When to use Audio Sync</h2>
+  <ul>
+    <li>Medium difficulty nonfiction</li>
+    <li>Long sessions where pure visual flash fatigues you</li>
+    <li>Commuting-style focus while still looking at the screen</li>
+  </ul>
+  <p>
+    Turn it off for quiet libraries, or when the device voice is poor — quality depends on system voices in Chrome/Edge.
+  </p>
 
-        <h2>How to try it in one minute</h2>
-        <ol>
-          <li>Open <a href="/">briskread.com</a></li>
-          <li>Click <strong>Hear a sample</strong> (or paste your own text)</li>
-          <li>Confirm <strong>Audio Sync: On</strong> in the reader controls</li>
-          <li>Adjust WPM until speech and flash feel locked</li>
-        </ol>
+  <h2>How to try it in one minute</h2>
+  <ol>
+    <li>Open <a href="/">briskread.com</a></li>
+    <li>Click <strong>Hear a sample</strong> (or paste your own text)</li>
+    <li>Confirm <strong>Audio Sync: On</strong> in the reader controls</li>
+    <li>Adjust WPM until speech and flash feel locked</li>
+  </ol>
 
-        <div class="callout">
-          <p>
-            If you are comparing “best speed reading websites,” ask: do they only flash, or do they offer dual-channel sync? That single feature filters most clones.
-          </p>
-        </div>
-
-        <div class="article-footer">
-          <p>Related: <a href="/blog/best-online-speed-readers">Best online speed readers</a> · <a href="/blog/rsvp-reading-explained">RSVP explained</a> · <a href="/#features">All features</a></p>
-        </div>
-      </div>
-    </div>
-  </article>
-</Layout>
+  <div class="callout">
+    <p>
+      If you are comparing speed reading websites, check whether speech can be synced to the visual stream. It is one feature to weigh next to import options, privacy, and how easily you can slow down on dense text.
+    </p>
+  </div>
+</BlogPost>
