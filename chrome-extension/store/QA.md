@@ -1,6 +1,6 @@
 # Manual QA checklist (about 25 minutes)
 
-Automated coverage (`npm run ext:test`, 19 tests) runs the packaged build in Chromium. It can't produce a real user gesture, so the test copy gets a localhost host permission instead of relying on activeTab. This list covers what only a person on real Chrome can check.
+Automated coverage (`npm run ext:test`, 20 tests) runs the packaged build in Chromium. One test runs the exact release folder with no extra permissions and uses Chrome's own toolbar-click path to grant activeTab, then reads, bionic-toggles, saves, reads a selection and opens a PDF. What automation still can't do: press the real keyboard shortcuts, use the right-click menu, or play audio through speakers. This list covers those.
 
 **Setup:** unzip `release/briskread-extension-v2.0.0.zip` to a folder. In `chrome://extensions`, turn on Developer mode, then **Load unpacked** that folder. Remove any older BriskRead first. Use a normal (non-test) Chrome profile.
 

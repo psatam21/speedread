@@ -18,11 +18,11 @@ Everything up to the Submit button is prepared. The steps marked **YOU** need yo
    npm run ext:assets
    ```
 
-   You should see 19 passing tests, `release/briskread-extension-v2.0.0.zip`, and 8 images in `release/store/`.
+   You should see 20 passing tests, `release/briskread-extension-v2.0.0.zip`, and 8 images in `release/store/`.
 
-2. Do the manual QA pass in `QA.md` with the real shortcuts. Tests can't press Chrome's real shortcuts, so this is the one thing automation can't prove.
+2. Do the manual QA pass in `QA.md`. The toolbar-click permission path is automated, but real keyboard shortcuts, right-click menus and audio need a person.
 
-3. **Update and deploy the privacy page.** Reviewers compare the Privacy tab to this page. Replace section "1b. Chrome Extension" on https://briskread.com/privacy with the text below, and change "Last Updated" to the deploy date:
+3. **Deploy the privacy page.** Reviewers compare the Privacy tab to this page. The new section "1b. Chrome Extension" below is already in `src/pages/privacy.astro` (committed); it goes live with the next site deploy:
 
    > **1b. Chrome Extension.** The BriskRead Chrome extension reads the text of a page only when you ask it to, with a keyboard shortcut, the toolbar button or the right-click menu. It uses four permissions. activeTab and scripting let it read and display the page you are on. storage keeps your settings, read-later queue, reading positions and optional Gemini key on your device. contextMenus adds the right-click options. Page text is processed in your browser and is not sent to BriskRead. If you use AI summary or questions, the text is sent from your browser directly to Google's Gemini API using your own key. "Speed read linked page" opens briskread.com with that link, and our server fetches that public page for you. The extension has no analytics, no tracking and no ads. Uninstalling it deletes all of its data. BriskRead's use of information received from Chrome APIs adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements.
 

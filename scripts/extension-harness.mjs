@@ -81,13 +81,13 @@ export async function prepareExtension() {
   return { extDir: dir, build: built };
 }
 
-export async function launch({ extDir, profileDir, headless = true, viewport = { width: 1280, height: 800 }, deviceScaleFactor = 1 }) {
+export async function launch({ extDir, profileDir, headless = true, viewport = { width: 1280, height: 800 }, deviceScaleFactor = 1, args = [] }) {
   const ctx = await chromium.launchPersistentContext(profileDir, {
     channel: 'chromium', // new headless mode, which supports extensions
     headless,
     viewport,
     deviceScaleFactor,
-    args: [`--disable-extensions-except=${extDir}`, `--load-extension=${extDir}`],
+    args: [`--disable-extensions-except=${extDir}`, `--load-extension=${extDir}`, ...args],
   });
   const sw = ctx.serviceWorkers()[0] || (await ctx.waitForEvent('serviceworker'));
   return { ctx, sw, extId: new URL(sw.url()).host };

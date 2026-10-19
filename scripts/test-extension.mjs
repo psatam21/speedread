@@ -4,8 +4,9 @@
  *   npm run ext:test
  * Covers read-in-place, selection reading (incl. iframes), read-later, shortcuts,
  * settings persistence across a browser restart, resume, page bionic, PDFs,
- * blocked pages, strict CSP pages and SPAs. See chrome-extension/store/QA.md for
- * what still needs a human (real key presses, audio, the store build).
+ * blocked pages, strict CSP pages and SPAs, plus the shipped build under a real
+ * activeTab grant. See chrome-extension/store/QA.md for what still needs a human
+ * (real key presses, right-click menus, audio).
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -437,4 +438,55 @@ test('"Speed read linked page" hands the link to briskread.com', async () => {
   assert.equal(site.url(), 'https://briskread.com/?url=https%3A%2F%2Fexample.com%2Fstory%3Fid%3D7');
   await site.close();
   await page.close();
+});
+
+test('shipped build: a real toolbar click grants activeTab, and read, bionic, save, selection and PDF all work', async () => {
+  // The exact release folder, with no test permission. Extensions.triggerAction is Chrome's own
+  // "user clicked the toolbar icon" path, so this is the activeTab grant real users get.
+  const prod = await launch({
+    extDir: ext.build.dir,
+    profileDir: fs.mkdtempSync(path.join(os.tmpdir(), 'briskread-prod-')),
+    args: ['--enable-unsafe-extension-debugging'],
+  });
+  const cdp = await prod.ctx.browser().newBrowserCDPSession();
+  const clickToolbar = async (page) => {
+    await page.bringToFront(); // the action runs on the active tab, like a real click
+    const { targetInfos } = await cdp.send('Target.getTargets', { filter: [{ type: 'tab' }] });
+    const tab = targetInfos.find((t) => t.url === page.url());
+    await cdp.send('Extensions.triggerAction', { id: prod.extId, targetId: tab.targetId });
+  };
+  try {
+    const page = await prod.ctx.newPage();
+    await page.goto(`${base}/article.html?prod`);
+    assert.equal(await prod.sw.evaluate(async () => (await chrome.tabs.query({})).some((t) => t.url?.includes('prod'))), false, 'no access before the click');
+
+    await clickToolbar(page);
+    await command(prod.sw, page, 'speed-read-tab');
+    await ui(page).locator('.wrap').waitFor();
+    assert.ok((await wordCount(page)) > 350);
+    await page.keyboard.press('Escape');
+    assert.deepEqual(await command(prod.sw, page, 'bionic-tab'), { ok: true, on: true });
+    assert.equal((await command(prod.sw, page, 'read-later-tab')).ok, true);
+    await page.evaluate(() => {
+      const r = document.createRange();
+      r.selectNodeContents(document.getElementById('p2'));
+      getSelection().removeAllRanges();
+      getSelection().addRange(r);
+    });
+    await command(prod.sw, page, 'speed-read-tab');
+    await ui(page).locator('.wrap').waitFor();
+    assert.ok((await wordCount(page)) < 100, 'selection only');
+
+    const pdf = await prod.ctx.newPage();
+    await pdf.goto(`${base}/report.pdf?prod`).catch(() => {});
+    await pdf.waitForTimeout(500);
+    await clickToolbar(pdf);
+    const readerOpened = prod.ctx.waitForEvent('page', { predicate: (p) => p.url().includes('reader.html') });
+    await command(prod.sw, pdf, 'speed-read-tab');
+    const reader = await readerOpened;
+    await ui(reader).locator('.wrap').waitFor({ timeout: 20_000 });
+    assert.equal(await wordCount(reader), PDF_LINES.join(' ').split(/\s+/).length);
+  } finally {
+    await prod.ctx.close();
+  }
 });

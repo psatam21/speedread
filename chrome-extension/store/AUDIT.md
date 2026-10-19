@@ -22,7 +22,7 @@ Version audited: 1.6.0 (sideload only). Version shipped: 2.0.0.
 | 14 | Icons were a generic bolt, not the brand mark; a 600 KB unused `icon.png` | Brand mismatch, repo weight | Icons from `public/images/brand-mark.png`; 128px follows store padding rules |
 | 15 | Fallback reader was a separate, weaker RSVP-only page | Two UIs to maintain | One reader UI for in-page and the reader tab |
 | 16 | The handoff script retried 8 times on *every* briskread.com visit | Wasted work | Removed with #2 |
-| 17 | Privacy page section 1b is out of date | Store review compares it to the disclosures | New copy in `PUBLISHING.md`, step 0 (website change, not done here) |
+| 17 | Privacy page section 1b is out of date | Store review compares it to the disclosures | Rewritten in `src/pages/privacy.astro`, with the Limited Use statement; live after the next deploy |
 
 ## 2. Permissions (final)
 
