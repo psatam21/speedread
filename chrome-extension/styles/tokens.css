@@ -1,76 +1,81 @@
-/* BriskRead design tokens: the one file to edit when the site redesign lands.
+/* BriskRead design tokens: the one file to edit when the site's look changes.
    :root covers the popup/options/reader pages, :host covers the in-page reader's
-   shadow root, and [data-theme] switches palettes on either. Values mirror
-   src/styles/global.css on briskread.com. */
+   shadow root, and [data-theme] switches palettes on either. Values mirror the
+   "Paper and Pen" tokens in src/styles/global.css on briskread.com: ink, cream
+   paper, red pen, and the highlighter wash as the signature. */
 :root,
 :host {
-  --br-font-ui: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --br-font-read: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --br-radius-sm: 6px;
-  --br-radius: 10px;
-  --br-radius-lg: 16px;
+  --br-font-ui: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --br-font-read: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --br-font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --br-radius-sm: 3px;
+  --br-radius: 5px;
+  --br-radius-lg: 8px;
   --br-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --br-brand: #5e6ad2;
-  --br-brand-hover: #4f5bc0;
-  --br-on-brand: #ffffff;
-  --br-brand-grad: linear-gradient(135deg, #8b95ea 0%, #5e6ad2 55%, #4b44b8 100%);
+  --br-ink: #1e1b16; /* logo tile */
+  --br-wash: #ffee9e; /* highlighter: logo glyph and the current-word highlight */
+  --br-on-wash: #1e1b16;
 }
 
-/* Dark is the default palette. */
+/* Dark ink is the default palette (the site keeps its reader stage dark in every theme). */
 :root,
 :host,
 [data-theme='dark'] {
-  --br-bg: #09090b;
-  --br-surface: #111114;
-  --br-surface-2: #19191e;
-  --br-border: #24242b;
-  --br-border-strong: #34343e;
-  --br-text: #f4f4f6;
-  --br-muted: #a0a0ab;
-  --br-subtle: #6e6e7a;
-  --br-accent: #a8b0f2;
-  --br-accent-soft: rgba(139, 149, 234, 0.16);
-  --br-mark: rgba(139, 149, 234, 0.3);
-  --br-danger: #f87171;
-  --br-success: #34d399;
-  --br-shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
+  --br-bg: #14120f;
+  --br-surface: #1d1a16;
+  --br-surface-2: #26221c;
+  --br-border: #2e2a24;
+  --br-border-strong: #3d382f;
+  --br-text: #efeadf;
+  --br-muted: #a8a092;
+  --br-subtle: #8f877a;
+  --br-brand: #ff8a6b;
+  --br-brand-hover: #ffa58b;
+  --br-on-brand: #14120f;
+  --br-accent: #ff8a6b;
+  --br-accent-soft: rgba(255, 138, 107, 0.14);
+  --br-danger: #ff8a6b;
+  --br-success: #9fd8a6;
+  --br-shadow: 0 1px 0 rgba(0, 0, 0, 0.3), 0 12px 32px rgba(0, 0, 0, 0.45);
   color-scheme: dark;
 }
 
 [data-theme='light'] {
-  --br-bg: #f7f7f8;
-  --br-surface: #ffffff;
-  --br-surface-2: #efeff1;
-  --br-border: #e4e4e9;
-  --br-border-strong: #d0d0d8;
-  --br-text: #0a0a0c;
-  --br-muted: #5c5c66;
-  --br-subtle: #8b8b96;
-  --br-accent: #5e6ad2;
-  --br-accent-soft: rgba(94, 106, 210, 0.1);
-  --br-mark: rgba(94, 106, 210, 0.2);
-  --br-danger: #dc2626;
-  --br-success: #059669;
-  --br-shadow: 0 1px 2px rgba(10, 10, 12, 0.06), 0 12px 32px rgba(10, 10, 12, 0.12);
+  --br-bg: #f6f2e9;
+  --br-surface: #fffdf8;
+  --br-surface-2: #efe9dc;
+  --br-border: #e2daca;
+  --br-border-strong: #cfc5b1;
+  --br-text: #1e1b16;
+  --br-muted: #5c5548;
+  --br-subtle: #6e6658;
+  --br-brand: #a3290f;
+  --br-brand-hover: #861f09;
+  --br-on-brand: #fffdf8;
+  --br-accent: #a3290f;
+  --br-accent-soft: rgba(163, 41, 15, 0.1);
+  --br-danger: #a3290f;
+  --br-success: #2f6b3a;
+  --br-shadow: 0 1px 0 rgba(30, 27, 22, 0.06), 0 12px 32px rgba(30, 27, 22, 0.1);
   color-scheme: light;
 }
 
 [data-theme='sepia'] {
-  --br-bg: #f7f0e3;
-  --br-surface: #fdf8ef;
-  --br-surface-2: #efe4d0;
-  --br-border: #e3d5bc;
-  --br-border-strong: #d2bf9f;
+  --br-bg: #f3e9d6;
+  --br-surface: #fbf4e6;
+  --br-surface-2: #eadfc8;
+  --br-border: #ddcfb4;
+  --br-border-strong: #cbb995;
   --br-text: #3d2e1f;
   --br-muted: #6b5340;
-  --br-subtle: #8a7160;
-  --br-accent: #6650a4;
-  --br-accent-soft: rgba(102, 80, 164, 0.1);
-  --br-mark: rgba(102, 80, 164, 0.2);
-  --br-brand: #6650a4;
-  --br-brand-hover: #514080;
-  --br-danger: #b42318;
-  --br-success: #2f7a4f;
-  --br-shadow: 0 1px 2px rgba(61, 46, 31, 0.08), 0 12px 32px rgba(61, 46, 31, 0.14);
+  --br-subtle: #7d6553;
+  --br-brand: #a3290f;
+  --br-brand-hover: #861f09;
+  --br-on-brand: #fbf4e6;
+  --br-accent: #a3290f;
+  --br-accent-soft: rgba(163, 41, 15, 0.1);
+  --br-danger: #a3290f;
+  --br-success: #2f6b3a;
+  --br-shadow: 0 1px 0 rgba(61, 46, 31, 0.08), 0 12px 32px rgba(61, 46, 31, 0.14);
   color-scheme: light;
 }

@@ -56,24 +56,33 @@ async function seekTo(page, permille, pick = (w) => w.length >= 8 && /^[a-z]+$/i
   }
 }
 
-/** Marketing frame: caption on top, real screenshot below with a soft shadow, bleeding off the bottom. */
+// Paper and Pen brand (briskread.com): ink ground, cream paper text, highlighter wash on the key phrase.
+const fontFile = (f) => `data:font/woff2;base64,${fs.readFileSync(path.join(build.dir, 'fonts', f)).toString('base64')}`;
+const BRAND_CSS = `
+  @font-face{font-family:'Hanken Grotesk';font-weight:400;src:url(${fontFile('hanken-grotesk-latin-400-normal.woff2')})}
+  @font-face{font-family:'Hanken Grotesk';font-weight:600;src:url(${fontFile('hanken-grotesk-latin-600-normal.woff2')})}
+  @font-face{font-family:'Newsreader';font-weight:600;src:url(${fontFile('newsreader-latin-600-normal.woff2')})}
+  body{margin:0;overflow:hidden;position:relative;background:#1e1b16;color:#f6f2e9;font-family:'Hanken Grotesk',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .t{font-family:Newsreader,Georgia,serif;font-weight:600;letter-spacing:-.01em;line-height:1.12}
+  mark{background:#ffee9e;color:#1e1b16;padding:0 .12em}`;
+
+/** Marketing frame: caption on top, real screenshot below with a soft shadow. */
 async function frame(name, title, sub, shot, { layout = 'below' } = {}) {
   const page = await designer.newPage({ viewport: { width: 1280, height: 800 } });
   const shotHtml =
     layout === 'side'
-      ? `<img src="${png(shot)}" style="position:absolute;right:120px;top:60px;width:396px;border-radius:14px;box-shadow:0 30px 80px rgba(20,16,70,.45),0 0 0 1px rgba(255,255,255,.12)">`
-      : `<img src="${png(shot)}" style="position:absolute;left:152px;top:176px;width:976px;border-radius:14px;box-shadow:0 30px 80px rgba(20,16,70,.45),0 0 0 1px rgba(255,255,255,.12)">`;
+      ? `<img src="${png(shot)}" style="position:absolute;right:120px;top:60px;width:396px;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(246,242,233,.14)">`
+      : `<img src="${png(shot)}" style="position:absolute;left:152px;top:176px;width:976px;border-radius:8px;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(246,242,233,.14)">`;
   const cap =
     layout === 'side'
       ? 'position:absolute;left:110px;top:0;bottom:0;width:560px;display:flex;flex-direction:column;justify-content:center;'
       : 'position:absolute;left:0;right:0;top:44px;text-align:center;';
-  await page.setContent(`<!doctype html><html><body style="margin:0;width:1280px;height:800px;overflow:hidden;position:relative;
-      background:radial-gradient(120% 90% at 20% 0%,#8b95ea 0%,#5e6ad2 45%,#3b338f 100%);font-family:Inter,'Segoe UI',system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased">
+  await page.setContent(`<!doctype html><html><head><style>${BRAND_CSS}</style></head><body style="width:1280px;height:800px">
       <div style="${cap}">
-        <div style="font-size:${layout === 'side' ? 46 : 42}px;font-weight:700;letter-spacing:-.02em;line-height:1.15">${title}</div>
-        <div style="font-size:20px;opacity:.86;margin-top:14px;line-height:1.45">${sub}</div>
+        <div class="t" style="font-size:${layout === 'side' ? 50 : 44}px">${title}</div>
+        <div style="font-size:20px;opacity:.82;margin-top:14px;line-height:1.45">${sub}</div>
       </div>${shotHtml}</body></html>`);
-  await page.waitForTimeout(150);
+  await page.evaluate(() => document.fonts.ready);
   await page.screenshot({ path: path.join(OUT, name) });
   await page.close();
 }
@@ -85,7 +94,7 @@ await setSettings({});
 let page = await openArticle();
 await readAndPause(page);
 await seekTo(page, 180);
-await frame('screenshot-1.png', 'Speed read any page, right where you are', 'One shortcut. No copy-paste, no new tab. Flash, Focus, Phrase, Flow, Bionic and Page modes.', await shotOf(page));
+await frame('screenshot-1.png', 'Speed read any page, <mark>right where you are</mark>', 'One shortcut. No copy-paste, no new tab. Flash, Focus, Phrase, Flow, Bionic and Page modes.', await shotOf(page));
 await page.close();
 
 // 2. Focus mode + read aloud + settings
@@ -95,14 +104,14 @@ await readAndPause(page);
 await page.keyboard.press('a');
 await seekTo(page, 300, (w) => w.length >= 5);
 await ui(page).locator('[data-act="settings"]').click();
-await frame('screenshot-2.png', 'Listen along as the highlight follows the voice', 'Free read-aloud at any speed with your browser’s natural voices. Dark, light and sepia themes.', await shotOf(page));
+await frame('screenshot-2.png', 'Listen along as the <mark>highlight</mark> follows the voice', 'Free read-aloud at any speed with your browser’s natural voices. Dark, light and sepia themes.', await shotOf(page));
 await page.close();
 
 // 3. Bionic on the live page
 page = await openArticle();
 await command(sw, page, 'bionic-tab');
 await page.waitForTimeout(200);
-await frame('screenshot-3.png', 'Bionic reading on the page itself', 'Bold word openings guide your eye through any article. Alt+Shift+K to turn it on or off.', await shotOf(page));
+await frame('screenshot-3.png', 'Bionic reading on <mark>the page itself</mark>', 'Bold word openings guide your eye through any article. Alt+Shift+K to turn it on or off.', await shotOf(page));
 await page.close();
 
 // 4. PDFs from Chrome's viewer
@@ -126,7 +135,7 @@ const reader = await readerOpened;
 await ui(reader).locator('.play[aria-label="Pause"]').waitFor({ timeout: 20000 });
 await reader.keyboard.press(' ');
 await seekTo(reader, 380, (w) => w.length >= 7);
-await frame('screenshot-4.png', 'PDFs too, straight from Chrome’s viewer', 'Open a PDF in Chrome and press Alt+Shift+S. Local PDFs and pasted text work offline.', await shotOf(reader));
+await frame('screenshot-4.png', 'PDFs too, straight from <mark>Chrome’s viewer</mark>', 'Open a PDF in Chrome and press Alt+Shift+S. Local PDFs and pasted text work offline.', await shotOf(reader));
 await reader.close();
 await page.close();
 
@@ -153,7 +162,7 @@ await popup.goto(`chrome-extension://${extId}/popup.html?tabId=${tabId}`);
 await popup.locator('.q-item').nth(2).waitFor();
 await popup.waitForTimeout(200);
 const popupShot = await popup.locator('body').screenshot();
-await frame('screenshot-5.png', 'Save it for later. Pick up where you left off.', 'A read-later queue that remembers your place in every article. No account, nothing leaves your browser.', popupShot, { layout: 'side' });
+await frame('screenshot-5.png', 'Save it for later. <mark>Pick up where you left off.</mark>', 'A read-later queue that remembers your place in every article. No account, nothing leaves your browser.', popupShot, { layout: 'side' });
 await popup.close();
 await page.close();
 
@@ -161,14 +170,14 @@ await page.close();
 const mark = png(fs.readFileSync(path.join(build.dir, 'icons', 'icon128.png')));
 async function tile(name, w, h, scale) {
   const p = await designer.newPage({ viewport: { width: w, height: h } });
-  await p.setContent(`<!doctype html><html><body style="margin:0;width:${w}px;height:${h}px;overflow:hidden;display:flex;align-items:center;gap:${28 * scale}px;padding:0 ${44 * scale}px;box-sizing:border-box;
-    background:radial-gradient(120% 120% at 15% 0%,#8b95ea 0%,#5e6ad2 50%,#3b338f 100%);font-family:Inter,'Segoe UI',system-ui,sans-serif;color:#fff;-webkit-font-smoothing:antialiased">
-    <img src="${mark}" style="width:${108 * scale}px;height:${108 * scale}px;margin:${-14 * scale}px">
+  await p.setContent(`<!doctype html><html><head><style>${BRAND_CSS}</style></head><body style="width:${w}px;height:${h}px;display:flex;align-items:center;gap:${24 * scale}px;padding:0 ${40 * scale}px;box-sizing:border-box">
+    <img src="${mark}" style="width:${112 * scale}px;height:${112 * scale}px;margin:${-14 * scale}px;flex:none">
     <div>
-      <div style="font-size:${44 * scale}px;font-weight:750;letter-spacing:-.03em;line-height:1">BriskRead</div>
-      <div style="font-size:${17 * scale}px;opacity:.9;margin-top:${10 * scale}px;line-height:1.35">Read any page faster.<br>Free, private, no account.</div>
-      <div style="margin-top:${16 * scale}px;display:inline-block;padding:${6 * scale}px ${14 * scale}px;border-radius:${10 * scale}px;background:rgba(255,255,255,.14);font-size:${24 * scale}px;font-weight:600;letter-spacing:-.01em">re<span style="color:#ffd79a;font-weight:800">a</span>d faster</div>
+      <div class="t" style="font-size:${46 * scale}px;line-height:1">BriskRead</div>
+      <div style="font-size:${17 * scale}px;opacity:.85;margin-top:${10 * scale}px;line-height:1.35">Read any page faster.<br>Free, private, no account.</div>
+      <div class="t" style="margin-top:${14 * scale}px;font-size:${26 * scale}px"><mark>re<span style="color:#a3290f">a</span>d faster</mark></div>
     </div></body></html>`);
+  await p.evaluate(() => document.fonts.ready);
   await p.screenshot({ path: path.join(OUT, name) });
   await p.close();
 }

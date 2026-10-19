@@ -26,7 +26,8 @@ Load for development: `chrome://extensions`, then Developer mode, then **Load un
 | `lib/reader-core.js` | Verbatim copy of the site's `public/reader-core.js`; keep the two in sync |
 | `lib/extract.js` | Article extraction, injected into the page |
 | `lib/storage.js` | Settings, read-later and resume storage |
-| `styles/tokens.css` | **All colours, radii and fonts.** Swap this file when the site redesign lands |
+| `styles/tokens.css` | **All colours, radii and fonts** (Paper and Pen, mirrored from the site). Change the look here |
+| `fonts/` | Hanken Grotesk and Newsreader (OFL) for the extension's own pages |
 | `vendor/pdfjs/` | pdf.js 3.11.174, unmodified (Apache-2.0) |
 | `store/` | Listing copy, publishing guide, QA checklist, audit (not shipped in the zip) |
 

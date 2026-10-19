@@ -28,7 +28,8 @@
   const WORD_MODES = new Set(['rsvp', 'phrase']);
 
   const ICON = {
-    mark: '<svg class="fill" viewBox="0 0 24 24"><path d="M13.5 2 5 13.5h5.5L9 22l9.5-12.5H13z"/></svg>',
+    // Same vector as briskread.com's favicon.svg: ink tile, highlighter bolt and book.
+    mark: '<svg class="fill" viewBox="0 0 128 128" aria-hidden="true"><rect width="128" height="128" rx="28" fill="#1e1b16"/><g fill="#ffee9e"><path d="M71 18 48 62h14l-10 46 34-54H70z"/><path d="M38 40l14-4v54l-14-6z" opacity=".92"/><path d="M90 40l-14-4v54l14-6z" opacity=".92"/></g></svg>',
     play: '<svg class="fill" viewBox="0 0 24 24"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.6-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
     pause: '<svg class="fill" viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>',
     back: '<svg viewBox="0 0 24 24"><path d="M11 7 6 12l5 5M18 7l-5 5 5 5"/></svg>',

@@ -29,9 +29,9 @@ svg.fill { fill: currentColor; stroke: none; }
 
 /* ---- top bar ---- */
 .top { display: flex; align-items: center; gap: 14px; padding: 12px 18px; border-bottom: 1px solid var(--br-border); }
-.brand { display: flex; align-items: center; gap: 8px; font-weight: 650; letter-spacing: -0.01em; }
-.mark { width: 26px; height: 26px; border-radius: 7px; background: var(--br-brand-grad); display: grid; place-items: center; color: #fff; }
-.mark svg { width: 15px; height: 15px; }
+.brand { display: flex; align-items: center; gap: 8px; font: 600 16px/1 var(--br-font-display); letter-spacing: -0.01em; }
+.mark { width: 26px; height: 26px; display: block; }
+.mark svg { width: 26px; height: 26px; }
 .doc { flex: 1; min-width: 0; }
 .doc-title { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .doc-meta { font-size: 12px; color: var(--br-subtle); }
@@ -82,7 +82,9 @@ svg.fill { fill: currentColor; stroke: none; }
 .v-text p { margin: 0 0 1.1em; }
 .v-text span[data-i] { cursor: pointer; border-radius: 4px; transition: background 80ms; }
 .v-text span[data-i]:hover { background: var(--br-surface-2); }
-.v-text span.cur { background: var(--br-mark); box-shadow: 0 0 0 2px var(--br-mark); }
+/* The highlighter: same wash as the logo glyph. */
+.v-text span.cur, .v-text span.cur b { background: var(--br-wash); color: var(--br-on-wash); }
+.v-text span.cur { box-shadow: 0 0 0 2px var(--br-wash); }
 .v-text b { font-weight: 700; }
 .wrap[data-mode='bionic'] .v-text { color: var(--br-muted); }
 .wrap[data-mode='bionic'] .v-text b { color: var(--br-text); }
