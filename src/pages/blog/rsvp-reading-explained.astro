@@ -1,8 +1,23 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
+
+const faqs = [
+  {
+    q: 'What does RSVP stand for in speed reading?',
+    a: 'RSVP stands for Rapid Serial Visual Presentation. It displays text one word or short phrase at a time at a fixed focal point on the screen so your eyes do not have to scan across lines.',
+  },
+  {
+    q: 'What is the Optimal Recognition Point (ORP) in RSVP?',
+    a: 'The Optimal Recognition Point is the letter slightly left of a word’s center where the eye naturally focuses. Highlighting and anchoring that letter in one spot reduces micro-adjustments between words.',
+  },
+  {
+    q: 'Does RSVP speed reading hurt comprehension?',
+    a: 'At moderate speeds (around 300 to 400 WPM) on familiar text, RSVP works well. At extreme speeds or on dense technical prose, comprehension drops because you cannot glance back, which is why BriskRead lets you switch to Focus, Flow, or Page mode anytime.',
+  },
+];
 ---
 
-<BlogPost slug="rsvp-reading-explained" related={['best-online-speed-readers', 'audio-sync-speed-reading', 'how-to-speed-read-online']}>
+<BlogPost slug="rsvp-reading-explained" faqs={faqs} related={['best-online-speed-readers', 'audio-sync-speed-reading', 'how-to-speed-read-online']}>
   <p class="lede">
     RSVP means <strong>Rapid Serial Visual Presentation</strong>: words appear one after another at a fixed place on the screen so your eyes stop hunting along a line. It is the core of many online flash readers, including Flash mode in <a href="/rsvp-reader">BriskRead’s RSVP reader</a>.
   </p>
@@ -37,7 +52,7 @@ import BlogPost from '../../layouts/BlogPost.astro';
 
   <div class="callout">
     <p>
-      Demo RSVP free on the <a href="/">BriskRead homepage</a> — start around 350 WPM and lower the slider until words stay meaningful.
+      Demo RSVP free on the <a href="/">BriskRead homepage</a>: start around 350 WPM and lower the slider until words stay meaningful, or check your baseline first with the <a href="/reading-speed-test">reading speed test</a>.
     </p>
   </div>
 </BlogPost>

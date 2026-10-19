@@ -77,15 +77,15 @@ const marqueeFeatures = [
           <h1 class="hero-title">
             <small class="hero-kicker"><span class="hero-kicker-dot" aria-hidden="true"></span> Free online speed reader </small>
             <span class="hero-line"><span class="hero-line-inner">See it. Hear it.</span></span>
-            <span class="hero-line"><span class="hero-line-inner"> Finish it.</span></span>
+            <span class="hero-line"><span class="hero-line-inner"> <mark class="hero-wash">Finish it.</mark></span></span>
           </h1>
           <p class="hero-sub">
-            BriskRead plays your document one word at a time, right where your eyes already are — no scanning back and forth. That's <strong>RSVP</strong>, and BriskRead reads it aloud in sync as it flashes.
+            BriskRead plays your document one word at a time, right where your eyes already are, with no scanning back and forth. That's <strong>RSVP</strong>, and BriskRead reads it aloud in sync as it flashes.
           </p>
           <ul class="hero-pitch" aria-label="How it works">
             <li>
               <span class="hero-pitch-tag">Step 1</span>
-              <span>Drop in a PDF, EPUB, link, or pasted text — parsed in your browser.</span>
+              <span>Drop in a PDF, EPUB, link, or pasted text, parsed directly in your browser.</span>
             </li>
             <li>
               <span class="hero-pitch-tag">Step 2</span>
@@ -198,7 +198,7 @@ const marqueeFeatures = [
           <div>
             <p class="section-label">Continue later</p>
             <h2 id="workspace-title">Your library &amp; queue</h2>
-            <p class="workspace-lede">Documents you open can save here. Resume when you’re ready — sign in to sync across devices.</p>
+            <p class="workspace-lede">Documents you open can save here. Resume when you’re ready, and sign in to sync across devices.</p>
           </div>
           <div class="workspace-status-pills">
             <span class="workspace-pill" id="queue-summary" role="status">Queue empty</span>
@@ -217,7 +217,7 @@ const marqueeFeatures = [
             <ul class="workspace-list" id="library-list" aria-label="Saved documents"></ul>
             <div class="workspace-empty" id="library-empty">
               <strong>Nothing saved yet</strong>
-              <p>Load text below — turn on “Save to library” if you want it here for later.</p>
+              <p>Load text below and turn on “Save to library” if you want it here for later.</p>
             </div>
           </article>
           <article class="workspace-panel glass">
@@ -242,7 +242,7 @@ const marqueeFeatures = [
         <details class="workspace-advanced glass">
           <summary>
             <span>Optional settings</span>
-            <small>Profiles &amp; check-ins — skip if you’re just trying the reader</small>
+            <small>Profiles &amp; check-ins (skip if you’re just trying the reader)</small>
           </summary>
           <div class="workspace-advanced-body">
             <div class="workspace-adv-block" role="group" aria-label="Reading profiles">
@@ -399,7 +399,7 @@ const marqueeFeatures = [
               <label for="select-font">Font Family</label>
               <select id="select-font">
                 <option value="sans">Sans-Serif (Inter)</option>
-                <option value="serif">Serif (Merriweather)</option>
+                <option value="serif">Serif (Newsreader)</option>
                 <option value="dyslexic">Dyslexic Aid (OpenDyslexic)</option>
               </select>
             </div>
@@ -711,14 +711,14 @@ const marqueeFeatures = [
         </div>
         <p>
           Six visual modes, Audio Sync, local PDF/EPUB, and a Chrome extension path.
-          The core reader works free in the browser — no account, no limits. <a href="#pricing">See how it compares</a>.
+          The core reader works free in the browser with no account and no limits. <a href="#pricing">See how it compares</a>.
         </p>
       </div>
 
       <div class="features-detail-grid">
         <article class="feature-card glass">
           <h3>Audio Sync</h3>
-          <p>Speech tracks the same flash/focus stream as your eyes — dual-channel, not listen-only TTS.</p>
+          <p>Speech tracks the same flash/focus stream as your eyes for dual-channel reading, not listen-only TTS.</p>
         </article>
         <article class="feature-card glass">
           <h3>Six reading modes</h3>
@@ -738,7 +738,7 @@ const marqueeFeatures = [
         </article>
         <article class="feature-card glass">
           <h3>Retention check-ins</h3>
-          <p>Optional MCQs from the chunk you just read — every 1,000 words or manual only.</p>
+          <p>Optional MCQs from the chunk you just read, triggered every 1,000 words or manually.</p>
         </article>
       </div>
     </div>
@@ -807,14 +807,14 @@ const marqueeFeatures = [
     </div>
   </section>
 
-  <!-- Compare + free plan — one section -->
+  <!-- Compare + free plan -->
   <section class="pricing-analytics-section mt-8" id="pricing" aria-labelledby="pricing-title">
     <div class="container">
       <div class="pricing-section-intro" id="compare">
         <p class="section-label">Compare</p>
         <h2 class="pricing-section-title" id="pricing-title">Everything is free. Here’s how it stacks up.</h2>
         <p class="muted pricing-section-lede">
-          BriskRead is the full system — unlimited length, every mode, account sync, and the complete Chrome extension — at <strong>$0</strong>, supported by ads.
+          BriskRead includes the full system (unlimited length, every mode, account sync, and the complete Chrome extension) at <strong>$0</strong>, supported by ads.
           Prices for other tools are approximate as of 2026.
         </p>
       </div>
@@ -836,7 +836,7 @@ const marqueeFeatures = [
               <td>Free in browser</td>
               <td>Usually $10–30/mo</td>
               <td>Free or paid apps</td>
-              <td class="compare-you"><strong>Free</strong> — every feature, no account required</td>
+              <td class="compare-you"><strong>Free</strong>, every feature, no account required</td>
             </tr>
             <tr>
               <th scope="row">Job</th>
@@ -896,7 +896,7 @@ const marqueeFeatures = [
             <li>Unlimited document length &amp; library</li>
             <li>All reading modes + Audio Sync TTS</li>
             <li>Full Chrome extension (in-page reader)</li>
-            <li>Supported by ads — never by paywalls</li>
+            <li>Supported by ads, never by paywalls</li>
           </ul>
           <div class="pricing-actions mt-6">
             <a class="btn btn-primary w-full" href="/#importer-card">Start reading free</a>
@@ -964,23 +964,23 @@ const marqueeFeatures = [
       <div class="seo-layout">
         
         <div class="seo-text">
-          <h2 class="seo-title">Free Online Speed Reader — Flash RSVP &amp; Bionic Reading Web App</h2>
+          <h2 class="seo-title">Free Online Speed Reader: Flash RSVP &amp; Bionic Reading Web App</h2>
           <p>
-            BriskRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at 100 to 1,000 words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context — without installing an app or creating an account.
+            BriskRead is a free online speed reader for eBooks, web articles, PDFs, and textbooks at 100 to 1,000 words per minute (WPM). Choose one-word Flash, three-word Phrase, line-isolated Focus, fixed-anchor Flow, Bionic, or clean Page reading. Add synchronized text-to-speech when audio helps you retain context, without installing an app or creating an account.
           </p>
 
           <h2>How to use this online speed reader</h2>
           <ol class="seo-steps">
-            <li><strong>Load text</strong> — paste an article, upload PDF/EPUB/TXT, run image OCR, extract a public URL, or use the Chrome extension.</li>
-            <li><strong>Start reading</strong> — RSVP mode flashes one word at a time with Optimal Recognition Point (ORP) alignment.</li>
-            <li><strong>Tune speed</strong> — set WPM from 100–1000, press Space to play/pause, and use arrow keys to jump.</li>
-            <li><strong>Optional audio</strong> — enable Audio Sync for dual-channel TTS, or switch to Bionic / Standard page view.</li>
-            <li><strong>Themes</strong> — light, sepia, dark, or AMOLED; press <kbd>D</kbd> to cycle.</li>
+            <li><strong>Load text:</strong> paste an article, upload PDF/EPUB/TXT, run image OCR, extract a public URL, or use the Chrome extension.</li>
+            <li><strong>Start reading:</strong> RSVP mode flashes one word at a time with Optimal Recognition Point (ORP) alignment.</li>
+            <li><strong>Tune speed:</strong> set WPM from 100–1000, press Space to play/pause, and use arrow keys to jump.</li>
+            <li><strong>Optional audio:</strong> enable Audio Sync for dual-channel TTS, or switch to Bionic / Standard page view.</li>
+            <li><strong>Themes:</strong> light, sepia, dark, or AMOLED; press <kbd>D</kbd> to cycle.</li>
           </ol>
           
           <h2>Rapid Serial Visual Presentation (RSVP)</h2>
           <p>
-            Traditional reading forces horizontal eye movement and micro-pauses (saccades). RSVP mode flashes single words at a fixed focal point. BriskRead calculates the Optimal Recognition Point of each word — the focal letter is highlighted — so your brain processes language without hunting along a line. Punctuation gets slightly longer delays so comprehension stays intact at high WPM.
+            Traditional reading forces horizontal eye movement and micro-pauses (saccades). RSVP mode flashes single words at a fixed focal point. BriskRead calculates the Optimal Recognition Point of each word and highlights the focal letter so your brain processes language without hunting along a line. Punctuation gets slightly longer delays so comprehension stays intact at high WPM.
           </p>
           
           <h2>Bionic Reading Mode</h2>
@@ -990,17 +990,22 @@ const marqueeFeatures = [
           
           <h2>Dual-Channel Audio Narration &amp; PDF to speech</h2>
           <p>
-            Layering TTS on visual flashes creates dual-channel focus: ears and eyes stay on the same stream. Use Chrome or Edge for neural/natural voices. Upload a PDF or EPUB and narrate client-side — see also our <a href="/pdf-to-speech">PDF to speech</a> guide. Files are parsed in the browser; optional URL extraction calls our server and AI features call Google directly with your own key, as described in the privacy policy.
+            Layering TTS on visual flashes creates dual-channel focus: ears and eyes stay on the same stream. Use Chrome or Edge for neural/natural voices. Upload a PDF or EPUB and narrate client-side, or see our <a href="/pdf-to-speech">PDF to speech</a> guide. Files are parsed in the browser; optional URL extraction calls our server and AI features call Google directly with your own key, as described in the <a href="/privacy">privacy policy</a>.
           </p>
 
           <h2>Common use cases</h2>
           <ul class="seo-usecases">
-            <li><strong>Students</strong> — revise chapters and papers faster before exams or case comps.</li>
-            <li><strong>Professionals</strong> — clear newsletters, research PDFs, and long emails under time pressure.</li>
-            <li><strong>Language practice</strong> — pair visual RSVP with audio to reinforce pacing.</li>
-            <li><strong>Accessibility preference</strong> — choose bionic bolding, dyslexia-friendly font option, or high-contrast AMOLED.</li>
-            <li><strong>Web clipping</strong> — send any public article into the reader with the Chrome extension or Extract URL.</li>
+            <li><strong>Students:</strong> revise chapters and papers faster before exams or case competitions.</li>
+            <li><strong>Professionals:</strong> clear newsletters, research PDFs, and long emails under time pressure.</li>
+            <li><strong>Language practice:</strong> pair visual RSVP with audio to reinforce pacing.</li>
+            <li><strong>Accessibility preference:</strong> choose bionic bolding, dyslexia-friendly font option, or high-contrast AMOLED.</li>
+            <li><strong>Web clipping:</strong> send any public article into the reader with the <a href="/extension">Chrome extension</a> or Extract URL.</li>
           </ul>
+
+          <h2>Free companion tools &amp; guides</h2>
+          <p>
+            Measure your baseline on the <a href="/reading-speed-test">reading speed test</a>, time a talk with the <a href="/words-to-minutes">words to minutes calculator</a>, rehearse scripts in the browser <a href="/teleprompter">teleprompter</a>, or score your writing in the <a href="/readability-checker">readability checker</a>. Explore our guides on <a href="/blog/how-to-speed-read-online">how to speed read online</a>, <a href="/blog/rsvp-reading-explained">RSVP reading explained</a>, <a href="/blog/audio-sync-speed-reading">Audio Sync dual-channel reading</a>, <a href="/blog/speed-read-pdf-online">speed reading PDFs online</a>, <a href="/blog/best-online-speed-readers">best online speed readers</a>, and <a href="/blog/free-online-speed-reader">free no-signup speed reading</a>.
+          </p>
         </div>
 
         <!-- FAQs Section for Structured Schema -->
@@ -6199,5 +6204,58 @@ const marqueeFeatures = [
       outline: none;
       font-size: 0.85rem;
     }
+    /* ── Paper and Pen: hero overrides (keep after the hero rules above) ── */
+    .hero-title, .hero h1.hero-title {
+      font-family: var(--font-display);
+      font-weight: 400;
+      letter-spacing: -0.015em;
+      line-height: 1.02;
+    }
+    .hero-kicker, .hero-title .hero-kicker {
+      font-family: var(--font-sans);
+      padding: 0;
+      border: 0;
+      background: none;
+      color: var(--color-primary);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.9rem;
+    }
+    .hero-kicker-dot { display: none; }
+    .hero-wash, mark.hero-wash {
+      background: linear-gradient(transparent 12%, var(--color-wash) 12% 88%, transparent 88%);
+      color: #1e1b16;
+      padding: 0 0.08em;
+    }
+    .hero-sub { font-family: var(--font-display); font-size: clamp(1.05rem, 1.5vw, 1.22rem); line-height: 1.5; }
+    .hero-pitch-tag {
+      border-radius: var(--radius-xs);
+      background: none;
+      border: 0;
+      padding: 0;
+      font-family: var(--font-mono);
+      font-weight: 400;
+      color: var(--color-primary);
+    }
+    .hero-trust { border-radius: var(--radius-md); }
+    .hero-trust strong { font-family: var(--font-display); font-size: 0.95rem; font-weight: 500; letter-spacing: 0; }
+    .hero-trust svg { color: var(--color-primary); }
+    /* The reader stage stays dark in both themes; its pivot letter is the highlighter */
+    .hero-reader { background: var(--stage-bg); border-color: var(--stage-line); border-radius: var(--radius-lg); }
+    .hero-word strong, #hero-word-orp {
+      color: #1e1b16;
+      background: #ffee9e;
+      border-radius: 2px;
+      padding: 0 0.04em;
+    }
+    .hero-slide-label i { background: #ffee9e; }
+    .hero-reader-bottom .hero-rsvp-pace { color: #ffee9e; }
+    .hero-demo-controls input { accent-color: #ffee9e; }
+    .section-label { font-family: var(--font-mono); font-weight: 400; letter-spacing: 0.02em; color: var(--color-primary); }
+    .hero h1.hero-title, .hero-title { font-size: clamp(2.6rem, 4.6vw, 4.1rem); }
+    .hero-reader-bottom .hero-rsvp-pace,
+    .hero-reader-bottom .hero-rsvp-pace b,
+    .hero-gain-stats strong { color: #ffee9e; }
+    .hero-reader-tools > span, .hero-deck-tabs button { color: var(--stage-muted); }
+    .hero-focus-demo .focus-word.active { color: #ffee9e; box-shadow: inset 0 -2px 0 #ffee9e; }
   </style>
 </Layout>

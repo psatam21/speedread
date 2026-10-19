@@ -1,10 +1,25 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
+
+const faqs = [
+  {
+    q: 'How can I speed read a PDF online without uploading it?',
+    a: 'Open BriskRead, choose Upload file, and select your PDF. PDF.js extracts the text locally inside your browser so your file never leaves your device.',
+  },
+  {
+    q: 'Can BriskRead speed read scanned image PDFs?',
+    a: 'Yes. For scanned pages or screenshots that have no selectable text layer, use the on-device Image OCR tab powered by Tesseract.js.',
+  },
+  {
+    q: 'Is there a page or word limit for PDFs?',
+    a: 'No. BriskRead has no page count or word count cap, so you can load full textbooks, reports, and EPUB books for free.',
+  },
+];
 ---
 
-<BlogPost slug="speed-read-pdf-online" related={['how-to-speed-read-online', 'free-online-speed-reader', 'free-speechify-alternatives']}>
+<BlogPost slug="speed-read-pdf-online" faqs={faqs} related={['how-to-speed-read-online', 'free-online-speed-reader', 'free-speechify-alternatives']}>
   <p class="lede">
-    Most “PDF to speech” or “PDF speed reader” tools upload your file. A better default: parse the PDF in the browser, then run RSVP or Focus. That is the <a href="/pdf-to-speech">PDF workflow BriskRead is built for</a>.
+    Most “PDF to speech” or “PDF speed reader” tools upload your file. A better default: parse the PDF in the browser, then run <a href="/rsvp-reader">RSVP</a> or Focus. That is the <a href="/pdf-to-speech">PDF workflow BriskRead is built for</a>.
   </p>
 
   <h2>Step-by-step on BriskRead</h2>
@@ -27,7 +42,7 @@ import BlogPost from '../../layouts/BlogPost.astro';
 
   <div class="callout">
     <p>
-      Privacy summary: document bytes for PDF/EPUB/OCR stay in your browser. Optional URL extract and AI features only run when you use them (AI uses your own Gemini key).
+      Privacy summary: document bytes for PDF/EPUB/OCR stay in your browser. Optional URL extract and AI features only run when you use them (AI uses your own Gemini key). See the <a href="/privacy">privacy policy</a> or test a sample in the <a href="/readability-checker">readability checker</a>.
     </p>
   </div>
 </BlogPost>

@@ -4,37 +4,74 @@ import AdSlot from '../components/AdSlot.astro';
 
 const pageTitle = "PDF to Speech Free: Read PDFs Aloud & Speed Read | BriskRead";
 const pageDescription = "Convert PDF text to speech free in your browser. Upload PDF or EPUB, read with RSVP, and use natural system voices. Files are parsed on your device.";
+
+const faqs = [
+  {
+    q: 'How do I read a PDF aloud for free in my browser?',
+    a: 'Open BriskRead, click Upload file, and choose your PDF. Once the text extracts locally, press Play and turn on Audio Sync to hear your browser’s voice read every word in step with the visual display.',
+  },
+  {
+    q: 'Does BriskRead upload my PDF to a server?',
+    a: 'No. PDF and EPUB files are parsed inside your browser tab using pdf.js and JSZip. Your document bytes stay on your device.',
+  },
+  {
+    q: 'What if my PDF is a scanned image with no selectable text?',
+    a: 'Use the Image OCR tab on page screenshots. BriskRead runs Tesseract.js in WebAssembly inside your browser to extract the text locally.',
+  },
+  {
+    q: 'Which browsers have the best free PDF text-to-speech voices?',
+    a: 'Microsoft Edge and Google Chrome on desktop include natural-sounding neural voices through the Web Speech API at no cost. You can pick any installed system voice from the Audio Sync Voice menu.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
         <h1>PDF to Speech Online: Free PDF Reader &amp; TTS</h1>
         <p class="lede">
-          Upload a PDF or EPUB, extract text in your browser, then listen with the Web Speech API while words flash in RSVP or display in bionic mode. BriskRead does not store your files on our servers — parsing runs on-device.
+          Upload a PDF or EPUB, extract text in your browser, then listen with the Web Speech API while words flash in RSVP or display in bionic mode. BriskRead does not store your files on our servers because parsing runs on your device.
         </p>
         <a href="/#importer-card" class="btn btn-primary mt-4">Upload a PDF to read</a>
 
         <h2 class="mt-8">How to turn a PDF into speech</h2>
         <ol class="steps">
-          <li>Open BriskRead → <strong>Upload Files</strong> → choose a PDF, EPUB, or TXT.</li>
-          <li>Wait for client-side text extraction (pdf.js / JSZip load on demand).</li>
-          <li>Press Play, then enable <strong>Audio Sync</strong> and pick a neural voice in Chrome/Edge.</li>
+          <li>Open BriskRead, select <strong>Upload file</strong>, and choose a PDF, EPUB, or TXT document.</li>
+          <li>Wait for client-side text extraction (pdf.js and JSZip load on demand).</li>
+          <li>Press Play, then enable <strong>Audio Sync</strong> and pick a neural voice in Chrome or Edge.</li>
           <li>Adjust pitch and WPM; narration rate scales with your reading speed.</li>
         </ol>
 
         <h2 class="mt-8">Privacy note</h2>
         <p>
-          File bytes stay in your browser for PDF/EPUB/OCR. Optional features that leave the device: URL article extraction (server fetch of public pages) and Gemini AI summary/chat (sent to Google with your own key). See the <a href="/privacy">Privacy Policy</a>.
+          File bytes stay in your browser for PDF, EPUB, and OCR. Optional features that leave the device: URL article extraction (server fetch of public pages) and Gemini AI summary or chat (sent to Google with your own key). See the <a href="/privacy">Privacy Policy</a>.
         </p>
 
         <h2 class="mt-8">Limits</h2>
         <ul>
-          <li>Unlimited document length — free for everyone.</li>
+          <li>Unlimited document length, free for everyone.</li>
           <li>Scanned image-only PDFs: use Image OCR on page screenshots.</li>
           <li>DRM-locked or image-heavy PDFs may extract incomplete text.</li>
         </ul>
+
+        <h2 class="mt-8">PDF to speech FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
 
         <div class="related mt-8">
           <h2>Related free tools</h2>
@@ -42,11 +79,16 @@ const pageDescription = "Convert PDF text to speech free in your browser. Upload
             <a href="/">Online speed reader</a> ·
             <a href="/rsvp-reader">RSVP reader</a> ·
             <a href="/bionic-reading">Bionic reading</a> ·
-            <a href="/reading-speed-test">Reading speed test</a>
+            <a href="/reading-speed-test">Reading speed test</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/teleprompter">Online teleprompter</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
+            <a href="/extension">Chrome extension</a>
           </p>
           <p>
             Guides: <a href="/blog/speed-read-pdf-online">How to speed read a PDF</a> ·
-            <a href="/blog/free-speechify-alternatives">Free Speechify alternatives</a>
+            <a href="/blog/free-speechify-alternatives">Free Speechify alternatives</a> ·
+            <a href="/blog/audio-sync-speed-reading">Speed reading with audio</a>
           </p>
         </div>
       </div>
@@ -71,6 +113,7 @@ const pageDescription = "Convert PDF text to speech free in your browser. Upload
   .lede { font-size: 1.1rem; color: var(--color-text-muted); }
   h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
   h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .faq-q { font-size: 1rem; margin: 1rem 0 0.35rem; }
   .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
   p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
   .mt-4 { margin-top: 1rem; }

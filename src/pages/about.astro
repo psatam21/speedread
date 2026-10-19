@@ -2,10 +2,32 @@
 import Layout from '../layouts/Layout.astro';
 
 const pageTitle = "About BriskRead: A Free, Private Speed Reader";
-const pageDescription = "Why BriskRead exists: a free, privacy-first speed reader with RSVP, bionic reading and synced speech. See how files stay on your device and how it is funded.";
+const pageDescription = "Why BriskRead exists: a free, privacy-first speed reader built by Prathamesh Satam with RSVP, bionic reading and synced speech that runs in your browser.";
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': 'https://briskread.com/about#author',
+  name: 'Prathamesh Satam',
+  jobTitle: 'Founder & Developer',
+  description: 'Builder of BriskRead and MBA candidate at BITSoM building local-first browser reading tools and writing evidence-based guides on reading speed and comprehension.',
+  url: 'https://briskread.com/about#author',
+  worksFor: {
+    '@type': 'Organization',
+    name: 'BriskRead',
+    url: 'https://briskread.com',
+  },
+  knowsAbout: [
+    'Rapid Serial Visual Presentation (RSVP)',
+    'Reading speed and comprehension',
+    'Browser text-to-speech synchronization',
+    'Client-side document parsing',
+  ],
+};
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout title={pageTitle} description={pageDescription} author="Prathamesh Satam">
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(personSchema)} />
   <section class="about-section mt-8">
     <div class="container max-w-xl">
       <div class="glass content-card">
@@ -13,44 +35,69 @@ const pageDescription = "Why BriskRead exists: a free, privacy-first speed reade
         
         <div class="content mt-6">
           <p class="intro">
-            BriskRead was born out of frustration with modern reading tools. While researching reading tools, we discovered that most speed readers, audio narration tools (like Speechify), and bionic visual customizers require heavy monthly subscriptions (ranging from $10 to $30/month) or lock basic upload features behind paywalls.
+            BriskRead started out of frustration with modern reading apps. Most speed readers, audio narration tools like Speechify, and bionic text formatters charge $10 to $30 a month or lock basic PDF uploads behind a paywall.
           </p>
           
           <p>
-            We set out to build a platform that is <strong>entirely free to use</strong>, fast, distraction-free, and respects your privacy.
+            We built BriskRead to be free to use, fast, quiet, and private by default.
           </p>
 
-          <p id="author">
-            BriskRead is built by <strong>Prathamesh Satam</strong>, who also writes the guides on the <a href="/blog">BriskRead blog</a>.
-          </p>
+          <section id="author" class="author-section" aria-labelledby="author-heading">
+            <h2 id="author-heading">About the Author</h2>
+            <div class="author-card">
+              <div class="author-badge" aria-hidden="true">PS</div>
+              <div>
+                <p class="author-name"><strong>Prathamesh Satam</strong> · Founder &amp; Developer</p>
+                <p>
+                  Prathamesh Satam is the developer of BriskRead and an MBA candidate at BITSoM (BITS School of Management). After spending hours every week working through case packets, research PDFs, and long briefings, he built BriskRead to combine single-word RSVP, paragraph-level focus modes, and browser speech synthesis in one local-first tool.
+                </p>
+                <p>
+                  He writes and maintains all guides on the <a href="/blog">BriskRead blog</a>, testing speed-reading claims against published eye-movement and cognitive-load research (including Brysbaert 2019, Rayner et al. 2016, and Acklin &amp; Papesh 2017) rather than repeating 1,000 WPM marketing myths. Questions or corrections can reach him through the <a href="/contact">contact page</a>.
+                </p>
+              </div>
+            </div>
+          </section>
 
-          <h2>Our Core Philosophy</h2>
+          <h2>Core Philosophy</h2>
           
-          <h3>1. Local-First & Private</h3>
+          <h3>1. Local-First &amp; Private</h3>
           <p>
-            Your books and articles are personal. We believe you should not have to upload your files to remote servers just to read them. That is why <strong>100% of BriskRead's parsing, Text-to-Speech syncing, and OCR engines execute directly in your browser</strong>. Your documents never leave your device.
+            Your books and articles are personal. You should not have to upload files to a remote server just to read them. All of BriskRead's PDF/EPUB parsing, Text-to-Speech syncing, and image OCR run inside your browser. Your documents stay on your device.
           </p>
 
-          <h3>2. Dual-Channel Cognitive Reading</h3>
+          <h3>2. Dual-Channel Reading</h3>
           <p>
-            Speed reading is not just about flashing words; it is about cognitive absorption. By combining RSVP (Rapid Serial Visual Presentation) flashing with synchronized Text-to-Speech audio, we create a dual-channel learning engine. Hearing the word as you see it can help hold attention and keep a steady pace. Results vary by reader and material, so BriskRead lets you switch audio off and compare. <a href="/how-it-works">See how the reading modes work</a>.
+            Flashing words fast is useless if you forget the paragraph five seconds later. BriskRead pairs <a href="/rsvp-reader">RSVP</a> (Rapid Serial Visual Presentation) with synchronized Text-to-Speech audio so your eyes and ears follow the same word stream. Hearing the word as you see it helps hold attention on long reports. Because results vary by reader and text difficulty, you can toggle audio off or switch to <a href="/bionic-reading">Bionic</a>, Focus, or Page mode at any point. <a href="/how-it-works">See how the six reading modes work</a>.
           </p>
 
           <h3>3. Free, Without Asterisks</h3>
           <p>
-            Every feature is <strong>free for everyone</strong>: unlimited document length, the full library, all reading modes, and the complete Chrome extension. No accounts required to read, no paywalls to hit. The project is supported by display ads — never by locking the product behind a tier.
+            Every feature is free for everyone: unlimited document length, the full library, all reading modes, the <a href="/reading-speed-test">reading speed test</a>, <a href="/words-to-minutes">words to minutes calculator</a>, <a href="/teleprompter">online teleprompter</a>, <a href="/readability-checker">readability checker</a>, and the <a href="/extension">Chrome extension</a>. No account is required to read. The site is funded by display ads rather than paywalls.
           </p>
 
-          <h2>Our Stack</h2>
+          <h2>Technical Stack</h2>
           <p>
-            BriskRead is built using a modern static framework called <strong>Astro</strong>. Because Astro compiles down to zero client-side JavaScript by default, it is highly optimized for SEO and loads instantly. We integrate lightweight, client-side libraries:
+            BriskRead is built with <strong>Astro</strong> and compiles to static HTML with client-side browser engines loaded only when needed:
           </p>
           <ul>
             <li><strong>Web Speech API</strong> for synced local voice synthesis.</li>
-            <li><strong>pdfjs-dist</strong> for dynamic client-side PDF parsing.</li>
-            <li><strong>JSZip</strong> for client-side EPUB file decompression.</li>
-            <li><strong>Tesseract.js</strong> via WebAssembly for on-device OCR.</li>
+            <li><strong>pdfjs-dist</strong> for client-side <a href="/pdf-to-speech">PDF text extraction</a>.</li>
+            <li><strong>JSZip</strong> for client-side EPUB decompression.</li>
+            <li><strong>Tesseract.js</strong> via WebAssembly for on-device image OCR.</li>
           </ul>
+
+          <section id="press" class="press-section" aria-labelledby="press-heading">
+            <h2 id="press-heading">Press, Citations &amp; Fast Facts</h2>
+            <p>
+              Journalists, researchers, and educators referencing BriskRead or adult reading-speed benchmarks are welcome to cite this page and our tools directly:
+            </p>
+            <ul>
+              <li><strong>Product:</strong> BriskRead (<a href="/">briskread.com</a>), launched in 2026 as a free, ad-supported browser speed reader and text utility suite.</li>
+              <li><strong>Reading modes:</strong> 6 views on one document (Flash RSVP with Optimal Recognition Point, 3-word Phrase, paragraph Focus, 3-line Flow, Bionic prefix bolding, and clean Page view).</li>
+              <li><strong>Primary benchmarks cited:</strong> Adult silent reading averages 238 WPM for non-fiction and 260 WPM for fiction, and 183 WPM aloud (Brysbaert, 2019 meta-analysis of 190 studies).</li>
+              <li><strong>Media &amp; press contact:</strong> <a href="mailto:support@briskread.com">support@briskread.com</a> or via our <a href="/contact">contact page</a>.</li>
+            </ul>
+          </section>
         </div>
       </div>
     </div>
@@ -93,5 +140,37 @@ const pageDescription = "Why BriskRead exists: a free, privacy-first speed reade
     margin-left: 1.5rem;
     margin-bottom: 1rem;
     color: var(--color-text-muted);
+  }
+  .author-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: start;
+    padding: 1.25rem;
+    margin: 0.75rem 0 1.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-subtle);
+  }
+  .author-badge {
+    display: grid;
+    width: 3rem;
+    height: 3rem;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--color-ink);
+    color: var(--color-ink-on);
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+  }
+  .author-name {
+    color: var(--color-text) !important;
+    margin-bottom: 0.4rem !important;
+  }
+  .press-section {
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--color-border);
   }
 </style>

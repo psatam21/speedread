@@ -6,20 +6,65 @@ import AdSlot from '../components/AdSlot.astro';
 // /bionic-reading-converter 308s here (vercel.json).
 const pageTitle = "Bionic Reading Online: Free Converter & Reader | BriskRead";
 const pageDescription = "Free bionic reading tool: paste text to bold word beginnings and copy it anywhere, or read in bionic mode in the speed reader. Runs in your browser.";
+
+const SAMPLE =
+  'Reading a long article is mostly a problem of attention, not of eyesight. ' +
+  'Bolding the opening letters of each word gives your eye a fixed place to land, ' +
+  'so it stops drifting back over text it has already covered.';
+
+const WORD = "A-Za-zÀ-ɏ'";
+const esc = (s: string) => s.replace(/[&<>]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c] || c));
+const convertBionic = (text: string, ratio: number) =>
+  text.replace(new RegExp(`([${WORD}]+)|([^${WORD}]+)`, 'g'), (_, word, gap) => {
+    if (!word) return esc(gap);
+    const cut = Math.max(1, Math.round(word.length * ratio));
+    return `<strong>${word.slice(0, cut)}</strong>${word.slice(cut)}`;
+  });
+const initialHtml = convertBionic(SAMPLE, 0.5);
+const initialWordCount = SAMPLE.trim().split(/\s+/).length;
+
+const faqs = [
+  {
+    q: 'What is bionic reading?',
+    a: 'Bionic reading is a text formatting style that bolds the opening letters of every word. Those bold prefixes act as visual anchors so your eyes can move across a paragraph with less effort.',
+  },
+  {
+    q: 'Does bionic reading actually make you read faster?',
+    a: 'Controlled studies have not found a consistent speed boost across all readers. However, many people report less line-skipping and eye fatigue on long articles. Test it on your own reading to see if it helps your focus.',
+  },
+  {
+    q: 'Can I copy the bolded text into Word, Google Docs, or Notion?',
+    a: 'Yes. Clicking Copy result puts rich HTML on your clipboard so the bold word prefixes survive when you paste into Google Docs, Microsoft Word, Notion, or an email.',
+  },
+  {
+    q: 'Is my text uploaded when I use this converter?',
+    a: 'No. Both the converter on this page and Bionic Mode inside the BriskRead speed reader run in plain JavaScript inside your browser. Your text never leaves your device.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
         <h1>Bionic Reading Online: Free Converter &amp; Reader</h1>
         <p class="lede">
-          Paste text below and it converts instantly. Each word gets its opening letters bolded, which gives your eye an anchor to land on. Copy the result into a doc, or read it in BriskRead's bionic mode. Everything runs in your browser; nothing is uploaded.
+          Paste text below and it converts right away. Each word gets its opening letters bolded, giving your eye a clear anchor to land on. Copy the result into a doc, or read it in BriskRead's bionic mode. Everything runs in your browser; nothing is uploaded.
         </p>
 
         <div class="converter mt-6" id="converter">
           <label for="bionic-input">Your text</label>
-          <textarea id="bionic-input" rows="7" placeholder="Paste an article, an email, a chapter…"></textarea>
+          <textarea id="bionic-input" rows="7" placeholder="Paste an article, an email, a chapter..."></textarea>
 
           <div class="converter-controls mt-4">
             <label for="bionic-strength">Fixation strength: <output id="bionic-strength-out">Medium</output></label>
@@ -28,8 +73,8 @@ const pageDescription = "Free bionic reading tool: paste text to bold word begin
           </div>
 
           <h2 class="mt-6">Converted text</h2>
-          <div id="bionic-output" class="bionic-output" aria-live="polite"></div>
-          <p class="muted mt-2" id="bionic-count">0 words</p>
+          <div id="bionic-output" class="bionic-output" aria-live="polite" set:html={initialHtml} />
+          <p class="muted mt-2" id="bionic-count">{initialWordCount} words (sample text)</p>
 
           <a href="/#importer-card" class="btn btn-primary mt-4">Read it in bionic mode instead</a>
         </div>
@@ -38,13 +83,13 @@ const pageDescription = "Free bionic reading tool: paste text to bold word begin
         <ol class="steps">
           <li>Open the <a href="/">BriskRead speed reader</a> and paste text, upload a PDF/EPUB/TXT, or extract a URL.</li>
           <li>Start reading, then switch to <strong>Bionic Mode</strong> in the reader toolbar.</li>
-          <li>Optional: turn on Audio Sync for dual-channel focus, or use RSVP mode for single-word flashing.</li>
+          <li>Optional: turn on Audio Sync for dual-channel focus, or use <a href="/rsvp-reader">RSVP mode</a> for single-word flashing.</li>
           <li>Adjust theme (light, sepia, dark, AMOLED) and font size for long sessions.</li>
         </ol>
 
         <h2 class="mt-8">Does bionic reading work?</h2>
         <p>
-          Bionic-style formatting bolds the first part of each word: short words get one bolded letter, longer words get more. The claim is that your brain completes the word from the bolded prefix. Studies have not shown a reliable speed gain, but many readers say the page is easier to keep their place on, which matters more for a long backlog than raw WPM. Treat it as a comfort option and test it on your own reading.
+          Bionic-style formatting bolds the first part of each word: short words get one bolded letter, longer words get more. The idea is that your brain completes the word from the bolded prefix. Studies have not shown a reliable speed gain, but many readers find the page easier to keep their place on, which matters more for a long backlog than raw WPM. Treat it as a comfort option and test it on your own reading with our <a href="/reading-speed-test">reading speed test</a>.
         </p>
 
         <h2 class="mt-8">When bionic reading helps</h2>
@@ -59,12 +104,12 @@ const pageDescription = "Free bionic reading tool: paste text to bold word begin
         <ul>
           <li><strong>Light</strong>: roughly a third of each word. Least visually noisy, good for long sessions.</li>
           <li><strong>Medium</strong>: about half. The default, and closest to what most bionic tools produce.</li>
-          <li><strong>Heavy</strong>: around two thirds. Strongest anchor, but the contrast between bold and plain drops.</li>
+          <li><strong>Heavy</strong>: around two thirds. Strongest anchor, though the contrast between bold and plain drops.</li>
         </ul>
 
         <h2 class="mt-8">Convert, or just read?</h2>
         <p>
-          Convert when the text is going somewhere else: a document you'll print, a passage you're studying, notes you want to re-read. If you just want to get through the text now, open it in the <a href="/">reader</a>, where Bionic is one of six modes and you can pair it with pacing.
+          Convert when the text is going somewhere else: a document you'll print, a passage you're studying, notes you want to re-read. If you just want to get through the text now, open it in the <a href="/">reader</a>, where Bionic is one of <a href="/how-it-works">six reading modes</a> and you can pair it with pacing.
         </p>
 
         <h2 class="mt-8">Bionic reading vs RSVP</h2>
@@ -77,6 +122,14 @@ const pageDescription = "Free bionic reading tool: paste text to bold word begin
           The converter is plain JavaScript running on this page. Your text never leaves the browser, there is no upload, and closing the tab discards it. See the <a href="/privacy">privacy policy</a>.
         </p>
 
+        <h2 class="mt-8">Bionic reading FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
+
         <div class="related mt-8">
           <h2>Related free tools</h2>
           <p>
@@ -84,10 +137,15 @@ const pageDescription = "Free bionic reading tool: paste text to bold word begin
             <a href="/rsvp-reader">RSVP reader</a> ·
             <a href="/reading-speed-test">Reading speed test</a> ·
             <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/teleprompter">Online teleprompter</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
             <a href="/extension">Chrome extension</a>
           </p>
           <p>
-            Guide: <a href="/blog/how-to-speed-read-online">How to speed read online</a>
+            Guides: <a href="/blog/how-to-speed-read-online">How to speed read online</a> ·
+            <a href="/blog/best-online-speed-readers">Best online speed readers</a> ·
+            <a href="/blog/free-online-speed-reader">Free online speed reader</a>
           </p>
         </div>
       </div>

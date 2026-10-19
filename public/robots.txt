@@ -6,4 +6,5 @@ User-agent: *
 Allow: /
 Disallow: /api/
 
+Sitemap: https://briskread.com/sitemap.xml
 Sitemap: https://briskread.com/sitemap-index.xml

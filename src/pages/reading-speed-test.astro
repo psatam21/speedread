@@ -31,9 +31,37 @@ The saving was not marginal. Loading costs fell by well over ninety percent. But
 That is what made distant manufacturing viable. Once distance stopped being expensive, supply chains could stretch across the world, and they did.`,
   },
 ];
+const faqs = [
+  {
+    q: 'What is a good reading speed in WPM?',
+    a: 'For adults reading English silently, 200 to 300 WPM is normal (the research average is 238 WPM for non-fiction and 260 WPM for fiction). A score of 300 to 450 WPM with full comprehension is fast.',
+  },
+  {
+    q: 'What is effective WPM?',
+    a: 'Effective WPM multiplies your raw words-per-minute score by your quiz comprehension percentage. Reading at 600 WPM with 33% comprehension yields an effective speed of 200 WPM.',
+  },
+  {
+    q: 'How long does this reading speed test take?',
+    a: 'About two minutes. Each passage is roughly 210 words long, followed by three multiple-choice comprehension questions.',
+  },
+  {
+    q: 'Is my reading speed score saved or sent to a server?',
+    a: 'No. The timer and quiz run in your browser tab and nothing is transmitted anywhere.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="tool-seo mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
@@ -70,7 +98,7 @@ That is what made distant manufacturing viable. Once distance stopped being expe
           <!-- Step 3: quiz -->
           <div class="test-step hidden" id="step-quiz">
             <h2>Three quick questions</h2>
-            <p class="muted">No scrolling back — answer from memory.</p>
+            <p class="muted">No scrolling back: answer from memory.</p>
             <div id="quiz-body" class="mt-4"></div>
             <button class="btn btn-primary mt-4" id="btn-submit-quiz">See my score</button>
           </div>
@@ -80,15 +108,15 @@ That is what made distant manufacturing viable. Once distance stopped being expe
             <h2>Your result</h2>
             <div class="result-grid">
               <div class="result-stat">
-                <span class="result-value" id="result-wpm">—</span>
+                <span class="result-value" id="result-wpm">-</span>
                 <span class="result-label">words per minute</span>
               </div>
               <div class="result-stat">
-                <span class="result-value" id="result-comp">—</span>
+                <span class="result-value" id="result-comp">-</span>
                 <span class="result-label">comprehension</span>
               </div>
               <div class="result-stat">
-                <span class="result-value" id="result-effective">—</span>
+                <span class="result-value" id="result-effective">-</span>
                 <span class="result-label">effective WPM</span>
               </div>
             </div>
@@ -114,19 +142,19 @@ That is what made distant manufacturing viable. Once distance stopped being expe
 
         <h2 class="mt-8">What the numbers mean</h2>
         <ul>
-          <li><strong>Under 200 WPM</strong> — below typical adult pace. Often subvocalisation, or reading on a screen with a lot of visual noise.</li>
-          <li><strong>200–300 WPM</strong> — the range most adults land in for ordinary prose.</li>
-          <li><strong>300–450 WPM</strong> — fast. Usually a practised reader on familiar subject matter.</li>
-          <li><strong>Above 450 WPM</strong> — genuinely quick, and worth checking your comprehension score before celebrating.</li>
+          <li><strong>Under 200 WPM</strong>: below typical adult pace. Often subvocalisation, or reading on a screen with a lot of visual noise.</li>
+          <li><strong>200-300 WPM</strong>: the range most adults land in for ordinary prose.</li>
+          <li><strong>300-450 WPM</strong>: fast. Usually a practised reader on familiar subject matter.</li>
+          <li><strong>Above 450 WPM</strong>: genuinely quick, and worth checking your comprehension score before celebrating.</li>
         </ul>
         <p>
-          Claims of 1,000+ WPM with full comprehension do not survive testing. Above roughly 500–600 WPM, comprehension drops measurably for most people on unfamiliar material. Techniques like RSVP help by removing wasted eye movement, not by removing the need to process the words.
+          Claims of 1,000+ WPM with full comprehension do not survive testing. Above roughly 500 to 600 WPM, comprehension drops measurably for most people on unfamiliar material. Techniques like RSVP help by removing wasted eye movement, not by removing the need to process the words.
         </p>
 
         <h2 class="mt-8">How to actually get faster</h2>
         <ol class="steps">
           <li>Test yourself first so you have a baseline that is not a guess.</li>
-          <li>Reduce subvocalisation — the inner voice reading each word — by pacing slightly faster than comfortable.</li>
+          <li>Reduce subvocalisation (the inner voice reading each word) by pacing slightly faster than comfortable.</li>
           <li>Stop regressing. Re-reading the same line is where most reading time disappears; an <a href="/rsvp-reader">RSVP reader</a> makes it impossible.</li>
           <li>Practise on material you already understand before pushing speed on hard text.</li>
           <li>Re-test after a couple of weeks and compare effective WPM, not raw WPM.</li>
@@ -134,8 +162,16 @@ That is what made distant manufacturing viable. Once distance stopped being expe
 
         <h2 class="mt-8">Privacy</h2>
         <p>
-          The test runs entirely in this page. Nothing you read, answer or score is sent anywhere. See the <a href="/privacy">privacy policy</a>.
+          The test runs in this page. Nothing you read, answer or score is sent anywhere. See the <a href="/privacy">privacy policy</a>.
         </p>
+
+        <h2 class="mt-8">Reading speed test FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
 
         <div class="related mt-8">
           <h2>Related free tools</h2>
@@ -143,7 +179,15 @@ That is what made distant manufacturing viable. Once distance stopped being expe
             <a href="/">Online speed reader</a> ·
             <a href="/rsvp-reader">RSVP reader</a> ·
             <a href="/bionic-reading#converter">Bionic text converter</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/teleprompter">Online teleprompter</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
             <a href="/how-it-works">How speed reading works</a>
+          </p>
+          <p>
+            Guides: <a href="/blog/how-to-speed-read-online">How to speed read online</a> ·
+            <a href="/blog/rsvp-reading-explained">What is RSVP reading?</a>
           </p>
         </div>
       </div>

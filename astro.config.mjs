@@ -24,5 +24,16 @@ export default defineConfig({
         return lastmod ? { ...item, lastmod } : item;
       },
     }),
+    {
+      name: 'emit-root-sitemap-xml',
+      hooks: {
+        'astro:build:done': async ({ dir }) => {
+          const fs = await import('node:fs/promises');
+          const indexUrl = new URL('sitemap-index.xml', dir);
+          const rootUrl = new URL('sitemap.xml', dir);
+          await fs.copyFile(indexUrl, rootUrl);
+        },
+      },
+    },
   ],
 });

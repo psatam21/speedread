@@ -36,15 +36,22 @@ const blogPosting = {
   dateModified: post.dateModified,
   inLanguage: 'en',
   mainEntityOfPage: canonicalUrl,
-  image: `${ORIGIN}/images/og-default.png`,
-  author: { '@type': 'Person', name: AUTHOR, url: `${ORIGIN}/about#author` },
-  publisher: { ...org, logo: { '@type': 'ImageObject', url: `${ORIGIN}/images/brand-mark.png` } },
+  image: `${ORIGIN}/images/og-default.webp`,
+  author: {
+    '@type': 'Person',
+    name: AUTHOR,
+    jobTitle: 'Founder & Developer',
+    description: 'Builder of BriskRead and MBA candidate at BITSoM researching practical reading workflows, RSVP pacing, and client-side document tools.',
+    url: `${ORIGIN}/about#author`,
+    worksFor: org,
+  },
+  publisher: { ...org, logo: { '@type': 'ImageObject', url: `${ORIGIN}/images/brand-mark.webp` } },
 };
 const breadcrumbs = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: `${ORIGIN}/` },
+    { '@type': 'ListItem', position: 1, name: 'Home', item: ORIGIN },
     { '@type': 'ListItem', position: 2, name: 'Blog', item: `${ORIGIN}/blog` },
     { '@type': 'ListItem', position: 3, name: post.crumb, item: canonicalUrl },
   ],
@@ -83,7 +90,7 @@ const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
       <nav class="breadcrumbs" aria-label="Breadcrumb">
         <a href="/">Home</a><span aria-hidden="true">/</span>
         <a href="/blog">Blog</a><span aria-hidden="true">/</span>
-        <span>{post.crumb}</span>
+        <span aria-current="page">{post.crumb}</span>
       </nav>
       <div class="glass glass-article">
         <p class="section-label">{post.label}</p>
@@ -103,6 +110,19 @@ const ld = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c');
             ))}
           </section>
         )}
+
+        <aside class="author-bio" aria-label="About the author">
+          <div class="author-bio-avatar" aria-hidden="true">PS</div>
+          <div class="author-bio-copy">
+            <p class="author-bio-heading">
+              Written by <a href="/about#author" rel="author"><strong>{AUTHOR}</strong></a>
+              <span class="author-bio-role">Founder &amp; developer of BriskRead</span>
+            </p>
+            <p class="author-bio-text">
+              Prathamesh builds local-first browser reading tools and tests RSVP, bionic formatting, and synced speech against published eye-movement and comprehension research. <a href="/about#author">More about the author</a>.
+            </p>
+          </div>
+        </aside>
 
         <div class="article-footer">
           <nav class="related" aria-label="Related posts">

@@ -1,8 +1,23 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
+
+const faqs = [
+  {
+    q: 'What is the best free website for speed reading?',
+    a: 'BriskRead is a free browser speed reader that combines Flash RSVP, Phrase, Focus, Flow, Bionic, and Page modes with optional Audio Sync text-to-speech and local PDF/EPUB parsing, with no account or signup required.',
+  },
+  {
+    q: 'Should I use an RSVP flash reader or a full-page speed reader?',
+    a: 'Use Flash RSVP for newsletters, blogs, and familiar nonfiction where you want a steady pace. Switch to Focus, Flow, Bionic, or Page mode when reading dense reports, equations, or material you need to study closely.',
+  },
+  {
+    q: 'Do online speed readers upload my PDFs to the cloud?',
+    a: 'Some tools upload files to remote servers. BriskRead parses PDFs, EPUBs, and OCR images locally inside your browser so your document files stay on your device.',
+  },
+];
 ---
 
-<BlogPost slug="best-online-speed-readers" related={['how-to-speed-read-online', 'speed-read-pdf-online', 'audio-sync-speed-reading']}>
+<BlogPost slug="best-online-speed-readers" faqs={faqs} related={['how-to-speed-read-online', 'speed-read-pdf-online', 'audio-sync-speed-reading']}>
   <div class="tldr" role="note" aria-label="Key takeaways">
     <p class="tldr-label">TL;DR</p>
     <ul>
@@ -19,11 +34,11 @@ import BlogPost from '../../layouts/BlogPost.astro';
   <h2>What “best” should mean for online speed reading</h2>
   <p>Ignore inflated WPM claims. Evaluate tools on jobs you actually have:</p>
   <ul>
-    <li><strong>Import paths</strong> — paste, PDF, EPUB, OCR, or browser capture</li>
-    <li><strong>Reading modes</strong> — flash RSVP for speed, focus/page for hard material</li>
-    <li><strong>Comprehension aids</strong> — audio, check-ins, resume later</li>
-    <li><strong>Privacy</strong> — do files leave your machine by default?</li>
-    <li><strong>Price honesty</strong> — free tier limits vs one-time or subscription</li>
+    <li><strong>Import paths:</strong> paste, PDF, EPUB, OCR, or browser capture</li>
+    <li><strong>Reading modes:</strong> flash RSVP for speed, focus/page for hard material</li>
+    <li><strong>Comprehension aids:</strong> audio, check-ins, resume later</li>
+    <li><strong>Privacy:</strong> do files leave your machine by default?</li>
+    <li><strong>Price honesty:</strong> free tier limits vs one-time or subscription</li>
   </ul>
 
   <h2>Common categories of speed reading sites</h2>
@@ -33,7 +48,7 @@ import BlogPost from '../../layouts/BlogPost.astro';
   </p>
   <h3>2. Bionic / bold-prefix readers</h3>
   <p>
-    Full-page layout with bolded word beginnings (<a href="/bionic-reading">how bionic reading works</a>). Useful for self-paced scanning. Weakness: less control over raw pace compared with RSVP.
+    Full-page layout with bolded word beginnings (<a href="/bionic-reading">how bionic reading works</a>). Useful for self-paced scanning. Weakness: less control over raw pace compared with <a href="/rsvp-reader">RSVP</a>.
   </p>
   <h3>3. Audio-first apps (speech-focused)</h3>
   <p>
@@ -50,13 +65,13 @@ import BlogPost from '../../layouts/BlogPost.astro';
   <h2>Where BriskRead ranks for real workflows</h2>
   <div class="callout">
     <p>
-      BriskRead is a free browser speed reader with Flash, Phrase, Focus, Flow, Bionic, and Page modes; local PDF/EPUB/OCR; optional public URL extract; Chrome extension; library + queue — all completely free, supported by ads.
+      BriskRead is a free browser speed reader with Flash, Phrase, Focus, Flow, Bionic, and Page modes; local PDF/EPUB/OCR; optional public URL extract; Chrome extension; library + queue, all completely free and supported by ads.
     </p>
   </div>
   <ul>
     <li>Best when you want <strong>speed + optional speech</strong> without installing a heavy desktop suite</li>
     <li>Best when documents should stay <strong>local-first</strong></li>
-    <li>Weaker when a site is paywalled or JS-only and you only try URL extract — paste or the extension works better</li>
+    <li>Weaker when a site is paywalled or JS-only and you only try URL extract, where paste or the extension works better</li>
   </ul>
 
   <h2>Quick checklist before you commit to a tool</h2>
@@ -68,6 +83,6 @@ import BlogPost from '../../layouts/BlogPost.astro';
   </ol>
 
   <p>
-    If those answers matter, start on the <a href="/">BriskRead homepage reader</a>, skim <a href="/how-it-works">how each mode works</a>, or install the <a href="/extension">Chrome extension</a>.
+    If those answers matter, start on the <a href="/">BriskRead homepage reader</a>, measure your baseline on the <a href="/reading-speed-test">reading speed test</a>, skim <a href="/how-it-works">how each mode works</a>, or install the <a href="/extension">Chrome extension</a>.
   </p>
 </BlogPost>

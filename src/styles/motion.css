@@ -19,9 +19,7 @@
   height: 2px;
   width: 0%;
   z-index: 200;
-  background: linear-gradient(90deg, #5e6ad2, #a78bfa, #5e6ad2);
-  background-size: 200% 100%;
-  animation: progress-shimmer 2.4s linear infinite;
+  background: var(--color-primary);
   transform-origin: left;
   pointer-events: none;
 }
@@ -656,3 +654,7 @@ html[data-theme="amoled"] .cursor-glow:not([data-surface="light"]):not([data-sur
     transform: none !important;
   }
 }
+
+/* Paper and Pen: no ambient blobs or spinning rings; the page stays still. */
+.aurora,
+.hero-reader-shell::before { display: none; }

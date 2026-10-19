@@ -1,18 +1,33 @@
 ---
 import BlogPost from '../../layouts/BlogPost.astro';
+
+const faqs = [
+  {
+    q: 'What is Audio Sync in speed reading?',
+    a: 'Audio Sync pairs visual RSVP word flashing with spoken text-to-speech so your eyes and ears track the exact same word stream at the same pace.',
+  },
+  {
+    q: 'Does listening while reading improve comprehension?',
+    a: 'Dual-channel multimedia learning research suggests aligned visual and auditory verbal streams can help maintain attention on medium-difficulty text, though extreme speeds still reduce comprehension.',
+  },
+  {
+    q: 'Which browsers have the best free voices for Audio Sync?',
+    a: 'Microsoft Edge and Google Chrome on desktop expose natural system and neural read-aloud voices through the standard Web Speech API at no cost.',
+  },
+];
 ---
 
-<BlogPost slug="audio-sync-speed-reading" related={['best-online-speed-readers', 'rsvp-reading-explained', 'how-to-speed-read-online']}>
+<BlogPost slug="audio-sync-speed-reading" faqs={faqs} related={['best-online-speed-readers', 'rsvp-reading-explained', 'how-to-speed-read-online']}>
   <p class="lede">
     Short answer: sometimes, and mostly as a focus aid. Pairing speech with an RSVP stream (<strong>Audio Sync</strong> on <a href="/">BriskRead</a>) gives your eyes and ears the same words at the same pace. The evidence for it is suggestive, not settled.
   </p>
 
   <h2>The problem with visual-only flash</h2>
   <p>
-    At high WPM, it is easy to “see” words without encoding them. You finish the article and cannot restate the argument. That is a focus problem, not a moral failing — and research on pure RSVP is clear that cranking speed alone does not magically raise comprehension.
+    At high WPM, it is easy to “see” words without encoding them. You finish the article and cannot restate the argument. That is a focus problem, not a moral failing, and research on pure RSVP is clear that cranking speed alone does not magically raise comprehension.
   </p>
   <p>
-    Acklin and Papesh (2017) found modern flash-style speed-reading apps did <em>not</em> foster better comprehension versus normal reading when speed was pushed hard; static text still won on comprehension, and faster RSVP hurt verbatim memory.
+    Acklin and Papesh (2017) found modern flash-style speed-reading apps did <em>not</em> produce better comprehension versus normal reading when speed was pushed hard; static text still won on comprehension, and faster RSVP hurt verbatim memory.
     <a href="https://doi.org/10.5406/amerjpsyc.130.2.0183" rel="noopener noreferrer" target="_blank">American Journal of Psychology · DOI</a>
   </p>
   <p>
@@ -22,14 +37,14 @@ import BlogPost from '../../layouts/BlogPost.astro';
 
   <h2>Why audio might help: dual-channel learning</h2>
   <p>
-    Cognitive load and multimedia learning research treats people as having partly separate <strong>visual/pictorial</strong> and <strong>auditory/verbal</strong> channels (Mayer’s dual-channel assumption). Presenting the <em>same verbal stream</em> through vision and hearing — at a controlled pace — is different from stacking unrelated video + narration.
+    Cognitive load and multimedia learning research treats people as having partly separate <strong>visual/pictorial</strong> and <strong>auditory/verbal</strong> channels (Mayer’s dual-channel assumption). Presenting the <em>same verbal stream</em> through vision and hearing at a controlled pace is different from stacking unrelated video and narration.
   </p>
   <p>
     One experimental comparison of visual-only, audio-only, and dual-channel presentation of reading material reported stronger comprehension when both channels carried the content, rather than either channel alone.
     <a href="https://www.researchgate.net/publication/336656341_An_experimental_comparison_on_reading_comprehension_effect_of_visual_audio_and_dual_channels" rel="noopener noreferrer" target="_blank">Visual vs audio vs dual-channel comparison</a>
   </p>
   <p>
-    That is the design idea behind Audio Sync: not “read 1000 WPM forever,” but two aligned signals so attention may drop less often — while you still keep Focus/Page modes for dense text. None of the sources above tests Audio Sync itself, so treat it as something to try on your own text, not a proven boost.
+    That is the design idea behind Audio Sync: not “read 1000 WPM forever,” but two aligned signals so attention may drop less often while you still keep Focus/Page modes for dense text. None of the sources above tests Audio Sync itself, so treat it as something to try on your own text, not a proven boost.
   </p>
 
   <h2>What dual-channel means in BriskRead</h2>
@@ -47,7 +62,7 @@ import BlogPost from '../../layouts/BlogPost.astro';
     <li>Commuting-style focus while still looking at the screen</li>
   </ul>
   <p>
-    Turn it off for quiet libraries, or when the device voice is poor — quality depends on system voices in Chrome/Edge.
+    Turn it off for quiet libraries, or when the device voice is poor, since quality depends on system voices in Chrome or Edge. You can also use <a href="/pdf-to-speech">PDF to speech</a> or check speaking duration in the <a href="/words-to-minutes">words to minutes calculator</a>.
   </p>
 
   <h2>How to try it in one minute</h2>

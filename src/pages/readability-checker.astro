@@ -5,8 +5,51 @@ import AdSlot from '../components/AdSlot.astro';
 // disagree with the live label. It only attaches to globalThis.
 import '../../public/readability.js';
 
-const { BANDS } = (globalThis as any).BriskReadReadability;
+const { BANDS, analyze, bandFor, highlightSegments, SMOG_MIN_SENTENCES } = (globalThis as any).BriskReadReadability;
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const SAMPLE =
+  'Readability formulas estimate how hard a text is to read. Short sentences and common words score well. ' +
+  'Long sentences packed with multisyllabic terminology, subordinate clauses, and qualifications that the reader must hold in mind before reaching the main verb score badly, because the formula treats length as a stand-in for difficulty. ' +
+  'Try replacing this text with your own. ' +
+  'Most people find that splitting one long sentence in two moves the grade level down quickly, and that choosing a plain word over a formal one helps even more.';
+
+const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]);
+const plural = (n: number, one: string, many: string) => `${n} ${n === 1 ? one : many}`;
+const fmtGrade = (n: number) => Math.max(0, n).toFixed(1);
+const fmtDuration = (sec: number) => {
+  const total = Math.round(sec);
+  if (total < 60) return `${total} sec`;
+  const h = Math.floor(total / 3600);
+  const m = Math.floor((total % 3600) / 60);
+  const s = total % 60;
+  return h ? `${h} h ${m} min` : `${m} min ${s} sec`;
+};
+
+const sampleResult = analyze(SAMPLE);
+const sampleCounts = sampleResult.counts;
+const sampleFre = sampleResult.scores.fleschReadingEase;
+const sampleBand = bandFor(sampleFre);
+const sampleFlags: string[] = [];
+if (sampleCounts.hardSentences) sampleFlags.push(plural(sampleCounts.hardSentences, 'hard sentence', 'hard sentences'));
+if (sampleCounts.veryHardSentences) sampleFlags.push(`${sampleCounts.veryHardSentences} very hard`);
+const sampleSub =
+  `${plural(sampleCounts.words, 'word', 'words')} in ${plural(sampleCounts.sentences, 'sentence', 'sentences')}.` +
+  (sampleFlags.length ? ` ${sampleFlags.join(', ')}.` : ' No hard sentences.') +
+  ' This is the sample text. Paste your own to replace it.';
+const sampleMeterScale = (Math.min(100, Math.max(0, sampleFre)) / 100).toFixed(3);
+const sampleSmogNote = sampleResult.smogReliable
+  ? ''
+  : `Unreliable under ${SMOG_MIN_SENTENCES} sentences. This text has ${sampleCounts.sentences}.`;
+const sampleHighlightHtml = highlightSegments(SAMPLE, sampleResult)
+  .map((s: any) => {
+    const cls = [s.sentence === 'hard' ? 'rc-hard' : s.sentence === 'veryhard' ? 'rc-very' : '', s.complex ? 'rc-cx' : '']
+      .filter(Boolean)
+      .join(' ');
+    return cls ? `<span class="${cls}">${esc(s.text)}</span>` : esc(s.text);
+  })
+  .join('');
 
 const pageTitle = 'Readability Checker: Flesch Score & Grade Level | BriskRead';
 const pageDescription = 'Free readability checker: paste text for the Flesch reading ease score, Flesch-Kincaid grade level and 4 more scores, with hard sentences highlighted.';
@@ -71,12 +114,12 @@ const faqSchema = {
 
           <div class="rc-hero" id="rc-hero" aria-live="polite" aria-atomic="true">
             <p class="rc-eyebrow">Flesch reading ease</p>
-            <p class="rc-score" id="rc-fre">--</p>
-            <p class="rc-band" id="rc-band">Checking the sample text</p>
-            <p class="rc-sub" id="rc-sub"></p>
+            <p class="rc-score" id="rc-fre">{sampleFre.toFixed(1)}</p>
+            <p class="rc-band" id="rc-band">{sampleBand.label}, about {sampleBand.grade} level</p>
+            <p class="rc-sub" id="rc-sub">{sampleSub}</p>
           </div>
           <div class="rc-meter" aria-hidden="true">
-            <span class="rc-meter-fill" id="rc-meter-fill"></span>
+            <span class="rc-meter-fill" id="rc-meter-fill" style={`transform: scaleX(${sampleMeterScale})`}></span>
           </div>
           <div class="rc-meter-scale" aria-hidden="true"><span>0 hard</span><span>50</span><span>100 easy</span></div>
 
@@ -84,46 +127,46 @@ const faqSchema = {
           <dl class="rc-grid">
             <div class="rc-card">
               <dt>Flesch-Kincaid grade</dt>
-              <dd class="rc-num" id="rc-fk">--</dd>
+              <dd class="rc-num" id="rc-fk">{fmtGrade(sampleResult.scores.fleschKincaid)}</dd>
               <dd class="rc-desc">US school grade, from sentence length and syllables per word.</dd>
             </div>
             <div class="rc-card">
               <dt>Gunning Fog</dt>
-              <dd class="rc-num" id="rc-fog">--</dd>
+              <dd class="rc-num" id="rc-fog">{fmtGrade(sampleResult.scores.gunningFog)}</dd>
               <dd class="rc-desc">Years of schooling for a first read. Punishes words of 3+ syllables.</dd>
             </div>
             <div class="rc-card">
               <dt>SMOG</dt>
-              <dd class="rc-num" id="rc-smog">--</dd>
+              <dd class="rc-num" id="rc-smog">{fmtGrade(sampleResult.scores.smog)}</dd>
               <dd class="rc-desc">Grade to understand nearly all of it. Counts long words only.</dd>
-              <dd class="rc-warn" id="rc-smog-note" hidden></dd>
+              <dd class="rc-warn" id="rc-smog-note" hidden={sampleResult.smogReliable}>{sampleSmogNote}</dd>
             </div>
             <div class="rc-card">
               <dt>Coleman-Liau</dt>
-              <dd class="rc-num" id="rc-cli">--</dd>
+              <dd class="rc-num" id="rc-cli">{fmtGrade(sampleResult.scores.colemanLiau)}</dd>
               <dd class="rc-desc">Grade from letters per word and sentence length. No syllables.</dd>
             </div>
             <div class="rc-card">
               <dt>Automated Readability Index</dt>
-              <dd class="rc-num" id="rc-ari">--</dd>
+              <dd class="rc-num" id="rc-ari">{fmtGrade(sampleResult.scores.ari)}</dd>
               <dd class="rc-desc">Grade from characters per word and sentence length. No syllables.</dd>
             </div>
             <div class="rc-card rc-card-main">
               <dt>Average grade</dt>
-              <dd class="rc-num" id="rc-avg">--</dd>
+              <dd class="rc-num" id="rc-avg">{fmtGrade(sampleResult.scores.averageGrade)}</dd>
               <dd class="rc-desc">Mean of the grade scores above. Grades below 0 show as 0.</dd>
             </div>
           </dl>
 
           <h2 class="mt-6">Counts</h2>
           <dl class="rc-counts">
-            <div><dt>Words</dt><dd id="rc-words">--</dd></div>
-            <div><dt>Sentences</dt><dd id="rc-sentences">--</dd></div>
-            <div><dt>Syllables</dt><dd id="rc-syllables">--</dd></div>
-            <div><dt>Complex words (3+ syllables)</dt><dd id="rc-complex">--</dd></div>
-            <div><dt>Average sentence length</dt><dd id="rc-avgsent">--</dd></div>
-            <div><dt>Reading time at 238 WPM</dt><dd id="rc-readtime">--</dd></div>
-            <div><dt>Speaking time at about 150 WPM (approximate)</dt><dd id="rc-speaktime">--</dd></div>
+            <div><dt>Words</dt><dd id="rc-words">{sampleCounts.words.toLocaleString('en-US')}</dd></div>
+            <div><dt>Sentences</dt><dd id="rc-sentences">{sampleCounts.sentences.toLocaleString('en-US')}</dd></div>
+            <div><dt>Syllables</dt><dd id="rc-syllables">{sampleCounts.syllables.toLocaleString('en-US')}</dd></div>
+            <div><dt>Complex words (3+ syllables)</dt><dd id="rc-complex">{sampleCounts.complexWords.toLocaleString('en-US')}</dd></div>
+            <div><dt>Average sentence length</dt><dd id="rc-avgsent">{sampleResult.averages.wordsPerSentence.toFixed(1)} words</dd></div>
+            <div><dt>Reading time at 238 WPM</dt><dd id="rc-readtime">{fmtDuration(sampleResult.time.readingSeconds)}</dd></div>
+            <div><dt>Speaking time at about 150 WPM (approximate)</dt><dd id="rc-speaktime">about {fmtDuration(sampleResult.time.speakingSeconds)}</dd></div>
           </dl>
 
           <h2 class="mt-6" id="rc-hl-title">Your text, marked up</h2>
@@ -132,7 +175,7 @@ const faqSchema = {
             <li><span class="rc-very">Very hard sentence</span> 30+ words: stronger tint, double underline</li>
             <li><span class="rc-cx">complex</span> word of 3+ syllables: bold, boxed</li>
           </ul>
-          <div class="rc-highlight" id="rc-highlight" role="region" aria-labelledby="rc-hl-title" tabindex="0"></div>
+          <div class="rc-highlight" id="rc-highlight" role="region" aria-labelledby="rc-hl-title" tabindex="0" set:html={sampleHighlightHtml}></div>
 
           <div class="rc-cta">
             <button type="button" class="btn btn-primary" id="rc-read" disabled aria-describedby="rc-read-hint">Speed read this text</button>
@@ -185,7 +228,7 @@ const faqSchema = {
         <p>Fix the highlighted sentences first. Then work through this list.</p>
         <ol class="steps">
           <li><strong>Split long sentences.</strong> Cut at "and", "but" or "which". Aim for an average near 15 to 20 words.</li>
-          <li><strong>Use common words.</strong> Write "use" for "utilize", "help" for "facilitate" and "start" for "commence".</li>
+          <li><strong>Use common words.</strong> Choose short, concrete verbs like "use", "help" and "start" instead of formal multisyllable substitutes.</li>
           <li><strong>Prefer the active voice.</strong> "The team approved the plan" beats "The plan was approved by the team". Formulas cannot see voice. Readers can feel it.</li>
           <li><strong>Keep one idea per sentence,</strong> and put the main point first.</li>
           <li><strong>Cut filler,</strong> and explain jargon the first time you use it.</li>
@@ -200,7 +243,7 @@ const faqSchema = {
           <li>McLaughlin, 1969: <a href="https://ogg.osu.edu/media/documents/health_lit/WRRSMOG_Readability_Formula_G._Harry_McLaughlin__1969_.pdf" rel="noopener">SMOG grading</a>, Journal of Reading.</li>
           <li>Coleman and Liau, 1975: a <a href="https://doi.org/10.1037/h0076540" rel="noopener">letter-based formula</a>.</li>
           <li>Kincaid and colleagues, 1975: <a href="https://stars.library.ucf.edu/istlibrary/56" rel="noopener">Flesch, Fog and ARI recalibrated</a> on US Navy trainees. Source of the Flesch-Kincaid grade level.</li>
-          <li>Brysbaert, 2019: the <a href="https://doi.org/10.1016/j.jml.2019.104047" rel="noopener">238 words per minute</a> silent reading rate used for reading time.</li>
+          <li>Brysbaert, 1919–2019 meta-analysis: the <a href="https://doi.org/10.1016/j.jml.2019.104047" rel="noopener">238 words per minute</a> silent reading rate used for reading time.</li>
         </ul>
 
         <h2 class="mt-8">The limits of readability formulas</h2>
@@ -228,13 +271,16 @@ const faqSchema = {
         ))}
 
         <div class="related mt-8">
-          <h2>Related free tools</h2>
+          <h2>Related free tools &amp; guides</h2>
           <p>
             <a href="/">Online speed reader</a> ·
             <a href="/words-to-minutes">Words to minutes</a> ·
             <a href="/teleprompter">Teleprompter</a> ·
             <a href="/reading-speed-test">Reading speed test</a> ·
-            <a href="/bionic-reading">Bionic reading</a>
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/blog/how-to-speed-read-online">How to speed read online</a>
           </p>
         </div>
       </div>

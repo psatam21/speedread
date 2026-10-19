@@ -40,10 +40,10 @@ const faqSchema = {
 
 // Min and max come from BriskReadTeleprompter.LIMITS at runtime (one source of truth).
 const sliders = [
-  { key: 'wpm', label: 'Pace', step: 10 },
-  { key: 'font', label: 'Font size', step: 2 },
-  { key: 'width', label: 'Text width', step: 5 },
-  { key: 'lh', label: 'Line height', step: 0.05 },
+  { key: 'wpm', label: 'Pace', step: 10, min: 60, max: 300, value: 150, out: '150 WPM' },
+  { key: 'font', label: 'Font size', step: 2, min: 20, max: 96, value: 36, out: '36 px' },
+  { key: 'width', label: 'Text width', step: 5, min: 35, max: 95, value: 70, out: '70%' },
+  { key: 'lh', label: 'Line height', step: 0.05, min: 1.2, max: 2, value: 1.5, out: '1.50' },
 ];
 const mirrors = [
   { key: 'mirrorH', label: 'Mirror horizontal' },
@@ -71,14 +71,14 @@ const mirrors = [
             placeholder="Paste or type your script here. Blank lines become pauses between paragraphs."
           ></textarea>
           <p class="tp-meta">
-            <strong id="tp-count">0 words</strong> · about <strong id="tp-duration">0:00</strong> at <span data-out="wpm"></span>
+            <strong id="tp-count">0 words</strong> · about <strong id="tp-duration">0:00</strong> at <span data-out="wpm">150 WPM</span>
           </p>
 
           <div class="tp-panel" id="tp-panel">
             {sliders.map((f) => (
               <label class="tp-field">
-                <span>{f.label}: <span class="tp-val" data-out={f.key}></span></span>
-                <input type="range" data-setting={f.key} step={f.step} />
+                <span>{f.label}: <span class="tp-val" data-out={f.key}>{f.out}</span></span>
+                <input type="range" data-setting={f.key} step={f.step} min={f.min} max={f.max} value={f.value} />
               </label>
             ))}
             {mirrors.map((f) => (
@@ -167,12 +167,15 @@ const mirrors = [
         </div>
 
         <div class="related mt-8">
-          <h2>Related free tools</h2>
+          <h2>Related free tools &amp; guides</h2>
           <p>
             <a href="/">Online speed reader</a> ·
             <a href="/words-to-minutes">Words to minutes</a> ·
             <a href="/readability-checker">Readability checker</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
             <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
             <a href="/how-it-works">How BriskRead works</a>
           </p>
         </div>

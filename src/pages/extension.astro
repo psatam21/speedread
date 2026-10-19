@@ -3,9 +3,34 @@ import Layout from '../layouts/Layout.astro';
 
 const pageTitle = "Chrome Speed Reader Extension: Free RSVP | BriskRead";
 const pageDescription = "Free Chrome speed reader extension: RSVP-read any tab or selection in one click, with a read-later queue. No account needed. Loads in developer mode for now.";
+
+const faqs = [
+  {
+    q: 'Does the BriskRead Chrome extension require an account?',
+    a: 'No. In-page RSVP reading, bionic formatting, read-aloud, and the read-later queue all work without signing in. An optional BriskRead account only syncs your library and stats across devices.',
+  },
+  {
+    q: 'Does the extension track my browsing history?',
+    a: 'No. The extension uses activeTab permission, which means it can only read the current page after you click the toolbar icon, use a keyboard shortcut, or pick a right-click menu item.',
+  },
+  {
+    q: 'What are the keyboard shortcuts for the extension?',
+    a: 'Press Alt+Shift+S to speed-read the current page or selection, and Alt+Shift+K to toggle bionic reading on the live page.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="ext-page mt-8">
     <div class="container max-w-3xl">
       <div class="glass content-card">
@@ -22,9 +47,9 @@ const pageDescription = "Free Chrome speed reader extension: RSVP-read any tab o
 
         <h2>How the extension behaves</h2>
         <ul>
-          <li><strong>Right-click selected text or a page:</strong> opens a private RSVP popup immediately. You stay on the current tab.</li>
+          <li><strong>Right-click selected text or a page:</strong> opens a private RSVP popup right away. You stay on the current tab.</li>
           <li><strong>Speed read this page:</strong> extracts the page and opens the same local reader.</li>
-          <li><strong>Open BriskRead app:</strong> opens the full website for files, OCR, bionic reading, speech and AI.</li>
+          <li><strong>Open BriskRead app:</strong> opens the full website for files, OCR, <a href="/bionic-reading">bionic reading</a>, <a href="/pdf-to-speech">PDF to speech</a> and AI.</li>
           <li><strong>Options:</strong> developer endpoint settings. Normal users can leave the defaults unchanged.</li>
         </ul>
 
@@ -33,7 +58,7 @@ const pageDescription = "Free Chrome speed reader extension: RSVP-read any tab o
           <li>Download the release zip from the project release folder, or clone the repo and open <code>chrome-extension/</code>.</li>
           <li>Open <code>chrome://extensions</code> and enable <strong>Developer mode</strong>.</li>
           <li>Click <strong>Load unpacked</strong> and select the <code>chrome-extension</code> directory (unzipped, with <code>manifest.json</code> at the root).</li>
-          <li>Pin BriskRead. Optional: right-click a page → <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
+          <li>Pin BriskRead. Optional: right-click a page, select <strong>Speed read this page</strong>, or press <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>.</li>
         </ol>
 
         <h2>Install from the Chrome Web Store</h2>
@@ -47,20 +72,28 @@ const pageDescription = "Free Chrome speed reader extension: RSVP-read any tab o
         <ol class="steps">
           <li>Create or sign in to your free BriskRead account on the <a href="/account">Account</a> page.</li>
           <li>Open the extension popup and use the same email to keep reading progress connected.</li>
-          <li>No account? Everything still works — it just stays on that device.</li>
+          <li>No account? Everything still works and stays on that device.</li>
         </ol>
 
         <h2>What we access</h2>
         <ul>
-          <li><strong>Active tab</strong> — only when you click Speed read or use the context menu, to extract article text.</li>
-          <li><strong>BriskRead</strong> — only if you sign in, to sync your library and totals across devices.</li>
-          <li><strong>Storage</strong> — your settings stay on your machine in extension storage.</li>
+          <li><strong>Active tab</strong>: only when you click Speed read or use the context menu, to extract article text.</li>
+          <li><strong>BriskRead</strong>: only if you sign in, to sync your library and totals across devices.</li>
+          <li><strong>Storage</strong>: your settings stay on your machine in extension storage.</li>
         </ul>
         <p class="muted">
           Full policy: <a href="/privacy">Privacy Policy</a>. We do not sell browsing history.
         </p>
 
-        <p>New to paced reading? Read <a href="/how-it-works">how speed reading works</a> or try the <a href="/rsvp-reader">RSVP reader</a> on this site first.</p>
+        <h2>Chrome extension FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p class="muted">{a}</p>
+          </>
+        ))}
+
+        <p class="muted">New to paced reading? Read <a href="/how-it-works">how speed reading works</a>, check your baseline on the <a href="/reading-speed-test">reading speed test</a>, or try the <a href="/rsvp-reader">RSVP reader</a> on this site first.</p>
       </div>
     </div>
   </section>

@@ -1,9 +1,13 @@
 ---
-import '@fontsource/inter/400.css';
-import '@fontsource/inter/600.css';
-import '@fontsource/inter/700.css';
-import inter400 from '@fontsource/inter/files/inter-latin-400-normal.woff2?url';
-import inter600 from '@fontsource/inter/files/inter-latin-600-normal.woff2?url';
+import '@fontsource/newsreader/400.css';
+import '@fontsource/newsreader/500.css';
+import '@fontsource/newsreader/400-italic.css';
+import '@fontsource/hanken-grotesk/400.css';
+import '@fontsource/hanken-grotesk/500.css';
+import '@fontsource/hanken-grotesk/600.css';
+import '@fontsource/geist-mono/400.css';
+import sansFont from '@fontsource/hanken-grotesk/files/hanken-grotesk-latin-400-normal.woff2?url';
+import serifFont from '@fontsource/newsreader/files/newsreader-latin-400-normal.woff2?url';
 import '../styles/global.css';
 import '../styles/motion.css';
 
@@ -28,8 +32,8 @@ const pathname = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const {
   title,
   description,
-  canonicalUrl = new URL(pathname, Astro.site || Astro.url).href,
-  ogImage = '/images/og-default.png',
+  canonicalUrl = new URL(pathname, Astro.site || Astro.url).href.replace(/\/$/, ''),
+  ogImage = '/images/og-default.webp',
   noindex = false,
   ogType = 'website',
   author = 'BriskRead',
@@ -40,22 +44,57 @@ const {
 const adsenseClient = import.meta.env.PUBLIC_ADSENSE_CLIENT_ID as string | undefined;
 const adsenseAutoAds = import.meta.env.PUBLIC_ADSENSE_AUTO_ADS === 'true';
 const adsenseVerification = import.meta.env.PUBLIC_ADSENSE_VERIFICATION as string | undefined;
+const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION as string | undefined;
 const gaId = import.meta.env.PUBLIC_GA_MEASUREMENT_ID as string | undefined;
 const isHome = pathname === '/';
 const allowAds = pathname !== '/account';
 const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY as string | undefined;
 const siteOrigin = Astro.site ? Astro.site.href.replace(/\/$/, '') : 'https://briskread.com';
+
+const PAGE_CRUMBS: Record<string, string> = {
+  '/rsvp-reader': 'RSVP reader',
+  '/bionic-reading': 'Bionic reading',
+  '/pdf-to-speech': 'PDF to speech',
+  '/reading-speed-test': 'Reading speed test',
+  '/words-to-minutes': 'Words to minutes',
+  '/teleprompter': 'Online teleprompter',
+  '/readability-checker': 'Readability checker',
+  '/how-it-works': 'How it works',
+  '/extension': 'Chrome extension',
+  '/blog': 'Blog',
+  '/about': 'About',
+  '/contact': 'Contact',
+  '/privacy': 'Privacy policy',
+  '/terms': 'Terms of service',
+};
+const pageCrumb = !isHome && !noindex && !pathname.startsWith('/blog/') ? PAGE_CRUMBS[pathname] : undefined;
+const breadcrumbSchema = pageCrumb
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: siteOrigin },
+        { '@type': 'ListItem', position: 2, name: pageCrumb, item: canonicalUrl },
+      ],
+    }
+  : null;
+
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'BriskRead',
   alternateName: ['Brisk Read', 'BriskRead speed reader'],
   url: siteOrigin,
-  logo: `${siteOrigin}/images/brand-mark.png`,
+  logo: `${siteOrigin}/images/brand-mark.webp`,
   description:
     'Free dual-channel online speed reader with RSVP, Audio Sync, Focus, Bionic, PDF/EPUB import, and a Chrome extension.',
   email: 'support@briskread.com',
+  founder: {
+    '@type': 'Person',
+    name: 'Prathamesh Satam',
+    url: `${siteOrigin}/about#author`,
+  },
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'customer support',
@@ -90,7 +129,7 @@ const softwareSchema = {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
-      description: 'Completely free — unlimited documents, all modes, account sync, and the full Chrome extension. Supported by ads.',
+      description: 'Completely free: unlimited documents, all modes, account sync, and the full Chrome extension. Supported by ads.',
     },
   ],
   featureList: [
@@ -100,7 +139,7 @@ const softwareSchema = {
     'Local PDF, EPUB, paste, and OCR',
     'Chrome extension for page capture',
   ],
-  screenshot: `${siteOrigin}/images/og-default.png`,
+  screenshot: `${siteOrigin}/images/og-default.webp`,
 };
 ---
 
@@ -110,8 +149,8 @@ const softwareSchema = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <link rel="preload" href={inter400} as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href={inter600} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={sansFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={serifFont} as="font" type="font/woff2" crossorigin />
     
     <!-- Brand tab icon: prefer PNG/ICO (most browsers); SVG as progressive enhancement.
          ?v= busts aggressive favicon caches after brand updates. -->
@@ -130,7 +169,7 @@ const softwareSchema = {
     {/* noindex + canonical is a mixed signal, so noindex pages get no canonical */}
     {!noindex && <link rel="canonical" href={canonicalUrl} />}
     <meta name="robots" content={noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'} />
-    <meta name="theme-color" content="#5e6ad2" />
+    <meta name="theme-color" content="#f6f2e9" />
     <meta name="author" content={author} />
     
     <!-- Open Graph -->
@@ -151,6 +190,9 @@ const softwareSchema = {
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={new URL(ogImage, Astro.site || Astro.url).href} />
 
+    {googleSiteVerification && (
+      <meta name="google-site-verification" content={googleSiteVerification} />
+    )}
     {adsenseVerification && (
       <meta name="google-adsense-account" content={adsenseVerification.startsWith('ca-pub') ? adsenseVerification : adsenseClient} />
     )}
@@ -178,19 +220,6 @@ const softwareSchema = {
       const font = getStoredFont();
       document.documentElement.setAttribute('data-theme', theme);
       document.documentElement.setAttribute('data-font', font);
-
-      // Merriweather is only for the reader's optional serif font, so fetch it on demand
-      // (initial load or whenever the reader switches data-font) instead of on every page.
-      const loadSerif = () => {
-        if (document.documentElement.dataset.font !== 'serif' || document.getElementById('font-serif')) return;
-        const link = document.createElement('link');
-        link.id = 'font-serif';
-        link.rel = 'stylesheet';
-        link.href = 'https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap';
-        document.head.appendChild(link);
-      };
-      loadSerif();
-      new MutationObserver(loadSerif).observe(document.documentElement, { attributes: true, attributeFilter: ['data-font'] });
     </script>
     
     {gaId && (
@@ -226,6 +255,9 @@ const softwareSchema = {
         <script type="application/ld+json" set:html={JSON.stringify(softwareSchema)} />
       </>
     )}
+    {breadcrumbSchema && (
+      <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    )}
     <slot name="head" />
     <link rel="alternate" type="text/plain" title="LLM site summary" href="/llms.txt" />
   </head>
@@ -249,10 +281,10 @@ const softwareSchema = {
           <div class="logo-container">
             <img
               class="logo-mark-img"
-              src="/images/brand-mark-96.png"
+              src="/images/brand-mark-96.webp"
               width="28"
               height="28"
-              alt=""
+              alt="BriskRead logo"
               decoding="async"
             />
             <span class="logo-text">BriskRead</span>
@@ -292,6 +324,14 @@ const softwareSchema = {
     </header>
 
     <main id="main-content">
+      {pageCrumb && (
+        <div class="container site-breadcrumbs-wrap">
+          <nav class="breadcrumbs site-breadcrumbs" aria-label="Breadcrumb">
+            <a href="/">Home</a><span aria-hidden="true">/</span>
+            <span aria-current="page">{pageCrumb}</span>
+          </nav>
+        </div>
+      )}
       <slot />
     </main>
 
@@ -305,7 +345,7 @@ const softwareSchema = {
       <div class="container footer-container">
         <div class="footer-brand">
           <a href="/" class="footer-logo">
-            <img src="/images/brand-mark-96.png" width="22" height="22" alt="" decoding="async" class="footer-logo-mark" />
+            <img src="/images/brand-mark-96.webp" width="22" height="22" alt="BriskRead logo" decoding="async" class="footer-logo-mark" />
             BriskRead<span>.</span>
           </a>
           <p>Read the backlog, not the interface. RSVP, bionic reading, OCR and synced speech in one private browser tool.</p>
@@ -330,13 +370,15 @@ const softwareSchema = {
         <div class="footer-group">
           <p>Learn</p>
           <a href="/how-it-works">How it works</a>
-          <a href="/blog">Blog</a>
+          <a href="/blog">All guides</a>
           <a href="/blog/best-online-speed-readers">Best online speed readers</a>
           <a href="/blog/how-to-speed-read-online">How to speed read online</a>
+          <a href="/blog/rsvp-reading-explained">RSVP reading explained</a>
+          <a href="/blog/free-speechify-alternatives">Free Speechify alternatives</a>
         </div>
         <div class="footer-group">
           <p>Company</p>
-          <a href="/about">About</a>
+          <a href="/about">About &amp; author</a>
           <a href="/account">Account &amp; sync</a>
           <a href="/contact">Contact</a>
           <a href="/privacy">Privacy</a>
@@ -407,10 +449,8 @@ const softwareSchema = {
 
     <style>
       .site-header {
-        border-bottom: 1px solid color-mix(in srgb, var(--color-border) 85%, transparent);
+        border-bottom: 1px solid var(--color-border);
         background-color: var(--color-bg-header);
-        backdrop-filter: blur(16px) saturate(1.2);
-        -webkit-backdrop-filter: blur(16px) saturate(1.2);
         position: sticky;
         top: 0;
         z-index: var(--z-sticky, 50);
@@ -422,12 +462,10 @@ const softwareSchema = {
         min-height: 3.75rem;
       }
       .launch-strip {
-        background: linear-gradient(90deg, #0a0a0c 0%, #12121a 50%, #0a0a0c 100%);
-        color: rgba(255, 255, 255, 0.88);
-        font-size: 0.72rem;
-        font-weight: 550;
-        letter-spacing: 0.01em;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        background: #1e1b16;
+        color: #f6f2e9;
+        font-size: 0.75rem;
+        font-weight: 500;
       }
       .launch-strip-inner {
         min-height: 2.1rem;
@@ -441,24 +479,16 @@ const softwareSchema = {
         width: 0.4rem;
         height: 0.4rem;
         border-radius: 50%;
-        background: var(--color-primary);
-        box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.28);
-        animation: launch-pulse 2.4s var(--ease-out) infinite;
-      }
-      @keyframes launch-pulse {
-        0%, 100% { box-shadow: 0 0 0 3px rgba(94, 106, 210, 0.22); opacity: 1; }
-        50% { box-shadow: 0 0 0 6px rgba(94, 106, 210, 0.08); opacity: 0.85; }
+        background: #ffee9e;
       }
       .launch-strip a {
-        color: #fff;
-        text-decoration: none;
-        font-weight: 650;
-        padding: 0.2rem 0.55rem;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.08);
-        transition: background-color 140ms var(--ease-out);
+        color: #f6f2e9;
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        text-decoration-color: #ffee9e;
       }
-      .launch-strip a:hover { background: rgba(255, 255, 255, 0.14); color: #fff; }
+      .launch-strip a:hover { color: #f6f2e9; text-decoration-thickness: 2px; }
       .skip-link {
         position: fixed;
         left: 1rem;
@@ -482,10 +512,10 @@ const softwareSchema = {
         display: flex;
         align-items: center;
         gap: 0.55rem;
-        font-family: var(--font-sans);
-        font-weight: 650;
-        font-size: 1.05rem;
-        letter-spacing: -0.03em;
+        font-family: var(--font-display);
+        font-weight: 500;
+        font-size: 1.3rem;
+        letter-spacing: -0.01em;
       }
       .logo-mark-img {
         display: block;
@@ -512,17 +542,18 @@ const softwareSchema = {
         color: var(--color-text-muted);
         text-decoration: none;
         transition: background-color 140ms var(--ease-out), color 140ms var(--ease-out);
-        padding: 0.4rem 0.65rem;
-        border-radius: 999px;
+        padding: 0.4rem 0.6rem;
       }
       .nav-link:hover {
         color: var(--color-text);
-        background-color: var(--color-bg-subtle);
         text-decoration: none;
       }
       .nav-link.active {
         color: var(--color-text);
-        background: var(--color-primary-muted);
+        text-decoration: underline;
+        text-decoration-color: var(--color-primary);
+        text-decoration-thickness: 2px;
+        text-underline-offset: 6px;
       }
       .theme-toggle {
         width: 2rem;
@@ -538,9 +569,9 @@ const softwareSchema = {
       .theme-toggle:hover { border-color: var(--color-text-subtle); transform: rotate(-12deg); }
       .nav-cta {
         padding: 0.45rem 0.9rem;
-        border-radius: 999px;
-        background: var(--color-primary);
-        color: white;
+        border-radius: var(--radius-md);
+        background: var(--color-ink);
+        color: var(--color-ink-on);
         font-size: 0.78rem;
         font-weight: 650;
         letter-spacing: -0.01em;
@@ -548,10 +579,8 @@ const softwareSchema = {
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12) inset;
       }
       .nav-cta:hover {
-        background: var(--color-primary-hover);
-        color: white;
-        transform: translateY(-1px);
-        box-shadow: 0 8px 20px -10px var(--color-primary-shadow);
+        background: var(--color-primary);
+        color: #fff;
       }
       .mobile-nav { display: none; position: relative; }
       .mobile-nav summary {
@@ -597,11 +626,31 @@ const softwareSchema = {
       }
       .mobile-nav-panel a:hover, .mobile-nav-panel .theme-toggle:hover { background: var(--color-bg-subtle); }
       .mobile-nav-panel .mobile-nav-cta {
-        background: var(--color-primary);
-        color: white;
-        border-radius: 999px;
+        background: var(--color-ink);
+        color: var(--color-ink-on);
+        border-radius: var(--radius-md);
         justify-content: center;
         margin-top: 0.15rem;
+      }
+
+      .site-breadcrumbs-wrap {
+        padding-top: 1.25rem;
+      }
+      .site-breadcrumbs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.35rem 0.5rem;
+        align-items: center;
+        font-size: 0.8rem;
+        color: var(--color-text-subtle);
+      }
+      .site-breadcrumbs a {
+        color: var(--color-text-muted);
+        font-weight: 600;
+        text-decoration: none;
+      }
+      .site-breadcrumbs a:hover {
+        color: var(--color-primary);
       }
 
       .site-footer {
@@ -624,9 +673,10 @@ const softwareSchema = {
         align-items: center;
         gap: 0.45rem;
         color: var(--color-text);
-        font-size: 1.2rem;
-        font-weight: 650;
-        letter-spacing: -0.03em;
+        font-family: var(--font-display);
+        font-size: 1.35rem;
+        font-weight: 500;
+        letter-spacing: -0.01em;
       }
       .footer-logo-mark {
         border-radius: 6px;

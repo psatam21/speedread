@@ -148,7 +148,7 @@ const faqSchema = {
               <label for="w2m-minutes">Minutes</label>
               <input id="w2m-minutes" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="5" />
             </div>
-            <p class="summary" id="w2m-reverse" aria-live="polite"></p>
+            <p class="summary" id="w2m-reverse" aria-live="polite">Speaking, average ({wpm['speak-avg']} WPM): 5 minutes is about {fmt(wordsForMinutes(5, wpm['speak-avg']))} words.</p>
           </div>
 
           <div class="actions mt-6">
@@ -255,13 +255,16 @@ const faqSchema = {
         ))}
 
         <div class="related mt-8">
-          <h2>Related free tools</h2>
+          <h2>Related free tools &amp; guides</h2>
           <p>
             <a href="/">Online speed reader</a> ·
             <a href="/teleprompter">Teleprompter</a> ·
             <a href="/readability-checker">Readability checker</a> ·
             <a href="/reading-speed-test">Reading speed test</a> ·
-            <a href="/rsvp-reader">RSVP reader</a>
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a> ·
+            <a href="/blog/how-to-speed-read-online">How to speed read online</a>
           </p>
         </div>
       </div>

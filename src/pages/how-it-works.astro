@@ -14,9 +14,34 @@ const howToSchema = {
     { '@type': 'HowToStep', name: 'Adjust as you read', text: 'Pause, rewind, change WPM, switch themes, or enable Audio Sync without reloading the document.' },
   ],
 };
+const faqs = [
+  {
+    q: 'Which reading mode should I start with?',
+    a: 'Start with Phrase or Focus if the material is new, or Flash if you are clearing familiar newsletters and articles. You can switch between all six modes mid-document without losing your place.',
+  },
+  {
+    q: 'What is the Optimal Recognition Point (ORP) in Flash mode?',
+    a: 'The Optimal Recognition Point is the letter near the start of a word where the eye naturally focuses during recognition. BriskRead highlights that letter at a fixed screen coordinate so your eyes do not have to scan horizontally.',
+  },
+  {
+    q: 'Does switching reading modes reset my position in the document?',
+    a: 'No. All six views share the same word index, so switching from Flash to Focus or Page lands on the exact sentence you were reading.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
 ---
 
 <Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(howToSchema)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
   <section class="method-hero">
     <div class="container method-hero-grid">
       <div>
@@ -97,14 +122,23 @@ const howToSchema = {
     <div class="container">
       <h2>From source to focused reading in three steps.</h2>
       <ol>
-        <li><span>1</span><div><strong>Bring in the material</strong><p>Paste text, upload PDF, EPUB or TXT, scan an image, extract a public URL, or send a page from the Chrome extension.</p></div></li>
-        <li><span>2</span><div><strong>Choose context before speed</strong><p>Pick Flash, Phrase, Focus, Flow, Bionic or Page. Start at a comfortable pace instead of chasing the highest number.</p></div></li>
-        <li><span>3</span><div><strong>Adjust as the material changes</strong><p>Pause, rewind, change WPM, switch themes or enable Audio Sync. Your reading position stays with the document.</p></div></li>
+        <li><span>1</span><div><strong>Bring in the material</strong><p>Paste text, upload <a href="/pdf-to-speech">PDF</a>, EPUB or TXT, scan an image, extract a public URL, or send a page from the <a href="/extension">Chrome extension</a>.</p></div></li>
+        <li><span>2</span><div><strong>Choose context before speed</strong><p>Pick Flash, Phrase, Focus, Flow, Bionic or Page. Check your baseline with the <a href="/reading-speed-test">reading speed test</a> instead of chasing the highest number.</p></div></li>
+        <li><span>3</span><div><strong>Adjust as the material changes</strong><p>Pause, rewind, change WPM, switch themes or enable <a href="/blog/audio-sync-speed-reading">Audio Sync</a>. Your reading position stays with the document.</p></div></li>
       </ol>
       <a class="btn btn-primary" href="/#importer-card">Start reading now</a>
+
+      <div class="method-faq">
+        <h2>How it works FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <div class="method-faq-item">
+            <h3>{q}</h3>
+            <p>{a}</p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
-  <script type="application/ld+json" set:html={JSON.stringify(howToSchema)} />
 </Layout>
 
 <style>
