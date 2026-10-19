@@ -5,12 +5,16 @@
 **Deadline:** none
 **Where we are:** 2026-10-19: SEO + perf overhaul and three tools (/words-to-minutes, /teleprompter, /readability-checker) plus AdSense privacy disclosures are DEPLOYED and live-verified; master and GitHub = production (5476e85). Chrome extension 2.0.0 is committed on `seo-overhaul` (a5eb8d7 + follow-up) and store-ready: 20 e2e tests green, including the shipped build under a real activeTab grant; store package, images and publishing guide in chrome-extension/store/. The /privacy extension section is rewritten (committed, live on next deploy). Left for Prathamesh: register, pay and submit in the CWS dashboard; a 10-minute manual check of real shortcuts and audio (QA.md). Next: Prathamesh picks a redesign direction (A Paper and Pen, B Midnight Stage, C Instrument; refs in scratchpad refero/).
 **Open questions:**
-- Which redesign direction (A recommended)?
 - AdSense: Prathamesh must sign up at adsense.google.com, then share the ca-pub ID so PUBLIC_ADSENSE_CLIENT_ID and ads.txt can be set; enable Google's CMP (Privacy & messaging) for EEA/UK.
 - Homepage testimonials (Priya M., Marcus B., etc.) look like placeholders; if not real users they are an FTC fake-review risk.
 - Defer GA4 until after load? Content gaps: thin tool pages, no named competitor list, no author bio.
 
 ## Decision log
+### 2026-10-19 - Redesign direction A (Paper and Pen) chosen; phase 1 shipped
+**Decided:** (Prathamesh's call) Direction A: cream paper #f6f2e9, ink #1e1b16, red pen #a3290f (dark #ff8a6b), highlighter wash #ffee9e; Newsreader (display/serif), Hanken Grotesk (UI), Geist Mono (labels); square-ish radii; no aurora, glass, glow or spinning rings. The reader stage and the "three ways in" band stay dark ink in both themes. Phase 1 (tokens, header/footer, homepage hero, serif blog body) went live via another session's commit c828c4d before review.
+**Why:** Serif column suits SEO/blog pages; light pages carry ads better; the highlighter is the signature that separates it from ElevenReader's newsprint look. All text pairs checked at >= 4.5:1.
+**Consequence:** Restyle through tokens in global.css first; hardcoded colours in index.astro are the remaining debt. Logo swapped to ink tile + highlighter glyph (Prathamesh's call); regenerate any brand asset with scripts/generate-brand-assets.mjs, make-og.mjs, generate-webp-images.mjs. Chrome extension icons are not yet recoloured.
+
 ### 2026-10-19 - Chrome extension 2.0: free premium quality, zero host permissions
 **Decided:** (Prathamesh's call) "Premium" means premium quality, free, beating what competitors paywall: read-aloud with synced highlighting, bionic on the live page, PDF reading (plus resume, themes, selection-aware shortcut). Claude also cut every host permission and the briskread.com content-script handoff, so the extension installs with no permission warnings; saved links and "Speed read linked page" open briskread.com/?url= instead. Bionic shortcut is Alt+Shift+K because Chrome silently rejects Alt+Shift+B (its bookmarks-bar shortcut) and Alt+Shift+R.
 **Why:** A paid tier would reverse the site's free + ads decision (98575b4). No-warning installs convert better and review faster; the handoff only served a minor feature. Rejected: OCR, ePub, stats, sync in the extension (weight without a switching reason).
