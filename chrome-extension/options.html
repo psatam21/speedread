@@ -1,82 +1,118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BriskRead Options</title>
-    <link rel="stylesheet" href="popup.css" />
-    <style>
-      body {
-        width: auto;
-        max-width: 480px;
-        margin: 0 auto;
-        padding: 24px 16px;
-      }
-      .shell {
-        padding: 0;
-      }
-    </style>
+    <link rel="icon" href="icons/icon32.png" />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/ui.css" />
+    <script src="lib/page-theme.js"></script>
   </head>
-  <body>
-    <div class="shell">
-      <header class="header">
-        <img src="icons/icon48.png" class="logo" alt="" width="36" height="36" />
-        <div class="header-text">
-          <h1>BriskRead Options</h1>
-          <p>Reader and developer preferences</p>
-        </div>
+  <body class="page">
+    <div class="o-wrap">
+      <header class="brandbar">
+        <img src="icons/icon48.png" alt="" width="32" height="32" />
+        <span>BriskRead</span>
       </header>
 
-      <section class="panel">
-        <h2>What is this page?</h2>
-        <p class="hint">
-          The extension's Options page stores advanced connection settings. You do not need to change them to read.
-          Right-click selected text or a page and choose <strong>Speed read this page</strong> to open the local reader.
-        </p>
+      <section class="hero" id="welcome" hidden>
+        <h1>You're set. Read anything, faster.</h1>
+        <p>BriskRead reads the page you're on, right where you are. Everything is free, no account needed.</p>
+        <div class="steps">
+          <div class="step"><kbd data-cmd="speed-read-tab">Alt+Shift+S</kbd>Speed read the page, or just the text you selected.</div>
+          <div class="step"><kbd data-cmd="bionic-tab">Alt+Shift+K</kbd>Turn on bionic reading for the whole page.</div>
+          <div class="step"><kbd data-cmd="read-later-tab">Alt+Shift+L</kbd>Save the page to your read-later queue.</div>
+        </div>
+        <button type="button" class="btn" id="btn-demo">Try a 30-second demo</button>
+        <p class="hint" style="color: inherit; opacity: 0.85">Tip: pin BriskRead from the puzzle-piece menu so it's one click away.</p>
       </section>
 
-      <section class="panel">
-        <h2>Gemini API key</h2>
+      <section class="card" aria-labelledby="h-reader">
+        <h2 id="h-reader">Reader</h2>
+        <p class="hint">Defaults for every page. Changes you make inside the reader are saved here too.</p>
+        <div class="grid2">
+          <div class="field">
+            <label for="wpm">Speed: <span id="wpm-out"></span> wpm</label>
+            <input type="range" id="wpm" min="100" max="1200" step="25" />
+          </div>
+          <div class="field">
+            <label for="mode">Start in</label>
+            <select id="mode">
+              <option value="rsvp">Flash (one word at a time)</option>
+              <option value="focus">Focus (moving highlight)</option>
+              <option value="phrase">Phrase (three words)</option>
+              <option value="flow">Flow (word in context)</option>
+              <option value="bionic">Bionic</option>
+              <option value="standard">Page (plain text)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="theme">Theme</label>
+            <select id="theme">
+              <option value="dark">Dark</option>
+              <option value="light">Light</option>
+              <option value="sepia">Sepia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="size">Text size</label>
+            <select id="size">
+              <option value="s">Small</option>
+              <option value="m">Medium</option>
+              <option value="l">Large</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="voice">Voice</label>
+            <select id="voice"></select>
+          </div>
+          <div class="field">
+            <span class="label">Options</span>
+            <label class="check"><input type="checkbox" id="audio" /> Read aloud by default</label>
+            <label class="check"><input type="checkbox" id="ramp" /> Slow start</label>
+          </div>
+        </div>
+        <p class="status" id="reader-status" role="status"></p>
+      </section>
+
+      <section class="card" aria-labelledby="h-keys">
+        <h2 id="h-keys">Keyboard shortcuts</h2>
+        <p class="hint">Chrome manages these. Change them on the shortcuts page.</p>
+        <ul class="shortcuts" id="shortcuts"></ul>
+        <button type="button" class="btn btn-secondary" id="btn-shortcuts">Change shortcuts</button>
+      </section>
+
+      <section class="card" aria-labelledby="h-ai">
+        <h2 id="h-ai">AI summary and questions</h2>
         <p class="hint">
-          AI summary and document chat call Google directly with your own key. It is stored in this browser's
-          extension storage and never sent to BriskRead.
-          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free key ↗</a>
+          Uses your own free Gemini key. The key stays in this browser, and text is sent to Google only when you press
+          Summarise or Ask. <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener">Get a free key ↗</a>
         </p>
-        <label for="gemini-key">API key</label>
-        <input type="password" id="gemini-key" placeholder="AIza…" spellcheck="false" autocomplete="off" />
+        <div class="field">
+          <label for="gemini-key">Gemini API key</label>
+          <input type="password" id="gemini-key" placeholder="AIza…" spellcheck="false" autocomplete="off" />
+        </div>
         <div class="row" style="margin-top: 12px">
           <button type="button" class="btn btn-primary" id="btn-save-key">Save key</button>
-          <button type="button" class="btn btn-secondary" id="btn-clear-key">Clear</button>
+          <button type="button" class="btn btn-secondary" id="btn-clear-key">Remove key</button>
         </div>
         <p class="status" id="key-status" role="status"></p>
       </section>
 
-      <details class="panel">
-        <summary><strong>Developer endpoints</strong></summary>
+      <section class="card" aria-labelledby="h-data">
+        <h2 id="h-data">Your data</h2>
         <p class="hint">
-          Production defaults point at the live BriskRead app. Change only for local development.
+          BriskRead reads a page only when you ask it to, and the text stays in this browser. No account, no tracking,
+          no analytics in the extension. Your read-later queue and reading positions live in local extension storage.
+          <a href="https://briskread.com/privacy" target="_blank" rel="noopener">Privacy policy</a>
         </p>
-        <label for="api-base">API base (license activate)</label>
-        <input type="url" id="api-base" placeholder="https://briskread.com" spellcheck="false" />
-        <label for="app-origin" style="margin-top: 10px">App origin (reader UI)</label>
-        <input type="url" id="app-origin" placeholder="https://briskread.com" spellcheck="false" />
-        <div class="row" style="margin-top: 12px">
-          <button type="button" class="btn btn-primary" id="btn-save">Save</button>
-          <button type="button" class="btn btn-secondary" id="btn-reset">Reset defaults</button>
-        </div>
-        <p class="status" id="opt-status" role="status"></p>
-      </details>
-
-      <section class="panel">
-        <h2>Privacy</h2>
-        <p class="hint">
-          Article text is extracted and read locally in the extension. The website opens only when you explicitly
-          choose <strong>Open BriskRead app</strong>. License keys stay in extension storage. See
-          <a href="https://briskread.com/privacy" target="_blank" rel="noopener">privacy policy</a>.
-        </p>
+        <button type="button" class="btn btn-secondary" id="btn-clear-data">Clear read-later queue and reading positions</button>
+        <p class="status" id="data-status" role="status"></p>
       </section>
     </div>
-    <script src="config.js"></script>
+    <script src="lib/ext-core.js"></script>
+    <script src="lib/storage.js"></script>
     <script src="options.js"></script>
   </body>
 </html>

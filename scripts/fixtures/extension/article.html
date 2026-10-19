@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Quiet Mechanics of Reading Faster · Margin Notes</title>
+    <style>
+      body { margin: 0; font: 18px/1.7 Georgia, 'Times New Roman', serif; color: #1f2328; background: #fbfaf7; }
+      nav { display: flex; gap: 24px; align-items: center; padding: 18px 48px; border-bottom: 1px solid #e7e2d8; font: 600 14px/1 system-ui, sans-serif; }
+      nav strong { font: 700 20px/1 Georgia, serif; margin-right: auto; }
+      nav a { color: #5b5f66; text-decoration: none; }
+      .layout { display: grid; grid-template-columns: minmax(0, 680px) 260px; gap: 56px; max-width: 1040px; margin: 0 auto; padding: 48px; }
+      .kicker { font: 600 13px/1 system-ui, sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: #9a6b2f; }
+      h1 { font-size: 46px; line-height: 1.1; margin: 14px 0 12px; letter-spacing: -0.01em; }
+      .byline { font: 14px/1.4 system-ui, sans-serif; color: #6b6f76; margin-bottom: 32px; }
+      h2 { font-size: 26px; margin: 36px 0 8px; }
+      pre { background: #f0ede6; padding: 14px; border-radius: 8px; font-size: 14px; }
+      aside { font: 14px/1.6 system-ui, sans-serif; color: #5b5f66; border-left: 1px solid #e7e2d8; padding-left: 24px; }
+      aside h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; }
+      footer { padding: 32px 48px; border-top: 1px solid #e7e2d8; font: 13px system-ui, sans-serif; color: #8a8f96; }
+    </style>
+  </head>
+  <body>
+    <nav><strong>Margin Notes</strong><a href="#">Essays</a><a href="#">Craft</a><a href="#">Archive</a><a href="#">Subscribe</a></nav>
+    <div class="layout">
+      <article>
+        <div class="kicker">Craft</div>
+        <h1>The Quiet Mechanics of Reading Faster</h1>
+        <p class="byline">By A. Writer · 6 min read</p>
+        <p id="p1">Most advice about reading faster promises a trick. Skim the first sentence of every paragraph, run a finger under the line, stop hearing the words in your head. Some of it helps a little. Most of it quietly trades understanding for the feeling of speed, and the trade only shows up a week later when you cannot remember what you read.</p>
+        <p id="p2">The more useful question is where the time actually goes. When researchers track the eyes of a reader, they see short jumps and brief stops. The eye lands, takes in a word or two, and moves on. Every few lines it slides backwards to check something it already passed. Those backward glances are not a flaw of attention. They are the mind asking for a second look because the first one was rushed.</p>
+        <h2>Remove the friction, keep the meaning</h2>
+        <p id="p3">Showing one word at a time at a fixed point removes the jumps entirely. The eye stays still and the words come to it. This is why rapid serial presentation feels effortless for easy text and exhausting for hard text. Easy text never needed the backward glances. Hard text did.</p>
+        <p id="p4">So the honest approach is flexible. Flash through a newsletter. Slow down for a contract. Switch to a highlighted page when an argument needs its context, and let the audio carry you when your eyes are tired at the end of a long day.</p>
+        <pre><code>reading_time = words / words_per_minute</code></pre>
+        <h2>Speed is a setting, not a talent</h2>
+        <p id="p5">Comfortable reading for most adults sits somewhere between two hundred and three hundred words per minute. Pushing well beyond that works for familiar material and falls apart for new ideas. Treat the number like the volume knob on a speaker. Turn it up when the content is light, turn it down when it matters, and notice the moment comprehension starts to slip.</p>
+        <p id="p6">The best readers are not the fastest ones. They are the ones who choose the right speed for each page and never feel trapped by a single way of reading.</p>
+      </article>
+      <aside>
+        <h3>Related</h3>
+        <p>Why margins matter more than fonts</p>
+        <p>A field guide to slow reading</p>
+        <form><input placeholder="Email address" /><button type="button">Join the newsletter</button></form>
+      </aside>
+    </div>
+    <footer>© Margin Notes. A fictional publication used for testing.</footer>
+    <script>
+      // Lets tests prove the reader keeps key presses away from the host page.
+      window.__pageKeys = [];
+      document.addEventListener('keydown', (e) => window.__pageKeys.push(e.key));
+    </script>
+  </body>
+</html>

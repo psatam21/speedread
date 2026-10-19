@@ -4,39 +4,35 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>BriskRead Reader</title>
-    <link rel="stylesheet" href="reader.css" />
+    <link rel="icon" href="icons/icon32.png" />
+    <link rel="stylesheet" href="styles/tokens.css" />
+    <link rel="stylesheet" href="styles/ui.css" />
+    <script src="lib/page-theme.js"></script>
   </head>
-  <body>
-    <header>
-      <div><strong>BriskRead</strong><span id="document-title">Reader</span></div>
-      <button id="close" type="button" aria-label="Close reader">Close</button>
-    </header>
-
-    <main>
-      <p id="empty" class="empty" hidden>No readable text was found. Select text on the page and try again.</p>
-      <section id="reader" aria-label="RSVP reader">
-        <div class="focus" aria-live="off">
-          <span id="left"></span><mark id="anchor"></mark><span id="right"></span>
+  <body class="page">
+    <main class="landing" id="landing" hidden>
+      <header class="brandbar">
+        <img src="icons/icon48.png" alt="" width="32" height="32" />
+        <span>BriskRead</span>
+      </header>
+      <p class="notice" id="notice" role="status" hidden></p>
+      <section class="card">
+        <h1>Read anything</h1>
+        <p class="hint">Paste text, or open a PDF from your computer. Nothing leaves this browser.</p>
+        <textarea id="paste" rows="8" placeholder="Paste an article, email or notes…" aria-label="Text to read"></textarea>
+        <div class="row">
+          <button type="button" class="btn btn-primary" id="btn-paste">Speed read text</button>
+          <label class="btn btn-secondary" for="file">Open a PDF…</label>
+          <input type="file" id="file" accept="application/pdf,.pdf,text/plain,.txt" hidden />
         </div>
-
-        <input id="progress" type="range" min="0" max="0" value="0" aria-label="Reading progress" />
-        <div class="meta"><span id="position">0 / 0</span><span id="remaining">0 min left</span></div>
-
-        <div class="controls">
-          <button id="back" type="button" aria-label="Go back ten words">−10</button>
-          <button id="play" type="button">Pause</button>
-          <button id="forward" type="button" aria-label="Go forward ten words">+10</button>
-          <label for="mode">Mode</label>
-          <select id="mode" aria-label="Reading mode">
-            <option value="1">Single word</option>
-            <option value="3">3-word phrase</option>
-          </select>
-          <label for="wpm">WPM <output id="wpm-value">350</output></label>
-          <input id="wpm" type="range" min="100" max="1000" step="25" value="350" />
-        </div>
-        <p class="keys">Space pauses · ←/→ skips · ↑/↓ changes speed · Esc closes</p>
+        <p class="hint drop-hint">Or drop a PDF anywhere on this page.</p>
       </section>
     </main>
-    <script src="reader.js"></script>
+    <div class="loading" id="loading" role="status" hidden><span class="spinner" aria-hidden="true"></span><span id="loading-text">Reading PDF…</span></div>
+    <script src="lib/reader-core.js"></script>
+    <script src="lib/ext-core.js"></script>
+    <script src="lib/storage.js"></script>
+    <script src="reader-page.js"></script>
+    <script src="overlay.js"></script>
   </body>
 </html>

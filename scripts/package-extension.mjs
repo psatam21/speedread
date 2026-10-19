@@ -1,102 +1,115 @@
 /**
- * Zip chrome-extension for Chrome Web Store upload.
- * Output: release/briskread-extension-vX.Y.Z.zip
+ * Build the Chrome Web Store upload.
+ *   npm run ext:pack  ->  release/briskread-extension-vX.Y.Z/ (unpacked, what the tests load)
+ *                         release/briskread-extension-vX.Y.Z.zip (what you upload)
+ * Fails loudly if the manifest points at a missing file, a page loads remote
+ * script, or store limits (name/description length, icon sizes) are broken.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { execSync } from 'node:child_process';
+import archiver from 'archiver';
+import sharp from 'sharp';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const root = path.join(__dirname, '..');
-const extDir = path.join(root, 'chrome-extension');
-const releaseDir = path.join(root, 'release');
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
+export const EXT_DIR = path.join(root, 'chrome-extension');
+export const RELEASE_DIR = path.join(root, 'release');
 
-// Prefer Imagine source if present; else procedural icons
-const imagineSrc = path.join(extDir, 'icons', 'source-imagine.jpg');
-const imagineSrcPng = path.join(extDir, 'icons', 'source-imagine.png');
-if (fs.existsSync(imagineSrc) || fs.existsSync(imagineSrcPng)) {
-  execSync('node scripts/export-extension-icons-from-source.mjs', { cwd: root, stdio: 'inherit' });
-} else {
-  execSync('node scripts/generate-extension-icons.mjs', { cwd: root, stdio: 'inherit' });
+// Docs and store material live next to the code but never ship.
+const EXCLUDE = new Set(['README.md', 'store']);
+
+export function stageExtension(outDir) {
+  fs.rmSync(outDir, { recursive: true, force: true });
+  fs.cpSync(EXT_DIR, outDir, {
+    recursive: true,
+    filter: (src) => {
+      const rel = path.relative(EXT_DIR, src);
+      const top = rel.split(path.sep)[0];
+      return !rel || (!EXCLUDE.has(top) && !path.basename(src).startsWith('.'));
+    },
+  });
+  return outDir;
 }
 
-const manifest = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8'));
-const version = manifest.version || '0.0.0';
-const zipName = `briskread-extension-v${version}.zip`;
-const zipPath = path.join(releaseDir, zipName);
+function walk(dir, base = dir) {
+  return fs.readdirSync(dir, { withFileTypes: true }).flatMap((d) => {
+    const full = path.join(dir, d.name);
+    return d.isDirectory() ? walk(full, base) : [path.relative(base, full).replace(/\\/g, '/')];
+  });
+}
 
-fs.mkdirSync(releaseDir, { recursive: true });
-if (fs.existsSync(zipPath)) fs.unlinkSync(zipPath);
+export async function validateExtension(dir) {
+  const problems = [];
+  const files = new Set(walk(dir));
+  const need = (file, from) => {
+    if (!files.has(file)) problems.push(`${from} references missing file: ${file}`);
+  };
+  const manifest = JSON.parse(fs.readFileSync(path.join(dir, 'manifest.json'), 'utf8'));
 
-const exclude = new Set([
-  'README.md',
-  'icon.png',
-  'source-imagine.jpg',
-  'source-imagine.png',
-  'source-imagine.webp',
-  'icon-master-512.png',
-]);
+  if (manifest.manifest_version !== 3) problems.push('manifest_version must be 3');
+  if (!/^\d+\.\d+\.\d+$/.test(manifest.version)) problems.push(`version "${manifest.version}" is not X.Y.Z`);
+  if (manifest.name.length > 75) problems.push('name is over 75 characters');
+  if (manifest.description.length > 132) problems.push(`description is ${manifest.description.length} chars (max 132)`);
+  if (manifest.host_permissions?.length) problems.push(`unexpected host_permissions: ${manifest.host_permissions}`);
 
-async function zipWithArchiver() {
-  const archiver = (await import('archiver')).default;
-  const output = fs.createWriteStream(zipPath);
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  need(manifest.background.service_worker, 'manifest background');
+  need(manifest.action.default_popup, 'manifest action');
+  need(manifest.options_ui.page, 'manifest options_ui');
+  for (const [size, file] of Object.entries(manifest.icons)) {
+    need(file, 'manifest icons');
+    if (files.has(file)) {
+      const meta = await sharp(path.join(dir, file)).metadata();
+      if (meta.width !== Number(size) || meta.height !== Number(size)) problems.push(`${file} is ${meta.width}x${meta.height}, expected ${size}`);
+    }
+  }
 
-  await new Promise((resolve, reject) => {
+  for (const file of files) {
+    const text = /\.(js|html)$/.test(file) ? fs.readFileSync(path.join(dir, file), 'utf8') : '';
+    if (file.endsWith('.html')) {
+      for (const [, ref] of text.matchAll(/(?:src|href)="([^"#?]+)/g)) {
+        if (/^(https?:)?\/\//.test(ref)) {
+          if (/<script[^>]+src="https?:/.test(text)) problems.push(`${file} loads remote script`);
+          continue;
+        }
+        need(ref, file);
+      }
+    }
+    if (file.endsWith('.js') && !file.startsWith('vendor/')) {
+      for (const [, list] of text.matchAll(/importScripts\(([^)]*)\)/g)) for (const [, f] of list.matchAll(/'([^']+)'/g)) need(f, file);
+      for (const [, list] of text.matchAll(/files: \[([^\]]*)\]/g)) for (const [, f] of list.matchAll(/'([^']+)'/g)) need(f, file);
+      for (const [, f] of text.matchAll(/getURL\('([^']+)'\)/g)) need(f, file);
+      if (/\beval\(|new Function\(/.test(text)) problems.push(`${file} uses eval/new Function`);
+    }
+  }
+  return { manifest, files: [...files].sort(), problems };
+}
+
+function zip(dir, zipPath) {
+  fs.rmSync(zipPath, { force: true });
+  return new Promise((resolve, reject) => {
+    const output = fs.createWriteStream(zipPath);
+    const archive = archiver('zip', { zlib: { level: 9 } });
     output.on('close', resolve);
     archive.on('error', reject);
     archive.pipe(output);
-
-    const walk = (dir, base = '') => {
-      for (const name of fs.readdirSync(dir)) {
-        if (exclude.has(name)) continue;
-        if (name.startsWith('.')) continue;
-        const full = path.join(dir, name);
-        const rel = path.join(base, name).replace(/\\/g, '/');
-        if (fs.statSync(full).isDirectory()) walk(full, rel);
-        else archive.file(full, { name: rel });
-      }
-    };
-    walk(extDir);
+    archive.directory(dir, false);
     archive.finalize();
   });
 }
 
-function zipWithPowerShell() {
-  // Windows fallback: Compress-Archive needs a temp clean folder
-  const tmp = path.join(releaseDir, `_ext_pack_${version}`);
-  fs.rmSync(tmp, { recursive: true, force: true });
-  fs.mkdirSync(tmp, { recursive: true });
-
-  const copy = (dir, dest) => {
-    for (const name of fs.readdirSync(dir)) {
-      if (exclude.has(name) || name.startsWith('.')) continue;
-      const full = path.join(dir, name);
-      const d = path.join(dest, name);
-      if (fs.statSync(full).isDirectory()) {
-        fs.mkdirSync(d, { recursive: true });
-        copy(full, d);
-      } else {
-        fs.copyFileSync(full, d);
-      }
-    }
-  };
-  copy(extDir, tmp);
-
-  execSync(
-    `powershell -NoProfile -Command "Compress-Archive -Path '${tmp}\\*' -DestinationPath '${zipPath}' -Force"`,
-    { stdio: 'inherit' }
-  );
-  fs.rmSync(tmp, { recursive: true, force: true });
+export async function buildExtension() {
+  const { version } = JSON.parse(fs.readFileSync(path.join(EXT_DIR, 'manifest.json'), 'utf8'));
+  const name = `briskread-extension-v${version}`;
+  const dir = stageExtension(path.join(RELEASE_DIR, name));
+  const report = await validateExtension(dir);
+  if (report.problems.length) throw new Error(`Extension validation failed:\n- ${report.problems.join('\n- ')}`);
+  const zipPath = path.join(RELEASE_DIR, `${name}.zip`);
+  await zip(dir, zipPath);
+  return { dir, zipPath, ...report };
 }
 
-try {
-  await zipWithArchiver();
-} catch {
-  console.warn('archiver missing — using PowerShell Compress-Archive');
-  zipWithPowerShell();
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const { zipPath, files } = await buildExtension();
+  const kb = (fs.statSync(zipPath).size / 1024).toFixed(1);
+  console.log(`Validated ${files.length} files. Packaged ${path.basename(zipPath)} (${kb} KB)\n-> ${zipPath}`);
 }
-
-const bytes = fs.statSync(zipPath).size;
-console.log(`Packaged ${zipName} (${(bytes / 1024).toFixed(1)} KB) → ${zipPath}`);

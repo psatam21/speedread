@@ -1,256 +1,149 @@
-/* global SR_DEFAULTS, chrome, srListReadLater, srRemoveReadLater, srSetHandoff */
-
+/* global chrome, BriskReadExt, SR_APP_ORIGIN, SR_KEYS, srListReadLater, srRemoveReadLater */
+const X = BriskReadExt;
 const $ = (id) => document.getElementById(id);
+let tab = null;
 
-const els = {
-  badge: $('status-badge'),
-  btnRead: $('btn-read'),
-  btnSaveLater: $('btn-save-later'),
-  btnOpenApp: $('btn-open-app'),
-  actionStatus: $('action-status'),
-  tabHint: $('tab-hint'),
-  extVersion: $('ext-version'),
-  linkOptions: $('link-options'),
-  onlineDot: $('online-dot'),
-  queueList: $('queue-list'),
-  queueEmpty: $('queue-empty'),
-  queueCount: $('queue-count'),
+const ICONS = {
+  open: '<svg viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>',
+  remove: '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>',
 };
 
-function escapeHtml(s) {
-  return String(s || '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+const esc = (s) =>
+  String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+function setStatus(message, kind = '') {
+  $('status').textContent = message;
+  $('status').className = `status ${kind}`;
 }
 
-function relativeTime(ts) {
-  if (!ts) return '';
-  const s = Math.floor((Date.now() - Number(ts)) / 1000);
-  if (s < 45) return 'just now';
+function ago(ts) {
+  const s = Math.floor((Date.now() - ts) / 1000);
+  if (s < 60) return 'just now';
   if (s < 3600) return `${Math.floor(s / 60)}m ago`;
   if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
   if (s < 86400 * 14) return `${Math.floor(s / 86400)}d ago`;
+  return new Date(ts).toLocaleDateString();
+}
+
+async function send(message) {
   try {
-    return new Date(ts).toLocaleDateString();
-  } catch {
-    return '';
-  }
-}
-
-function articlePayload(item) {
-  return {
-    title: item.title || '',
-    text: item.text || '',
-    url: item.url || '',
-    wordCount: item.wordCount || 0,
-  };
-}
-
-async function getOrigins() {
-  const defaults = globalThis.SR_DEFAULTS || {
-    API_BASE: 'https://briskread.com',
-    APP_ORIGIN: 'https://briskread.com',
-  };
-  const sync = await chrome.storage.sync.get(['api_base', 'app_origin']);
-  return {
-    API_BASE: (sync.api_base || defaults.API_BASE).replace(/\/$/, ''),
-    APP_ORIGIN: (sync.app_origin || defaults.APP_ORIGIN).replace(/\/$/, ''),
-  };
-}
-
-function setStatus(el, message, kind = '') {
-  if (!el) return;
-  el.textContent = message || '';
-  el.classList.remove('error', 'ok');
-  if (kind) el.classList.add(kind);
-}
-
-function refreshUI() {
-  if (els.tabHint) {
-    els.tabHint.textContent =
-      'Read the active page in a private popup. It works offline and does not redirect.';
-  }
-  if (els.onlineDot) {
-    els.onlineDot.classList.toggle('offline', !navigator.onLine);
-    els.onlineDot.title = navigator.onLine ? 'Online' : 'Offline';
-  }
-}
-
-async function openBriskRead(withArticle) {
-  setStatus(els.actionStatus, withArticle ? 'Opening reader…' : 'Opening app…');
-  els.btnRead.disabled = true;
-  try {
-    if (!withArticle) {
-      const { APP_ORIGIN } = await getOrigins();
-      if (typeof srSetHandoff === 'function') {
-        await srSetHandoff({ article: null });
-      } else {
-        const handoff = {
-          article: null,
-          opened_at: Date.now(),
-          expires_at: Date.now() + 60_000,
-        };
-        await chrome.storage.session.set({ sr_handoff: handoff });
-        await chrome.storage.local.set({ sr_handoff: handoff });
-      }
-      await chrome.tabs.create({ url: `${APP_ORIGIN}/?source=extension&v=1` });
-      setStatus(els.actionStatus, 'Opened.', 'ok');
-      window.close();
-      return;
-    }
-
-    const response = await chrome.runtime.sendMessage({ type: 'SR_OPEN_BRISKREAD' });
-    if (response && response.ok === false) {
-      setStatus(els.actionStatus, response.error || 'Failed to open.', 'error');
-      return;
-    }
-    setStatus(els.actionStatus, 'Opened.', 'ok');
-    window.close();
+    return await chrome.runtime.sendMessage(message);
   } catch (err) {
-    setStatus(els.actionStatus, err.message || 'Failed to open BriskRead.', 'error');
-  } finally {
-    els.btnRead.disabled = false;
+    return { ok: false, error: err.message };
   }
 }
 
-async function renderReadLater() {
-  if (!els.queueList) return;
-  const list = typeof srListReadLater === 'function' ? await srListReadLater() : [];
-  if (els.queueCount) {
-    els.queueCount.textContent = list.length ? `(${list.length})` : '';
-  }
-  if (!list.length) {
-    els.queueList.classList.add('hidden');
-    els.queueList.innerHTML = '';
-    if (els.queueEmpty) els.queueEmpty.classList.remove('hidden');
-    return;
-  }
-  if (els.queueEmpty) els.queueEmpty.classList.add('hidden');
-  els.queueList.classList.remove('hidden');
-  els.queueList.innerHTML = list
+async function renderQueue() {
+  const [list, store] = await Promise.all([srListReadLater(), chrome.storage.local.get(SR_KEYS.progress)]);
+  const progress = store[SR_KEYS.progress] || {};
+  $('queue-count').textContent = list.length ? `· ${list.length}` : '';
+  $('queue-empty').hidden = list.length > 0;
+  $('queue').innerHTML = list
     .map((item) => {
-      const id = escapeHtml(item.id);
-      const title = escapeHtml(item.title || item.url || 'Untitled');
-      const words = item.wordCount ? `${item.wordCount} words` : 'No text';
-      const when = relativeTime(item.savedAt);
-      const meta = [words, when].filter(Boolean).join(' · ');
-      return `<li class="queue-item" data-id="${id}">
-        <p class="queue-item-title">${title}</p>
-        <p class="queue-item-meta">${escapeHtml(meta)}</p>
-        <div class="queue-item-actions">
-          <button type="button" class="btn btn-primary btn-sm" data-action="open">Open</button>
-          <button type="button" class="btn btn-secondary btn-sm" data-action="web">Open in BriskRead.com</button>
-          <button type="button" class="btn btn-ghost btn-sm" data-action="remove">Remove</button>
-        </div>
+      const p = progress[X.progressKey(item.url)];
+      const pct = p && p.n === item.wordCount ? Math.round((p.i / Math.max(1, p.n - 1)) * 100) : 0;
+      const meta = item.wordCount
+        ? `${item.wordCount.toLocaleString()} words · ${X.minutesFor(item.wordCount, 300)} min · ${ago(item.savedAt)}`
+        : `Link · ${ago(item.savedAt)}`;
+      return `<li class="q-item" data-id="${esc(item.id)}">
+        <span class="q-title" title="${esc(item.url)}">${esc(item.title || item.url || 'Untitled')}</span>
+        <span class="q-meta">${esc(meta)}${pct ? ` · ${pct}% read` : ''}</span>
+        ${pct ? `<span class="q-bar"><span style="width:${pct}%"></span></span>` : ''}
+        <span class="q-btns">
+          <button type="button" class="btn btn-primary btn-sm" data-act="read">Read</button>
+          ${item.url && /^https?:/i.test(item.url) ? `<button type="button" class="icon-btn" data-act="source" title="Open original page" aria-label="Open original page">${ICONS.open}</button>` : ''}
+          <button type="button" class="icon-btn" data-act="remove" title="Remove" aria-label="Remove from queue">${ICONS.remove}</button>
+        </span>
       </li>`;
     })
     .join('');
 }
 
-async function handleSaveLater() {
-  if (els.btnSaveLater) els.btnSaveLater.disabled = true;
-  setStatus(els.actionStatus, 'Saving…');
-  try {
-    const response = await chrome.runtime.sendMessage({ type: 'SR_SAVE_READ_LATER' });
-    if (!response?.ok) {
-      setStatus(els.actionStatus, response?.error || 'Could not save.', 'error');
-      return;
-    }
-    setStatus(els.actionStatus, 'Saved to read later.', 'ok');
-    await renderReadLater();
-  } catch (err) {
-    setStatus(els.actionStatus, err.message || 'Could not save.', 'error');
-  } finally {
-    if (els.btnSaveLater) els.btnSaveLater.disabled = false;
+async function onQueueClick(e) {
+  const btn = e.target.closest('[data-act]');
+  const li = btn?.closest('.q-item');
+  if (!li) return;
+  const item = (await srListReadLater()).find((x) => x.id === li.dataset.id);
+  if (!item) return renderQueue();
+  const act = btn.dataset.act;
+  if (act === 'remove') {
+    await srRemoveReadLater(item.id);
+    return renderQueue();
   }
-}
-
-async function openQueueItem(item, { web = false } = {}) {
-  const article = articlePayload(item);
-  if (!article.text.trim()) {
-    setStatus(els.actionStatus, 'Saved item has no extractable text.', 'error');
-    return;
+  if (act === 'source') {
+    await chrome.tabs.create({ url: item.url });
+    return window.close();
   }
-  if (web) {
-    setStatus(els.actionStatus, 'Opening BriskRead.com…');
-    const { APP_ORIGIN } = await getOrigins();
-    if (typeof srSetHandoff === 'function') {
-      await srSetHandoff({ article });
-    } else {
-      const handoff = {
-        article,
-        opened_at: Date.now(),
-        expires_at: Date.now() + 60_000,
-      };
-      await chrome.storage.session.set({ sr_handoff: handoff });
-      await chrome.storage.local.set({ sr_handoff: handoff });
-    }
-    await chrome.tabs.create({ url: `${APP_ORIGIN}/?source=extension&handoff=1&v=1` });
-    window.close();
-    return;
-  }
-  setStatus(els.actionStatus, 'Opening reader…');
-  const response = await chrome.runtime.sendMessage({ type: 'SR_OPEN_ARTICLE', article });
-  if (response && response.ok === false) {
-    setStatus(els.actionStatus, response.error || 'Failed to open.', 'error');
-    return;
+  // Read: saved text opens in the reader; a saved link is extracted first.
+  if (item.text) {
+    const res = await send({ type: 'SR_READ_TAB', tabId: tab.id, article: item });
+    if (res?.ok === false) return setStatus(res.error, 'error');
+  } else if (X.isPdfUrl(item.url)) {
+    await chrome.tabs.create({ url: item.url });
+  } else {
+    await chrome.tabs.create({ url: `${SR_APP_ORIGIN}/?url=${encodeURIComponent(item.url)}` });
   }
   window.close();
 }
 
-async function onQueueClick(e) {
-  const btn = e.target.closest('[data-action]');
-  if (!btn) return;
-  const li = btn.closest('.queue-item');
-  if (!li) return;
-  const id = li.getAttribute('data-id');
-  const list = typeof srListReadLater === 'function' ? await srListReadLater() : [];
-  const item = list.find((x) => x.id === id);
-  if (!item) {
-    await renderReadLater();
-    return;
-  }
-  const action = btn.getAttribute('data-action');
-  if (action === 'remove') {
-    if (typeof srRemoveReadLater === 'function') await srRemoveReadLater(id);
-    await renderReadLater();
-    setStatus(els.actionStatus, 'Removed.', 'ok');
-    return;
-  }
-  if (action === 'open') {
-    await openQueueItem(item, { web: false });
-    return;
-  }
-  if (action === 'web') {
-    await openQueueItem(item, { web: true });
+async function showShortcuts() {
+  const commands = await chrome.commands.getAll();
+  for (const kbd of document.querySelectorAll('kbd[data-cmd]')) {
+    const shortcut = commands.find((c) => c.name === kbd.dataset.cmd)?.shortcut;
+    kbd.textContent = shortcut || '';
+    kbd.hidden = !shortcut;
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    els.extVersion.textContent = chrome.runtime.getManifest().version;
-  } catch (_) {}
-
-  refreshUI();
-  await renderReadLater();
-
-  els.btnRead.addEventListener('click', () => openBriskRead(true));
-  if (els.btnSaveLater) els.btnSaveLater.addEventListener('click', handleSaveLater);
-  els.btnOpenApp.addEventListener('click', () => openBriskRead(false));
-  if (els.queueList) els.queueList.addEventListener('click', onQueueClick);
-  if (els.linkOptions) {
-    els.linkOptions.addEventListener('click', (e) => {
-      e.preventDefault();
-      chrome.runtime.openOptionsPage();
-    });
+async function init() {
+  $('ver').textContent = `v${chrome.runtime.getManifest().version}`;
+  // ?tabId= lets the e2e tests and store screenshots point the popup at a page; Chrome never passes it.
+  const forced = Number(new URLSearchParams(location.search).get('tabId'));
+  tab = forced ? await chrome.tabs.get(forced) : (await chrome.tabs.query({ active: true, currentWindow: true }))[0];
+  // No URL means Chrome gave us no access (browser pages); the worker then explains it in the reader tab.
+  const blocked = Boolean(tab?.url) && X.isBlockedUrl(tab.url);
+  $('tab-title').textContent = tab?.title || tab?.url || 'This page';
+  $('tab-title').title = tab?.url || '';
+  if (X.isPdfUrl(tab?.url)) $('read-label').textContent = 'Speed read this PDF';
+  if (blocked) {
+    for (const id of ['btn-read', 'btn-bionic', 'btn-save']) $(id).disabled = true;
+    setStatus('Chrome does not let extensions read this page. Open a PDF or paste text instead.');
   }
 
+  $('btn-read').addEventListener('click', async () => {
+    setStatus('Opening reader…');
+    const res = await send({ type: 'SR_READ_TAB', tabId: tab.id });
+    if (res?.ok === false) return setStatus(res.error, 'error');
+    window.close();
+  });
+  $('btn-bionic').addEventListener('click', async () => {
+    const res = await send({ type: 'SR_BIONIC_TAB', tabId: tab.id });
+    if (!res?.ok) return setStatus(res?.error || 'Could not change this page.', 'error');
+    setStatus(res.on ? 'Bionic reading is on for this page.' : 'Bionic reading is off.', 'ok');
+    setTimeout(() => window.close(), 700);
+  });
+  $('btn-save').addEventListener('click', async () => {
+    $('btn-save').disabled = true;
+    const res = await send({ type: 'SR_SAVE_TAB', tabId: tab.id });
+    $('btn-save').disabled = false;
+    if (!res?.ok) return setStatus(res?.error || 'Could not save this page.', 'error');
+    setStatus('Saved to read later.', 'ok');
+  });
+  $('btn-file').addEventListener('click', () => chrome.tabs.create({ url: 'reader.html' }).then(() => window.close()));
+  $('queue').addEventListener('click', onQueueClick);
+  $('link-options').addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.runtime.openOptionsPage();
+  });
+  $('link-shortcuts').addEventListener('click', (e) => {
+    e.preventDefault();
+    chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+  });
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.sr_read_later) renderReadLater();
+    if (area === 'local' && changes[SR_KEYS.readLater]) renderQueue();
   });
 
-  window.addEventListener('online', refreshUI);
-  window.addEventListener('offline', refreshUI);
-});
+  await Promise.all([renderQueue(), showShortcuts()]);
+}
+
+document.addEventListener('DOMContentLoaded', init);

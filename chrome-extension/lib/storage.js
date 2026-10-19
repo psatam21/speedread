@@ -1,142 +1,103 @@
-/* Shared storage helpers — imported via importScripts in SW, copied logic in popup via storage-api.js */
+/* Storage helpers shared by the service worker (importScripts) and the popup/options pages. */
+const SR_APP_ORIGIN = 'https://briskread.com';
+
 const SR_KEYS = {
-  licenseKey: 'license_key',
-  sessionToken: 'premium_token',
-  deviceId: 'device_id',
-  isPremium: 'is_premium',
-  devices: 'premium_devices',
-  handoff: 'sr_handoff',
+  settings: 'sr_settings',
+  progress: 'sr_progress',
   readLater: 'sr_read_later',
-  apiBase: 'api_base',
-  appOrigin: 'app_origin',
+  geminiKey: 'gemini_key',
 };
 
 const SR_READ_LATER_MAX = 50;
+// ~30k words. Keeps 50 saved articles well inside chrome.storage.local's 10 MB quota.
+const SR_READ_LATER_MAX_CHARS = 180_000;
+const SR_PROGRESS_MAX = 200;
 
-async function srGetDeviceId() {
-  const { device_id } = await chrome.storage.local.get(SR_KEYS.deviceId);
-  if (device_id && String(device_id).length >= 8) return device_id;
-  const id =
-    typeof crypto !== 'undefined' && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `ext-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
-  await chrome.storage.local.set({ [SR_KEYS.deviceId]: id });
-  return id;
+async function srGetSettings() {
+  const data = await chrome.storage.local.get(SR_KEYS.settings);
+  return globalThis.BriskReadExt.normalizeSettings(data[SR_KEYS.settings]);
 }
 
-function srDeviceLabel() {
-  const ua = navigator.userAgent || '';
-  let os = 'Desktop';
-  if (/Windows/.test(ua)) os = 'Windows';
-  else if (/Mac OS|Macintosh/.test(ua)) os = 'Mac';
-  else if (/CrOS/.test(ua)) os = 'ChromeOS';
-  else if (/Linux/.test(ua)) os = 'Linux';
-  return `Chrome Extension (${os})`;
+async function srSaveSettings(patch) {
+  const next = globalThis.BriskReadExt.normalizeSettings({ ...(await srGetSettings()), ...patch });
+  await chrome.storage.local.set({ [SR_KEYS.settings]: next });
+  return next;
 }
 
-async function srGetAuth() {
-  const data = await chrome.storage.local.get([
-    SR_KEYS.licenseKey,
-    SR_KEYS.sessionToken,
-    SR_KEYS.deviceId,
-    SR_KEYS.isPremium,
-    SR_KEYS.devices,
-  ]);
-  return {
-    license_key: data[SR_KEYS.licenseKey] || '',
-    premium_token: data[SR_KEYS.sessionToken] || '',
-    device_id: data[SR_KEYS.deviceId] || '',
-    is_premium: data[SR_KEYS.isPremium] === true || data[SR_KEYS.isPremium] === 'true',
-    devices: data[SR_KEYS.devices] || null,
-  };
+async function srGetProgress(url) {
+  const data = await chrome.storage.local.get(SR_KEYS.progress);
+  return (data[SR_KEYS.progress] || {})[globalThis.BriskReadExt.progressKey(url)] || null;
 }
 
-async function srGetOrigins() {
-  const sync = await chrome.storage.sync.get([SR_KEYS.apiBase, SR_KEYS.appOrigin]);
-  const defaults = globalThis.SR_DEFAULTS || {
-    API_BASE: 'https://briskread.com',
-    APP_ORIGIN: 'https://briskread.com',
-  };
-  return {
-    API_BASE: (sync[SR_KEYS.apiBase] || defaults.API_BASE).replace(/\/$/, ''),
-    APP_ORIGIN: (sync[SR_KEYS.appOrigin] || defaults.APP_ORIGIN).replace(/\/$/, ''),
-  };
-}
-
-async function srSetHandoff(payload) {
-  const handoff = {
-    ...payload,
-    opened_at: Date.now(),
-    expires_at: Date.now() + 60_000, // 60s TTL
-  };
-  // session preferred; local fallback for SW wake races
-  await chrome.storage.session.set({ [SR_KEYS.handoff]: handoff });
-  await chrome.storage.local.set({ [SR_KEYS.handoff]: handoff });
-}
-
-async function srGetHandoff() {
-  const sess = await chrome.storage.session.get(SR_KEYS.handoff);
-  let handoff = sess[SR_KEYS.handoff] || null;
-  if (!handoff) {
-    const loc = await chrome.storage.local.get(SR_KEYS.handoff);
-    handoff = loc[SR_KEYS.handoff] || null;
+/** Remember where the reader stopped. Oldest entries fall off past SR_PROGRESS_MAX. */
+async function srSaveProgress(url, index, wordCount) {
+  const key = globalThis.BriskReadExt.progressKey(url);
+  if (!key) return;
+  const map = (await chrome.storage.local.get(SR_KEYS.progress))[SR_KEYS.progress] || {};
+  map[key] = { i: index, n: wordCount, t: Date.now() };
+  const keys = Object.keys(map);
+  if (keys.length > SR_PROGRESS_MAX) {
+    keys.sort((a, b) => map[a].t - map[b].t);
+    for (const k of keys.slice(0, keys.length - SR_PROGRESS_MAX)) delete map[k];
   }
-  if (handoff?.expires_at && Date.now() > handoff.expires_at) {
-    await srClearHandoff();
-    return null;
-  }
-  return handoff;
-}
-
-async function srClearHandoff() {
-  await chrome.storage.session.remove(SR_KEYS.handoff);
-  await chrome.storage.local.remove(SR_KEYS.handoff);
+  await chrome.storage.local.set({ [SR_KEYS.progress]: map });
 }
 
 async function srListReadLater() {
-  const data = await chrome.storage.local.get(SR_KEYS.readLater);
-  const list = data[SR_KEYS.readLater];
+  const list = (await chrome.storage.local.get(SR_KEYS.readLater))[SR_KEYS.readLater];
   return Array.isArray(list) ? list : [];
+}
+
+/** Write the queue, dropping the oldest items if the storage quota is hit. */
+async function srWriteReadLater(list) {
+  let next = list;
+  for (;;) {
+    try {
+      await chrome.storage.local.set({ [SR_KEYS.readLater]: next });
+      return next;
+    } catch (err) {
+      if (!/quota/i.test(String(err?.message || err)) || next.length <= 1) throw err;
+      next = next.slice(0, -1);
+    }
+  }
 }
 
 async function srAddReadLater(item) {
   const list = await srListReadLater();
-  const id =
-    item?.id ||
-    (typeof crypto !== 'undefined' && crypto.randomUUID
-      ? crypto.randomUUID()
-      : `rl-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`);
-  const text = item?.text || '';
+  let text = String(item?.text || '');
+  if (text.length > SR_READ_LATER_MAX_CHARS) text = text.slice(0, SR_READ_LATER_MAX_CHARS);
+  const url = item?.url || '';
   const entry = {
-    id,
-    title: item?.title || '',
+    id: item?.id || crypto.randomUUID(),
+    title: item?.title || url || 'Untitled',
     text,
-    url: item?.url || '',
-    wordCount: item?.wordCount || (text.trim() ? text.trim().split(/\s+/).length : 0),
-    savedAt: item?.savedAt || Date.now(),
+    url,
+    wordCount: text.trim() ? text.trim().split(/\s+/).length : 0,
+    savedAt: Date.now(),
   };
-  const next = [entry, ...list.filter((x) => x.id !== id)].slice(0, SR_READ_LATER_MAX);
-  await chrome.storage.local.set({ [SR_KEYS.readLater]: next });
+  // Saving the same page again moves it to the top instead of duplicating it.
+  const rest = list.filter((x) => x.id !== entry.id && !(url && x.url === url));
+  const next = await srWriteReadLater([entry, ...rest].slice(0, SR_READ_LATER_MAX));
   return { entry, list: next };
 }
 
 async function srRemoveReadLater(id) {
-  const list = await srListReadLater();
-  const next = list.filter((x) => x.id !== id);
-  await chrome.storage.local.set({ [SR_KEYS.readLater]: next });
-  return next;
+  return srWriteReadLater((await srListReadLater()).filter((x) => x.id !== id));
 }
 
 if (typeof globalThis !== 'undefined') {
-  globalThis.SR_KEYS = SR_KEYS;
-  globalThis.srGetDeviceId = srGetDeviceId;
-  globalThis.srDeviceLabel = srDeviceLabel;
-  globalThis.srGetAuth = srGetAuth;
-  globalThis.srGetOrigins = srGetOrigins;
-  globalThis.srSetHandoff = srSetHandoff;
-  globalThis.srGetHandoff = srGetHandoff;
-  globalThis.srClearHandoff = srClearHandoff;
-  globalThis.srListReadLater = srListReadLater;
-  globalThis.srAddReadLater = srAddReadLater;
-  globalThis.srRemoveReadLater = srRemoveReadLater;
+  Object.assign(globalThis, {
+    SR_APP_ORIGIN,
+    SR_KEYS,
+    SR_READ_LATER_MAX,
+    SR_READ_LATER_MAX_CHARS,
+    SR_PROGRESS_MAX,
+    srGetSettings,
+    srSaveSettings,
+    srGetProgress,
+    srSaveProgress,
+    srListReadLater,
+    srAddReadLater,
+    srRemoveReadLater,
+  });
 }

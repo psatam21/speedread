@@ -1,65 +1,35 @@
-# BriskRead Chrome Extension (production)
+# BriskRead Chrome extension
 
-**Version:** see `manifest.json`  
-**Store-ready package:** `npm run ext:pack` → `release/briskread-extension-v*.zip`
+Speed read any page in place: Flash/Focus/Phrase/Flow/Bionic/Page modes, read-aloud with a synced highlight, bionic reading on the live page, PDFs, a read-later queue with resume, and optional AI summaries with the user's own Gemini key. Manifest V3, no host permissions, no build step.
 
-## Features
+## Commands (repo root)
 
-- Premium license sign-in (same `/api/activate-license` + 5 device slots)
-- **In-page overlay** (`overlay.js`, Premium): reads the current tab without redirecting.
-  Shadow DOM root, Escape to close. Modes: **Flash** (RSVP) and **Focus** first, then
-  Phrase / Flow / Bionic / Page. AI summary + document chat via your own Gemini key (set in Options)
-  (proxied through the service worker). Free users see an upsell to
-  `https://briskread.com/#pricing`.
-- Falls back to the standalone `reader.html` popup window on pages where content
-  scripts are blocked (`chrome://`, Web Store, PDF viewer)
-- Context menu: **Speed read this page**
-- Keyboard: **Alt+Shift+S**
-- Explicit web-app button for the full workspace
-- Options page (API/app origin for local dev only)
-- Sign out unbinds this extension device
+| Command | What it does |
+| --- | --- |
+| `npm run ext:test` | Unit checks plus the Playwright suite against the packaged build |
+| `npm run ext:pack` | Validates and builds `release/briskread-extension-vX.Y.Z/` and the `.zip` to upload |
+| `npm run ext:assets` | Store screenshots, promo tiles and icon into `release/store/` |
+| `npm run ext:icons` | Regenerates `icons/` from `public/images/brand-mark.png` |
 
-## Install (developer / sideload)
+Load for development: `chrome://extensions`, then Developer mode, then **Load unpacked** this folder.
 
-1. `npm run ext:icons` (once)
-2. Chrome → `chrome://extensions` → Developer mode → **Load unpacked**
-3. Select this `chrome-extension/` folder
+## Map
 
-## Package for Chrome Web Store
+| File | Role |
+| --- | --- |
+| `background.js` | Service worker: shortcuts, context menus, text extraction, reader injection, read later, Gemini calls |
+| `overlay.js` | The reader UI (shadow DOM, top layer). Injected into pages; also mounted by `reader.html` |
+| `reader.html` / `reader-page.js` | Reader tab for PDFs, blocked pages, local files, pasted text and the welcome demo |
+| `page-bionic.js` | Bionic formatting on the live page (toggle, follows new content, exact restore) |
+| `popup.*`, `options.*` | Toolbar popup and the options/welcome page |
+| `lib/ext-core.js` | Pure helpers (settings, pacing, speech mapping, URL rules), unit-tested in node |
+| `lib/reader-core.js` | Verbatim copy of the site's `public/reader-core.js`; keep the two in sync |
+| `lib/extract.js` | Article extraction, injected into the page |
+| `lib/storage.js` | Settings, read-later and resume storage |
+| `styles/tokens.css` | **All colours, radii and fonts.** Swap this file when the site redesign lands |
+| `vendor/pdfjs/` | pdf.js 3.11.174, unmodified (Apache-2.0) |
+| `store/` | Listing copy, publishing guide, QA checklist, audit (not shipped in the zip) |
 
-```bash
-npm run ext:pack
-```
+## Privacy model
 
-Upload `release/briskread-extension-vX.Y.Z.zip` in the [Developer Dashboard](https://chrome.google.com/webstore/devconsole).
-
-### Store listing checklist
-
-| Field | Value |
-|--------|--------|
-| Name | BriskRead — Speed Reader for Chrome |
-| Summary | Speed-read any webpage; optional Lifetime Premium login |
-| Category | Productivity |
-| Language | English |
-| Homepage | https://briskread.com/extension |
-| Privacy policy | https://briskread.com/privacy |
-| Single purpose | Speed-read web pages with optional paid license |
-| Permissions justification | activeTab/scripting: extract on user action; storage: license; contextMenus: shortcut; host briskread.com: activate + open reader |
-
-Screenshots: capture extension popup, local RSVP reader and Options explanation.
-
-## Production requirements
-
-1. Site deployed at `https://briskread.com` with Pages Functions
-2. KV binding `LICENSES` + `JWT_SECRET` + Dodo env for purchases
-3. Content script matches only production origin (see `manifest.json`)
-
-## Local API testing
-
-Options → set API base / app origin to localhost. You may need **optional host permissions** granted and a temporary content_scripts match for localhost (dev fork of manifest).
-
-## Privacy
-
-- No continuous browsing capture
-- Extract only on explicit user action
-- License keys stored in `chrome.storage.local` on device
+Page text is read only on a user gesture (activeTab) and processed in the browser. Settings, the queue and reading positions live in `chrome.storage.local`. The only network call is Gemini, made only when the user presses Summarise or Ask, with their own key, sent as a header.

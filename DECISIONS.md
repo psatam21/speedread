@@ -3,15 +3,19 @@
 ## Current state
 **Goal:** Grow organic search traffic to briskread.com, a free, ad-supported online speed reader (Astro 7 static site on Vercel), monetize with AdSense, and redesign it to feel clearly premium.
 **Deadline:** none
-**Where we are:** 2026-10-19: SEO + perf overhaul DEPLOYED to production (commit cd0a350 on branch `seo-overhaul`; master and GitHub not yet updated, so run `vercel --prod` only from that branch until it is merged). Live checks passed (308s, headers, canonicals, schema). Built and tested locally, NOT committed or deployed: /words-to-minutes, /teleprompter, /readability-checker (tests in npm test; footer Tools group, llms.txt), plus AdSense-ready privacy disclosures. A separate session is building the Chrome extension in this same checkout (chrome-extension/ only). Next: Prathamesh picks a redesign direction (A Paper and Pen, B Midnight Stage, C Instrument; refs in scratchpad refero/).
+**Where we are:** 2026-10-19: SEO + perf overhaul and three tools (/words-to-minutes, /teleprompter, /readability-checker) plus AdSense privacy disclosures are DEPLOYED and live-verified; master and GitHub = production (5476e85). Chrome extension 2.0.0 is built and tested (19 e2e + unit checks green), with the store package, images and publishing guide in chrome-extension/store/, NOT committed; Prathamesh must update the /privacy extension section (copy in chrome-extension/store/PUBLISHING.md step 0), then register and submit in the CWS dashboard. Next: Prathamesh picks a redesign direction (A Paper and Pen, B Midnight Stage, C Instrument; refs in scratchpad refero/).
 **Open questions:**
-- Merge `seo-overhaul` into master and push to GitHub?
 - Which redesign direction (A recommended)?
 - AdSense: Prathamesh must sign up at adsense.google.com, then share the ca-pub ID so PUBLIC_ADSENSE_CLIENT_ID and ads.txt can be set; enable Google's CMP (Privacy & messaging) for EEA/UK.
 - Homepage testimonials (Priya M., Marcus B., etc.) look like placeholders; if not real users they are an FTC fake-review risk.
 - Defer GA4 until after load? Content gaps: thin tool pages, no named competitor list, no author bio.
 
 ## Decision log
+### 2026-10-19 - Chrome extension 2.0: free premium quality, zero host permissions
+**Decided:** (Prathamesh's call) "Premium" means premium quality, free, beating what competitors paywall: read-aloud with synced highlighting, bionic on the live page, PDF reading (plus resume, themes, selection-aware shortcut). Claude also cut every host permission and the briskread.com content-script handoff, so the extension installs with no permission warnings; saved links and "Speed read linked page" open briskread.com/?url= instead. Bionic shortcut is Alt+Shift+K because Chrome silently rejects Alt+Shift+B (its bookmarks-bar shortcut) and Alt+Shift+R.
+**Why:** A paid tier would reverse the site's free + ads decision (98575b4). No-warning installs convert better and review faster; the handoff only served a minor feature. Rejected: OCR, ePub, stats, sync in the extension (weight without a switching reason).
+**Consequence:** Keep the extension permission-free; any feature needing host access must justify a new install warning. The site's `sr_extension_article` sessionStorage handoff is no longer written by the extension, but the new site tools still use it, so keep it. tokens.css is the only file to change for the redesign.
+
 ### 2026-10-19 - Three adjacent tools added; AI-detection bypasser declined
 **Decided:** (Prathamesh's call) Build /words-to-minutes, /teleprompter and /readability-checker as client-side tools that hand text to the reader via the existing `sr_extension_article` sessionStorage handoff. Claude declined to build a Turnitin/AI-detector bypasser ("Turnitout"-style) even when Prathamesh overrode the objection; offered instead an honestly marketed "simplify this text" rewriter next to the readability checker (not started, awaiting a yes).
 **Why:** Tools reuse existing pacing/TTS code and stay on-topic (reading/text) for topical relevance. The bypasser's purpose is evading academic-integrity checks; it also conflicts with Google publisher policy on enabling dishonest behaviour, which threatens the AdSense plan.

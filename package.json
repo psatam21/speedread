@@ -13,7 +13,9 @@
     "astro": "astro",
     "deploy": "vercel --prod",
     "ext:icons": "node scripts/generate-extension-icons.mjs",
-    "ext:pack": "node scripts/package-extension.mjs"
+    "ext:pack": "node scripts/package-extension.mjs",
+    "ext:test": "node scripts/test-extension-core.mjs && node --test scripts/test-extension.mjs",
+    "ext:assets": "node scripts/extension-store-assets.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
