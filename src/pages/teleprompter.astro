@@ -1,0 +1,811 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+
+const pageTitle = "Online Teleprompter: Free for Laptop and Phone | BriskRead";
+const pageDescription = "Free online teleprompter: paste a script and it scrolls at your words-per-minute pace. Mirror mode, countdown, fullscreen and keep-awake. No signup.";
+
+/** One source for the visible FAQ and its FAQPage schema. */
+const faqs = [
+  {
+    q: 'Is this online teleprompter really free?',
+    a: 'Yes. There is no signup, no watermark, no time limit and no script length limit. The site is supported by ads. The teleprompter runs in your browser, so nothing is uploaded.',
+  },
+  {
+    q: 'Is my script saved or uploaded anywhere?',
+    a: 'Your script never leaves your device. It is kept in your browser’s local storage so it is still there when you come back. The Clear button removes it, and so does clearing your browser data.',
+  },
+  {
+    q: 'How is the scroll speed worked out?',
+    a: 'From your script. BriskRead divides the distance the text has to travel by the time the script should take, which is the word count divided by your words per minute. A 300 word script at 150 WPM takes 2 minutes.',
+  },
+  {
+    q: 'Does it work on a phone or tablet?',
+    a: 'Yes, in portrait and landscape. Tap the text to pause and resume, and use the on-screen buttons for speed and size. The screen stays awake while the script plays, where your browser supports it.',
+  },
+  {
+    q: 'Can it follow my voice, or be controlled from another device?',
+    a: 'Not yet. The scroll runs at the pace you set, and you can nudge it with the arrow keys or the on-screen buttons. Voice-following scroll and remote control from a second device may come later. They are not features today.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+// Min and max come from BriskReadTeleprompter.LIMITS at runtime (one source of truth).
+const sliders = [
+  { key: 'wpm', label: 'Pace', step: 10 },
+  { key: 'font', label: 'Font size', step: 2 },
+  { key: 'width', label: 'Text width', step: 5 },
+  { key: 'lh', label: 'Line height', step: 0.05 },
+];
+const mirrors = [
+  { key: 'mirrorH', label: 'Mirror horizontal' },
+  { key: 'mirrorV', label: 'Mirror vertical' },
+];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Free Online Teleprompter for Laptop and Phone</h1>
+        <p class="lede">
+          Paste your script, set a pace in words per minute, and read from a smooth, steady scroll. It runs in your browser, so your script is never uploaded.
+        </p>
+
+        <div class="tp-editor mt-6">
+          <label class="tp-label" for="tp-script">Your script</label>
+          <textarea
+            id="tp-script"
+            rows="10"
+            maxlength="200000"
+            spellcheck="true"
+            placeholder="Paste or type your script here. Blank lines become pauses between paragraphs."
+          ></textarea>
+          <p class="tp-meta">
+            <strong id="tp-count">0 words</strong> · about <strong id="tp-duration">0:00</strong> at <span data-out="wpm"></span>
+          </p>
+
+          <div class="tp-panel" id="tp-panel">
+            {sliders.map((f) => (
+              <label class="tp-field">
+                <span>{f.label}: <span class="tp-val" data-out={f.key}></span></span>
+                <input type="range" data-setting={f.key} step={f.step} />
+              </label>
+            ))}
+            {mirrors.map((f) => (
+              <label class="tp-field tp-check">
+                <input type="checkbox" data-setting={f.key} />
+                <span>{f.label}</span>
+              </label>
+            ))}
+          </div>
+
+          <div class="tp-actions">
+            <button class="btn btn-primary" id="tp-start" type="button" disabled>Start teleprompter</button>
+            <button class="btn btn-secondary" id="tp-sample" type="button">Try a sample script</button>
+            <button class="btn btn-secondary" id="tp-clear" type="button">Clear</button>
+            <button class="btn btn-secondary" id="tp-practice" type="button" disabled>Practice in the speed reader</button>
+          </div>
+          <p class="tp-note" id="tp-note">
+            Saved only in this browser. Mirror horizontal is for beam-splitter glass. Practice sends the script to the BriskRead reader in this tab, where Flow and Focus modes pace the text for your eyes. It needs at least 40 characters.
+          </p>
+        </div>
+
+        <div class="tp-copy">
+          <h2 class="mt-8">How to use this online teleprompter</h2>
+          <ol class="steps">
+            <li>Paste or type your script. The word count and running time update as you type. Blank lines become gaps between paragraphs.</li>
+            <li>Set your pace. 150 words per minute (WPM) is a sensible start.</li>
+            <li>Choose font size, text width and line height. If you use mirror glass, turn on mirror horizontal.</li>
+            <li>Press <strong>Start teleprompter</strong>, then Play. After a 3-2-1 countdown the text scrolls. Press Space or tap the text to pause.</li>
+            <li>Change speed any time with the up and down arrow keys or the plus and minus buttons. The text keeps moving without a jump.</li>
+          </ol>
+          <p>
+            A shaded band about a third of the way down the screen marks where to read. Text outside the band is dimmed, so your eyes stay on the line you are saying.
+          </p>
+          <h3 class="mt-4">Keyboard shortcuts</h3>
+          <ul>
+            <li><kbd>Space</kbd> play or pause</li>
+            <li><kbd>↑</kbd> <kbd>↓</kbd> faster or slower, 10 WPM at a time</li>
+            <li><kbd>←</kbd> <kbd>→</kbd> nudge back or forward by two lines</li>
+            <li><kbd>+</kbd> <kbd>-</kbd> larger or smaller text</li>
+            <li><kbd>M</kbd> mirror horizontally, <kbd>Shift</kbd> + <kbd>M</kbd> mirror vertically</li>
+            <li><kbd>F</kbd> fullscreen, <kbd>R</kbd> restart, <kbd>Esc</kbd> exit</li>
+          </ul>
+
+          <h2 class="mt-8">Choosing a speaking pace</h2>
+          <p>
+            Most presenters land somewhere around 130 to 160 words per minute. Treat that as typical, not as a rule. Speaking coaches quote different ranges, and your own voice, topic and audience matter more than any average. Nervous speakers and training videos usually run slower. Casual chat runs faster.
+          </p>
+          <p>
+            The speed comes from your script, not from a guess. BriskRead divides the distance the text must travel by the time the script should last, which is the word count divided by your WPM. A 300 word script at 150 WPM lasts 2 minutes. Font size does not change your pace. It only changes how many pixels the text has to cover.
+          </p>
+          <p>
+            To find your own number, read one paragraph aloud with a timer, count its words and divide by the minutes. Then adjust in steps of 10. To check a script's length without starting the prompter, try the <a href="/words-to-minutes">words to minutes calculator</a>.
+          </p>
+
+          <h2 class="mt-8">Tips for reading naturally on camera</h2>
+          <ul>
+            <li><strong>Write for the ear.</strong> Use short sentences and everyday words. Read the script aloud once and rewrite any line you stumble on. The <a href="/readability-checker">readability checker</a> flags long, hard sentences before you record.</li>
+            <li><strong>Use blank lines as breath marks.</strong> A gap reminds you to pause, and pauses make you sound like you are thinking, not reading.</li>
+            <li><strong>Narrow the text.</strong> A width of 50 to 70 percent keeps your eyes moving less, so it looks less like reading.</li>
+            <li><strong>Make the type big.</strong> You should read it from your normal seat without leaning in.</li>
+            <li><strong>Talk to one person.</strong> Picture a friend just behind the lens.</li>
+            <li><strong>Rehearse once.</strong> One full run shows you where the pace is wrong. Fix it with the arrow keys, then record.</li>
+          </ul>
+
+          <h2 class="mt-8">Using it with a webcam, a phone or mirror glass</h2>
+          <h3 class="mt-4">Laptop with a webcam</h3>
+          <p>
+            Webcams sit above the screen, and the reading band sits near the top third, so it lands fairly close to the lens. Go fullscreen, sit about an arm's length back, and keep the lines short. On a video call or in OBS, share or capture a different window from the prompter.
+          </p>
+          <h3 class="mt-4">Phone or tablet</h3>
+          <p>
+            It works in portrait and landscape, and landscape gives longer lines. Tap the text to pause or resume. Where your browser supports it, the screen stays awake while the script plays and is released when you pause. iPhone Safari does not allow fullscreen for web pages, so the prompter fills the browser window there.
+          </p>
+          <h3 class="mt-4">Mirror glass (beam splitter)</h3>
+          <p>
+            A beam-splitter rig reflects a screen in angled glass in front of the lens. The reflection is reversed, so turn on mirror horizontal and the text reads correctly in the glass. If your screen sits upside down in the rig, turn on mirror vertical as well. Test with the sample script before a real take.
+          </p>
+
+          <h2 class="mt-8">Online teleprompter FAQ</h2>
+          {faqs.map(({ q, a }) => (
+            <>
+              <h3 class="faq-q">{q}</h3>
+              <p>{a}</p>
+            </>
+          ))}
+        </div>
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/how-it-works">How BriskRead works</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+
+  <Fragment slot="modal-portal">
+    <div id="tp-overlay" class="tp-overlay" role="dialog" aria-modal="true" aria-label="Teleprompter" tabindex="-1" data-state="closed" hidden>
+      <div class="tp-top">
+        <span class="tp-clock"><span class="sr-only">Elapsed </span><span id="tp-elapsed">0:00</span></span>
+        <div class="tp-progress" id="tp-progress" role="progressbar" aria-label="Script progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <span class="tp-fill" id="tp-fill"></span>
+        </div>
+        <span class="tp-clock"><span class="sr-only">Remaining </span><span id="tp-remaining">0:00</span><span aria-hidden="true"> left</span></span>
+      </div>
+
+      <div class="tp-stage" id="tp-stage">
+        <div class="tp-text" id="tp-text"></div>
+        <div class="tp-dim" aria-hidden="true"></div>
+        <div class="tp-band" aria-hidden="true"></div>
+        <div class="tp-countdown" id="tp-countdown" aria-hidden="true" hidden>
+          <span class="tp-count-n" id="tp-count-n"></span>
+          <span class="tp-skip">Tap or press Space to skip</span>
+        </div>
+      </div>
+
+      <div class="tp-bar" id="tp-bar">
+        <div class="tp-row">
+          <button class="tp-btn tp-btn-primary" id="tp-play" type="button" data-act="play">Play</button>
+          <button class="tp-btn" type="button" data-act="restart">Restart</button>
+          <button class="tp-btn" type="button" data-act="back" aria-label="Back two lines">Back</button>
+          <button class="tp-btn" type="button" data-act="forward" aria-label="Forward two lines">Forward</button>
+          <div class="tp-group" role="group" aria-label="Speed">
+            <button class="tp-btn" type="button" data-act="slower" aria-label="Slower by 10 WPM">−</button>
+            <span class="tp-readout" data-out="wpm"></span>
+            <button class="tp-btn" type="button" data-act="faster" aria-label="Faster by 10 WPM">+</button>
+          </div>
+          <div class="tp-group" role="group" aria-label="Text size">
+            <button class="tp-btn" type="button" data-act="smaller" aria-label="Smaller text">A−</button>
+            <button class="tp-btn" type="button" data-act="larger" aria-label="Larger text">A+</button>
+          </div>
+        </div>
+        <div class="tp-row">
+          <details class="tp-display">
+            <summary class="tp-btn">Display</summary>
+            <div class="tp-popover" id="tp-overlay-panel"></div>
+          </details>
+          <button class="tp-btn" id="tp-fs" type="button" data-act="fullscreen">Fullscreen</button>
+          <button class="tp-btn" type="button" data-act="exit">Exit</button>
+          <p class="tp-hint">
+            <span class="tp-kb">Space play or pause · ↑ ↓ speed · ← → nudge · + - font · M mirror · F fullscreen · Esc exit</span>
+            <span class="tp-touch">Tap Play to start. Tap the text to pause.</span>
+          </p>
+        </div>
+      </div>
+
+      <p class="sr-only" id="tp-status" role="status" aria-live="polite"></p>
+    </div>
+
+    <script is:inline src="/teleprompter.js"></script>
+    <script is:inline>
+      (() => {
+        const T = globalThis.BriskReadTeleprompter;
+        if (!T) return;
+        const $ = (id) => document.getElementById(id);
+        const KEY = 'briskread_teleprompter_v1';
+        const GUIDE = 0.33; // reading band centre, as a fraction of the stage height
+        const NUDGE_LINES = 2;
+        const SAMPLE = [
+          "Hi, I'm reading this from a teleprompter, and you can too.",
+          'Keep your eyes close to the camera lens. The text moves at a steady pace, so you never have to hunt for your place.',
+          'Speak to one person, not a crowd. Pause where you see a blank line. Breathe.',
+          'If the pace feels too fast or too slow, press the up or down arrow and it changes right away. Space pauses. On a phone, tap the text.',
+          'Short sentences are easier to say out loud. Read each one as if you were telling a friend.',
+          'That is all it takes. Paste your own script, pick a pace, and press start.',
+        ].join('\n\n');
+
+        const el = {
+          script: $('tp-script'), count: $('tp-count'), duration: $('tp-duration'),
+          start: $('tp-start'), sample: $('tp-sample'), clear: $('tp-clear'),
+          practice: $('tp-practice'), note: $('tp-note'),
+          overlay: $('tp-overlay'), stage: $('tp-stage'), text: $('tp-text'),
+          countdown: $('tp-countdown'), countN: $('tp-count-n'), play: $('tp-play'), fs: $('tp-fs'),
+          elapsed: $('tp-elapsed'), remaining: $('tp-remaining'),
+          fill: $('tp-fill'), progress: $('tp-progress'), status: $('tp-status'), bar: $('tp-bar'),
+        };
+
+        // ---- settings: one object, mirrored into every [data-setting] control ----
+        let saved = null;
+        try { saved = JSON.parse(localStorage.getItem(KEY)); } catch (e) { /* storage blocked */ }
+        const settings = T.sanitize(saved);
+        if (!saved && Math.min(window.innerWidth, window.innerHeight) < 600) settings.font = 36; // phones, either way up
+        const save = () => { try { localStorage.setItem(KEY, JSON.stringify(settings)); } catch (e) { /* storage blocked or full */ } };
+
+        // The display controls are written once in the page and copied into the prompter bar.
+        const panelCopy = $('tp-panel').cloneNode(true);
+        panelCopy.removeAttribute('id'); // ids must stay unique
+        $('tp-overlay-panel').appendChild(panelCopy);
+        document.querySelectorAll('input[type="range"][data-setting]').forEach((input) => {
+          const [lo, hi] = T.LIMITS[input.dataset.setting];
+          input.min = lo;
+          input.max = hi;
+        });
+
+        const FMT = {
+          wpm: (v) => v + ' WPM',
+          font: (v) => v + ' px',
+          width: (v) => v + '%',
+          lh: (v) => Number(v).toFixed(2),
+        };
+
+        // ---- player state ----
+        let state = 'closed'; // closed | paused | countdown | playing
+        let words = 0, pos = 0, max = 0, elapsed = 0, lineH = 0;
+        let rafId = 0, lastT = 0, cdTimer = 0, cdN = 0;
+        let lock = null, lockBusy = false, expectFsExit = false;
+        let shownPct = -1, shownClock = '';
+
+        const setStatus = (msg) => { el.status.textContent = msg; };
+        const speed = () => T.scrollSpeed(max, words, settings.wpm);
+
+        function setState(next) {
+          state = next;
+          el.overlay.dataset.state = next;
+          el.play.textContent = next === 'playing' ? 'Pause' : next === 'countdown' ? 'Skip countdown' : 'Play';
+        }
+
+        // ---- editor ----
+        function updateEstimate() {
+          const text = el.script.value;
+          words = T.countWords(text);
+          el.count.textContent = words + (words === 1 ? ' word' : ' words');
+          el.duration.textContent = T.formatClock(T.estimateSeconds(words, settings.wpm));
+          el.start.disabled = words === 0;
+          el.practice.disabled = text.trim().length < 40;
+        }
+
+        function applySettings() {
+          document.querySelectorAll('[data-setting]').forEach((input) => {
+            const v = settings[input.dataset.setting];
+            if (input.type === 'checkbox') input.checked = v;
+            else if (input.value !== String(v)) input.value = v;
+          });
+          document.querySelectorAll('[data-out]').forEach((out) => {
+            const key = out.dataset.out;
+            out.textContent = FMT[key](settings[key]);
+          });
+          const s = el.overlay.style;
+          s.setProperty('--tp-font', settings.font + 'px');
+          s.setProperty('--tp-width', settings.width + '%');
+          s.setProperty('--tp-lh', settings.lh);
+          s.setProperty('--tp-sx', settings.mirrorH ? -1 : 1);
+          s.setProperty('--tp-sy', settings.mirrorV ? -1 : 1);
+          s.setProperty('--tp-guide', GUIDE * 100 + '%');
+          updateEstimate();
+          if (state !== 'closed') { layout(); paint(); }
+          save();
+        }
+
+        function setSetting(key, value) {
+          settings[key] = typeof value === 'boolean' ? value : T.clampSetting(key, value);
+          applySettings();
+        }
+
+        document.addEventListener('input', (e) => {
+          const input = e.target;
+          const key = input && input.dataset && input.dataset.setting;
+          if (!key) return;
+          setSetting(key, input.type === 'checkbox' ? input.checked : input.value);
+        });
+
+        el.script.addEventListener('input', () => {
+          settings.script = el.script.value;
+          updateEstimate();
+          save();
+        });
+        el.sample.addEventListener('click', () => {
+          el.script.value = SAMPLE;
+          settings.script = SAMPLE;
+          updateEstimate();
+          save();
+          el.script.focus();
+        });
+        el.clear.addEventListener('click', () => {
+          el.script.value = '';
+          settings.script = '';
+          updateEstimate();
+          save();
+          el.script.focus();
+        });
+
+        // Hand the script to the reader on the home page (same-origin sessionStorage handoff).
+        el.practice.addEventListener('click', () => {
+          const text = el.script.value.trim();
+          if (text.length < 40) return;
+          try {
+            sessionStorage.setItem('sr_extension_article', JSON.stringify({ title: 'Teleprompter script', text }));
+            location.href = '/';
+          } catch (e) {
+            el.note.textContent = 'Your browser blocked the handoff. Copy the script and paste it into the reader instead.';
+          }
+        });
+
+        // ---- layout and painting ----
+        function layout() {
+          const vh = el.stage.clientHeight;
+          lineH = settings.font * settings.lh;
+          // First line starts centred on the reading band; the last line ends there.
+          el.text.style.marginTop = Math.max(0, Math.round(vh * GUIDE - lineH / 2)) + 'px';
+          el.overlay.style.setProperty('--tp-band', Math.round(lineH * 1.5) + 'px');
+          const next = Math.max(0, el.text.offsetHeight - lineH);
+          pos = T.rescalePosition(pos, max, next);
+          max = next;
+        }
+
+        function paint() {
+          el.text.style.transform = 'translate3d(0,' + -pos + 'px,0)';
+          const p = T.progress(pos, max);
+          el.fill.style.transform = 'scaleX(' + p + ')';
+          const pct = Math.round(p * 100);
+          if (pct !== shownPct) {
+            shownPct = pct;
+            el.progress.setAttribute('aria-valuenow', pct);
+          }
+          const e = T.formatClock(elapsed);
+          const r = T.formatClock(T.remainingSeconds(pos, max, speed()));
+          if (e + '|' + r !== shownClock) {
+            shownClock = e + '|' + r;
+            el.elapsed.textContent = e;
+            el.remaining.textContent = r;
+          }
+        }
+
+        // ---- screen wake lock ----
+        async function wake() {
+          if (!('wakeLock' in navigator) || lock || lockBusy) return;
+          lockBusy = true;
+          try {
+            const l = await navigator.wakeLock.request('screen');
+            if (state === 'playing' || state === 'countdown') {
+              lock = l;
+              l.addEventListener('release', () => { if (lock === l) lock = null; });
+            } else {
+              l.release().catch(() => {});
+            }
+          } catch (e) { /* denied or unsupported: the screen may dim, nothing else breaks */ }
+          lockBusy = false;
+        }
+        function sleepLock() {
+          const l = lock;
+          lock = null;
+          if (l) l.release().catch(() => {});
+        }
+        // The browser drops the lock when the tab is hidden, so take it again on return.
+        document.addEventListener('visibilitychange', () => {
+          if (document.visibilityState === 'visible' && (state === 'playing' || state === 'countdown')) wake();
+        });
+
+        // ---- fullscreen, with the fixed overlay as the fallback ----
+        const fsElement = () => document.fullscreenElement || document.webkitFullscreenElement || null;
+        const fsSupported = !!(document.fullscreenEnabled || document.webkitFullscreenEnabled);
+        if (!fsSupported) el.fs.hidden = true;
+        function enterFs() {
+          const o = el.overlay;
+          const req = o.requestFullscreen || o.webkitRequestFullscreen;
+          if (!fsSupported || !req) return;
+          try {
+            const r = req.call(o);
+            if (r && r.catch) r.catch(() => {});
+          } catch (e) { /* the overlay already fills the window */ }
+        }
+        function exitFs() {
+          if (!fsElement()) return;
+          expectFsExit = true;
+          const exit = document.exitFullscreen || document.webkitExitFullscreen;
+          try {
+            const r = exit.call(document);
+            if (r && r.catch) r.catch(() => { expectFsExit = false; });
+          } catch (e) { expectFsExit = false; }
+        }
+        const toggleFs = () => (fsElement() ? exitFs() : enterFs());
+        const onFsChange = () => {
+          // Esc in fullscreen is handled by the browser, so treat it as "exit the prompter" too.
+          if (!fsElement() && state !== 'closed' && !expectFsExit) closePrompter();
+          expectFsExit = false;
+          // Leaving fullscreen resets focus, so return it to the Start button after the exit.
+          if (state === 'closed') el.start.focus({ preventScroll: true });
+        };
+        document.addEventListener('fullscreenchange', onFsChange);
+        document.addEventListener('webkitfullscreenchange', onFsChange);
+
+        // ---- transport ----
+        function frame(t) {
+          if (state !== 'playing') return;
+          const dt = lastT ? t - lastT : 0;
+          lastT = t;
+          elapsed += T.frameMs(dt) / 1000;
+          pos = T.advance(pos, speed(), dt, max);
+          paint();
+          if (pos >= max) { finish(); return; }
+          rafId = requestAnimationFrame(frame);
+        }
+
+        function run() {
+          setState('playing');
+          lastT = 0;
+          wake();
+          setStatus('Playing at ' + settings.wpm + ' WPM');
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(frame);
+        }
+
+        function startCountdown() {
+          setState('countdown');
+          cdN = 3;
+          el.countN.textContent = cdN;
+          el.countdown.hidden = false;
+          wake();
+          setStatus('Starting in 3 seconds. Press Space or tap to skip.');
+          cdTimer = setInterval(() => {
+            cdN -= 1;
+            if (cdN <= 0) skipCountdown();
+            else el.countN.textContent = cdN;
+          }, 1000);
+        }
+
+        function skipCountdown() {
+          clearInterval(cdTimer);
+          el.countdown.hidden = true;
+          run();
+        }
+
+        function play() {
+          if (state === 'playing') return;
+          if (state === 'countdown') { skipCountdown(); return; }
+          if (state !== 'paused') return;
+          if (max > 0 && pos >= max) { pos = 0; elapsed = 0; paint(); } // play after the end starts over
+          if (pos === 0 && elapsed === 0) startCountdown();
+          else run();
+        }
+
+        function halt(message) {
+          cancelAnimationFrame(rafId);
+          clearInterval(cdTimer);
+          el.countdown.hidden = true;
+          sleepLock();
+          setState('paused');
+          setStatus(message);
+        }
+        const pause = () => { if (state === 'playing') halt('Paused'); };
+        const finish = () => halt('Finished. Press Play to start again.');
+        const toggle = () => (state === 'playing' ? pause() : play());
+
+        function restart() {
+          halt('Back at the start');
+          pos = 0;
+          elapsed = 0;
+          paint();
+        }
+
+        function nudge(direction) {
+          pos = T.clamp(pos + direction * NUDGE_LINES * lineH, 0, max);
+          paint();
+        }
+
+        function changeWpm(direction) {
+          setSetting('wpm', T.stepWpm(settings.wpm, direction));
+          setStatus('Speed ' + settings.wpm + ' WPM');
+        }
+
+        // ---- open and close ----
+        function inertOthers(on) {
+          for (const node of document.body.children) {
+            if (node !== el.overlay && node.tagName !== 'SCRIPT') node.inert = on;
+          }
+        }
+
+        function openPrompter() {
+          updateEstimate();
+          if (!words) return;
+          el.text.textContent = el.script.value.trim();
+          el.overlay.hidden = false;
+          document.documentElement.classList.add('tp-lock');
+          inertOthers(true);
+          pos = 0; max = 0; elapsed = 0; shownPct = -1; shownClock = '';
+          setState('paused');
+          layout();
+          paint();
+          enterFs(); // still inside the click, so the browser allows it
+          el.overlay.focus({ preventScroll: true });
+          setStatus('Prompter ready. Press Play or Space to start.');
+        }
+
+        function closePrompter() {
+          if (state === 'closed') return;
+          cancelAnimationFrame(rafId);
+          clearInterval(cdTimer);
+          sleepLock();
+          setState('closed');
+          el.countdown.hidden = true;
+          el.overlay.hidden = true;
+          document.documentElement.classList.remove('tp-lock');
+          inertOthers(false);
+          exitFs();
+          el.start.focus({ preventScroll: true });
+        }
+
+        el.start.addEventListener('click', openPrompter);
+        el.stage.addEventListener('click', toggle); // click or tap anywhere on the text to pause
+
+        const ACTIONS = {
+          play: toggle,
+          restart,
+          back: () => nudge(-1),
+          forward: () => nudge(1),
+          slower: () => changeWpm(-1),
+          faster: () => changeWpm(1),
+          smaller: () => setSetting('font', settings.font - 4),
+          larger: () => setSetting('font', settings.font + 4),
+          fullscreen: toggleFs,
+          exit: closePrompter,
+        };
+        el.overlay.addEventListener('click', (e) => {
+          const button = e.target.closest && e.target.closest('[data-act]');
+          if (button && ACTIONS[button.dataset.act]) ACTIONS[button.dataset.act]();
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (state === 'closed' || e.ctrlKey || e.metaKey || e.altKey) return;
+          const target = e.target;
+          const k = e.key;
+          if (k === 'Escape') { e.preventDefault(); closePrompter(); return; }
+          if (target.closest && target.closest('input, select, textarea')) return; // sliders keep their own arrows
+          const onControl = target.closest && target.closest('button, a, summary');
+          const lower = k.length === 1 ? k.toLowerCase() : k;
+          const once = k === ' ' || lower === 'm' || lower === 'f' || lower === 'r';
+          if (once && e.repeat) return;
+          switch (lower) {
+            case ' ': if (onControl) return; toggle(); break;
+            case 'ArrowUp': changeWpm(1); break;
+            case 'ArrowDown': changeWpm(-1); break;
+            case 'ArrowLeft': nudge(-1); break;
+            case 'ArrowRight': nudge(1); break;
+            case '+': case '=': setSetting('font', settings.font + 4); break;
+            case '-': case '_': setSetting('font', settings.font - 4); break;
+            case 'm': setSetting(e.shiftKey ? 'mirrorV' : 'mirrorH', !settings[e.shiftKey ? 'mirrorV' : 'mirrorH']); break;
+            case 'f': toggleFs(); break;
+            case 'r': restart(); break;
+            default: return;
+          }
+          e.preventDefault();
+        });
+
+        // Rotation, window resize and entering fullscreen all resize the stage.
+        if ('ResizeObserver' in window) {
+          new ResizeObserver(() => { if (state !== 'closed') { layout(); paint(); } }).observe(el.stage);
+        }
+
+        el.script.value = settings.script;
+        applySettings();
+      })();
+    </script>
+  </Fragment>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; line-height: 1.65; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  h3 { font-size: 1.02rem; margin-bottom: 0.35rem; }
+  .faq-q { margin: 1rem 0 0.35rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  kbd {
+    background: var(--color-bg-subtle);
+    border: 1px solid var(--color-border);
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.4rem;
+    font-size: 0.85rem;
+  }
+  .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .related p { line-height: 2; }
+  .btn { text-decoration: none; }
+
+  /* ---- editor ---- */
+  .tp-label { display: block; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+  .tp-editor textarea {
+    width: 100%; min-height: 12rem; padding: 0.9rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); font: inherit; line-height: 1.6; resize: vertical;
+  }
+  .tp-meta { margin: 0.6rem 0 0; }
+  .tp-meta strong { color: var(--color-text); }
+  .tp-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.9rem 1.25rem;
+    margin-top: 1rem;
+  }
+  .tp-field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; font-weight: 600; color: inherit; }
+  .tp-field input[type="range"] { width: 100%; min-height: 1.75rem; accent-color: var(--color-primary); }
+  .tp-check { flex-direction: row; align-items: center; gap: 0.6rem; }
+  .tp-check input { width: 1.2rem; height: 1.2rem; accent-color: var(--color-primary); }
+  .tp-val { font-weight: 500; opacity: 0.8; }
+  .tp-editor .tp-field { color: var(--color-text); }
+  .tp-actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.25rem; }
+  .tp-note { font-size: 0.88rem; margin-top: 0.9rem; margin-bottom: 0; }
+
+  /* ---- prompter overlay (always dark, no transitions, no animation) ---- */
+  :global(html.tp-lock) { overflow: hidden; }
+  .tp-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    height: 100vh; height: 100dvh;
+    display: flex; flex-direction: column;
+    background: #000; color: #fff;
+    font-family: var(--font-sans);
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    overscroll-behavior: contain; touch-action: manipulation;
+    outline: none;
+  }
+  .tp-overlay[hidden] { display: none; }
+  .tp-overlay button:focus-visible,
+  .tp-overlay summary:focus-visible,
+  .tp-overlay input:focus-visible {
+    outline: 3px solid #b4bbff; outline-offset: 2px;
+  }
+
+  .tp-top { flex: none; display: flex; align-items: center; gap: 0.75rem; padding: 0.4rem 0.9rem; font-size: 0.85rem; color: #c9c9d2; font-variant-numeric: tabular-nums; }
+  .tp-clock { min-width: 4.5rem; }
+  .tp-clock:last-child { text-align: right; }
+  .tp-progress { flex: 1; height: 6px; border-radius: 3px; background: #2a2a33; overflow: hidden; }
+  .tp-fill { display: block; width: 100%; height: 100%; background: #8c97ff; transform-origin: left center; transform: scaleX(0); }
+
+  .tp-stage {
+    position: relative; flex: 1 1 auto; min-height: 0; overflow: hidden;
+    transform: scale(var(--tp-sx, 1), var(--tp-sy, 1));
+    cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent;
+  }
+  .tp-text {
+    width: var(--tp-width, 80%); margin: 0 auto;
+    font-size: var(--tp-font, 56px); line-height: var(--tp-lh, 1.5); font-weight: 600;
+    white-space: pre-wrap; overflow-wrap: break-word;
+    will-change: transform;
+  }
+  .tp-dim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(to bottom,
+      rgba(0, 0, 0, 0.68) 0,
+      rgba(0, 0, 0, 0.68) calc(var(--tp-guide, 33%) - var(--tp-band, 80px) / 2 - 28px),
+      rgba(0, 0, 0, 0) calc(var(--tp-guide, 33%) - var(--tp-band, 80px) / 2),
+      rgba(0, 0, 0, 0) calc(var(--tp-guide, 33%) + var(--tp-band, 80px) / 2),
+      rgba(0, 0, 0, 0.68) calc(var(--tp-guide, 33%) + var(--tp-band, 80px) / 2 + 28px),
+      rgba(0, 0, 0, 0.68) 100%);
+  }
+  .tp-band {
+    position: absolute; left: 0; right: 0; pointer-events: none;
+    top: calc(var(--tp-guide, 33%) - var(--tp-band, 80px) / 2); height: var(--tp-band, 80px);
+    border-block: 1px solid rgba(140, 151, 255, 0.55);
+    background: rgba(94, 106, 210, 0.14);
+  }
+  .tp-band::before, .tp-band::after {
+    content: ''; position: absolute; top: 50%; width: 0; height: 0;
+    border: 10px solid transparent; transform: translateY(-50%);
+  }
+  .tp-band::before { left: 0; border-left-color: #8c97ff; border-right-width: 0; }
+  .tp-band::after { right: 0; border-right-color: #8c97ff; border-left-width: 0; }
+
+  .tp-countdown {
+    position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.66);
+  }
+  .tp-countdown[hidden] { display: none; }
+  .tp-count-n { font-size: min(40vh, 40vw); font-weight: 700; line-height: 1; }
+  .tp-skip { font-size: 1rem; color: #c9c9d2; }
+
+  .tp-bar {
+    position: relative; z-index: 2; flex: none;
+    display: flex; flex-direction: column; gap: 0.5rem;
+    padding: 0.55rem 0.75rem; background: #101014; border-top: 1px solid #2c2c34;
+  }
+  .tp-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+  .tp-group { display: flex; align-items: center; gap: 0.35rem; }
+  .tp-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 44px; min-width: 44px; padding: 0 0.9rem;
+    border-radius: 10px; border: 1px solid #3a3a46; background: #1c1c24; color: #fff;
+    font: 600 0.9rem var(--font-sans); cursor: pointer; list-style: none;
+  }
+  .tp-btn:hover { background: #292935; }
+  .tp-btn-primary { background: var(--color-primary); border-color: var(--color-primary); }
+  .tp-btn-primary:hover { background: var(--color-primary-hover); }
+  .tp-btn[hidden] { display: none; }
+  summary.tp-btn::-webkit-details-marker { display: none; }
+  .tp-readout { min-width: 5.5rem; text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; }
+  .tp-display { display: contents; }
+  .tp-popover {
+    position: absolute; left: 0; right: 0; bottom: 100%;
+    max-height: 60vh; overflow: auto;
+    padding: 0.75rem; background: #101014; border-top: 1px solid #2c2c34;
+  }
+  .tp-popover .tp-panel { margin-top: 0; }
+  .tp-popover .tp-field { color: #fff; }
+  .tp-popover input { accent-color: #8c97ff; }
+  .tp-hint { margin: 0; flex: 1 1 18rem; font-size: 0.8rem; line-height: 1.4; color: #b5b5c0; }
+  .tp-touch { display: none; }
+  @media (pointer: coarse) {
+    .tp-kb { display: none; }
+    .tp-touch { display: inline; }
+  }
+  @media (max-height: 480px) {
+    .tp-hint { display: none; }
+    .tp-bar { padding: 0.35rem 0.6rem; gap: 0.35rem; }
+    .tp-btn { min-height: 40px; }
+  }
+
+  @media (max-width: 600px) {
+    .content-card { padding: 1.25rem; }
+  }
+</style>

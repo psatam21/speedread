@@ -1,0 +1,501 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+// Same file the browser loads, run once at build time so the band table below can never
+// disagree with the live label. It only attaches to globalThis.
+import '../../public/readability.js';
+
+const { BANDS } = (globalThis as any).BriskReadReadability;
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+const pageTitle = 'Readability Checker: Flesch Score & Grade Level | BriskRead';
+const pageDescription = 'Free readability checker: paste text for the Flesch reading ease score, Flesch-Kincaid grade level and 4 more scores, with hard sentences highlighted.';
+
+/** One source for the visible FAQ and its FAQPage schema. */
+const faqs = [
+  {
+    q: 'What is a good Flesch reading ease score?',
+    a: 'Aim for 60 to 70 for most public writing. That is plain English. Higher is easier, but 90 can sound childish to experts.',
+  },
+  {
+    q: 'What is the difference between Flesch reading ease and Flesch-Kincaid grade level?',
+    a: 'Both use sentence length and syllables per word. Reading ease runs on a 0 to 100 scale where higher means easier. Grade level gives a US school grade where higher means harder.',
+  },
+  {
+    q: 'Why does my score differ from Microsoft Word or another tool?',
+    a: 'Tools count syllables and split sentences in different ways, and they treat headings, lists and numbers differently. A gap of a point or two is normal. Use one tool consistently when you compare drafts.',
+  },
+  {
+    q: 'How much text do I need?',
+    a: 'Aim for at least 100 words. Short samples swing a lot, and SMOG needs 30 sentences before it is reliable.',
+  },
+  {
+    q: 'Is my text uploaded or stored?',
+    a: 'No. The checker is plain JavaScript on this page, so your text stays in your browser. Speed read this text passes it to the BriskRead reader through your browser session storage.',
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Readability Checker: Flesch Reading Ease &amp; Grade Level</h1>
+        <p class="lede">
+          Paste your text to see its Flesch reading ease score, Flesch-Kincaid grade level and four other readability scores. Hard sentences and long words are marked so you can see what to fix. It all runs in your browser. Your text is never uploaded.
+        </p>
+
+        <div class="rc-tool mt-6" id="rc-tool">
+          <label for="rc-input">Your text</label>
+          <textarea
+            id="rc-input"
+            rows="9"
+            placeholder="Paste or type your text here. Leave it empty to see the sample."
+            aria-describedby="rc-hint"
+          ></textarea>
+          <div class="rc-bar">
+            <p id="rc-hint" class="muted rc-hint">Updates as you type. Nothing leaves your browser.</p>
+            <button type="button" class="btn btn-secondary btn-sm" id="rc-clear">Clear text</button>
+          </div>
+          <noscript><p class="muted">The checker needs JavaScript. Nothing is uploaded either way.</p></noscript>
+
+          <div class="rc-hero" id="rc-hero" aria-live="polite" aria-atomic="true">
+            <p class="rc-eyebrow">Flesch reading ease</p>
+            <p class="rc-score" id="rc-fre">--</p>
+            <p class="rc-band" id="rc-band">Checking the sample text</p>
+            <p class="rc-sub" id="rc-sub"></p>
+          </div>
+          <div class="rc-meter" aria-hidden="true">
+            <span class="rc-meter-fill" id="rc-meter-fill"></span>
+          </div>
+          <div class="rc-meter-scale" aria-hidden="true"><span>0 hard</span><span>50</span><span>100 easy</span></div>
+
+          <h2 class="mt-6">Grade-level scores</h2>
+          <dl class="rc-grid">
+            <div class="rc-card">
+              <dt>Flesch-Kincaid grade</dt>
+              <dd class="rc-num" id="rc-fk">--</dd>
+              <dd class="rc-desc">US school grade, from sentence length and syllables per word.</dd>
+            </div>
+            <div class="rc-card">
+              <dt>Gunning Fog</dt>
+              <dd class="rc-num" id="rc-fog">--</dd>
+              <dd class="rc-desc">Years of schooling for a first read. Punishes words of 3+ syllables.</dd>
+            </div>
+            <div class="rc-card">
+              <dt>SMOG</dt>
+              <dd class="rc-num" id="rc-smog">--</dd>
+              <dd class="rc-desc">Grade to understand nearly all of it. Counts long words only.</dd>
+              <dd class="rc-warn" id="rc-smog-note" hidden></dd>
+            </div>
+            <div class="rc-card">
+              <dt>Coleman-Liau</dt>
+              <dd class="rc-num" id="rc-cli">--</dd>
+              <dd class="rc-desc">Grade from letters per word and sentence length. No syllables.</dd>
+            </div>
+            <div class="rc-card">
+              <dt>Automated Readability Index</dt>
+              <dd class="rc-num" id="rc-ari">--</dd>
+              <dd class="rc-desc">Grade from characters per word and sentence length. No syllables.</dd>
+            </div>
+            <div class="rc-card rc-card-main">
+              <dt>Average grade</dt>
+              <dd class="rc-num" id="rc-avg">--</dd>
+              <dd class="rc-desc">Mean of the grade scores above. Grades below 0 show as 0.</dd>
+            </div>
+          </dl>
+
+          <h2 class="mt-6">Counts</h2>
+          <dl class="rc-counts">
+            <div><dt>Words</dt><dd id="rc-words">--</dd></div>
+            <div><dt>Sentences</dt><dd id="rc-sentences">--</dd></div>
+            <div><dt>Syllables</dt><dd id="rc-syllables">--</dd></div>
+            <div><dt>Complex words (3+ syllables)</dt><dd id="rc-complex">--</dd></div>
+            <div><dt>Average sentence length</dt><dd id="rc-avgsent">--</dd></div>
+            <div><dt>Reading time at 238 WPM</dt><dd id="rc-readtime">--</dd></div>
+            <div><dt>Speaking time at about 150 WPM (approximate)</dt><dd id="rc-speaktime">--</dd></div>
+          </dl>
+
+          <h2 class="mt-6" id="rc-hl-title">Your text, marked up</h2>
+          <ul class="rc-legend" aria-label="Legend">
+            <li><span class="rc-hard">Hard sentence</span> 20 to 29 words: tinted, dashed underline</li>
+            <li><span class="rc-very">Very hard sentence</span> 30+ words: stronger tint, double underline</li>
+            <li><span class="rc-cx">complex</span> word of 3+ syllables: bold, boxed</li>
+          </ul>
+          <div class="rc-highlight" id="rc-highlight" role="region" aria-labelledby="rc-hl-title" tabindex="0"></div>
+
+          <div class="rc-cta">
+            <button type="button" class="btn btn-primary" id="rc-read" disabled aria-describedby="rc-read-hint">Speed read this text</button>
+            <p class="muted rc-hint" id="rc-read-hint">Opens the BriskRead reader with your text. Needs 40 or more characters.</p>
+          </div>
+          <p class="muted rc-hint" id="rc-read-status" role="status"></p>
+        </div>
+
+        <h2 class="mt-8">What each score means</h2>
+        <p>
+          All six scores start from the same two facts: sentence length and word length. They weigh them differently.
+        </p>
+        <ul>
+          <li><strong>Flesch reading ease</strong> runs from about 0 to 100, and higher is easier. A score of 60 to 70 is plain English.</li>
+          <li><strong>Flesch-Kincaid grade level</strong> turns the same inputs into a US school grade. A 7.5 means roughly seventh or eighth grade.</li>
+          <li><strong>Gunning Fog</strong> estimates the years of schooling needed on a first read. It punishes words of three or more syllables.</li>
+          <li><strong>SMOG</strong> gives the grade needed to understand nearly everything. It counts long words only, and needs 30 or more sentences to be reliable.</li>
+          <li><strong>Coleman-Liau</strong> counts letters per word, not syllables. Letters are easy for software to count. Syllables are a guess.</li>
+          <li><strong>Automated Readability Index</strong> also uses characters, not syllables. It was designed so a machine could compute it.</li>
+          <li><strong>Average grade</strong> is the mean of the grade scores. SMOG joins it once the text passes 30 sentences.</li>
+        </ul>
+
+        <h2 class="mt-8">Flesch reading ease, in plain English</h2>
+        <div class="rc-table-wrap">
+          <table class="rc-table">
+            <caption class="rc-sr">Flesch reading ease score bands</caption>
+            <thead>
+              <tr><th scope="col">Score</th><th scope="col">Reads as</th><th scope="col">Typical reader</th></tr>
+            </thead>
+            <tbody>
+              {BANDS.map((b: any) => (
+                <tr><td>{b.range}</td><td>{b.label}</td><td>{cap(b.grade)}</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-2">Very short or very simple text can score above 100.</p>
+
+        <h2 class="mt-8">What grade level should you aim for?</h2>
+        <p>These are rules of thumb, not standards. Match the grade to your reader.</p>
+        <ul>
+          <li><strong>Web pages, news, marketing, instructions:</strong> grade 7 to 9, or Flesch 60 to 70.</li>
+          <li><strong>Health, government and consumer information:</strong> grade 6 to 8. Readers are busy and their skills vary.</li>
+          <li><strong>Work emails and business reports:</strong> grade 9 to 11.</li>
+          <li><strong>Essays and academic articles:</strong> grade 12 to 16.</li>
+          <li><strong>Legal, scientific and technical papers:</strong> 16 or higher is common. Specialists tolerate it but still prefer less.</li>
+        </ul>
+
+        <h2 class="mt-8">How to make text easier to read</h2>
+        <p>Fix the highlighted sentences first. Then work through this list.</p>
+        <ol class="steps">
+          <li><strong>Split long sentences.</strong> Cut at "and", "but" or "which". Aim for an average near 15 to 20 words.</li>
+          <li><strong>Use common words.</strong> Write "use" for "utilize", "help" for "facilitate" and "start" for "commence".</li>
+          <li><strong>Prefer the active voice.</strong> "The team approved the plan" beats "The plan was approved by the team". Formulas cannot see voice. Readers can feel it.</li>
+          <li><strong>Keep one idea per sentence,</strong> and put the main point first.</li>
+          <li><strong>Cut filler,</strong> and explain jargon the first time you use it.</li>
+          <li><strong>Read it aloud.</strong> If you run out of breath, split the sentence.</li>
+        </ol>
+
+        <h2 class="mt-8">Where the formulas come from</h2>
+        <ul class="rc-sources">
+          <li>Flesch, 1948: reading ease. <a href="https://doi.org/10.1037/h0057532" rel="noopener">"A new readability yardstick"</a>, Journal of Applied Psychology.</li>
+          <li>Gunning, 1952: the Fog Index, in <em>The Technique of Clear Writing</em>. <a href="https://en.wikipedia.org/wiki/Gunning_fog_index" rel="noopener">Overview</a>.</li>
+          <li>Senter and Smith, 1967: the <a href="https://apps.dtic.mil/sti/pdfs/AD0667273.pdf" rel="noopener">Automated Readability Index</a>.</li>
+          <li>McLaughlin, 1969: <a href="https://ogg.osu.edu/media/documents/health_lit/WRRSMOG_Readability_Formula_G._Harry_McLaughlin__1969_.pdf" rel="noopener">SMOG grading</a>, Journal of Reading.</li>
+          <li>Coleman and Liau, 1975: a <a href="https://doi.org/10.1037/h0076540" rel="noopener">letter-based formula</a>.</li>
+          <li>Kincaid and colleagues, 1975: <a href="https://stars.library.ucf.edu/istlibrary/56" rel="noopener">Flesch, Fog and ARI recalibrated</a> on US Navy trainees. Source of the Flesch-Kincaid grade level.</li>
+          <li>Brysbaert, 2019: the <a href="https://doi.org/10.1016/j.jml.2019.104047" rel="noopener">238 words per minute</a> silent reading rate used for reading time.</li>
+        </ul>
+
+        <h2 class="mt-8">The limits of readability formulas</h2>
+        <p>
+          Formulas see only surface features: how long your sentences and words are. They cannot see meaning, structure, tone or what your reader already knows. "Ergo" is short and hard. "Elephant" is long and easy.
+        </p>
+        <p>
+          You can also game them. Chop a clear paragraph into fragments and the grade drops while the writing gets worse.
+        </p>
+        <p>
+          The numbers here are estimates. Syllables are counted by rules, not a dictionary, so expect small gaps against other tools. The formulas were built for English prose and work best on 100 words or more. Lists, code and poetry confuse them. Use the score as a prompt for a second look, not a verdict.
+        </p>
+
+        <h2 class="mt-8">Read it faster once it is clear</h2>
+        <p>
+          Tidy text is quicker to read. Send it to the free <a href="/">BriskRead speed reader</a> and read it one word at a time, or take the <a href="/reading-speed-test">reading speed test</a> first.
+        </p>
+
+        <h2 class="mt-8">Readability checker FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/teleprompter">Teleprompter</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
+            <a href="/bionic-reading">Bionic reading</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+
+  <script is:inline src="/readability.js"></script>
+  <script is:inline>
+    (() => {
+      const R = globalThis.BriskReadReadability;
+      const $ = (id) => document.getElementById(id);
+      const input = $('rc-input');
+      const readBtn = $('rc-read');
+      const MIN_HANDOFF = 40;
+
+      const SAMPLE =
+        'Readability formulas estimate how hard a text is to read. Short sentences and common words score well. ' +
+        'Long sentences packed with multisyllabic terminology, subordinate clauses, and qualifications that the reader must hold in mind before reaching the main verb score badly, because the formula treats length as a stand-in for difficulty. ' +
+        'Try replacing this text with your own. ' +
+        'Most people find that splitting one long sentence in two moves the grade level down quickly, and that choosing a plain word over a formal one helps even more.';
+
+      const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      const esc = (s) => s.replace(/[&<>"']/g, (c) => ESC[c]);
+      const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+      const grade = (n) => Math.max(0, n).toFixed(1);
+      const duration = (sec) => {
+        const total = Math.round(sec);
+        if (total < 60) return `${total} sec`;
+        const h = Math.floor(total / 3600);
+        const m = Math.floor((total % 3600) / 60);
+        const s = total % 60;
+        return h ? `${h} h ${m} min` : `${m} min ${s} sec`;
+      };
+
+      // Built from escaped text only. Nothing the user types is ever inserted as HTML.
+      const markup = (segs) =>
+        segs
+          .map((s) => {
+            const cls = [s.sentence === 'hard' ? 'rc-hard' : s.sentence === 'veryhard' ? 'rc-very' : '', s.complex ? 'rc-cx' : '']
+              .filter(Boolean)
+              .join(' ');
+            return cls ? `<span class="${cls}">${esc(s.text)}</span>` : esc(s.text);
+          })
+          .join('');
+
+      const setText = (id, v) => { $(id).textContent = v; };
+
+      const render = () => {
+        const user = input.value;
+        const usingSample = !user.trim();
+        const text = usingSample ? SAMPLE : user;
+        const r = R.analyze(text);
+        const c = r.counts;
+
+        $('rc-highlight').innerHTML = markup(R.highlightSegments(text, r));
+
+        if (r.empty) {
+          ['rc-fre', 'rc-fk', 'rc-fog', 'rc-smog', 'rc-cli', 'rc-ari', 'rc-avg', 'rc-words', 'rc-sentences', 'rc-syllables',
+            'rc-complex', 'rc-avgsent', 'rc-readtime', 'rc-speaktime'].forEach((id) => setText(id, '--'));
+          setText('rc-band', 'Add some words to see a score');
+          setText('rc-sub', '');
+          $('rc-smog-note').hidden = true;
+          $('rc-meter-fill').style.transform = 'scaleX(0)';
+          return;
+        }
+
+        const fre = r.scores.fleschReadingEase;
+        const band = R.bandFor(fre);
+        setText('rc-fre', fre.toFixed(1));
+        setText('rc-band', `${band.label}, about ${band.grade} level`);
+        const flags = [];
+        if (c.hardSentences) flags.push(plural(c.hardSentences, 'hard sentence', 'hard sentences'));
+        if (c.veryHardSentences) flags.push(`${c.veryHardSentences} very hard`);
+        setText('rc-sub',
+          `${plural(c.words, 'word', 'words')} in ${plural(c.sentences, 'sentence', 'sentences')}.` +
+          (flags.length ? ` ${flags.join(', ')}.` : ' No hard sentences.') +
+          (usingSample ? ' This is the sample text. Paste your own to replace it.' : ''));
+        $('rc-meter-fill').style.transform = `scaleX(${Math.min(100, Math.max(0, fre)) / 100})`;
+
+        setText('rc-fk', grade(r.scores.fleschKincaid));
+        setText('rc-fog', grade(r.scores.gunningFog));
+        setText('rc-smog', grade(r.scores.smog));
+        setText('rc-cli', grade(r.scores.colemanLiau));
+        setText('rc-ari', grade(r.scores.ari));
+        setText('rc-avg', grade(r.scores.averageGrade));
+        const note = $('rc-smog-note');
+        note.hidden = r.smogReliable;
+        note.textContent = r.smogReliable ? '' : `Unreliable under ${R.SMOG_MIN_SENTENCES} sentences. This text has ${c.sentences}.`;
+
+        setText('rc-words', c.words.toLocaleString());
+        setText('rc-sentences', c.sentences.toLocaleString());
+        setText('rc-syllables', c.syllables.toLocaleString());
+        setText('rc-complex', c.complexWords.toLocaleString());
+        setText('rc-avgsent', `${r.averages.wordsPerSentence.toFixed(1)} words`);
+        setText('rc-readtime', duration(r.time.readingSeconds));
+        setText('rc-speaktime', `about ${duration(r.time.speakingSeconds)}`);
+      };
+
+      const syncButton = () => { readBtn.disabled = input.value.trim().length < MIN_HANDOFF; };
+
+      let timer;
+      input.addEventListener('input', () => {
+        syncButton();
+        clearTimeout(timer);
+        timer = setTimeout(render, 300);
+      });
+
+      $('rc-clear').addEventListener('click', () => {
+        input.value = '';
+        syncButton();
+        render();
+        input.focus();
+      });
+
+      // Same-origin handoff the reader already understands (index.astro: sr_extension_article).
+      readBtn.addEventListener('click', () => {
+        const text = input.value.trim();
+        if (text.length < MIN_HANDOFF) return;
+        try {
+          sessionStorage.setItem('sr_extension_article', JSON.stringify({ title: 'From the readability checker', text }));
+        } catch {
+          setText('rc-read-status', 'Your browser blocked the handoff. Copy the text and paste it into the reader instead.');
+          return;
+        }
+        location.href = '/';
+      });
+
+      syncButton();
+      render();
+    })();
+  </script>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; line-height: 1.65; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  .faq-q { font-size: 1rem; margin: 1rem 0 0.35rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  li { line-height: 1.65; }
+  li strong { color: var(--color-text); }
+  .mt-2 { margin-top: 0.5rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .related p { line-height: 2; }
+  .btn { text-decoration: none; }
+  .rc-sr {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* Tool */
+  .rc-tool label { display: block; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+  .rc-tool textarea {
+    width: 100%; padding: 0.9rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); font: inherit; line-height: 1.6; resize: vertical;
+  }
+  .rc-bar { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: space-between; margin-top: 0.5rem; }
+  .rc-hint { font-size: 0.85rem; margin: 0; line-height: 1.5; }
+
+  .rc-hero {
+    margin-top: 1.5rem; padding: 1.25rem 1.5rem; border-radius: 0.75rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+  }
+  .rc-hero p { margin: 0; }
+  .rc-eyebrow { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-muted); }
+  .rc-score {
+    font-size: clamp(3rem, 12vw, 4.75rem); font-weight: 700; line-height: 1.05;
+    letter-spacing: -0.04em; color: var(--color-text); font-variant-numeric: tabular-nums;
+  }
+  .rc-band { font-size: 1.15rem; font-weight: 600; color: var(--color-text); margin-top: 0.25rem; }
+  .rc-sub { font-size: 0.95rem; margin-top: 0.35rem; }
+
+  .rc-meter { height: 0.5rem; margin-top: 0.75rem; border-radius: 999px; background: var(--color-bg-subtle); border: 1px solid var(--color-border); overflow: hidden; }
+  .rc-meter-fill { display: block; height: 100%; width: 100%; background: var(--color-primary); transform: scaleX(0); transform-origin: left; transition: transform var(--duration) var(--ease-out); }
+  .rc-meter-scale { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--color-text-muted); margin-top: 0.25rem; }
+
+  .rc-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin: 0.5rem 0 0; }
+  .rc-card {
+    padding: 0.9rem 1rem; border-radius: 0.6rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .rc-card-main { border-color: var(--color-primary); }
+  .rc-card dt { font-size: 0.85rem; font-weight: 600; color: var(--color-text); }
+  .rc-num { font-size: 1.9rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; color: var(--color-text); font-variant-numeric: tabular-nums; margin: 0; }
+  .rc-desc { font-size: 0.82rem; line-height: 1.45; color: var(--color-text-muted); margin: 0; }
+  .rc-warn {
+    font-size: 0.8rem; line-height: 1.4; margin: 0.15rem 0 0; padding: 0.3rem 0.5rem;
+    border-radius: 0.4rem; color: var(--color-text); border: 1px dashed var(--color-warning);
+    background: color-mix(in srgb, var(--color-warning) 14%, transparent);
+  }
+
+  .rc-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.75rem; margin: 0.5rem 0 0; }
+  .rc-counts div { padding: 0.6rem 0.8rem; border-radius: 0.6rem; border: 1px solid var(--color-border); background: var(--color-bg); }
+  .rc-counts dt { font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.35; }
+  .rc-counts dd { margin: 0.15rem 0 0; font-size: 1.1rem; font-weight: 600; color: var(--color-text); font-variant-numeric: tabular-nums; }
+
+  /* Highlights. Shape (underline style, weight, box) carries the meaning; colour only adds to it.
+     :global because the spans are created by script and carry no Astro scope attribute. */
+  .rc-legend { list-style: none; margin: 0.25rem 0 0.75rem; padding: 0; gap: 0.35rem; font-size: 0.88rem; }
+  .rc-legend li { line-height: 1.8; }
+  :global(.rc-hard) {
+    background: color-mix(in srgb, var(--color-warning) 20%, transparent);
+    text-decoration: underline dashed 2px var(--color-warning);
+    text-underline-offset: 4px;
+    text-decoration-skip-ink: none;
+  }
+  :global(.rc-very) {
+    background: color-mix(in srgb, var(--color-danger) 24%, transparent);
+    text-decoration: underline double 3px var(--color-danger);
+    text-underline-offset: 4px;
+    text-decoration-skip-ink: none;
+  }
+  :global(.rc-cx) {
+    font-weight: 700;
+    outline: 1px solid color-mix(in srgb, var(--color-text) 55%, transparent);
+    outline-offset: 1px;
+    border-radius: 3px;
+  }
+  .rc-highlight {
+    padding: 1.1rem; border-radius: 0.6rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); color: var(--color-text);
+    white-space: pre-wrap; overflow-wrap: anywhere; line-height: 2; font-size: 1.02rem;
+    max-height: 24rem; overflow: auto;
+  }
+
+  .rc-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1rem; margin-top: 1.25rem; }
+  #rc-read-status:empty { display: none; }
+
+  /* Content */
+  .rc-table-wrap { overflow-x: auto; }
+  .rc-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .rc-table th, .rc-table td { text-align: left; padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--color-border); color: var(--color-text-muted); }
+  .rc-table th { color: var(--color-text); font-weight: 600; }
+  .rc-table td:first-child { color: var(--color-text); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .rc-sources { font-size: 0.95rem; }
+
+  @media (max-width: 700px) {
+    .content-card { padding: 1.5rem 1.1rem; }
+    .rc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 440px) {
+    .rc-grid { grid-template-columns: minmax(0, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rc-meter-fill { transition: none; }
+  }
+</style>

@@ -1,0 +1,521 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+// Same file the browser loads from /public; running it here attaches the helpers
+// to globalThis so the static tables and FAQ share one formula with the live tool.
+import '../../public/words-to-minutes.js';
+
+const { RATES, secondsFor, formatClock, aboutMinutes, wordsForMinutes } = globalThis.BriskReadWordsToMinutes;
+
+const pageTitle = 'Words to Minutes Calculator: Speech Time | BriskRead';
+const pageDescription = 'Free words to minutes calculator. See how long a speech or text takes to say or read, or how many words fit a time limit. Paste text to count it live.';
+
+const DEFAULT_WORDS = 2000;
+const DEFAULT_PACE = 'speak-avg';
+const CUSTOM_WPM = 150;
+const SOURCE_TAG = { assumption: 'Typical, editable', study: 'Brysbaert 2019' };
+const EDITABLE = new Set(['speak-slow', 'speak-avg', 'speak-fast']);
+
+const fmt = (n) => n.toLocaleString('en-US');
+const clock = (words, id) => formatClock(secondsFor(words, wpm[id]));
+const about = (words, id) => aboutMinutes(secondsFor(words, wpm[id]));
+
+const rows = [...RATES, { id: 'custom', label: 'Custom pace', wpm: CUSTOM_WPM, source: 'own' }];
+const wpm = Object.fromEntries(rows.map((r) => [r.id, r.wpm]));
+
+const WORD_STEPS = [100, 250, 500, 750, 1000, 1500, 2000, 2500, 3000, 5000];
+const MINUTE_STEPS = [1, 2, 3, 5, 10, 15, 20, 30];
+const wordCols = [
+  { id: 'speak-slow', head: 'Slow speech' },
+  { id: 'speak-avg', head: 'Average speech' },
+  { id: 'speak-fast', head: 'Fast speech' },
+  { id: 'read-aloud', head: 'Reading aloud' },
+  { id: 'silent-nonfiction', head: 'Silent reading' },
+];
+const minuteCols = wordCols.slice(0, 4);
+
+/** One source for the visible FAQ and its FAQPage schema. */
+const faqs = [
+  {
+    q: 'How long is a 1,000-word speech?',
+    a: `At an average pace of ${wpm['speak-avg']} WPM, 1,000 words take ${clock(1000, 'speak-avg')}, ${about(1000, 'speak-avg')}. A slow speaker at ${wpm['speak-slow']} WPM needs ${clock(1000, 'speak-slow')} and a fast one at ${wpm['speak-fast']} WPM needs ${clock(1000, 'speak-fast')}. Add time for pauses.`,
+  },
+  {
+    q: 'How many words is a 5-minute speech?',
+    a: `About ${fmt(wordsForMinutes(5, wpm['speak-avg']))} words at an average pace of ${wpm['speak-avg']} WPM. The range runs from ${fmt(wordsForMinutes(5, wpm['speak-slow']))} words at a slow pace to ${fmt(wordsForMinutes(5, wpm['speak-fast']))} at a fast one. Aim for the lower end to leave room for pauses.`,
+  },
+  {
+    q: 'How long is a 2,000-word speech?',
+    a: `About ${clock(2000, 'speak-avg')} at ${wpm['speak-avg']} WPM, roughly 15 minutes. The slow and fast ends are ${clock(2000, 'speak-slow')} and ${clock(2000, 'speak-fast')}. That is long for one talk, so check it against your slot.`,
+  },
+  {
+    q: 'How long does it take to read 1,000 words?',
+    a: `Silently, an average adult takes about ${clock(1000, 'silent-nonfiction')} for 1,000 words of non-fiction at ${wpm['silent-nonfiction']} WPM. Reading aloud takes about ${clock(1000, 'read-aloud')} at ${wpm['read-aloud']} WPM. Your own speed may differ, so try the reading speed test.`,
+  },
+  {
+    q: 'What is a good speaking rate in words per minute?',
+    a: `There is no single correct rate. The calculator uses ${wpm['speak-slow']}, ${wpm['speak-avg']} and ${wpm['speak-fast']} WPM as typical slow, average and fast paces. They are assumptions, so time yourself reading 200 words aloud and enter your own figure as the custom pace.`,
+  },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <h1>Words to Minutes Calculator</h1>
+        <p class="lede">
+          Enter a word count, or paste your text and it is counted as you type. See the time at slow, average and fast speaking paces, plus reading-aloud and silent-reading rates, or reverse it to find how many words fit a time limit. Everything runs in your browser. Nothing is uploaded.
+        </p>
+
+        <div class="w2m mt-6" id="w2m">
+          <div class="w2m-grid">
+            <div class="field">
+              <label for="w2m-words">Word count</label>
+              <input id="w2m-words" type="number" inputmode="numeric" min="0" max="10000000" step="1" value={DEFAULT_WORDS} />
+            </div>
+            <div class="field">
+              <label for="w2m-pace">Pace for the summary, reverse mode and voice preview</label>
+              <select id="w2m-pace">
+                {rows.map((r) => (
+                  <option value={r.id} selected={r.id === DEFAULT_PACE}>{r.label} ({r.wpm} WPM)</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div class="field mt-4">
+            <label for="w2m-text">Or paste your text to count it</label>
+            <textarea id="w2m-text" rows="6" placeholder="Paste your speech, script or article here"></textarea>
+            <p class="muted small" id="w2m-source" aria-live="polite"></p>
+          </div>
+
+          <div id="w2m-results" class="results mt-6" aria-live="polite" aria-atomic="false">
+            <h2>Results</h2>
+            <p class="summary" id="w2m-summary">
+              Speaking, average ({wpm['speak-avg']} WPM): {fmt(DEFAULT_WORDS)} words take {clock(DEFAULT_WORDS, 'speak-avg')}, {about(DEFAULT_WORDS, 'speak-avg')}.
+            </p>
+            <div class="table-wrap" tabindex="0" role="region" aria-label="Time at each pace">
+              <table class="w2m-table">
+                <caption class="sr-only">Time for your word count at each pace</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Pace</th>
+                    <th scope="col">WPM</th>
+                    <th scope="col">Time (m:ss)</th>
+                    <th scope="col">In plain terms</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((r) => (
+                    <tr>
+                      <th scope="row">
+                        {r.label}
+                        <span class="tag">{SOURCE_TAG[r.source] ?? 'Your own pace'}</span>
+                      </th>
+                      <td>
+                        {EDITABLE.has(r.id) || r.id === 'custom' ? (
+                          <>
+                            <label class="sr-only" for={`w2m-wpm-${r.id}`}>{r.label} in words per minute</label>
+                            <input id={`w2m-wpm-${r.id}`} class="wpm-input" type="number" inputmode="numeric" min="20" max="1500" step="1" value={r.wpm} />
+                          </>
+                        ) : (
+                          r.wpm
+                        )}
+                      </td>
+                      <td id={`w2m-clock-${r.id}`} class="num">{clock(DEFAULT_WORDS, r.id)}</td>
+                      <td id={`w2m-about-${r.id}`}>{about(DEFAULT_WORDS, r.id)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="reverse mt-6">
+            <h2>Reverse: how many words do I need?</h2>
+            <div class="field narrow">
+              <label for="w2m-minutes">Minutes</label>
+              <input id="w2m-minutes" type="number" inputmode="decimal" min="0.5" max="600" step="0.5" value="5" />
+            </div>
+            <p class="summary" id="w2m-reverse" aria-live="polite"></p>
+          </div>
+
+          <div class="actions mt-6">
+            <h2>Try your text</h2>
+            <div class="action-row">
+              <button class="btn btn-secondary" id="w2m-speak" type="button" disabled>Hear it at this pace</button>
+              <button class="btn btn-secondary hidden" id="w2m-stop" type="button">Stop</button>
+              <button class="btn btn-primary" id="w2m-read" type="button" disabled>Speed read this text</button>
+            </div>
+            <p class="muted small mt-2" id="w2m-actions-note">Paste at least 40 characters of text to turn these on.</p>
+            <p class="muted small" id="w2m-speak-status" role="status"></p>
+          </div>
+        </div>
+
+        <h2 class="mt-8">How the calculation works</h2>
+        <p>
+          The formula is one line: minutes = words ÷ words per minute (WPM). A 2,000-word speech at 130 WPM takes 2,000 ÷ 130 = 15.4 minutes, or 15 minutes 23 seconds. To size a script, reverse it: words = minutes × WPM. A 5-minute talk at 130 WPM needs about 650 words.
+        </p>
+        <p>
+          Anything separated by spaces or line breaks counts as one word, as in most word processors, so hyphenated words and numbers count once. The answer is only as good as the WPM you choose, so the table shows several rates and lets you change them.
+        </p>
+
+        <h2 class="mt-8">Speaking vs reading rates</h2>
+        <p>
+          <strong>Speaking.</strong> The presets are 110, 130 and 160 WPM. These are typical values, not measurements, so treat them as assumptions you can edit. Your pace depends on the room, the topic and how well you know the material. About 150 WPM is often quoted for relaxed conversation, but we could not trace it to a primary source, so we treat it as a rough guide.
+        </p>
+        <p>
+          <strong>Reading.</strong> The reading figures come from a 2019 review of reading rate by Marc Brysbaert, <a href="https://doi.org/10.1016/j.jml.2019.104047" rel="noopener">published in the Journal of Memory and Language</a>. Across 190 studies, adults read English silently at about 238 WPM for non-fiction and 260 WPM for fiction. Across 77 studies, reading aloud averaged 183 WPM. These are averages: children, older adults and second-language readers tend to be slower.
+        </p>
+        <p>
+          Silent-reading rates tell you how long a text takes to read. They do not predict a talk, because your audience hears you at your speaking pace.
+        </p>
+
+        <h2 class="mt-8">Tips for timing a speech or presentation</h2>
+        <ul>
+          <li><strong>Time yourself once.</strong> Read 200 words aloud at your normal pace and note the seconds. Your WPM is 12,000 divided by those seconds. Enter it as the custom pace.</li>
+          <li><strong>Leave room for pauses.</strong> Pauses, laughter and slide changes use time. As a rule of thumb, plan for about 10 percent fewer words: roughly 1,170 instead of 1,300 for a 10-minute slot at 130 WPM.</li>
+          <li><strong>Count only what you say.</strong> Slide text is not spoken, so leave it out. Budget slides by time instead, such as one to two minutes per slide when each carries one idea.</li>
+          <li><strong>Plan for the average.</strong> If the slot is strict, write to the average or slow rate and treat a faster delivery as spare time.</li>
+          <li><strong>Hear it, then rehearse aloud.</strong> The voice preview helps you feel the pace, but a speech synthesizer does not breathe or pause like you. Rehearse with a timer.</li>
+        </ul>
+        <p>
+          Reading from a script? A <a href="/teleprompter">teleprompter</a> keeps your eyes up and your pace steady.
+        </p>
+
+        <h2 class="mt-8">Words to minutes table</h2>
+        <p>
+          Times are minutes:seconds, so 7:42 is seven minutes and 42 seconds. Find your word count and read across.
+        </p>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Words to minutes table">
+          <table class="w2m-table">
+            <caption class="sr-only">Time to speak or read common word counts</caption>
+            <thead>
+              <tr>
+                <th scope="col">Words</th>
+                {wordCols.map((c) => (
+                  <th scope="col">{c.head}<span class="tag">{wpm[c.id]} WPM</span></th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {WORD_STEPS.map((w) => (
+                <tr>
+                  <th scope="row">{fmt(w)}</th>
+                  {wordCols.map((c) => <td class="num">{clock(w, c.id)}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h3 class="mt-6">How many words for a speech of a given length</h3>
+        <p>
+          The same rates in reverse, as word counts.
+        </p>
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Words needed for a given speech length">
+          <table class="w2m-table">
+            <caption class="sr-only">Words needed for a speech of a given length</caption>
+            <thead>
+              <tr>
+                <th scope="col">Minutes</th>
+                {minuteCols.map((c) => (
+                  <th scope="col">{c.head}<span class="tag">{wpm[c.id]} WPM</span></th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {MINUTE_STEPS.map((m) => (
+                <tr>
+                  <th scope="row">{m}</th>
+                  {minuteCols.map((c) => <td class="num">{fmt(wordsForMinutes(m, wpm[c.id]))}</td>)}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="mt-8">Words to minutes FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
+
+        <div class="related mt-8">
+          <h2>Related free tools</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/teleprompter">Teleprompter</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
+            <a href="/rsvp-reader">RSVP reader</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+
+  <script is:inline src="/words-to-minutes.js"></script>
+  <script is:inline src="/reader-core.js"></script>
+  <script is:inline>
+    (() => {
+      const core = globalThis.BriskReadWordsToMinutes;
+      if (!core) return;
+      const $ = (id) => document.getElementById(id);
+      const wordsEl = $('w2m-words');
+      const textEl = $('w2m-text');
+      const paceEl = $('w2m-pace');
+      const minutesEl = $('w2m-minutes');
+      const summaryEl = $('w2m-summary');
+      const reverseEl = $('w2m-reverse');
+      const sourceEl = $('w2m-source');
+      const speakBtn = $('w2m-speak');
+      const stopBtn = $('w2m-stop');
+      const readBtn = $('w2m-read');
+      const noteEl = $('w2m-actions-note');
+      const statusEl = $('w2m-speak-status');
+
+      const MIN_CHARS = 40; // the reader ignores shorter text
+      const PREVIEW_WORDS = 100;
+      const EDITABLE = { 'speak-slow': 110, 'speak-avg': 130, 'speak-fast': 160, custom: 150 };
+      const synth = 'speechSynthesis' in window && 'SpeechSynthesisUtterance' in window ? window.speechSynthesis : null;
+
+      const state = { words: Number(wordsEl.value) || 0, manual: true };
+
+      // Current rows: fixed rates from the core, editable ones from their fields.
+      const rows = () => [
+        ...core.RATES,
+        { id: 'custom', label: 'Custom pace', wpm: EDITABLE.custom },
+      ].map((r) => {
+        const input = $(`w2m-wpm-${r.id}`);
+        return input ? { ...r, wpm: core.clampInt(input.value, 20, 1500, EDITABLE[r.id]) } : r;
+      });
+      const wordsLabel = (n) => `${n.toLocaleString('en-US')} ${n === 1 ? 'word' : 'words'}`;
+      const selectedRow = () => rows().find((r) => r.id === paceEl.value) || rows()[1];
+      const setText = (el, value) => { if (el.textContent !== value) el.textContent = value; };
+
+      const render = () => {
+        const all = rows();
+        for (const r of all) {
+          const secs = core.secondsFor(state.words, r.wpm);
+          setText($(`w2m-clock-${r.id}`), core.formatClock(secs));
+          setText($(`w2m-about-${r.id}`), core.aboutMinutes(secs));
+        }
+        // Keep the pace menu in step with edited WPM values.
+        all.forEach((r, i) => {
+          const label = `${r.label} (${r.wpm} WPM)`;
+          if (paceEl.options[i] && paceEl.options[i].text !== label) paceEl.options[i].text = label;
+        });
+
+        const pace = selectedRow();
+        const secs = core.secondsFor(state.words, pace.wpm);
+        setText(
+          summaryEl,
+          `${pace.label} (${pace.wpm} WPM): ${wordsLabel(state.words)} ${state.words === 1 ? 'takes' : 'take'} ${core.formatClock(secs)}, ${core.aboutMinutes(secs)}.`
+        );
+
+        const minutes = Number(minutesEl.value);
+        const needed = core.wordsForMinutes(Math.min(minutes, 600), pace.wpm);
+        setText(
+          reverseEl,
+          needed > 0
+            ? `${pace.label} (${pace.wpm} WPM): ${minutes} ${minutes === 1 ? 'minute' : 'minutes'} is about ${wordsLabel(needed)}.`
+            : 'Enter a time in minutes to see how many words fit.'
+        );
+
+        const n = core.countWords(textEl.value);
+        setText(
+          sourceEl,
+          !textEl.value.trim()
+            ? ''
+            : state.manual
+              ? `Using the word count you typed. Your pasted text has ${wordsLabel(n)}.`
+              : `Counted ${wordsLabel(n)} from your text.`
+        );
+      };
+
+      let timer = 0;
+      const schedule = () => { clearTimeout(timer); timer = setTimeout(render, 200); };
+
+      const updateActions = () => {
+        const text = textEl.value.trim();
+        const enoughForReader = text.length >= MIN_CHARS;
+        readBtn.disabled = !enoughForReader;
+        speakBtn.disabled = !synth || !text;
+        noteEl.textContent = !synth
+          ? 'Voice preview is not available in this browser. You can still speed read your text.'
+          : enoughForReader
+            ? `The voice preview plays the first ${PREVIEW_WORDS} words. Browser voices only roughly match a WPM figure, so use it to judge the feel and then time yourself.`
+            : 'Paste at least 40 characters of text to turn these on.';
+      };
+
+      textEl.addEventListener('input', () => {
+        state.words = core.countWords(textEl.value);
+        state.manual = false;
+        wordsEl.value = state.words || '';
+        updateActions();
+        schedule();
+      });
+      wordsEl.addEventListener('input', () => {
+        state.words = core.clampInt(wordsEl.value, 0, 10000000, 0);
+        state.manual = true;
+        schedule();
+      });
+      [minutesEl, ...Object.keys(EDITABLE).map((id) => $(`w2m-wpm-${id}`))].forEach((el) => el.addEventListener('input', schedule));
+      paceEl.addEventListener('change', () => { render(); if (!stopBtn.classList.contains('hidden')) stopSpeech(); });
+
+      // ---- Voice preview -------------------------------------------------
+      let token = 0; // ignores late callbacks from a run that was cancelled
+      const setSpeaking = (on) => {
+        const hadFocus = document.activeElement === stopBtn;
+        stopBtn.classList.toggle('hidden', !on);
+        speakBtn.classList.toggle('hidden', on);
+        if (!on && hadFocus) speakBtn.focus(); // keep keyboard focus on a visible control
+      };
+      const stopSpeech = () => {
+        token++;
+        if (synth) synth.cancel();
+        setSpeaking(false);
+        statusEl.textContent = '';
+      };
+
+      speakBtn.addEventListener('click', () => {
+        if (!synth) return;
+        const excerpt = core.firstWords(textEl.value, PREVIEW_WORDS);
+        if (!excerpt) return;
+        stopSpeech();
+        const run = token;
+        const pace = selectedRow();
+        const rate = core.ttsRateForWpm(pace.wpm);
+        const reader = globalThis.BriskReadReaderCore;
+        const parts = reader && reader.chunkForTTS ? reader.chunkForTTS(excerpt, 0, 180).map((c) => c.text) : [excerpt];
+        parts.forEach((part, i) => {
+          const u = new SpeechSynthesisUtterance(part);
+          u.rate = rate;
+          u.lang = document.documentElement.lang || 'en';
+          if (i === parts.length - 1) {
+            const done = () => { if (run === token) stopSpeech(); };
+            u.onend = done;
+            u.onerror = done;
+          }
+          synth.speak(u);
+        });
+        setSpeaking(true);
+        statusEl.textContent = `Playing at speech rate ${rate}, aiming for about ${pace.wpm} WPM. This is approximate.`;
+        stopBtn.focus();
+      });
+      stopBtn.addEventListener('click', stopSpeech);
+
+      // Never keep talking after the page is hidden or left.
+      window.addEventListener('pagehide', stopSpeech);
+      document.addEventListener('visibilitychange', () => { if (document.hidden) stopSpeech(); });
+
+      // ---- Hand the text to the reader (same-origin sessionStorage) -------
+      readBtn.addEventListener('click', () => {
+        const text = textEl.value.trim();
+        if (text.length < MIN_CHARS) return;
+        stopSpeech();
+        try {
+          sessionStorage.setItem('sr_extension_article', JSON.stringify({ title: 'From the words to minutes calculator', text }));
+          location.href = '/';
+        } catch {
+          noteEl.textContent = 'Your browser blocked the handoff. Open the reader and paste the text there.';
+        }
+      });
+
+      updateActions();
+      render();
+    })();
+  </script>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.1rem; color: var(--color-text-muted); margin-bottom: 1rem; line-height: 1.65; }
+  h1 { font-size: clamp(2rem, 5vw, 3.75rem); line-height: 1.05; letter-spacing: -0.035em; }
+  h2 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+  h3 { font-size: 1.05rem; margin-bottom: 0.4rem; }
+  .faq-q { font-size: 1rem; margin: 1rem 0 0.35rem; }
+  ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 0.75rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  .small { font-size: 0.9rem; line-height: 1.5; }
+  .mt-2 { margin-top: 0.5rem; }
+  .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .related p { line-height: 2; }
+  .btn { text-decoration: none; }
+
+  .w2m-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .w2m-grid { grid-template-columns: 1fr 1.4fr; } }
+  .field label { display: block; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+  .field.narrow { max-width: 12rem; margin-bottom: 0.75rem; }
+  .w2m input[type="number"],
+  .w2m select,
+  .w2m textarea {
+    width: 100%; padding: 0.7rem 0.85rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border-strong); background: var(--color-bg);
+    color: var(--color-text); font: inherit;
+  }
+  .w2m textarea { resize: vertical; }
+  .w2m input.wpm-input { width: 4.75rem; padding: 0.4rem 0.45rem; }
+
+  .summary {
+    margin: 0.5rem 0 1rem; padding: 0.85rem 1rem; border-radius: 10px;
+    border: 1px solid var(--color-border); background: var(--color-bg-subtle);
+    color: var(--color-text); font-size: 1.02rem; line-height: 1.55;
+  }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 0.75rem; border-radius: 0.6rem; }
+  .table-wrap:focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+  .w2m-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .w2m-table th, .w2m-table td {
+    padding: 0.6rem 0.75rem; border: 1px solid var(--color-border);
+    text-align: left; color: var(--color-text-muted); vertical-align: middle;
+  }
+  .w2m-table thead th { background: var(--color-bg-subtle); color: var(--color-text); }
+  .w2m-table tbody th { color: var(--color-text); font-weight: 600; background: transparent; }
+  .w2m-table .num { font-variant-numeric: tabular-nums; color: var(--color-text); white-space: nowrap; }
+  .tag { display: block; font-size: 0.78rem; font-weight: 400; color: var(--color-text-subtle); }
+
+  .action-row { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+  .w2m-table tbody th { min-width: 7rem; }
+  @media (max-width: 640px) {
+    .content-card { padding: 1.5rem 1.1rem; }
+    .w2m-table { font-size: 0.88rem; }
+    .w2m-table th, .w2m-table td { padding: 0.5rem 0.4rem; }
+    .w2m input.wpm-input { width: 4.25rem; }
+    .w2m-table tbody th { min-width: 5.5rem; }
+    .w2m-table td:last-child { min-width: 5.5rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .btn, .btn:hover:not(:disabled) { transition: none; transform: none; }
+  }
+</style>

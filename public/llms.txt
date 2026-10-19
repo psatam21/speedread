@@ -16,6 +16,9 @@
 - Bionic reading + converter: https://briskread.com/bionic-reading
 - PDF to speech: https://briskread.com/pdf-to-speech
 - Reading speed test: https://briskread.com/reading-speed-test
+- Words to minutes calculator (speech and reading time): https://briskread.com/words-to-minutes
+- Online teleprompter: https://briskread.com/teleprompter
+- Readability checker (Flesch, grade level): https://briskread.com/readability-checker
 - How it works: https://briskread.com/how-it-works
 - Chrome extension: https://briskread.com/extension
 - Account / Sync: https://briskread.com/account
