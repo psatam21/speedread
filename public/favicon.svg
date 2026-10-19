@@ -1,13 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="BriskRead">
-  <defs>
-    <linearGradient id="br-bg" x1="12%" y1="0%" x2="88%" y2="100%">
-      <stop offset="0%" stop-color="#4f5bd5"/>
-      <stop offset="50%" stop-color="#6b5ce7"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
-    </linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" ry="28" fill="url(#br-bg)"/>
-  <g fill="#ffffff">
+  <rect width="128" height="128" rx="28" ry="28" fill="#1e1b16"/>
+  <g fill="#ffee9e">
     <!-- Lightning core -->
     <path d="M71 18 L48 62 H62 L52 108 L86 54 H70 L71 18Z"/>
     <!-- Open-book side panels -->
