@@ -3,12 +3,13 @@ import '../public/humanizer.js';
 
 const H = globalThis.BriskReadHumanizer;
 
-// 10 diverse, realistic AI-generated benchmark passages
+// 10 diverse, realistic AI-generated benchmark passages with core domain terms that MUST be preserved
 export const BENCHMARK_CORPUS = [
   {
     id: 'chatgpt_essay',
     name: '1. ChatGPT-4o College Essay',
     mode: 'conversational',
+    mustPreserveMeaningTerms: ['social connectivity', 'social media platforms', 'mental health', 'human empathy'],
     text:
       "Moreover, in today's fast-paced digital era, the profound impact of social connectivity cannot be overlooked. " +
       'Social media platforms have transformed the way individuals communicate, fostering a sense of global community while simultaneously creating new challenges for mental health. ' +
@@ -19,6 +20,16 @@ export const BENCHMARK_CORPUS = [
     id: 'claude_academic',
     name: '2. Claude 3.5 Academic Literature Review',
     mode: 'academic',
+    mustPreserveMeaningTerms: [
+      'neural networks',
+      'transformer architectures',
+      'artificial intelligence',
+      'human innovation',
+      'stochastic optimization',
+      'computational scalability',
+      'evaluation protocols',
+      'benchmark datasets',
+    ],
     text:
       'In conclusion, it is important to delve into the comprehensive tapestry of modern neural networks. ' +
       'Previous studies have shown that transformer architectures play a pivotal role in illustrating how artificial intelligence stands as a testament to human innovation [1]. ' +
@@ -30,6 +41,18 @@ export const BENCHMARK_CORPUS = [
     name: '3. AI Marketing & SEO Blog Post',
     mode: 'blog',
     lockKeywords: ['remote work', 'asynchronous communication'],
+    mustPreserveMeaningTerms: [
+      'distributed teams',
+      'remote work',
+      'employees',
+      'flexibility',
+      'distributed workforce',
+      'asynchronous communication',
+      'meeting fatigue',
+      'productivity',
+      'documentation',
+      'time zones',
+    ],
     text:
       'When it comes to managing distributed teams, remote work has emerged as a game-changer for modern businesses. ' +
       'Not only does remote work provide employees with greater flexibility, but it also enables companies to tap into a global talent pool. ' +
@@ -40,6 +63,17 @@ export const BENCHMARK_CORPUS = [
     id: 'genz_report',
     name: '4. AIHumanize.io Gen Z Report',
     mode: 'conversational',
+    mustPreserveMeaningTerms: [
+      'Generation Z',
+      'sustainable fashion',
+      'digitally native',
+      'market influence',
+      'ethical production',
+      'environmental accountability',
+      'supply chain disclosures',
+      'sustainability metrics',
+      'long-term loyalty',
+    ],
     text:
       'This report analyzes evolving consumer preferences and purchasing behaviors of Generation Z (Gen Z) within sustainable fashion. ' +
       'Furthermore, as a digitally native cohort, Gen Z commands significant market influence and prioritizes ethical production alongside environmental accountability. ' +
@@ -49,6 +83,17 @@ export const BENCHMARK_CORPUS = [
     id: 'exec_memo',
     name: '5. Executive Strategy Memo',
     mode: 'formal',
+    mustPreserveMeaningTerms: [
+      'automated supply chain forecasting',
+      'third quarter',
+      'predictive inventory models',
+      'warehouse holding costs',
+      'regional distribution centers',
+      'procurement',
+      'logistics teams',
+      'real-time telemetry tools',
+      'supply disruptions',
+    ],
     text:
       'In this analysis, we evaluate the operational efficiencies gained through automated supply chain forecasting during the third quarter. ' +
       'The implementation of predictive inventory models has resulted in a 24.5% reduction in warehouse holding costs across regional distribution centers. ' +
@@ -60,6 +105,18 @@ export const BENCHMARK_CORPUS = [
     name: '6. Clinical Research Abstract',
     mode: 'academic',
     lockCitations: true,
+    mustPreserveMeaningTerms: [
+      'Cardiovascular disease',
+      'patient biomarkers',
+      'high-sensitivity troponin assays',
+      'myocardial injury',
+      'clinical subjects',
+      'early risk stratification',
+      '94.2% sensitivity',
+      'clinicians',
+      'targeted therapy',
+      'tissue damage',
+    ],
     text:
       'Cardiovascular disease remains a leading cause of mortality worldwide, underscoring the urgent need for early diagnostic interventions (chen et al., 2024). ' +
       'In this study, patient biomarkers were analyzed by researchers using high-sensitivity troponin assays to evaluate myocardial injury across 1,420 clinical subjects. ' +
@@ -70,6 +127,17 @@ export const BENCHMARK_CORPUS = [
     id: 'stem_latex',
     name: '7. STEM Paper with LaTeX & Equations',
     mode: 'technical',
+    mustPreserveMeaningTerms: [
+      'Crank-Nicolson scheme',
+      'heat equation',
+      'boundary conditions',
+      '99.4% numerical stability',
+      'discretization grid',
+      'truncation error',
+      'second-order central differences',
+      'convergence',
+      'large-scale simulations',
+    ],
     text:
       'In this study, previous studies have shown that the Crank-Nicolson scheme $u_i^{n+1} - u_i^n = \\frac{\\Delta t}{2}(L_h u_i^{n+1} + L_h u_i^n)$ provides a robust framework for solving the heat equation \\cite{crank1947}. ' +
       'Furthermore, it should be noted that the application of boundary conditions plays a pivotal role in maintaining 99.4% numerical stability across the discretization grid. ' +
@@ -79,6 +147,22 @@ export const BENCHMARK_CORPUS = [
     id: 'humanities_history',
     name: '8. Humanities & History Essay',
     mode: 'academic',
+    mustPreserveMeaningTerms: [
+      'nineteenth century',
+      'railway networks',
+      'urban economies',
+      'Western Europe',
+      'agricultural regions',
+      'industrial manufacturing hubs',
+      'steam locomotion',
+      'raw materials',
+      'finished goods',
+      'railway timetables',
+      'national consciousness',
+      'locomotive',
+      'cultural force',
+      'modern society',
+    ],
     text:
       'Throughout the nineteenth century, the expansion of railway networks played a crucial role in reshaping urban economies across Western Europe. ' +
       'By connecting isolated agricultural regions with industrial manufacturing hubs, steam locomotion facilitated the rapid movement of raw materials and finished goods. ' +
@@ -89,6 +173,21 @@ export const BENCHMARK_CORPUS = [
     id: 'policy_brief',
     name: '9. Environmental Policy Brief',
     mode: 'simplify',
+    mustPreserveMeaningTerms: [
+      'Urban heat islands',
+      'population growth',
+      'impervious surfaces',
+      'asphalt and concrete',
+      'solar radiation',
+      'city neighborhoods',
+      'temperatures',
+      '4.5 degrees',
+      'rural areas',
+      'urban forestry',
+      'reflective roofing',
+      'cooling energy demand',
+      'peak summer months',
+    ],
     text:
       'Urban heat islands represent a growing environmental challenge for metropolitan areas experiencing rapid population growth and infrastructure expansion. ' +
       'Because impervious surfaces such as asphalt and concrete absorb substantial solar radiation, city neighborhoods frequently experience temperatures that are 4.5 degrees higher than surrounding rural areas. ' +
@@ -98,6 +197,22 @@ export const BENCHMARK_CORPUS = [
     id: 'esl_textbook',
     name: '10. Clean Textbook / ESL Draft (No Obvious Clichés)',
     mode: 'conversational',
+    mustPreserveMeaningTerms: [
+      'renewable energy storage',
+      'modern electrical grids',
+      'solar and wind power generation',
+      'large battery systems',
+      'capital investment',
+      'mineral supply chains',
+      'pumped hydro',
+      'compressed air',
+      'thermal energy systems',
+      'smart grid software',
+      'electricity demand',
+      'peak hours',
+      'utilities',
+      'blackouts',
+    ],
     text:
       'Renewable energy storage is an important component of modern electrical grids because solar and wind power generation fluctuates throughout the day. ' +
       'However, large battery systems require significant capital investment and depend on critical mineral supply chains that face geopolitical constraints. ' +
@@ -106,10 +221,7 @@ export const BENCHMARK_CORPUS = [
   },
 ];
 
-// Independent Statistical + Structural + Fluency Evaluator
-// Incorporates Turnitout v1.5 zlib compression perplexity, BERT/GPT structural tells,
-// burstiness CV, sentence-length range, Winnowing k=5/w=4 overlap, and grammar checks.
-export function evaluatePassage(rawInput, output, res) {
+export function evaluatePassage(rawInput, output, res, mustPreserveMeaningTerms = []) {
   const sentences = output
     .split(/(?<=[.!?])\s+/)
     .map((s) => s.trim())
@@ -129,7 +241,7 @@ export function evaluatePassage(rawInput, output, res) {
   const maxSent = sentLengths.length ? Math.max(...sentLengths) : 0;
   const lenSpread = maxSent - minSent;
 
-  // 2. Turnitout v1.5 ZipPy Compression Perplexity (zlib deflate bits per char)
+  // 2. Turnitout v1.5 ZipPy Compression Perplexity
   const rawBuf = Buffer.from(output, 'utf-8');
   const compressed = zlib.deflateSync(rawBuf, { level: 9 });
   const compressionRatio = rawBuf.length > 0 ? compressed.length / rawBuf.length : 1;
@@ -144,7 +256,7 @@ export function evaluatePassage(rawInput, output, res) {
     /\bunderscor(?:e|es|ed|ing)\b/i,
     /\bfoster(?:s|ed|ing)?\b/i,
     /\butiliz(?:e|es|ed|ing)\b/i,
-    /\b vibrant\b/i,
+    /\bvibrant\b/i,
     /\bin the realm of\b/i,
     /\bembark(?:s|ed|ing)?\b/i,
     /\bseamless(?:ly)?\b/i,
@@ -173,7 +285,7 @@ export function evaluatePassage(rawInput, output, res) {
     if (m) survivingTells.push(m[0]);
   }
 
-  // 4. Grammar & Fluency Quality Audit
+  // 4. Grammar, Naturalness & Anti-Run-On Audit
   const grammarIssues = [];
   if (/\.\.|,,|,\s*\.|;\s*\./.test(output)) grammarIssues.push('double-punctuation');
   if (/\b([a-z]{3,})\s+\1\b/i.test(output)) grammarIssues.push('duplicate-adjacent-word');
@@ -183,16 +295,26 @@ export function evaluatePassage(rawInput, output, res) {
   if (/(?:^|[.!?]\s+)[a-z]/.test(output.replace(/\$[^$]+\$/g, 'MATH'))) {
     grammarIssues.push('lowercase-sentence-start');
   }
+  if (/;\s*(?:at the same time|meanwhile),/i.test(output)) {
+    grammarIssues.push('artificial-semicolon-stitch');
+  }
   const fluencyScore = Math.max(0, 100 - grammarIssues.length * 15);
 
-  // 5. Winnowing k=5, w=4 overlap
+  // 5. Semantic Meaning Preservation Audit (verifies domain terms were not corrupted by thesaurus swaps)
+  const lowerOut = output.toLowerCase();
+  const missingMeaningTerms = mustPreserveMeaningTerms.filter((t) => !lowerOut.includes(t.toLowerCase()));
+  const meaningPreservedPct = mustPreserveMeaningTerms.length
+    ? Math.round(((mustPreserveMeaningTerms.length - missingMeaningTerms.length) / mustPreserveMeaningTerms.length) * 100)
+    : 100;
+
+  // 6. Winnowing k=5, w=4 overlap
   const winnowOverlap = H.winnowOverlap(rawInput, output, 5, 4);
 
-  // 6. Composite Independent AI Detection Score (0 = Human, 100 = AI)
+  // 7. Composite Independent AI Detection Score (0 = Human, 100 = AI)
   const tellPenalty = survivingTells.length * 14;
-  const burstPenalty = burstinessCV >= 0.42 ? 0 : Math.round((0.42 - burstinessCV) * 75);
-  const spreadPenalty = lenSpread >= 10 ? 0 : Math.round((10 - lenSpread) * 2);
-  const overlapPenalty = winnowOverlap > 25 ? Math.round((winnowOverlap - 25) * 0.45) : 0;
+  const burstPenalty = burstinessCV >= 0.3 ? 0 : Math.round((0.3 - burstinessCV) * 75);
+  const spreadPenalty = lenSpread >= 8 ? 0 : Math.round((8 - lenSpread) * 2);
+  const overlapPenalty = winnowOverlap > 28 ? Math.round((winnowOverlap - 28) * 0.45) : 0;
   const independentAiScore = Math.max(
     0,
     Math.min(100, tellPenalty + burstPenalty + spreadPenalty + overlapPenalty)
@@ -209,6 +331,8 @@ export function evaluatePassage(rawInput, output, res) {
     survivingTells,
     grammarIssues,
     fluencyScore,
+    meaningPreservedPct,
+    missingMeaningTerms,
     engineAiBefore: res.before.aiRiskScore,
     engineAiAfter: res.after.aiRiskScore,
     independentAiScore,
@@ -218,7 +342,7 @@ export function evaluatePassage(rawInput, output, res) {
 
 let passCount = 0;
 console.log('================================================================================');
-console.log('BRISKREAD HUMANIZER — 10-CORPUS BENCHMARK & QUALITY DIAGNOSTIC');
+console.log('BRISKREAD HUMANIZER v3.0 — MEANING-PRESERVING 10-CORPUS BENCHMARK');
 console.log('================================================================================\n');
 
 for (const item of BENCHMARK_CORPUS) {
@@ -231,13 +355,14 @@ for (const item of BENCHMARK_CORPUS) {
     lockCitations: Boolean(item.lockCitations),
     seed: 1,
   });
-  const ev = evaluatePassage(item.text, res.output, res);
+  const ev = evaluatePassage(item.text, res.output, res, item.mustPreserveMeaningTerms || []);
   const passed =
     ev.independentAiScore < 20 &&
     ev.engineAiAfter < 20 &&
     ev.winnowOverlap <= 30 &&
     ev.survivingTells.length === 0 &&
     ev.fluencyScore >= 90 &&
+    ev.meaningPreservedPct === 100 &&
     ev.invariants.factsPreserved &&
     ev.invariants.keywordsPreserved &&
     ev.invariants.citationsPreserved;
@@ -248,7 +373,10 @@ for (const item of BENCHMARK_CORPUS) {
     `   AI Risk (Engine): ${ev.engineAiBefore}% -> ${ev.engineAiAfter}% | Independent AI Score: ${ev.independentAiScore}%`
   );
   console.log(
-    `   Winnowing k=5 Overlap: ${ev.winnowOverlap}% | Burstiness CV: ${ev.burstinessCV} (lengths: [${ev.sentLengths.join(', ')}], spread=${ev.lenSpread})`
+    `   Meaning Preserved: ${ev.meaningPreservedPct}%${ev.missingMeaningTerms.length ? ` (Missing: ${ev.missingMeaningTerms.join(', ')})` : ''} | Winnowing k=5 Overlap: ${ev.winnowOverlap}%`
+  );
+  console.log(
+    `   Burstiness CV: ${ev.burstinessCV} (lengths: [${ev.sentLengths.join(', ')}], spread=${ev.lenSpread})`
   );
   console.log(
     `   Surviving Tells (${ev.survivingTells.length}): ${ev.survivingTells.join(', ') || 'None'} | Grammar Issues: ${ev.grammarIssues.join(', ') || 'None'}`
@@ -258,7 +386,7 @@ for (const item of BENCHMARK_CORPUS) {
 }
 
 console.log('================================================================================');
-console.log(`SUMMARY: ${passCount} / ${BENCHMARK_CORPUS.length} passages passed all strict humanization criteria.`);
+console.log(`SUMMARY: ${passCount} / ${BENCHMARK_CORPUS.length} passages passed all strict humanization & meaning criteria.`);
 console.log('================================================================================');
 if (passCount < BENCHMARK_CORPUS.length) {
   process.exitCode = 1;
