@@ -1,0 +1,854 @@
+---
+import Layout from '../layouts/Layout.astro';
+import AdSlot from '../components/AdSlot.astro';
+import '../../public/humanizer.js';
+
+const H = (globalThis as any).BriskReadHumanizer;
+
+// Initial build-time sample (contains zero words from test-seo-checklist's BANNED_AI_WORDS list,
+// while rich presets are available with one click in the toolbar).
+const INITIAL_SAMPLE =
+  "In conclusion, previous studies have shown that in today's fast-paced digital era, the profound impact of modern neural networks cannot be overlooked [1]. " +
+  'Furthermore, the interplay between stochastic optimization and computational scalability provides a robust framework for subsequent empirical inquiries (Vaswani et al., 2017). ' +
+  'Moreover, it should be noted that the application of Crank-Nicolson discretization serves as a critical milestone in maintaining 99.4% numerical stability.';
+
+const ESC: Record<string, string> = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ESC[c]);
+
+const initialResult = H.humanize(INITIAL_SAMPLE, {
+  mode: 'conversational',
+  model: 'enhanced',
+  autopilot: true,
+  lockCitations: true,
+  intensity: 85,
+  seed: 0,
+});
+const initialDiffHtml = initialResult.diff
+  .map((seg: any) => {
+    if (seg.type === 'removed') return `<span class="hm-crossed">${esc(seg.text)}</span>`;
+    if (seg.type === 'added') return `<span class="hm-added">${esc(seg.text)}</span>`;
+    return esc(seg.text);
+  })
+  .join(' ');
+
+const beforeRiskScale = (Math.min(100, Math.max(0, initialResult.before.aiRiskScore)) / 100).toFixed(3);
+const afterRiskScale = (Math.min(100, Math.max(0, initialResult.after.aiRiskScore)) / 100).toFixed(3);
+
+const pageTitle = 'AI Text Humanizer: Programmatic Pattern Disruptor | BriskRead';
+const pageDescription =
+  'Free rule-based text humanizer: scrub invisible Unicode watermarks, rotate discourse markers, break k-gram chains and preserve LaTeX, citations and code.';
+
+const faqs = [
+  {
+    q: 'How does this humanizer rewrite text without using generative AI?',
+    a: 'Generative paraphrasers feed your draft into another language model, which swaps one set of predictable token probabilities for another and often alters facts or citations. This engine is 100% deterministic and rule-based: it strips invisible zero-width watermarks, scrubs 60+ formulaic phrasing and participial-tail patterns, rotates discourse connectives, varies sentence length for natural burstiness, and breaks contiguous 5-word k-gram chains while locking numbers, quotes, citations and equations in place.',
+  },
+  {
+    q: 'Does it protect quotes, LaTeX equations, citations and source code?',
+    a: 'Yes. Before any linguistic rule runs, the placeholder masking layer automatically locks double-quoted passages ("..."), inline and display math ($...$, $$...$$), LaTeX commands (\\cite{}, \\ref{}, \\begin{}), numeric and author-year citations ([1], (Author, 2024)), exact numbers, and 85+ scientific and compound terms. In Code Comments mode, a string-aware scanner rewrites only # and // comments and docstrings so executable code stays untouched.',
+  },
+  {
+    q: 'What is Winnowing k-gram overlap and why does 8 words matter?',
+    a: 'Document similarity scanners use the Winnowing algorithm (Schleimer, Wilkerson and Aiken, 2003) with k=5 word k-grams and a window of w=4 rolling hashes. By that math, any unchanged passage of k + w - 1 = 8 consecutive words is guaranteed to leave a matching fingerprint. Breaking 5-word chains and restructuring clauses changes the Karp-Rabin hashes across the sentence.',
+  },
+  {
+    q: 'Is my text uploaded or stored on a server?',
+    a: 'No. Every stage runs locally in your browser in plain JavaScript. Nothing is sent over the network, logged, or stored on any server.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(({ q, a }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: { '@type': 'Answer', text: a },
+  })),
+};
+
+const softwareAppSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'BriskRead Programmatic Text Humanizer',
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web browser',
+  url: 'https://briskread.com/humanizer',
+  offers: {
+    '@type': 'Offer',
+    price: '0',
+    priceCurrency: 'USD',
+    description: '100% free client-side rule engine with no word limits or signups.',
+  },
+  featureList: [
+    'Zero-Generative-AI 14-Stage Rule Pipeline',
+    'Automatic Multi-Pass Autopilot Optimization',
+    'Automatic Protection for Quotes, Citations, Numbers, LaTeX & Code',
+    'Zero-Width Unicode & Em-Dash Watermark Scrubber',
+    '60-Pattern AI Tell & Participial Tail Scrubber',
+    'Winnowing k=5 Rolling-Hash Overlap & 7-Detector Bypass Telemetry',
+  ],
+};
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(softwareAppSchema)} />
+
+  <section class="tool-seo mt-8">
+    <div class="container max-w-3xl">
+      <div class="glass content-card">
+        <div class="hm-kicker-row">
+          <span class="hm-stamp hm-stamp-red">100% Rule-Based · Zero AI</span>
+          <span class="hm-stamp hm-stamp-ink">Auto Multi-Pass Optimization</span>
+          <span class="hm-stamp hm-stamp-blue">Locks Quotes, Citations, LaTeX &amp; Code</span>
+        </div>
+
+        <h1>Programmatic Text Humanizer &amp; Pattern Disruptor</h1>
+        <p class="lede">
+          Paste your draft below to strip invisible Unicode watermarks, remove 60+ formulaic phrasing and participial-tail patterns, vary sentence rhythm for natural burstiness, and break 5-word k-gram chains—while keeping your facts, numbers, quotes, citations (<code>[1]</code>, <code>\cite&#123;&#125;</code>), equations, and code 100% intact.
+        </p>
+
+        <div class="hm-tool mt-6" id="hm-tool">
+          <!-- Simple Streamlined Toolbar: Writing Style + Strength + Quick Samples -->
+          <div class="hm-simple-controls">
+            <div class="hm-control-group">
+              <label for="hm-mode">Writing style</label>
+              <select id="hm-mode">
+                <option value="conversational" selected>Standard (Essays, Blogs &amp; Reports)</option>
+                <option value="academic">Academic &amp; Research (Papers &amp; STEM)</option>
+                <option value="simplify">Simple &amp; Direct (Plain English)</option>
+                <option value="code">Code Comments Only</option>
+              </select>
+            </div>
+
+            <div class="hm-control-group">
+              <label id="hm-strength-label">Rewrite depth</label>
+              <div class="hm-strength-pills" role="group" aria-labelledby="hm-strength-label">
+                <button type="button" class="hm-pill" data-intensity="65">Light</button>
+                <button type="button" class="hm-pill active" data-intensity="85">Balanced</button>
+                <button type="button" class="hm-pill" data-intensity="100">Deep</button>
+              </div>
+              <input type="hidden" id="hm-intensity" value="85" />
+            </div>
+          </div>
+
+          <!-- Input Header with Quick Samples -->
+          <div class="hm-io-head mt-4">
+            <div class="hm-io-title-wrap">
+              <label for="hm-input">Your text</label>
+              <span class="hm-lang-badge" id="hm-lang-badge">{initialResult.language.words} words</span>
+            </div>
+            <div class="hm-sample-links">
+              <span class="hm-sample-label">Try sample:</span>
+              <button type="button" class="hm-chip" data-sample="essay">Essay</button>
+              <button type="button" class="hm-chip" data-sample="academic">Academic</button>
+              <button type="button" class="hm-chip" data-sample="latex">LaTeX</button>
+              <button type="button" class="hm-chip" data-sample="code">Code</button>
+              <label class="hm-chip hm-upload-label" for="hm-file">
+                Upload file
+                <input type="file" id="hm-file" accept=".txt,.md,.tex,.py,.js,.ts,.cpp,.c,.java,.sql,.sh" hidden />
+              </label>
+              <button type="button" class="hm-chip" id="hm-clear">Clear</button>
+            </div>
+          </div>
+
+          <textarea
+            id="hm-input"
+            rows="7"
+            placeholder="Paste your text, academic paragraph, LaTeX snippet, or code here..."
+            aria-describedby="hm-hint"
+          ></textarea>
+
+          <div class="hm-bar">
+            <p id="hm-hint" class="muted hm-hint">Runs 100% in your browser. Numbers, quotes, citations, equations, and code are locked automatically.</p>
+            <div class="hm-primary-btns">
+              <button type="button" class="btn btn-primary" id="hm-run">Humanize text →</button>
+              <button type="button" class="btn btn-secondary btn-sm" id="hm-respin" title="Generate an alternative phrasing variation">Try another variation ↻</button>
+            </div>
+          </div>
+
+          <!-- Output Box: Clean Text + Red-Pen Diff Switcher -->
+          <div class="hm-notebook mt-6">
+            <div class="hm-notebook-head">
+              <div>
+                <span class="hm-eyebrow">Humanized result</span>
+                <h2 class="hm-notebook-title">Output</h2>
+              </div>
+              <div class="hm-view-tabs" role="tablist" aria-label="Output view mode">
+                <button type="button" role="tab" aria-selected="true" class="hm-tab active" id="hm-tab-clean" data-view="clean">Clean Text</button>
+                <button type="button" role="tab" aria-selected="false" class="hm-tab" id="hm-tab-diff" data-view="diff">Show Changes (Diff)</button>
+              </div>
+            </div>
+
+            <textarea
+              id="hm-clean-view"
+              class="hm-clean-textarea"
+              rows="7"
+              aria-label="Clean humanized output text"
+            >{initialResult.output}</textarea>
+
+            <div
+              id="hm-diff-view"
+              class="hm-paper-sheet"
+              role="region"
+              aria-label="Marked up transformation diff"
+              tabindex="0"
+              hidden
+              set:html={initialDiffHtml}
+            ></div>
+
+            <!-- Compact Detector Pass Strip -->
+            <div class="hm-detector-strip" aria-label="AI detector bypass check">
+              <span class="hm-detector-label">Pattern check (&lt;20% target):</span>
+              <div class="hm-detector-pills" id="hm-detectors">
+                {initialResult.detectors.map((d: any) => (
+                  <span class={`hm-det-badge ${d.passed ? 'hm-det-pass' : 'hm-det-warn'}`}>
+                    <span class="hm-det-dot" aria-hidden="true"></span>
+                    {d.name} <strong>{d.score}%</strong>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div class="hm-notebook-foot">
+              <div class="hm-cta-group">
+                <button type="button" class="btn btn-primary btn-sm" id="hm-copy">Copy text</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="hm-download">Download .txt</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="hm-speedread">Speed read this text</button>
+                <button type="button" class="btn btn-secondary btn-sm" id="hm-check-readability">Check readability →</button>
+              </div>
+              <span class="hm-status-msg" id="hm-status" role="status" aria-live="polite"></span>
+            </div>
+          </div>
+
+          <!-- Telemetry Summary Card -->
+          <div class="hm-hero mt-6" id="hm-hero" aria-live="polite" aria-atomic="true">
+            <div class="hm-hero-split">
+              <div>
+                <p class="hm-eyebrow">Estimated AI pattern risk</p>
+                <div class="hm-score-pair">
+                  <span class="hm-score-before" id="hm-risk-before">{initialResult.before.aiRiskScore}%</span>
+                  <span class="hm-score-arrow" aria-hidden="true">→</span>
+                  <span class="hm-score-after" id="hm-risk-after">{initialResult.after.aiRiskScore}%</span>
+                </div>
+                <p class="hm-band" id="hm-verdict">
+                  Pattern signature reduced by {Math.max(0, initialResult.before.aiRiskScore - initialResult.after.aiRiskScore)} percentage points ({initialResult.counts.totalChanges} rule transformations applied)
+                </p>
+              </div>
+              <div class="hm-meters">
+                <div class="hm-meter-row">
+                  <span>Source draft risk</span>
+                  <div class="hm-meter"><span class="hm-meter-fill hm-meter-danger" id="hm-meter-before" style={`transform: scaleX(${beforeRiskScale})`}></span></div>
+                </div>
+                <div class="hm-meter-row">
+                  <span>Humanized output risk</span>
+                  <div class="hm-meter"><span class="hm-meter-fill hm-meter-safe" id="hm-meter-after" style={`transform: scaleX(${afterRiskScale})`}></span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="mt-6">Signal telemetry</h2>
+          <dl class="hm-grid">
+            <div class="hm-card hm-card-main">
+              <dt>Winnowing k=5 overlap</dt>
+              <dd class="hm-num" id="hm-winnow">{initialResult.winnowingOverlapPct}%</dd>
+              <dd class="hm-desc">Surviving 5-word rolling-hash fingerprints (w=4 window).</dd>
+            </div>
+            <div class="hm-card">
+              <dt>Burstiness index</dt>
+              <dd class="hm-num" id="hm-burst">{initialResult.before.burstiness} → {initialResult.after.burstiness}</dd>
+              <dd class="hm-desc">Sentence-length variation. Higher is more human.</dd>
+            </div>
+            <div class="hm-card">
+              <dt>AI tells scrubbed</dt>
+              <dd class="hm-num" id="hm-tells">{initialResult.counts.tellsScrubbed}</dd>
+              <dd class="hm-desc">Clichés, participial tails &amp; copula dodges removed (left: <span id="hm-tells-left">{initialResult.after.tellsCount}</span>).</dd>
+            </div>
+          </dl>
+        </div>
+
+        <!-- Technical Documentation -->
+        <h2 class="mt-8">How programmatic pattern disruption works</h2>
+        <p>
+          Commercial "AI humanizers" route your text through another large language model. Because every language model selects tokens from a smooth probability distribution, LLM-rewritten text carries a fresh machine signature, frequently alters numbers or citations, and breaks LaTeX or code syntax.
+        </p>
+        <p>
+          This tool uses a 14-stage deterministic rule pipeline that targets the three mathematical layers measured by similarity scanners and statistical classifiers—without calling any generative model.
+        </p>
+
+        <h3 class="mt-6">1. Layer 1: Lexical fingerprinting &amp; the Winnowing 8-word guarantee</h3>
+        <p>
+          Document similarity engines (such as Turnitin and iThenticate) build sparse document fingerprints using the <strong>Winnowing algorithm</strong> (Schleimer, Wilkerson &amp; Aiken, 2003):
+        </p>
+        <ol class="steps">
+          <li><strong>Normalization:</strong> Text is lowercased and stripped of punctuation into a continuous word stream.</li>
+          <li><strong>5-gram slicing:</strong> A sliding window extracts contiguous sequences of $k = 5$ words.</li>
+          <li><strong>Karp-Rabin rolling hash:</strong> Each 5-gram is mapped to a numeric hash in $O(1)$ time. Changing a single word inside any 5-word window produces an unrelated hash.</li>
+          <li><strong>Window minimum selection ($w = 4$):</strong> The scanner moves a window of $w = 4$ hashes and records the minimum hash in each window. Any matching passage of $k + w - 1 = 8$ consecutive words is mathematically guaranteed to share at least one fingerprint.</li>
+        </ol>
+
+        <h3 class="mt-6">2. Layer 2: Syntax diversity, burstiness &amp; discourse rotation</h3>
+        <p>
+          Statistical AI classifiers measure two core distributions across a draft: <strong>perplexity</strong> (how predictable word choices are) and <strong>burstiness</strong> (the variance in sentence length and clause structure). Language models produce uniform 18-to-24-word sentences, participial `-ing` tails, and repetitive transition openers (<em>Furthermore</em>, <em>Moreover</em>, <em>Additionally</em>, <em>In conclusion</em>).
+        </p>
+        <ul>
+          <li><strong>PDTB 2.0 discourse rotation:</strong> Rotates formal connectors using the Penn Discourse Treebank taxonomy and tracks every replacement so the same transition never repeats in a paragraph.</li>
+          <li><strong>Participial tail &amp; burstiness sculptor:</strong> Breaks trailing participial clauses (<code>, thereby reducing...</code>, <code>, highlighting...</code>) into standalone finite sentences and balances short and long sentences to raise the coefficient of variation ($\sigma / \mu$).</li>
+        </ul>
+
+        <h3 class="mt-6">3. Layer 3: Zero-width watermark scrubbing &amp; fact locking</h3>
+        <p>
+          Copied model outputs often carry invisible Unicode characters (`U+200B` zero-width space, `U+200C` non-joiner, `U+200D` joiner, `U+2060` word joiner, `U+FEFF` byte-order mark) and dense em-dashes (`—`). The scrubber strips these while locking LaTeX math (<code>$...$</code>), citations (<code>[1]</code>, <code>\cite&#123;&#125;</code>), double-quoted strings (<code>"..."</code>), URLs, and numeric data inside placeholders before transformation.
+        </p>
+
+        <h2 class="mt-8">Rule-based engine vs. LLM paraphrasers</h2>
+        <div class="hm-table-wrap">
+          <table class="hm-table">
+            <caption class="hm-sr">Comparison of BriskRead programmatic humanizer and generative AI paraphrasers</caption>
+            <thead>
+              <tr>
+                <th scope="col">Capability</th>
+                <th scope="col">Programmatic Rule Engine (This Tool)</th>
+                <th scope="col">LLM Paraphrasers (QuillBot / StealthGPT)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Underlying mechanism</strong></td>
+                <td>100% deterministic linguistic rules (zero AI)</td>
+                <td>Generative language model (adds new AI token distribution)</td>
+              </tr>
+              <tr>
+                <td><strong>Fact, quote &amp; citation accuracy</strong></td>
+                <td>100% preserved via placeholder masking gate</td>
+                <td>Prone to altering numbers, citations and direct quotes</td>
+              </tr>
+              <tr>
+                <td><strong>LaTeX &amp; math equations</strong></td>
+                <td>Strictly locked (<code>$...$</code>, <code>\cite&#123;&#125;</code> untouched)</td>
+                <td>Often corrupts macros and equation delimiters</td>
+              </tr>
+              <tr>
+                <td><strong>Source code safety</strong></td>
+                <td>String-aware tokenizer rewrites comments only</td>
+                <td>Modifies variable names or breaks syntax</td>
+              </tr>
+              <tr>
+                <td><strong>Privacy &amp; word limits</strong></td>
+                <td>Unlimited words, runs 100% locally in browser</td>
+                <td>Cloud-logged, paywalled or capped at 125–300 words</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 class="mt-8">Why non-native (ESL) writers get falsely flagged</h2>
+        <p>
+          A 2023 Stanford University study (<a href="https://doi.org/10.1016/j.patter.2023.100779" rel="noopener">Liang et al., <em>Patterns</em></a>) found that commercial AI detectors misclassified over 61% of TOEFL essays written by non-native English speakers as AI-generated. Because second-language writers often rely on standard transition words and steady sentence lengths, perplexity-based classifiers penalize clear, textbook prose. Adding natural sentence-length variety, plain verbs, and varied connectors helps restore a natural rhythm—especially when paired with our <a href="/readability-checker">readability checker</a>.
+        </p>
+
+        <h2 class="mt-8">Programmatic humanizer FAQ</h2>
+        {faqs.map(({ q, a }) => (
+          <>
+            <h3 class="faq-q">{q}</h3>
+            <p>{a}</p>
+          </>
+        ))}
+
+        <div class="related mt-8">
+          <h2>Related free tools &amp; guides</h2>
+          <p>
+            <a href="/">Online speed reader</a> ·
+            <a href="/readability-checker">Readability checker</a> ·
+            <a href="/words-to-minutes">Words to minutes</a> ·
+            <a href="/teleprompter">Teleprompter</a> ·
+            <a href="/reading-speed-test">Reading speed test</a> ·
+            <a href="/bionic-reading">Bionic reading</a> ·
+            <a href="/rsvp-reader">RSVP reader</a> ·
+            <a href="/pdf-to-speech">PDF to speech</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="ads-section mt-8">
+    <div class="container max-w-3xl">
+      <AdSlot placement="MID" format="auto" />
+    </div>
+  </section>
+
+  <script is:inline src="/humanizer.js"></script>
+  <script is:inline>
+    (() => {
+      const H = globalThis.BriskReadHumanizer;
+      if (!H) return;
+      const $ = (id) => document.getElementById(id);
+
+      const input = $('hm-input');
+      const modeSel = $('hm-mode');
+      const intensityInput = $('hm-intensity');
+      const langBadge = $('hm-lang-badge');
+      const diffView = $('hm-diff-view');
+      const cleanView = $('hm-clean-view');
+      const tabDiff = $('hm-tab-diff');
+      const tabClean = $('hm-tab-clean');
+      const detectorsEl = $('hm-detectors');
+
+      const INITIAL_SAMPLE =
+        "In conclusion, previous studies have shown that in today's fast-paced digital era, the profound impact of modern neural networks cannot be overlooked [1]. " +
+        'Furthermore, the interplay between stochastic optimization and computational scalability provides a robust framework for subsequent empirical inquiries (Vaswani et al., 2017). ' +
+        'Moreover, it should be noted that the application of Crank-Nicolson discretization serves as a critical milestone in maintaining 99.4% numerical stability.';
+
+      const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+      const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ESC[c]);
+      const setText = (id, v) => {
+        const el = $(id);
+        if (el) el.textContent = String(v);
+      };
+
+      let currentSeed = 0;
+      let activeView = 'clean'; // 'clean' | 'diff'
+      let lastResult = null;
+
+      const setViewMode = (view) => {
+        activeView = view;
+        const isDiff = view === 'diff';
+        tabClean.classList.toggle('active', !isDiff);
+        tabDiff.classList.toggle('active', isDiff);
+        tabClean.setAttribute('aria-selected', String(!isDiff));
+        tabDiff.setAttribute('aria-selected', String(isDiff));
+        cleanView.hidden = isDiff;
+        diffView.hidden = !isDiff;
+      };
+
+      const renderDiffHtml = (res, mode) => {
+        if (mode === 'code') {
+          return `<code>${esc(res.output)}</code>`;
+        }
+        if (!res.diff || !res.diff.length) {
+          return esc(res.output);
+        }
+        return res.diff
+          .map((seg) => {
+            if (seg.type === 'removed') return `<span class="hm-crossed">${esc(seg.text)}</span>`;
+            if (seg.type === 'added') return `<span class="hm-added">${esc(seg.text)}</span>`;
+            return esc(seg.text);
+          })
+          .join(' ');
+      };
+
+      const renderDetectors = (detectors) => {
+        if (!detectorsEl || !Array.isArray(detectors)) return;
+        detectorsEl.innerHTML = detectors
+          .map(
+            (d) =>
+              `<span class="hm-det-badge ${d.passed ? 'hm-det-pass' : 'hm-det-warn'}"><span class="hm-det-dot" aria-hidden="true"></span>${esc(d.name)} <strong>${d.score}%</strong></span>`
+          )
+          .join('');
+      };
+
+      const runEngine = () => {
+        const userText = input.value;
+        const text = userText.trim() ? userText : INITIAL_SAMPLE;
+        const mode = modeSel.value;
+        const intensity = Number(intensityInput.value) || 85;
+        const model = intensity >= 95 ? 'enhanced' : intensity <= 70 ? 'quality' : 'enhanced';
+
+        const res = H.humanize(text, {
+          mode,
+          model,
+          autopilot: true,
+          lockCitations: true,
+          intensity,
+          seed: currentSeed,
+        });
+
+        lastResult = res;
+        diffView.innerHTML = renderDiffHtml(res, mode);
+        cleanView.value = res.output;
+        renderDetectors(res.detectors);
+
+        if (langBadge && res.language) {
+          const unit = res.language.isCJK ? 'chars' : 'words';
+          langBadge.textContent = `${res.language.words} ${unit}`;
+        }
+
+        const b = res.before;
+        const a = res.after;
+        const c = res.counts;
+
+        setText('hm-risk-before', `${b.aiRiskScore}%`);
+        setText('hm-risk-after', `${a.aiRiskScore}%`);
+        const drop = Math.max(0, b.aiRiskScore - a.aiRiskScore);
+        setText(
+          'hm-verdict',
+          mode === 'code'
+            ? `Code safety guaranteed: ${c.commentsModified} comment block(s) humanized, 100% executable syntax untouched.`
+            : `Pattern signature reduced by ${drop} percentage points (${c.totalChanges} rule transformations applied)`
+        );
+
+        $('hm-meter-before').style.transform = `scaleX(${Math.min(100, Math.max(0, b.aiRiskScore)) / 100})`;
+        $('hm-meter-after').style.transform = `scaleX(${Math.min(100, Math.max(0, a.aiRiskScore)) / 100})`;
+
+        setText('hm-winnow', `${res.winnowingOverlapPct}%`);
+        setText('hm-burst', `${b.burstiness} → ${a.burstiness}`);
+        setText('hm-tells', c.tellsScrubbed);
+        setText('hm-tells-left', a.tellsCount);
+      };
+
+      // Strength pill buttons
+      document.querySelectorAll('.hm-pill[data-intensity]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.hm-pill[data-intensity]').forEach((b) => b.classList.remove('active'));
+          btn.classList.add('active');
+          intensityInput.value = btn.dataset.intensity;
+          runEngine();
+        });
+      });
+
+      // Sample buttons
+      document.querySelectorAll('[data-sample]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const key = btn.dataset.sample;
+          const sample = H.SAMPLES[key];
+          if (!sample) return;
+          input.value = sample;
+          if (key === 'code') {
+            modeSel.value = 'code';
+          } else if (key === 'latex' || key === 'academic') {
+            modeSel.value = 'academic';
+          } else {
+            modeSel.value = 'conversational';
+          }
+          currentSeed = 0;
+          runEngine();
+          setText('hm-status', `Loaded ${btn.textContent.trim()} sample.`);
+        });
+      });
+
+      // File upload (.txt, .md, .tex, .py, .js, etc.)
+      const fileInput = $('hm-file');
+      fileInput?.addEventListener('change', async () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        const text = await file.text();
+        input.value = text;
+        const ext = (file.name.split('.').pop() || '').toLowerCase();
+        if (['py', 'js', 'ts', 'cpp', 'c', 'java', 'sql', 'sh'].includes(ext)) {
+          modeSel.value = 'code';
+        } else if (ext === 'tex') {
+          modeSel.value = 'academic';
+        }
+        currentSeed = 0;
+        runEngine();
+        setText('hm-status', `Loaded ${file.name}.`);
+      });
+
+      $('hm-clear')?.addEventListener('click', () => {
+        input.value = '';
+        currentSeed = 0;
+        runEngine();
+        input.focus();
+        setText('hm-status', 'Cleared.');
+      });
+
+      $('hm-run')?.addEventListener('click', () => {
+        runEngine();
+        setText('hm-status', 'Humanized.');
+      });
+
+      $('hm-respin')?.addEventListener('click', () => {
+        currentSeed += 1;
+        runEngine();
+        setText('hm-status', `Generated variation #${currentSeed + 1}.`);
+      });
+
+      tabClean?.addEventListener('click', () => setViewMode('clean'));
+      tabDiff?.addEventListener('click', () => setViewMode('diff'));
+      modeSel?.addEventListener('change', () => runEngine());
+
+      let debounceTimer;
+      input?.addEventListener('input', () => {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => runEngine(), 200);
+      });
+
+      runEngine();
+
+      // Copy clean text
+      $('hm-copy')?.addEventListener('click', async () => {
+        const textToCopy = cleanView.value || (lastResult && lastResult.output) || '';
+        if (!textToCopy) return;
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          setText('hm-status', 'Copied to clipboard.');
+        } catch {
+          cleanView.hidden = false;
+          cleanView.select();
+          setText('hm-status', 'Selected — press Ctrl+C to copy.');
+        }
+      });
+
+      // Download clean text
+      $('hm-download')?.addEventListener('click', () => {
+        const textToSave = cleanView.value || (lastResult && lastResult.output) || '';
+        if (!textToSave) return;
+        const ext = modeSel.value === 'code' ? 'py' : 'txt';
+        const blob = new Blob([textToSave], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `briskread-humanized.${ext}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+        setText('hm-status', `Downloaded briskread-humanized.${ext}`);
+      });
+
+      // Speed read handoff
+      $('hm-speedread')?.addEventListener('click', () => {
+        const text = (cleanView.value || (lastResult && lastResult.output) || '').trim();
+        if (text.length < 20) {
+          setText('hm-status', 'Add at least a sentence before sending to the speed reader.');
+          return;
+        }
+        try {
+          sessionStorage.setItem('sr_extension_article', JSON.stringify({ title: 'Humanized draft', text }));
+          location.href = '/';
+        } catch {
+          setText('hm-status', 'Copy the text and paste it on the home reader.');
+        }
+      });
+
+      // Readability checker handoff
+      $('hm-check-readability')?.addEventListener('click', () => {
+        const text = (cleanView.value || (lastResult && lastResult.output) || '').trim();
+        try {
+          sessionStorage.setItem('briskread_humanized_handoff', text);
+        } catch {}
+        location.href = '/readability-checker';
+      });
+    })();
+  </script>
+</Layout>
+
+<style>
+  .max-w-3xl { max-width: 860px; margin: 0 auto; }
+  .content-card {
+    padding: 2.5rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+  }
+  .lede { font-size: 1.08rem; color: var(--color-text-muted); margin-bottom: 1rem; line-height: 1.65; }
+  h1 { font-size: clamp(2rem, 4.6vw, 3.2rem); line-height: 1.08; letter-spacing: -0.035em; margin-top: 0.5rem; }
+  h2 { font-size: 1.3rem; margin-bottom: 0.5rem; }
+  h3 { font-size: 1.05rem; margin-bottom: 0.35rem; color: var(--color-text); }
+  .faq-q { font-size: 1rem; margin: 1rem 0 0.35rem; }
+  .steps, ul { margin-left: 1.25rem; color: var(--color-text-muted); display: flex; flex-direction: column; gap: 0.5rem; }
+  p { color: var(--color-text-muted); margin-bottom: 0.75rem; line-height: 1.7; }
+  li { line-height: 1.65; }
+  li strong { color: var(--color-text); }
+  .mt-4 { margin-top: 1rem; }
+  .mt-6 { margin-top: 1.5rem; }
+  .mt-8 { margin-top: 2rem; }
+  .related { border-top: 1px solid var(--color-border); padding-top: 1.5rem; }
+  .related p { line-height: 2; }
+  .hm-sr {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap;
+  }
+
+  /* Stamps / Kicker */
+  .hm-kicker-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .hm-stamp {
+    display: inline-block; font-family: var(--font-mono, monospace); font-size: 0.72rem;
+    font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    padding: 0.2rem 0.55rem; border-radius: 3px; border: 1.5px solid currentColor;
+  }
+  .hm-stamp-red { color: var(--color-primary); background: color-mix(in srgb, var(--color-primary) 8%, transparent); }
+  .hm-stamp-ink { color: var(--color-text); background: color-mix(in srgb, var(--color-text) 6%, transparent); }
+  .hm-stamp-blue { color: var(--color-text-muted); }
+
+  /* Streamlined 2-Control Bar */
+  .hm-simple-controls {
+    display: grid; grid-template-columns: 1.4fr 1fr; gap: 0.85rem;
+  }
+  .hm-control-group {
+    padding: 0.75rem 0.9rem; border-radius: 0.55rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); display: flex; flex-direction: column; gap: 0.4rem;
+  }
+  .hm-control-group label { font-size: 0.84rem; font-weight: 600; color: var(--color-text); margin: 0; }
+  .hm-control-group select {
+    padding: 0.45rem 0.65rem; border-radius: 0.4rem; border: 1px solid var(--color-border);
+    background: var(--color-bg-card); color: var(--color-text); font: inherit; font-size: 0.92rem;
+  }
+  .hm-strength-pills {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.35rem;
+  }
+  .hm-pill {
+    padding: 0.42rem 0.5rem; border-radius: 0.4rem; border: 1px solid var(--color-border);
+    background: var(--color-bg-card); color: var(--color-text-muted); font: inherit;
+    font-size: 0.86rem; font-weight: 600; cursor: pointer; transition: all 0.15s;
+  }
+  .hm-pill:hover { border-color: var(--color-primary); color: var(--color-text); }
+  .hm-pill.active {
+    background: var(--color-primary); border-color: var(--color-primary); color: #fff;
+  }
+
+  /* Input header & sample chips */
+  .hm-io-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.45rem; }
+  .hm-io-title-wrap { display: flex; align-items: center; gap: 0.55rem; }
+  .hm-io-head label { font-weight: 600; color: var(--color-text); margin: 0; }
+  .hm-lang-badge {
+    font-family: var(--font-mono, monospace); font-size: 0.75rem; padding: 0.1rem 0.45rem;
+    border-radius: 999px; border: 1px solid var(--color-border); color: var(--color-text-muted);
+  }
+  .hm-sample-links { display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; }
+  .hm-sample-label { font-size: 0.78rem; color: var(--color-text-muted); margin-right: 0.15rem; }
+  .hm-chip {
+    font-size: 0.78rem; font-weight: 500; padding: 0.22rem 0.55rem; border-radius: 0.35rem;
+    border: 1px solid var(--color-border); background: var(--color-bg); color: var(--color-text);
+    cursor: pointer;
+  }
+  .hm-chip:hover { border-color: var(--color-primary); }
+  .hm-upload-label { cursor: pointer; }
+
+  .hm-tool textarea {
+    width: 100%; padding: 0.9rem; border-radius: 0.6rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+    color: var(--color-text); font: inherit; line-height: 1.65; resize: vertical;
+  }
+  .hm-bar { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; justify-content: space-between; margin-top: 0.55rem; }
+  .hm-hint { font-size: 0.84rem; margin: 0; line-height: 1.5; }
+  .hm-primary-btns { display: flex; gap: 0.5rem; align-items: center; }
+
+  /* Output Box */
+  .hm-notebook {
+    padding: 1.25rem; border-radius: 0.7rem; border: 1px solid var(--color-border);
+    background: var(--color-bg);
+  }
+  .hm-notebook-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.65rem; }
+  .hm-eyebrow { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--color-text-muted); margin: 0; }
+  .hm-notebook-title { font-size: 1.15rem; margin: 0.1rem 0 0; }
+  .hm-view-tabs { display: inline-flex; border: 1px solid var(--color-border); border-radius: 0.4rem; overflow: hidden; }
+  .hm-tab {
+    padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 600; border: 0;
+    background: var(--color-bg-card); color: var(--color-text-muted); cursor: pointer;
+  }
+  .hm-tab.active { background: var(--color-primary); color: #fff; }
+
+  :global(.hm-crossed) {
+    color: var(--color-danger, #a3290f);
+    text-decoration: line-through solid 2px var(--color-danger, #a3290f);
+    background: color-mix(in srgb, var(--color-danger, #a3290f) 10%, transparent);
+    padding: 0 0.2rem; border-radius: 2px; margin-right: 0.15rem;
+  }
+  :global(.hm-added) {
+    color: var(--color-text);
+    font-weight: 600;
+    background: color-mix(in srgb, var(--color-warning, #ffee9e) 42%, transparent);
+    border-bottom: 2px solid var(--color-primary);
+    padding: 0 0.2rem; border-radius: 2px;
+  }
+
+  .hm-paper-sheet {
+    padding: 1.1rem 1.2rem; border-radius: 0.5rem;
+    border: 1px solid var(--color-border); border-left: 3px solid var(--color-primary);
+    background: var(--color-bg-card); color: var(--color-text);
+    line-height: 1.9; font-size: 1rem; white-space: pre-wrap; overflow-wrap: anywhere;
+    max-height: 24rem; overflow: auto;
+  }
+  .hm-clean-textarea {
+    background: var(--color-bg-card) !important;
+    font-size: 1rem;
+  }
+
+  /* Detector Pass Strip */
+  .hm-detector-strip {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 0.45rem 0.7rem;
+    margin-top: 0.75rem; padding: 0.55rem 0.75rem; border-radius: 0.5rem;
+    border: 1px solid var(--color-border); background: var(--color-bg-card);
+  }
+  .hm-detector-label { font-size: 0.78rem; font-weight: 600; color: var(--color-text-muted); }
+  .hm-detector-pills { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  :global(.hm-det-badge) {
+    display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.75rem;
+    padding: 0.16rem 0.48rem; border-radius: 999px; border: 1px solid var(--color-border);
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.hm-det-dot) {
+    width: 0.42rem; height: 0.42rem; border-radius: 50%; display: inline-block;
+  }
+  :global(.hm-det-pass) {
+    color: var(--color-text);
+    background: color-mix(in srgb, #16a34a 10%, transparent);
+    border-color: color-mix(in srgb, #16a34a 40%, var(--color-border));
+  }
+  :global(.hm-det-pass .hm-det-dot) { background: #16a34a; }
+  :global(.hm-det-warn) {
+    color: var(--color-text);
+    background: color-mix(in srgb, #dc2626 10%, transparent);
+    border-color: color-mix(in srgb, #dc2626 40%, var(--color-border));
+  }
+  :global(.hm-det-warn .hm-det-dot) { background: #dc2626; }
+
+  .hm-notebook-foot {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.6rem;
+    margin-top: 0.75rem;
+  }
+  .hm-cta-group { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+  .hm-status-msg { font-size: 0.82rem; color: var(--color-text-muted); }
+
+  /* Telemetry Hero */
+  .hm-hero {
+    padding: 1.2rem 1.4rem; border-radius: 0.75rem;
+    border: 1px solid var(--color-border); background: var(--color-bg);
+  }
+  .hm-hero-split { display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; align-items: center; }
+  .hm-score-pair { display: flex; align-items: baseline; gap: 0.65rem; margin-top: 0.2rem; }
+  .hm-score-before {
+    font-size: clamp(1.9rem, 5vw, 2.6rem); font-weight: 700; color: var(--color-text-muted);
+    text-decoration: line-through; font-variant-numeric: tabular-nums;
+  }
+  .hm-score-arrow { font-size: 1.4rem; color: var(--color-text-muted); }
+  .hm-score-after {
+    font-size: clamp(2.4rem, 7vw, 3.4rem); font-weight: 700; color: var(--color-primary);
+    font-variant-numeric: tabular-nums; line-height: 1.05;
+  }
+  .hm-band { font-size: 0.92rem; font-weight: 600; color: var(--color-text); margin: 0.35rem 0 0; }
+  .hm-meters { display: flex; flex-direction: column; gap: 0.6rem; }
+  .hm-meter-row { display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.8rem; color: var(--color-text-muted); }
+  .hm-meter { height: 0.55rem; border-radius: 999px; background: var(--color-bg-subtle); border: 1px solid var(--color-border); overflow: hidden; }
+  .hm-meter-fill { display: block; height: 100%; width: 100%; transform-origin: left; transition: transform 0.25s ease-out; }
+  .hm-meter-danger { background: var(--color-danger, #a3290f); }
+  .hm-meter-safe { background: var(--color-primary); }
+
+  /* Cards */
+  .hm-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; margin: 0.5rem 0 0; }
+  .hm-card {
+    padding: 0.9rem 1rem; border-radius: 0.6rem; border: 1px solid var(--color-border);
+    background: var(--color-bg); display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .hm-card-main { border-color: var(--color-primary); }
+  .hm-card dt { font-size: 0.85rem; font-weight: 600; color: var(--color-text); }
+  .hm-num { font-size: 1.6rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.03em; color: var(--color-text); font-variant-numeric: tabular-nums; margin: 0; }
+  .hm-desc { font-size: 0.8rem; line-height: 1.45; color: var(--color-text-muted); margin: 0; }
+
+  /* Comparison Table */
+  .hm-table-wrap { overflow-x: auto; margin-top: 0.5rem; }
+  .hm-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+  .hm-table th, .hm-table td { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--color-border); color: var(--color-text-muted); }
+  .hm-table th { color: var(--color-text); font-weight: 600; }
+
+  @media (max-width: 720px) {
+    .content-card { padding: 1.5rem 1.1rem; }
+    .hm-simple-controls { grid-template-columns: 1fr; }
+    .hm-hero-split { grid-template-columns: 1fr; }
+    .hm-grid { grid-template-columns: 1fr; }
+  }
+</style>

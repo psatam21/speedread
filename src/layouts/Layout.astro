@@ -60,6 +60,7 @@ const PAGE_CRUMBS: Record<string, string> = {
   '/words-to-minutes': 'Words to minutes',
   '/teleprompter': 'Online teleprompter',
   '/readability-checker': 'Readability checker',
+  '/humanizer': 'AI text humanizer',
   '/how-it-works': 'How it works',
   '/extension': 'Chrome extension',
   '/blog': 'Blog',
@@ -297,6 +298,7 @@ const softwareSchema = {
           <a href="/how-it-works" class:list={["nav-link", { active: pathname === '/how-it-works' }]}>How it works</a>
           <a href="/rsvp-reader" class:list={["nav-link", { active: pathname === '/rsvp-reader' }]}>RSVP</a>
           <a href="/bionic-reading" class:list={["nav-link", { active: pathname === '/bionic-reading' }]}>Bionic</a>
+          <a href="/humanizer" class:list={["nav-link", { active: pathname === '/humanizer' }]}>Humanizer</a>
           <a href="/extension" class:list={["nav-link", { active: pathname === '/extension' }]}>Chrome</a>
           <a href="/blog" class:list={["nav-link", { active: pathname.startsWith('/blog') }]}>Blog</a>
           <a href="/account" class:list={["nav-link", { active: pathname === '/account' }]}>Account</a>
@@ -313,6 +315,7 @@ const softwareSchema = {
             <a href="/how-it-works">How it works</a>
             <a href="/rsvp-reader">RSVP</a>
             <a href="/bionic-reading">Bionic</a>
+            <a href="/humanizer">Humanizer</a>
             <a href="/extension">Chrome extension</a>
             <a href="/blog">Blog</a>
             <a href="/account">Account</a>
@@ -361,10 +364,11 @@ const softwareSchema = {
         </div>
         <div class="footer-group">
           <p>Tools</p>
+          <a href="/humanizer">AI text humanizer</a>
+          <a href="/readability-checker">Readability checker</a>
           <a href="/reading-speed-test">Reading speed test</a>
           <a href="/words-to-minutes">Words to minutes</a>
           <a href="/teleprompter">Online teleprompter</a>
-          <a href="/readability-checker">Readability checker</a>
           <a href="/bionic-reading#converter">Bionic converter</a>
         </div>
         <div class="footer-group">

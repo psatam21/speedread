@@ -41,6 +41,7 @@ const FAQ_REQUIRED_ROUTES = new Set([
   '/words-to-minutes',
   '/teleprompter',
   '/readability-checker',
+  '/humanizer',
   '/how-it-works',
   '/extension',
   '/blog/best-online-speed-readers',
@@ -244,6 +245,10 @@ assert.match(w2mHtml, /id="w2m-reverse"[^>]*>Speaking, average/, '/words-to-minu
 const rcHtml = fs.readFileSync(path.join(DIST, 'readability-checker', 'index.html'), 'utf8');
 assert.ok(!rcHtml.includes('id="rc-fre">--</p>'), '/readability-checker must pre-render initial Flesch score');
 assert.match(rcHtml, /id="rc-highlight"[^>]*><span class="rc-cx">Readability<\/span>/, '/readability-checker must pre-render highlighted sample text');
+
+const hmHtml = fs.readFileSync(path.join(DIST, 'humanizer', 'index.html'), 'utf8');
+assert.match(hmHtml, /id="hm-diff-view"[^>]*>[\s\S]*?class="hm-crossed"/, '/humanizer must pre-render initial red-pen diff output');
+assert.ok(!hmHtml.includes('id="hm-risk-after">--</p>'), '/humanizer must pre-render initial AI risk score');
 
 // Check #20: Editorial / Press & Citations section on /about
 const aboutHtml = fs.readFileSync(path.join(DIST, 'about', 'index.html'), 'utf8');
