@@ -274,7 +274,6 @@ const faqSchema = {
           <h2>Related free tools &amp; guides</h2>
           <p>
             <a href="/">Online speed reader</a> ·
-            <a href="/humanizer">AI text humanizer</a> ·
             <a href="/words-to-minutes">Words to minutes</a> ·
             <a href="/teleprompter">Teleprompter</a> ·
             <a href="/reading-speed-test">Reading speed test</a> ·
@@ -302,13 +301,6 @@ const faqSchema = {
       const input = $('rc-input');
       const readBtn = $('rc-read');
       const MIN_HANDOFF = 40;
-      try {
-        const handoff = sessionStorage.getItem('briskread_humanized_handoff');
-        if (handoff && handoff.trim()) {
-          input.value = handoff;
-          sessionStorage.removeItem('briskread_humanized_handoff');
-        }
-      } catch {}
 
       const SAMPLE =
         'Readability formulas estimate how hard a text is to read. Short sentences and common words score well. ' +
